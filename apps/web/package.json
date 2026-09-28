@@ -1,0 +1,29 @@
+{
+  "name": "@rivet/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5178",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/geist": "latest",
+    "@fontsource/geist-mono": "latest",
+    "@phosphor-icons/react": "latest",
+    "@tanstack/react-query": "latest",
+    "@tanstack/react-table": "^8.21.3",
+    "pdfjs-dist": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "latest",
+    "openapi-typescript": "latest",
+    "typescript": "^5.9.3",
+    "vite": "latest"
+  }
+}

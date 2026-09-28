@@ -1,0 +1,3 @@
+tag,description,quantity,unit,model,cost,price,lead_time
+PDU-A,Example power distribution unit,8,each,,8000.00,10000.00,20 weeks after approved submittal
+TX-A,Example dry type transformer,2,each,,4500.00,6000.00,Needs confirmation
