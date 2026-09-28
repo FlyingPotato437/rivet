@@ -95,7 +95,11 @@ export default function App() {
   return (
     <div className="app-shell">
       <aside className={"sidebar " + (mobileNav ? "mobile-open" : "")}>
-        <button className="brand" onClick={() => navigate("projects")}>
+        <button
+          className="brand"
+          aria-label="Rivet home"
+          onClick={() => navigate("home")}
+        >
           <Mark />
           <span>
             rivet<span className="brand-dot">.</span>

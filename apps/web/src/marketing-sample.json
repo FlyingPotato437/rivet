@@ -1,0 +1,397 @@
+{
+  "project": {
+    "id": "4ddad130-42c2-49ac-90d1-06f0147490db",
+    "title": "Westfield Data Center",
+    "customer": "Atlas Electrical Group",
+    "category": "Power distribution",
+    "due_date": "2026-10-09",
+    "synthetic": true,
+    "input_revision": 2,
+    "color": "violet",
+    "quote_id": "b3d2df0d-532d-4f59-9ddf-2d6f7821bf32",
+    "number": "RV-2026-4DDA",
+    "status": "draft",
+    "version": 3,
+    "total": "480500.00",
+    "blockers": 3,
+    "pending": 1,
+    "lines": 6,
+    "updated_at": "2026-09-27T22:03:48.567063-07:00"
+  },
+  "quote": {
+    "id": "b3d2df0d-532d-4f59-9ddf-2d6f7821bf32",
+    "number": "RV-2026-4DDA",
+    "version": 3,
+    "input_revision": 2,
+    "currency": "USD",
+    "terms": "Valid for 30 days. Payment: net 30. Freight, installation, and applicable taxes excluded. Delivery subject to written supplier confirmation.",
+    "notes": "",
+    "project": "Westfield Data Center",
+    "customer": "Atlas Electrical Group",
+    "synthetic": true,
+    "lines": [
+      {
+        "id": "42cb48be-e403-4e44-bdfa-9291ef013816",
+        "tag": "PDU-01",
+        "description": "Power distribution unit",
+        "quantity": "8",
+        "unit": "each",
+        "model": "VD-PDU-300",
+        "cost": "13500.00",
+        "price": "18000.00",
+        "extended": "144000.00",
+        "lead_time": "18\u201320 weeks after approved submittal",
+        "review": "approved",
+        "meta": {
+          "origin": "imported value",
+          "offer_id": "eb592694-01e2-43b1-a0a3-1c7070eb56d1",
+          "catalog_id": "d848c886-caca-4b6f-afd8-3be5ce26e38b",
+          "source_ids": ["4c907bde-1f64-49bc-932c-52363bf13686"],
+          "price_basis": "each",
+          "review_actor": "Synthetic fixture"
+        },
+        "position": 1
+      },
+      {
+        "id": "6fc41602-92c3-4e3d-bf42-f9799cc9d0b6",
+        "tag": "UPS-01",
+        "description": "Modular uninterruptible power supply",
+        "quantity": "2",
+        "unit": "each",
+        "model": "VD-UPS-500",
+        "cost": "64000.00",
+        "price": "80000.00",
+        "extended": "160000.00",
+        "lead_time": "22 weeks after approved submittal",
+        "review": "approved",
+        "meta": {
+          "origin": "imported value",
+          "offer_id": "d2d6d6aa-9668-4b95-9537-76dad03c9cfc",
+          "catalog_id": "9e82384f-9b2b-4bb7-894c-5f42e57c5c54",
+          "source_ids": ["70234e1f-def6-4fe0-afc8-8a6dd727a01e"],
+          "price_basis": "each",
+          "review_actor": "Synthetic fixture"
+        },
+        "position": 2
+      },
+      {
+        "id": "e785823b-d998-46e3-89e5-c0be3e14dd7d",
+        "tag": "ATS-01",
+        "description": "Automatic transfer switch",
+        "quantity": "4",
+        "unit": "each",
+        "model": "VD-ATS-1200",
+        "cost": "9500.00",
+        "price": "12500.00",
+        "extended": "50000.00",
+        "lead_time": "12\u201314 weeks after release",
+        "review": "approved",
+        "meta": {
+          "origin": "imported value",
+          "offer_id": "a439cffc-0202-4c66-bc77-e3423953767d",
+          "catalog_id": "9eb1fb55-f0e9-492a-8cd2-3090e027da4d",
+          "source_ids": ["51c2ebfa-f7e9-454a-9106-ee203c28c0df"],
+          "price_basis": "each",
+          "review_actor": "Synthetic fixture"
+        },
+        "position": 3
+      },
+      {
+        "id": "e42a6f52-3786-4642-9213-32fca871a5a1",
+        "tag": "RPP-01",
+        "description": "Remote power panel",
+        "quantity": "6",
+        "unit": "each",
+        "model": "VD-RPP-225",
+        "cost": "6200.00",
+        "price": "8250.00",
+        "extended": "49500.00",
+        "lead_time": "10 weeks after approved submittal",
+        "review": "approved",
+        "meta": {
+          "origin": "imported value",
+          "offer_id": "6e79409e-ae8f-4239-bcb3-81a12deeb5b5",
+          "catalog_id": "9451deee-88a9-449b-830b-cc4cb7cf77d0",
+          "source_ids": ["f81d4ac7-7dd6-4ed8-a2a3-c5781f83e5aa"],
+          "price_basis": "each",
+          "review_actor": "Synthetic fixture"
+        },
+        "position": 4
+      },
+      {
+        "id": "268271fe-7afc-4dca-ad1b-ebe6b8cfb91c",
+        "tag": "TX-01",
+        "description": "Dry-type transformer",
+        "quantity": "2",
+        "unit": "each",
+        "model": "VD-TX-300",
+        "cost": "18500.00",
+        "price": "24000.00",
+        "extended": "48000.00",
+        "lead_time": "16\u201318 weeks after approved submittal",
+        "review": "unreviewed",
+        "meta": {
+          "origin": "imported value",
+          "offer_id": "ecd9b47d-f424-478f-a735-59fb8e06d835",
+          "catalog_id": "7b391aa4-ddf7-42e6-8b20-eab3a87f77bb",
+          "source_ids": ["2b778dc9-10a5-4aba-af57-3da2d114f2e5"],
+          "price_basis": "each",
+          "review_actor": null
+        },
+        "position": 5
+      },
+      {
+        "id": "6e54ee1b-6496-4fd5-b251-36514c208b9e",
+        "tag": "MBP-01",
+        "description": "Maintenance bypass panel",
+        "quantity": "2",
+        "unit": "each",
+        "model": "VD-MBP-500",
+        "cost": "11600.00",
+        "price": "14500.00",
+        "extended": "29000.00",
+        "lead_time": "14 weeks after approved submittal",
+        "review": "unreviewed",
+        "meta": {
+          "origin": "imported value",
+          "offer_id": "078cdecb-a122-4851-b7e0-438846b6fe67",
+          "catalog_id": "ff016a28-ab08-4912-a28e-bd55277a04d2",
+          "source_ids": ["30bbecab-2911-4b93-92ff-84c1ade83c10"],
+          "price_basis": "each",
+          "review_actor": null
+        },
+        "position": 6
+      }
+    ],
+    "status": "draft",
+    "total": "480500.00",
+    "total_complete": true,
+    "total_cost": "371400.00",
+    "margin": "22.7",
+    "checks": [
+      {
+        "code": "reconcile",
+        "message": "Review new source documents and reconcile the quote with this input revision.",
+        "line_id": null,
+        "severity": "blocker",
+        "result": "fail"
+      },
+      {
+        "code": "review",
+        "message": "TX-01: line needs review.",
+        "line_id": "268271fe-7afc-4dca-ad1b-ebe6b8cfb91c",
+        "severity": "blocker",
+        "result": "unknown"
+      },
+      {
+        "code": "review",
+        "message": "MBP-01: line needs review.",
+        "line_id": "6e54ee1b-6496-4fd5-b251-36514c208b9e",
+        "severity": "blocker",
+        "result": "unknown"
+      }
+    ],
+    "reconciled_input": 1
+  },
+  "documents": [
+    {
+      "id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "name": "Westfield \u2014 equipment schedule.txt",
+      "kind": "schedule",
+      "state": "ready",
+      "coverage": [
+        {
+          "label": "Text",
+          "state": "processed"
+        }
+      ],
+      "meta": {
+        "rows": [],
+        "headers": [],
+        "parser_version": "rivet-1",
+        "suggested_mapping": {
+          "tag": "",
+          "cost": "",
+          "unit": "",
+          "model": "",
+          "price": "",
+          "quantity": "",
+          "supplier": "",
+          "lead_time": "",
+          "description": "",
+          "valid_until": "",
+          "manufacturer": ""
+        }
+      },
+      "created_at": "2026-09-27T22:03:48.537949-07:00"
+    },
+    {
+      "id": "acc52449-5226-4c7f-8ebc-8d40af738b1b",
+      "name": "Addendum 02 \u2014 electrical revisions.txt",
+      "kind": "addendum",
+      "state": "ready",
+      "coverage": [
+        {
+          "label": "Text",
+          "state": "processed"
+        }
+      ],
+      "meta": {
+        "rows": [],
+        "headers": [],
+        "parser_version": "rivet-1",
+        "suggested_mapping": {
+          "tag": "",
+          "cost": "",
+          "unit": "",
+          "model": "",
+          "price": "",
+          "quantity": "",
+          "supplier": "",
+          "lead_time": "",
+          "description": "",
+          "valid_until": "",
+          "manufacturer": ""
+        }
+      },
+      "created_at": "2026-09-27T22:03:48.564298-07:00"
+    }
+  ],
+  "sources": [
+    {
+      "id": "f9eced61-0ca9-4319-bbb5-285edbd5e18b",
+      "document_id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "text": "SYNTHETIC DEMO \u2014 All products, suppliers, prices and delivery conditions are fictional.",
+      "location": {
+        "line": 1,
+        "label": "Line 1"
+      }
+    },
+    {
+      "id": "4c907bde-1f64-49bc-932c-52363bf13686",
+      "document_id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "text": "PDU-01: 8 each; Power distribution unit; Voltwell VD-PDU-300; supplier cost USD 13500.00 per each; selling price USD 18000.00 per each; 18\u201320 weeks after approved submittal.",
+      "location": {
+        "line": 2,
+        "label": "Line 2"
+      }
+    },
+    {
+      "id": "70234e1f-def6-4fe0-afc8-8a6dd727a01e",
+      "document_id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "text": "UPS-01: 2 each; Modular uninterruptible power supply; Voltwell VD-UPS-500; supplier cost USD 64000.00 per each; selling price USD 80000.00 per each; 22 weeks after approved submittal.",
+      "location": {
+        "line": 3,
+        "label": "Line 3"
+      }
+    },
+    {
+      "id": "51c2ebfa-f7e9-454a-9106-ee203c28c0df",
+      "document_id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "text": "ATS-01: 4 each; Automatic transfer switch; Voltwell VD-ATS-1200; supplier cost USD 9500.00 per each; selling price USD 12500.00 per each; 12\u201314 weeks after release.",
+      "location": {
+        "line": 4,
+        "label": "Line 4"
+      }
+    },
+    {
+      "id": "f81d4ac7-7dd6-4ed8-a2a3-c5781f83e5aa",
+      "document_id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "text": "RPP-01: 6 each; Remote power panel; Voltwell VD-RPP-225; supplier cost USD 6200.00 per each; selling price USD 8250.00 per each; 10 weeks after approved submittal.",
+      "location": {
+        "line": 5,
+        "label": "Line 5"
+      }
+    },
+    {
+      "id": "2b778dc9-10a5-4aba-af57-3da2d114f2e5",
+      "document_id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "text": "TX-01: 2 each; Dry-type transformer; Voltwell VD-TX-300; supplier cost USD 18500.00 per each; selling price USD 24000.00 per each; 16\u201318 weeks after approved submittal.",
+      "location": {
+        "line": 6,
+        "label": "Line 6"
+      }
+    },
+    {
+      "id": "30bbecab-2911-4b93-92ff-84c1ade83c10",
+      "document_id": "5b74a352-6384-4555-adac-dcd2899360ab",
+      "text": "MBP-01: 2 each; Maintenance bypass panel; Voltwell VD-MBP-500; supplier cost USD 11600.00 per each; selling price USD 14500.00 per each; 14 weeks after approved submittal.",
+      "location": {
+        "line": 7,
+        "label": "Line 7"
+      }
+    },
+    {
+      "id": "bfee6edf-e34c-4484-87b1-96e4bd63bc0f",
+      "document_id": "acc52449-5226-4c7f-8ebc-8d40af738b1b",
+      "text": "SYNTHETIC DEMO \u2014 Addendum 02",
+      "location": {
+        "line": 1,
+        "label": "Line 1"
+      }
+    },
+    {
+      "id": "5c3d808e-69c9-4b9e-a834-e6bc20bf7f63",
+      "document_id": "acc52449-5226-4c7f-8ebc-8d40af738b1b",
+      "text": "PDU-01 quantity changes from 8 to 10 each. All other quantities remain unchanged.",
+      "location": {
+        "line": 2,
+        "label": "Line 2"
+      }
+    },
+    {
+      "id": "800782c6-ce2c-4711-b129-e571abc6706f",
+      "document_id": "acc52449-5226-4c7f-8ebc-8d40af738b1b",
+      "text": "TX-01 delivery requirement: 14 weeks after approved submittal. Existing supplier offer remains 16\u201318 weeks; confirmation required.",
+      "location": {
+        "line": 3,
+        "label": "Line 3"
+      }
+    }
+  ],
+  "proposals": [
+    {
+      "id": "52b045fc-4b9d-4505-8238-86a98dbf55f9",
+      "quote_id": "b3d2df0d-532d-4f59-9ddf-2d6f7821bf32",
+      "base_version": 3,
+      "input_revision": 2,
+      "title": "Addendum 02 \u00b7 quantity & delivery",
+      "summary": "Two equipment lines affected. PDU quantity increases to 10; the existing offer covers 8. Transformer delivery needs supplier confirmation. Review the source before accepting.",
+      "operations": [
+        {
+          "type": "set_quantity",
+          "line_id": "42cb48be-e403-4e44-bdfa-9291ef013816",
+          "value": "10",
+          "expected_before": "8",
+          "line": null,
+          "source_ids": ["5c3d808e-69c9-4b9e-a834-e6bc20bf7f63"],
+          "reason": ""
+        },
+        {
+          "type": "set_lead_time",
+          "line_id": "268271fe-7afc-4dca-ad1b-ebe6b8cfb91c",
+          "value": "14 weeks requested; supplier offer 16\u201318 weeks. Needs confirmation.",
+          "expected_before": "16\u201318 weeks after approved submittal",
+          "line": null,
+          "source_ids": ["800782c6-ce2c-4711-b129-e571abc6706f"],
+          "reason": ""
+        },
+        {
+          "type": "reconcile_inputs",
+          "line_id": null,
+          "value": null,
+          "expected_before": null,
+          "line": null,
+          "source_ids": [],
+          "reason": "Reviewed explicit Addendum 02 changes; PDU offer covers only eight units and TX delivery remains unconfirmed."
+        }
+      ],
+      "sources": [
+        "5c3d808e-69c9-4b9e-a834-e6bc20bf7f63",
+        "800782c6-ce2c-4711-b129-e571abc6706f"
+      ],
+      "status": "pending",
+      "reason": ""
+    }
+  ]
+}

@@ -1,0 +1,1123 @@
+/* The reference informs typography, depth and scroll rhythm; the Rivet mark,
+   composition and document-to-quote narrative remain Rivet's own. */
+.rivet-site {
+  --site-bg: #070709;
+  --site-copy: #a5a0ad;
+  --site-border: #29272e;
+  background: #070709;
+}
+.site-header {
+  position: fixed;
+  top: 16px;
+  left: 24px;
+  right: 24px;
+  height: 57px;
+  background: #111113c9;
+  border: 1px solid #37353c;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 #ffffff0a;
+  backdrop-filter: blur(18px);
+  overflow: visible;
+}
+.site-nav {
+  width: 100%;
+  max-width: none;
+  padding-inline: 22px;
+  gap: 30px;
+}
+.site-brand {
+  font-size: 25px;
+  letter-spacing: -1.2px;
+}
+.site-brand svg {
+  width: 24px;
+  height: 24px;
+}
+.site-links {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  gap: 31px;
+  color: #a5a0ac;
+}
+.site-nav-cta {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1px;
+  background: #efedf3;
+  color: #1c1723;
+  border-color: #f5f3f8;
+  padding: 9px 13px;
+  border-radius: 3px;
+  gap: 18px;
+  box-shadow: 0 0 15px #ede6ff09;
+}
+.site-nav-cta:hover {
+  background: #fff;
+  color: #1c1723;
+  border-color: #fff;
+}
+.site-reading-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: #bba5d4;
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+.site-hero {
+  width: 100%;
+  max-width: none;
+  padding: 0 !important;
+  position: relative;
+}
+.site-hero-stage {
+  min-height: 750px;
+  height: 100dvh;
+  max-height: 1080px;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.site-rivet-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+.site-hero-stage:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #070709aa, transparent 75%),
+    linear-gradient(0deg, #070709 0%, transparent 24%);
+}
+.site-hero-copy {
+  position: relative;
+  z-index: 1;
+  text-align: left;
+  animation: none !important;
+  padding-bottom: 30px;
+  pointer-events: none;
+}
+.site-hero-copy a {
+  pointer-events: auto;
+}
+.site-intro {
+  border: 0;
+  background: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  gap: 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #b7a9c8;
+}
+.site-intro > svg {
+  width: 13px;
+}
+.rivet-site h1 {
+  font-size: clamp(68px, 7.1vw, 106px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -5px;
+  margin: 28px 0 27px;
+  max-width: 800px;
+}
+.rivet-site h1 span {
+  color: #b1a7bf;
+}
+.site-hero-copy > p {
+  margin: 0;
+  max-width: 430px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #aaa2b4;
+  text-shadow: 0 2px 12px #070709;
+}
+.site-hero-copy .site-desktop-break {
+  display: none;
+}
+.site-actions {
+  justify-content: flex-start;
+  margin-top: 30px;
+  gap: 13px;
+}
+.site-button {
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15px;
+  text-transform: uppercase;
+  padding: 13px 17px;
+  gap: 20px;
+}
+.site-button-primary {
+  background: #f0edf5;
+  border: 1px solid #f6f1fe;
+  box-shadow: 0 0 22px #cbaaff12;
+  color: #211929;
+}
+.site-button-secondary {
+  background: #111016d9;
+  border-color: #3c3446;
+  color: #c8bcd5;
+  box-shadow: inset 0 1px 0 #ffffff06;
+}
+.site-product-reveal {
+  perspective: 1700px;
+  padding-top: 20px;
+}
+.site-product-heading {
+  margin-bottom: 38px;
+}
+.site-product-heading h2 {
+  font-size: 46px;
+  font-weight: 400;
+  letter-spacing: -1.8px;
+}
+.site-product-heading > p {
+  font-size: 13px;
+  color: #a49bab;
+  margin-top: 14px;
+}
+.site-hero-product {
+  margin-top: 0 !important;
+  animation: none !important;
+  transform-style: preserve-3d;
+  transform-origin: 50% 20%;
+}
+.site-preview {
+  border-color: #42394c;
+  background: #0c0b10;
+  box-shadow:
+    0 0 0 5px #fff02,
+    0 25px 90px #000b,
+    inset 0 1px 0 #fff1;
+  border-radius: 8px;
+}
+.site-product-halo {
+  background: radial-gradient(ellipse at 50% 20%, #8862be20, transparent 65%);
+}
+.site-formats {
+  margin-top: 70px;
+}
+.site-section {
+  padding-top: 148px;
+}
+.rivet-site h2 {
+  font-weight: 400;
+  letter-spacing: -2.3px;
+  line-height: 1.1;
+}
+.site-section-heading h2 {
+  font-size: 58px;
+}
+.site-section-heading h2 span,
+.site-ai-copy h2 span,
+.site-faq-heading h2 span {
+  color: #8f869c;
+}
+.site-section-heading > p {
+  font-size: 14px;
+  color: #a49cab;
+  max-width: 450px;
+  line-height: 1.75;
+}
+.site-eyebrow {
+  font-size: 9px;
+  color: #a68dbd;
+  letter-spacing: 1.3px;
+}
+.site-feature-grid {
+  gap: 20px;
+}
+.site-feature {
+  border-radius: 8px;
+  background: #101014;
+  border-color: #322c38;
+  padding: 40px;
+  box-shadow: inset 0 1px 0 #ffffff04;
+}
+.site-feature-copy h3 {
+  font-size: 26px;
+  letter-spacing: -0.9px;
+}
+.site-feature-copy p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #a9a0b1;
+}
+.site-feature-copy > svg {
+  color: #b3a0c6;
+}
+.site-evidence-feature {
+  background:
+    radial-gradient(ellipse at 0% 100%, #40304d22, transparent 70%), #101013;
+}
+.site-revision-feature {
+  background: linear-gradient(145deg, #17121c, #0e0d11 65%);
+}
+.site-pricing-feature {
+  background: #0e0d11;
+}
+.site-approval-feature {
+  background:
+    radial-gradient(ellipse at 100% 100%, #46314f33, transparent 80%), #111015;
+}
+.site-source-visual,
+.site-diff-visual,
+.site-ai-answer {
+  border-radius: 5px;
+}
+.site-source-visual {
+  background: #1b1321;
+  border-color: #48354f;
+}
+.site-text-link {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  gap: 16px;
+  color: #bca9ce;
+}
+.site-journey {
+  position: relative;
+  background: #080709;
+  border-block: 1px solid #28222e;
+  margin-top: 148px;
+  min-height: 760px;
+  overflow: hidden;
+}
+.site-journey.is-pinned {
+  height: 100dvh;
+  min-height: 650px;
+}
+.site-journey-inner {
+  padding-top: 115px;
+  padding-bottom: 90px;
+}
+.site-journey-heading {
+  max-width: 820px;
+  margin-bottom: 50px;
+}
+.site-journey-heading h2 {
+  font-size: 48px;
+}
+.site-journey-heading h2 > span {
+  color: #9e91ac;
+}
+.site-journey-heading > p {
+  font-size: 13px;
+  color: #a99ab5;
+  margin-top: 17px;
+}
+.site-journey-body {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 110px;
+  align-items: center;
+}
+.site-journey-copy {
+  position: relative;
+}
+.site-journey-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+.site-journey-nav button {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #918297;
+  text-transform: uppercase;
+}
+.site-journey-nav button > svg {
+  color: #625369;
+}
+.site-journey-nav button[aria-pressed="true"] {
+  color: #dec8f0;
+}
+.site-journey-nav button:focus-visible {
+  outline-offset: 6px;
+}
+.site-journey-track {
+  height: 1px;
+  background: #302238;
+  margin-top: 14px;
+  margin-bottom: 34px;
+}
+.site-journey-progress {
+  display: block;
+  height: 1px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: #c4a6df;
+}
+.site-journey-current {
+  min-height: 188px;
+}
+.site-journey-current h3 {
+  font-size: 30px;
+  letter-spacing: -1px;
+  font-weight: 400;
+  line-height: 1.2;
+  max-width: 340px;
+}
+.site-journey-current > p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #aa9cb4;
+  margin: 18px 0 22px;
+  max-width: 350px;
+}
+.site-journey-current > span {
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #bca7cd;
+}
+.site-journey-stack {
+  position: relative;
+  perspective: 1200px;
+  min-width: 0;
+  height: 355px;
+  margin-right: 60px;
+}
+.site-journey-panel {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #5b456b;
+  border-radius: 8px;
+  background: #110e16;
+  box-shadow:
+    0 35px 65px #0009,
+    inset 0 1px 0 #e1caff10;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+.site-journey-panel-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 22px;
+  border-bottom: 1px solid #37263f;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #c6aed9;
+  background: #1b1322;
+}
+.site-journey-panel-label > span:last-child {
+  color: #8e749f;
+  font-size: 8px;
+}
+.site-journey-panel .site-workflow-art {
+  height: 310px;
+  min-height: 0;
+  box-shadow: none;
+  background:
+    radial-gradient(ellipse at 15% 0%, #52326328, transparent 70%), #110e16;
+  border: 0;
+  border-radius: 0;
+  padding: 26px;
+}
+.site-journey-panel .site-file-stack > svg {
+  width: 33px;
+  height: 33px;
+  margin-bottom: 7px;
+}
+.site-journey-panel .site-file-stack > span {
+  margin-bottom: 18px;
+}
+.site-journey-panel .site-file-stack > div > span {
+  padding: 11px;
+}
+.site-journey-panel .site-workflow-art h4 {
+  font-size: 23px;
+  margin-top: 12px;
+}
+.site-journey-panel .site-line-art dl {
+  margin: 14px 0 18px;
+}
+.site-journey-panel .site-review-art > div {
+  margin-top: 18px;
+  padding: 16px 0;
+}
+.site-journey-panel .site-review-art > p {
+  margin-top: 17px;
+}
+.site-journey-panel .site-export-art h4 {
+  margin-top: 23px;
+}
+.site-journey-panel .site-export-art > p {
+  font-size: 12px;
+  margin-top: 12px;
+}
+.site-journey:not(.is-pinned) .site-journey-panel {
+  display: none;
+}
+.site-journey:not(.is-pinned) .site-journey-panel.is-active {
+  display: block;
+}
+.site-journey:not(.is-pinned) .site-journey-progress {
+  transform: scaleX(1);
+}
+.site-intelligence {
+  padding-block: 150px;
+}
+.site-ai-copy h2 {
+  font-size: 49px;
+}
+.site-ai-copy > p {
+  font-size: 14px;
+  line-height: 1.85;
+}
+.site-ai-visual {
+  perspective: 1100px;
+}
+.site-ai-question {
+  border-radius: 5px;
+  background: #251a2d;
+  border-color: #4a3559;
+}
+.site-ai-answer {
+  background: linear-gradient(135deg, #19131e, #0f0d13);
+}
+.site-ai-symbol {
+  box-shadow:
+    inset 1px 1px 0 #d1ace344,
+    0 10px 50px #a682c41a;
+}
+.site-faq {
+  padding-top: 100px;
+}
+.site-faq-heading h2 {
+  font-size: 42px;
+}
+.site-faq-list summary {
+  font-size: 14px;
+  padding-block: 24px;
+}
+.site-faq-list details > p {
+  line-height: 1.85;
+}
+.site-final {
+  border: 0;
+  background:
+    radial-gradient(ellipse at 50% 70%, #5834672b, transparent 65%), #080709;
+  border-radius: 0;
+  padding-block: 110px 80px;
+  margin-block: 100px 70px;
+}
+.site-final h2 {
+  font-size: 76px;
+  letter-spacing: -3.7px;
+}
+.site-final h2 span {
+  color: #9c88ac;
+}
+.site-final-mark {
+  margin-bottom: 30px;
+}
+.site-final:after {
+  display: none;
+}
+.site-footer {
+  overflow: hidden;
+}
+.site-footer-top {
+  padding-bottom: 30px;
+}
+.site-footer-word {
+  font-size: clamp(150px, 29vw, 415px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.078em;
+  margin-left: -0.022em;
+  background: linear-gradient(175deg, #c0b3cb 5%, #6a5c76 40%, #231b2b 90%);
+  background-clip: text;
+  color: transparent;
+  user-select: none;
+  padding-right: 0.1em;
+}
+.site-footer-bottom {
+  border-top-color: #312238;
+  margin-top: 15px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .site-journey-current {
+    animation: journey-copy 0.5s both;
+  }
+  @keyframes journey-copy {
+    from {
+      opacity: 0.1;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+@media (min-width: 1500px) {
+  .site-hero-copy {
+    padding-bottom: 40px;
+  }
+  .site-hero-stage {
+    max-height: 1050px;
+  }
+  .site-journey-body {
+    gap: 130px;
+  }
+  .site-journey-heading {
+    margin-bottom: 70px;
+  }
+}
+@media (max-width: 1100px) {
+  .site-hero-stage {
+    min-height: 730px;
+  }
+  .rivet-site h1 {
+    font-size: 80px;
+    letter-spacing: -4px;
+  }
+  .site-hero-copy > p {
+    max-width: 360px;
+    font-size: 14px;
+  }
+  .site-links {
+    gap: 23px;
+    font-size: 9px;
+  }
+  .site-journey-body {
+    gap: 65px;
+    grid-template-columns: 1fr 1.1fr;
+  }
+  .site-journey-stack {
+    margin-right: 30px;
+    height: 345px;
+  }
+  .site-journey-heading h2 {
+    font-size: 43px;
+  }
+  .site-journey-current h3 {
+    font-size: 27px;
+  }
+  .site-journey-current > p {
+    font-size: 12px;
+  }
+  .site-journey-nav button {
+    font-size: 9px;
+    gap: 10px;
+  }
+  .site-section-heading h2 {
+    font-size: 52px;
+  }
+  .site-feature {
+    padding: 30px;
+  }
+  .site-feature-copy h3 {
+    font-size: 23px;
+  }
+  .site-ai-copy h2 {
+    font-size: 42px;
+  }
+}
+@media (max-height: 760px) and (min-width: 900px) {
+  .site-journey-inner {
+    padding-top: 99px;
+    padding-bottom: 45px;
+  }
+  .site-journey-heading {
+    margin-bottom: 30px;
+  }
+  .site-journey-heading h2 {
+    font-size: 37px;
+  }
+  .site-journey-heading > p {
+    font-size: 11px;
+    margin-top: 13px;
+  }
+  .site-journey-stack {
+    height: 330px;
+  }
+  .site-journey-panel .site-workflow-art {
+    height: 285px;
+    padding: 20px 24px;
+  }
+  .site-journey-current h3 {
+    font-size: 25px;
+  }
+  .site-journey-current > p {
+    font-size: 12px;
+  }
+  .site-journey-track {
+    margin-bottom: 26px;
+  }
+  .site-journey-current {
+    min-height: 169px;
+  }
+  .site-journey-copy > .site-text-link {
+    margin-top: 18px;
+  }
+}
+@media (max-width: 899px) {
+  .site-header {
+    left: 16px;
+    right: 16px;
+    top: 12px;
+    height: 56px;
+  }
+  .site-nav {
+    padding-inline: 15px;
+    gap: 20px;
+  }
+  .site-links {
+    gap: 19px;
+    font-size: 8px;
+  }
+  .site-nav-cta {
+    font-size: 9px;
+    padding: 9px 11px;
+    gap: 9px;
+  }
+  .site-hero-stage {
+    min-height: 720px;
+    height: 90dvh;
+  }
+  .rivet-site h1 {
+    font-size: 76px;
+    letter-spacing: -4px;
+  }
+  .site-hero-copy > p {
+    font-size: 14px;
+    max-width: 340px;
+  }
+  .site-hero-copy {
+    padding-bottom: 50px;
+  }
+  .site-intro {
+    font-size: 9px;
+    gap: 13px;
+  }
+  .site-product-heading h2 {
+    font-size: 38px;
+  }
+  .site-product-heading > p {
+    font-size: 12px;
+  }
+  .site-section {
+    padding-top: 95px;
+  }
+  .site-section-heading h2 {
+    font-size: 45px;
+  }
+  .site-feature {
+    padding: 27px;
+  }
+  .site-feature-copy h3 {
+    font-size: 22px;
+  }
+  .site-feature-grid {
+    gap: 13px;
+  }
+  .site-journey {
+    margin-top: 100px;
+    min-height: 0;
+  }
+  .site-journey-inner {
+    padding-block: 85px;
+  }
+  .site-journey-heading {
+    margin-bottom: 40px;
+  }
+  .site-journey-heading h2 {
+    font-size: 40px;
+  }
+  .site-journey-body {
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+  }
+  .site-journey-stack {
+    margin: 0;
+    height: 370px;
+  }
+  .site-journey-panel .site-workflow-art {
+    height: 330px;
+    padding: 22px;
+  }
+  .site-journey-current {
+    min-height: 205px;
+  }
+  .site-journey-current h3 {
+    font-size: 25px;
+  }
+  .site-journey-current > p {
+    font-size: 12px;
+  }
+  .site-journey-current > span {
+    font-size: 9px;
+  }
+  .site-journey-nav button {
+    gap: 6px;
+    font-size: 8px;
+  }
+  .site-journey-nav button svg {
+    width: 10px;
+  }
+  .site-intelligence {
+    padding-block: 95px;
+  }
+  .site-ai-copy h2 {
+    font-size: 45px;
+  }
+  .site-faq {
+    padding-top: 80px;
+  }
+  .site-faq-heading h2 {
+    font-size: 38px;
+  }
+  .site-final {
+    padding-block: 90px 60px;
+    margin-top: 65px;
+  }
+  .site-final h2 {
+    font-size: 63px;
+  }
+  .site-footer-word {
+    margin-top: 15px;
+    font-size: 29vw;
+  }
+}
+@media (max-width: 600px) {
+  .site-header {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    height: 54px;
+  }
+  .site-nav {
+    padding-inline: 12px;
+    gap: 11px;
+  }
+  .site-brand {
+    font-size: 24px;
+  }
+  .site-brand svg {
+    width: 22px;
+    height: 22px;
+  }
+  .site-nav-cta {
+    font-size: 8px;
+    padding: 8px 10px;
+    gap: 9px;
+  }
+  .site-menu {
+    padding: 3px;
+  }
+  .site-menu svg {
+    width: 20px;
+  }
+  .site-links {
+    top: 61px;
+    left: -1px;
+    right: -1px;
+    border: 1px solid #3b303f;
+    border-radius: 5px;
+    background: #15111a;
+    padding: 15px 23px;
+    font-size: 12px;
+    gap: 0;
+  }
+  .site-links a {
+    padding: 14px 0;
+  }
+  .site-hero-stage {
+    height: 860px;
+    min-height: 0;
+    max-height: none;
+    align-items: flex-start;
+  }
+  .site-hero-copy {
+    padding-top: 137px;
+    padding-bottom: 0;
+  }
+  .site-intro {
+    font-size: 8px;
+    letter-spacing: 0.25px;
+  }
+  .site-intro > svg {
+    width: 12px;
+  }
+  .rivet-site h1 {
+    font-size: clamp(58px, 14vw, 79px);
+    letter-spacing: -3.5px;
+    margin: 24px 0 24px;
+    line-height: 1.025;
+  }
+  .site-hero-copy > p {
+    font-size: 13px;
+    max-width: 320px;
+    line-height: 1.75;
+  }
+  .site-actions {
+    margin-top: 25px;
+    gap: 9px;
+  }
+  .site-button {
+    font-size: 8px;
+    padding: 12px 13px;
+    gap: 14px;
+  }
+  .site-button-secondary {
+    gap: 8px;
+  }
+  .site-hero-stage:after {
+    background:
+      linear-gradient(0deg, #070709, transparent 25%),
+      linear-gradient(180deg, #07070955, transparent 60%);
+  }
+  .site-product-reveal {
+    padding-top: 0;
+  }
+  .site-product-heading {
+    margin-bottom: 27px;
+  }
+  .site-product-heading h2 {
+    font-size: 33px;
+    letter-spacing: -1.3px;
+  }
+  .site-product-heading > p {
+    font-size: 12px;
+    line-height: 1.7;
+    max-width: 285px;
+    margin-top: 14px;
+  }
+  .site-preview {
+    border-radius: 6px;
+  }
+  .site-section {
+    padding-top: 82px;
+  }
+  .site-section-heading h2 {
+    font-size: 37px;
+    letter-spacing: -1.5px;
+  }
+  .site-section-heading > p {
+    font-size: 13px;
+  }
+  .site-feature {
+    padding: 27px;
+  }
+  .site-feature-copy h3 {
+    font-size: 23px;
+  }
+  .site-feature-grid {
+    gap: 14px;
+  }
+  .site-feature-copy p {
+    font-size: 12px;
+  }
+  .site-formats {
+    margin-top: 40px;
+  }
+  .site-journey {
+    margin-top: 80px;
+  }
+  .site-journey-inner {
+    padding-block: 75px 60px;
+  }
+  .site-journey-heading {
+    margin-bottom: 35px;
+  }
+  .site-journey-heading h2 {
+    font-size: 34px;
+    letter-spacing: -1.5px;
+  }
+  .site-journey-heading h2 > span {
+    display: block;
+  }
+  .site-journey-heading h2 > br {
+    display: none;
+  }
+  .site-journey-heading > p {
+    font-size: 12px;
+    max-width: 250px;
+  }
+  .site-journey-body {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .site-journey-nav {
+    gap: 9px;
+  }
+  .site-journey-nav button {
+    font-size: 10px;
+    gap: 17px;
+  }
+  .site-journey-nav button svg {
+    width: 12px;
+  }
+  .site-journey-track {
+    margin-top: 12px;
+    margin-bottom: 26px;
+  }
+  .site-journey-current {
+    min-height: 170px;
+  }
+  .site-journey-current h3 {
+    font-size: 28px;
+    max-width: 300px;
+  }
+  .site-journey-current > p {
+    font-size: 13px;
+    max-width: 350px;
+  }
+  .site-journey-current > span {
+    font-size: 10px;
+  }
+  .site-journey-stack {
+    height: 351px;
+    margin-right: 0;
+  }
+  .site-journey-panel .site-workflow-art {
+    height: 310px;
+    padding: 24px;
+  }
+  .site-journey-copy > .site-text-link {
+    margin-top: 23px;
+  }
+  .site-journey-panel-label {
+    padding: 13px 20px;
+  }
+  .site-intelligence {
+    padding-block: 83px;
+    gap: 25px;
+  }
+  .site-ai-copy h2 {
+    font-size: 39px;
+  }
+  .site-ai-copy > p {
+    font-size: 13px;
+  }
+  .site-ai-copy li {
+    font-size: 11px;
+  }
+  .site-faq {
+    padding-top: 66px;
+  }
+  .site-faq-heading h2 {
+    font-size: 36px;
+  }
+  .site-faq-list summary {
+    font-size: 13px;
+    line-height: 1.6;
+    padding-block: 21px;
+  }
+  .site-faq-list details > p {
+    font-size: 12px;
+  }
+  .site-final {
+    padding-block: 70px 50px;
+    margin-block: 55px 55px;
+  }
+  .site-final h2 {
+    font-size: 49px;
+    letter-spacing: -2.4px;
+  }
+  .site-final > p {
+    font-size: 12px;
+  }
+  .site-final-caption {
+    font-size: 9px;
+  }
+  .site-footer-word {
+    font-size: 30vw;
+    letter-spacing: -0.08em;
+    margin-top: 12px;
+  }
+  .site-footer-bottom {
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-hero-copy,
+  .site-hero-product,
+  .site-feature,
+  .site-ai-symbol,
+  .site-ai-question,
+  .site-ai-answer,
+  .site-footer-word {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .site-journey-current {
+    animation: none;
+  }
+  .site-reading-line {
+    display: none;
+  }
+  .site-hero-stage {
+    height: auto;
+    min-height: 740px;
+  }
+  .site-hero-copy {
+    padding-top: 160px;
+    padding-bottom: 220px;
+  }
+}
+
+/* Keep the anchor outside the pinned element so revisiting it starts the story. */
+.site-journey-shell {
+  padding-top: 148px;
+  scroll-margin-top: -40px;
+}
+.site-journey-shell .site-journey {
+  margin-top: 0;
+}
+@media (max-width: 899px) {
+  .site-journey-shell {
+    padding-top: 100px;
+  }
+}
+@media (max-width: 600px) {
+  .site-journey-shell {
+    padding-top: 80px;
+    scroll-margin-top: 0;
+  }
+}
+@media (max-width: 600px) {
+  .site-preview {
+    height: auto;
+    min-height: 800px;
+  }
+  .site-preview-content {
+    padding-bottom: 20px;
+  }
+}

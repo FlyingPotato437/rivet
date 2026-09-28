@@ -26,6 +26,8 @@ Open **http://127.0.0.1:5178**. API documentation is at **http://127.0.0.1:8787/
 
 ## What works
 
+- A full public-facing homepage at `/`: a dimensional animated Rivet mark, scroll-driven product reveal, pinned workflow story, interactive read-only sample quote, features, FAQs, and footer. Open the app at `/#projects`; the workspace logo returns home. Motion respects reduced-motion preferences, with direct step controls on small screens.
+
 - Projects, exact-decimal quote lines, quantity editing with keyboard controls, cost/price edits with reasons, explicit gross margin versus markup, catalog selection, line review, and terms.
 - Private original uploads: text PDFs, CSV, XLSX, and text. Source lines, PDF word geometry, sheet/cell locations, formulas, and per-page/sheet coverage are retained. Missing formula caches and scanned pages are flagged.
 - User-confirmed spreadsheet column mapping for schedules, existing quotes, addenda, catalog records, and supplier offers. Missing costs stay unknown. Duplicate conflicting rows are rejected. Partial addenda preserve omitted equipment.
