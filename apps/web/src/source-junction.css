@@ -1,0 +1,266 @@
+.rivet-junction {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.65fr);
+  align-items: center;
+  gap: 45px;
+  padding-block: 135px 115px;
+  position: relative;
+  isolation: isolate;
+  color: #f0f0f2;
+  font-family: var(--site-sans, sans-serif);
+  scroll-margin-top: 90px;
+}
+.rivet-junction::before {
+  content: "";
+  position: absolute;
+  inset: 8% -5% 0 13%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 65% 53%, #62448c0e, transparent 65%);
+}
+.rivet-junction-copy {
+  position: relative;
+  z-index: 1;
+}
+.rivet-junction-eyebrow {
+  display: block;
+  font-size: 12px;
+  color: #a294b7;
+  margin-bottom: 24px;
+}
+.rivet-junction h2 {
+  font-family: var(--site-display, sans-serif);
+  font-size: clamp(36px, 3.35vw, 48px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+  margin: 0;
+  text-wrap: balance;
+}
+.rivet-site .rivet-junction h2 > span {
+  color: #c7b7e9;
+}
+.rivet-junction-summary {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #9b91a7;
+  margin-top: 23px;
+  max-width: 340px;
+}
+.rivet-junction-inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 29px;
+  border-bottom: 1px solid #393041;
+}
+.rivet-junction-inputs button {
+  flex: 1;
+  padding: 13px 9px;
+  position: relative;
+  color: #aaa4b7;
+  font-family: var(--site-mono, monospace);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  transition: color 0.2s;
+}
+.rivet-junction-inputs button::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: #bf9eff;
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.rivet-junction-inputs button[aria-pressed="true"] {
+  color: #e4d1ff;
+}
+.rivet-junction-inputs button[aria-pressed="true"]::after {
+  transform: scaleX(1);
+}
+.rivet-junction-inputs button:hover {
+  color: #ece1fb;
+}
+.rivet-junction-inputs button:focus-visible {
+  outline: 2px solid #bf9eff;
+  outline-offset: 4px;
+}
+.rivet-junction-description {
+  min-height: 116px;
+  padding-top: 22px;
+  max-width: 330px;
+}
+.rivet-junction-description strong {
+  font-size: 13px;
+  font-weight: 500;
+  color: #cbc0d9;
+}
+.rivet-junction-description p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #8e829e;
+  margin-top: 8px;
+  text-wrap: pretty;
+}
+.rivet-junction-figure {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+.rivet-junction-figure-labels {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 13%;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  color: #665d75;
+  font-family: var(--site-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+.rivet-junction-canvas {
+  display: block;
+  width: 100%;
+  height: 470px;
+  touch-action: pan-y;
+}
+.rivet-junction-figure figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #9585a8;
+  font-size: 11px;
+  margin-top: -43px;
+  position: relative;
+  pointer-events: none;
+}
+.rivet-junction-indicator {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #bf9eff;
+  box-shadow: 0 0 9px #bf9eff70;
+}
+.rivet-junction-caption-line {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: #655177;
+}
+@media (max-width: 1100px) {
+  .rivet-junction {
+    grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.4fr);
+    gap: 28px;
+  }
+  .rivet-junction h2 {
+    font-size: 37px;
+  }
+  .rivet-junction-canvas {
+    height: 410px;
+  }
+}
+@media (max-width: 800px) {
+  .rivet-junction {
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 60px;
+    gap: 0;
+  }
+  .rivet-junction-copy {
+    display: contents;
+  }
+  .rivet-junction-eyebrow {
+    grid-row: 1;
+  }
+  .rivet-junction h2 {
+    grid-row: 2;
+    font-size: 43px;
+    max-width: 520px;
+  }
+  .rivet-junction-summary {
+    grid-row: 3;
+    max-width: 460px;
+    margin-bottom: 0;
+  }
+  .rivet-junction-figure {
+    grid-row: 4;
+  }
+  .rivet-junction-inputs {
+    grid-row: 5;
+    width: 100%;
+    max-width: 340px;
+    margin-top: 20px;
+  }
+  .rivet-junction-description {
+    grid-row: 6;
+    min-height: 84px;
+    padding-top: 18px;
+    max-width: 460px;
+  }
+  .rivet-junction-canvas {
+    height: 300px;
+  }
+  .rivet-junction-figure-labels {
+    top: 8%;
+  }
+  .rivet-junction-figure figcaption {
+    margin-top: -28px;
+  }
+}
+@media (max-width: 480px) {
+  .rivet-junction {
+    padding-block: 60px;
+    gap: 0;
+  }
+  .rivet-junction h2 {
+    font-size: 36px;
+    letter-spacing: -0.05em;
+  }
+  .rivet-junction-eyebrow {
+    margin-bottom: 19px;
+    font-size: 12px;
+  }
+  .rivet-junction-summary {
+    margin-top: 20px;
+    font-size: 15px;
+  }
+  .rivet-junction-inputs {
+    margin-top: 20px;
+  }
+  .rivet-junction-description {
+    padding-top: 19px;
+    min-height: 96px;
+  }
+  .rivet-junction-description p {
+    font-size: 14px;
+    max-width: 325px;
+  }
+  .rivet-junction-canvas {
+    height: 245px;
+  }
+  .rivet-junction-figure-labels {
+    top: 7%;
+    font-size: 9px;
+  }
+  .rivet-junction-figure figcaption {
+    margin-top: -13px;
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rivet-junction *,
+  .rivet-junction *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

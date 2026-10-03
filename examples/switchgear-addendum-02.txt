@@ -1,0 +1,13 @@
+FICTIONAL DEMO ADDENDUM — NOT AN ENGINEERING INSTRUCTION
+
+Project: Northline Data Center · Switchgear demo
+Addendum: DEMO-ADDENDUM-02
+Affected equipment tag: SG-01
+
+The requested quantity of configurable low-voltage switchgear sections increases from 8 to 10 sections, unit each.
+All sections remain the same fictional commercial placeholder DEMO-LVSG-SECTION. This fixture provides no real engineering configuration or compliance rating.
+Requested customer site-delivery target: 14 weeks after order placement.
+The initial supplier offer DEMO-OFFER-001 covers only 8 sections and states 16-18 weeks after approved submittals. That offer does not confirm the ten-section price, additional scope coverage, or the requested site-delivery target.
+
+The revised quote requires confirmation of supplier coverage for all 10 sections, updated unit cost, and a clearly qualified delivery basis. No unmentioned quote line is deleted by this partial addendum.
+Do not represent requested delivery as supplier-confirmed delivery.

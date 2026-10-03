@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT / "apps/web/.env.local")
+load_dotenv(ROOT / "apps/web/.env")
 load_dotenv(ROOT / ".env")
 DATABASE_URL = os.getenv(
     "RIVET_DATABASE_URL", "postgresql+psycopg://localhost:55432/rivet"

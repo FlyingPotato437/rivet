@@ -1,0 +1,292 @@
+/* Rivet's product stories: document, connection, decision. */
+.rivet-site {
+  --site-sans: "Onest", sans-serif;
+  --site-copy: #c5c7ce;
+  --site-muted: #a5a8b2;
+  --site-accent: #bf9eff;
+  color: #f0f0f2;
+}
+.rivet-site :is(.site-nav-cta, .site-button) {
+  font-family: var(--site-sans);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.rivet-site
+  :is(
+    .site-hero h1,
+    .site-section-heading h2,
+    .site-product-heading h2,
+    .site-ai-copy h2,
+    .site-journey-heading h2,
+    .site-faq-heading h2
+  ) {
+  font-weight: 500;
+}
+.rivet-site
+  :is(
+    .site-hero h1 span,
+    .site-section-heading h2 span,
+    .site-journey-heading h2 span,
+    .site-ai-copy h2 span,
+    .site-faq-heading h2 span
+  ) {
+  color: #b4b5bd;
+}
+.rivet-site
+  :is(
+    .site-hero-copy > p,
+    .site-product-heading > p,
+    .site-section-heading > p,
+    .site-ai-copy > p,
+    .site-journey-current > p,
+    .site-faq-list details > p
+  ) {
+  color: var(--site-copy);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.7;
+}
+.rivet-site
+  :is(
+    .site-links,
+    .site-preview-caption,
+    .site-ai-copy li,
+    .site-faq-heading > p,
+    .site-final > p
+  ) {
+  color: var(--site-copy);
+}
+.rivet-site :is(.site-preview, .site-workbench) {
+  font-family: var(--site-sans);
+}
+.rivet-site :is(a, button):focus-visible {
+  outline-color: var(--site-accent);
+}
+.rivet-site .site-header {
+  border-radius: 8px;
+}
+.rivet-site .site-brand-dot {
+  color: var(--site-accent);
+}
+.rivet-site .site-hero h1 span {
+  color: #cfbff0;
+  background: linear-gradient(105deg, #efeaf9 5%, #bba6e5 75%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.rivet-site .site-button {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.25s,
+    border-color 0.25s;
+}
+.rivet-site .site-button > svg,
+.rivet-site .site-nav-cta > svg {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rivet-site .site-button:hover > svg {
+  transform: translateX(4px);
+}
+.rivet-site .site-nav-cta:hover > svg {
+  transform: translate(2px, -2px);
+}
+.rivet-site .site-button:active {
+  transform: scale(0.98);
+}
+.rivet-site .site-links a {
+  position: relative;
+}
+.rivet-site .site-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 100%;
+  height: 1px;
+  background: #b9abe5;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rivet-site .site-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.rivet-site
+  .site-preview
+  :is(
+    th,
+    .site-preview-title > div > span,
+    .site-preview-metrics > div > span
+  ) {
+  color: #a8aab4;
+}
+.rivet-site .site-preview td {
+  color: #d0d1d9;
+}
+.rivet-site .site-preview td button > span {
+  color: #adb0bb;
+}
+
+/* A shared surface lets the metal illustrations inhabit the same space. */
+.rivet-site {
+  position: relative;
+  isolation: isolate;
+  background: #090a0c;
+}
+.site-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.site-atmosphere-light {
+  position: absolute;
+  inset: -20%;
+  will-change: transform;
+}
+.site-atmosphere-light-a {
+  background:
+    radial-gradient(ellipse at 78% 35%, #9f73eb19, transparent 43%),
+    radial-gradient(ellipse at 10% 80%, #7f70a30d, transparent 36%);
+  animation: rivet-ambient-drift 27s ease-in-out infinite alternate;
+}
+.site-atmosphere-light-b {
+  background:
+    radial-gradient(ellipse at 70% 80%, #b9a0ee0c, transparent 36%),
+    radial-gradient(ellipse at 28% 15%, #d9d8eb09, transparent 45%);
+  animation: rivet-ambient-drift 34s -14s ease-in-out infinite alternate-reverse;
+}
+.site-atmosphere-contours {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  opacity: 0.65;
+  animation: rivet-contour-drift 38s ease-in-out infinite alternate;
+}
+.site-atmosphere-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23grain)' d='M0 0h160v160H0z'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+.rivet-site .site-hero-stage::before {
+  background: radial-gradient(ellipse at 80% 30%, #aaa5c514, transparent 55%);
+}
+.rivet-site .site-hero-stage::after {
+  background: linear-gradient(90deg, #090a0c80, transparent 75%);
+}
+.rivet-site .site-hero-grain {
+  display: none;
+}
+.rivet-site .site-product-reveal {
+  padding-block: 100px 75px;
+}
+.rivet-site .site-product-heading {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: end;
+  gap: 40px;
+}
+.rivet-site .site-product-heading h2 {
+  max-width: 590px;
+  font-size: clamp(32px, 3.8vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -0.055em;
+  margin: 0;
+}
+.rivet-site .site-product-heading p {
+  max-width: 380px;
+  margin: 0 0 3px auto;
+  font-size: 15px;
+}
+.rivet-site .site-final {
+  background: radial-gradient(ellipse at 50% 70%, #aa88ec14, transparent 65%);
+}
+.rivet-site .rivet-assembly {
+  padding-top: 50px;
+  padding-bottom: 45px;
+}
+.rivet-site .rivet-assembly-steps {
+  padding-top: 25px;
+  margin-top: 30px;
+}
+.rivet-site .rivet-assembly-steps strong {
+  font-size: 15px;
+}
+.rivet-site .rivet-assembly-steps p {
+  color: #b7b4c1;
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: 215px;
+}
+.rivet-site .rivet-assembly-heading > p {
+  max-width: 440px;
+  color: var(--site-copy);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 23px auto 0;
+}
+@keyframes rivet-ambient-drift {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.1);
+  }
+}
+@keyframes rivet-contour-drift {
+  from {
+    transform: translate3d(-1%, -2%, 0);
+  }
+  to {
+    transform: translate3d(2%, 3%, 0);
+  }
+}
+.site-atmosphere[data-paused="true"] * {
+  animation-play-state: paused;
+}
+@media (max-width: 800px) {
+  .rivet-site .site-product-heading {
+    display: block;
+  }
+  .rivet-site .site-product-heading p {
+    margin: 20px 0 0;
+    max-width: 450px;
+  }
+  .rivet-site .site-product-reveal {
+    padding-block: 75px 50px;
+  }
+  .rivet-site .rivet-assembly-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px 20px;
+  }
+}
+@media (max-width: 600px) {
+  .site-atmosphere-contours {
+    opacity: 0.35;
+  }
+  .rivet-site .site-product-reveal {
+    padding-block: 60px 40px;
+  }
+  .rivet-site .site-product-heading p,
+  .rivet-site .rivet-assembly-heading > p {
+    font-size: 14px;
+  }
+  .rivet-site .rivet-assembly {
+    padding-top: 25px;
+    padding-bottom: 35px;
+  }
+  .rivet-site .rivet-assembly-steps {
+    width: calc(100% - 40px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-atmosphere * {
+    animation: none;
+    will-change: auto;
+  }
+}

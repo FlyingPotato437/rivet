@@ -1,33 +1,45 @@
+import { TeamSwitcher, AccountControl, TeamSettings, useAccount } from "./Auth";
+import { IntegrationSettings } from "./Integrations";
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  SquaresFour,
+  Folder,
+  ListChecks,
+  CaretRight,
+  ListMagnifyingGlass,
+  DownloadSimple,
+  FileCsv,
   Stack,
   BookOpen,
   Plus,
   MagnifyingGlass,
   ArrowUpRight,
   ArrowRight,
-  ArrowLeft,
-  Command,
   FolderSimple,
   Clock,
   CheckCircle,
-  Files,
-  Sparkle,
-  Lightning,
   SlidersHorizontal,
-  Database,
   Info,
   GitDiff,
-  Check,
-  House,
-  HardDrives,
   SidebarSimple,
 } from "@phosphor-icons/react";
 import { api, usd, dateLabel, when, type Project, type Workspace } from "./api";
 import { Mark, Status, Modal, Empty, ErrorNote, Busy } from "./ui";
 import { QuoteWorkspace } from "./Workspace";
+import { WorkQueue } from "./WorkQueue";
+import { NewOrder, OrderSearch } from "./OrderFeed";
+import { RecordWorkspace as OrderWorkspace } from "./RecordWorkspace";
+import {
+  RecordFeed as OrderFeed,
+  useRecordOrders as useOrders,
+} from "./RecordFeed";
+import { OrderGuide } from "./OrderGuide";
+import sampleScheduleUrl from "../../../examples/equipment-schedule.csv?url";
+import sampleAddendumUrl from "../../../examples/addendum-02.csv?url";
+import switchgearQuoteUrl from "../../../examples/switchgear-current-quote.csv?url";
+import switchgearOfferUrl from "../../../examples/switchgear-initial-offer.txt?url";
+import switchgearAddendumUrl from "../../../examples/switchgear-addendum-02.txt?url";
+import switchgearReplyUrl from "../../../examples/switchgear-revised-offer.txt?url";
 
 type Health = {
   status: string;
@@ -41,6 +53,8 @@ export default function App() {
   const [route, setRoute] = useState(
     () => location.hash.slice(1) || "projects",
   );
+  const [newOrder, setNewOrder] = useState(false);
+  const orders = useOrders();
   const [newProject, setNewProject] = useState(false);
   const [search, setSearch] = useState(false);
   const [toast, setToast] = useState("");
@@ -68,10 +82,12 @@ export default function App() {
   }, []);
   useEffect(() => {
     const f = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileNav(false);
       if (
         (e.metaKey || e.ctrlKey) &&
         e.key === "k" &&
-        !route.startsWith("project/")
+        !route.startsWith("project/") &&
+        !route.startsWith("order/")
       ) {
         e.preventDefault();
         setSearch(true);
@@ -86,15 +102,59 @@ export default function App() {
       return () => clearTimeout(timer);
     }
   }, [toast]);
-  const recent = [...(projects.data ?? [])].sort((a, b) =>
+  useEffect(() => {
+    if (!mobileNav) return;
+    const mobile = window.matchMedia("(max-width: 760px)");
+    const closeOnDesktop = () => {
+      if (!mobile.matches) setMobileNav(false);
+    };
+    mobile.addEventListener("change", closeOnDesktop);
+    const previous = document.activeElement as HTMLElement | null;
+    const nav = document.getElementById("workspace-navigation");
+    const getItems = () =>
+      [
+        ...(nav?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)") ??
+          []),
+      ].filter((el) => el.offsetParent !== null);
+    getItems()[0]?.focus();
+    const before = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const items = getItems();
+      if (event.shiftKey && document.activeElement === items[0]) {
+        event.preventDefault();
+        items.at(-1)?.focus();
+      } else if (!event.shiftKey && document.activeElement === items.at(-1)) {
+        event.preventDefault();
+        items[0]?.focus();
+      }
+    };
+    document.addEventListener("keydown", trap);
+    return () => {
+      mobile.removeEventListener("change", closeOnDesktop);
+      document.removeEventListener("keydown", trap);
+      document.body.style.overflow = before;
+      if (previous?.isConnected) previous.focus();
+    };
+  }, [mobileNav]);
+  const recent = [...(orders.data?.orders ?? [])].sort((a, b) =>
     b.updated_at.localeCompare(a.updated_at),
   );
   const project = projects.data?.find(
     (p) => "project/" + p.id === route.split("?")[0],
   );
+  const order = orders.data?.orders.find(
+    (o) => "order/" + o.id === route.split("?")[0],
+  );
+  const decisions =
+    orders.data?.orders.reduce((n, o) => n + o.counts.review, 0) ?? 0;
   return (
     <div className="app-shell">
-      <aside className={"sidebar " + (mobileNav ? "mobile-open" : "")}>
+      <aside
+        id="workspace-navigation"
+        className={"sidebar " + (mobileNav ? "mobile-open" : "")}
+      >
         <button
           className="brand"
           aria-label="Rivet home"
@@ -105,73 +165,91 @@ export default function App() {
             rivet<span className="brand-dot">.</span>
           </span>
         </button>
-        <button
-          className="workspace-switch"
-          onClick={() => navigate("settings")}
-        >
-          <span className="workspace-icon">R</span>
-          <div>
-            Rivet workspace<small>Local · Personal</small>
-          </div>
-          <SlidersHorizontal size={16} />
-        </button>
-        <div className="nav-label">WORKSPACE</div>
+        <TeamSwitcher />
+        <div className="nav-label">Workspace</div>
         <nav>
           <button
             className={
-              route === "projects" || route.startsWith("project/")
+              route === "projects" ||
+              route === "orders" ||
+              route.startsWith("order/")
                 ? "active"
                 : ""
             }
             onClick={() => navigate("projects")}
           >
-            <SquaresFour size={18} />
-            Projects
-            <span className="nav-count">{projects.data?.length ?? 0}</span>
+            <Folder size={18} />
+            Orders
+            <span className="nav-count">{orders.data?.orders.length ?? 0}</span>
           </button>
           <button
-            className={route === "catalog" ? "active" : ""}
-            onClick={() => navigate("catalog")}
+            className={route === "decisions" ? "active" : ""}
+            onClick={() => navigate("decisions")}
           >
-            <Stack size={18} />
-            Equipment catalog
-          </button>
-          <button
-            className={route === "activity" ? "active" : ""}
-            onClick={() => navigate("activity")}
-          >
-            <Clock size={18} />
-            Activity
+            <ListChecks size={18} />
+            Needs review
+            {decisions > 0 && <span className="nav-count">{decisions}</span>}
           </button>
         </nav>
         <div className="nav-label recent-label">
-          RECENT PROJECTS
-          <button aria-label="New project" onClick={() => setNewProject(true)}>
+          Recent orders
+          <button aria-label="New order" onClick={() => setNewOrder(true)}>
             <Plus size={14} />
           </button>
         </div>
         <div className="recent-projects">
-          {recent.slice(0, 4).map((p) => (
+          {recent.slice(0, 4).map((o) => (
             <button
-              key={p.id}
-              className={project?.id === p.id ? "selected" : ""}
-              onClick={() => navigate("project/" + p.id)}
+              key={o.id}
+              className={order?.id === o.id ? "selected" : ""}
+              onClick={() => navigate("order/" + o.id)}
             >
-              <span className={"project-dot " + p.color} />
-              <span>{p.title}</span>
+              <span className="project-dot violet" />
+              <span>{o.title}</span>
             </button>
           ))}
         </div>
+        <details className="order-tools">
+          <summary>
+            Quote tools
+            <CaretRight size={13} />
+          </summary>
+          <nav>
+            <button
+              className={
+                route === "quotes" || route.startsWith("project/")
+                  ? "active"
+                  : ""
+              }
+              onClick={() => navigate("quotes")}
+            >
+              <Folder size={17} />
+              Quotes
+            </button>
+            <button
+              className={route === "bids" ? "active" : ""}
+              onClick={() => navigate("bids")}
+            >
+              <ListChecks size={17} />
+              Bid queue
+            </button>
+            <button
+              className={route === "catalog" ? "active" : ""}
+              onClick={() => navigate("catalog")}
+            >
+              <Stack size={17} />
+              Equipment catalog
+            </button>
+            <button
+              className={route === "activity" ? "active" : ""}
+              onClick={() => navigate("activity")}
+            >
+              <Clock size={17} />
+              Quote activity
+            </button>
+          </nav>
+        </details>
         <div className="sidebar-bottom">
-          <div className="demo-label">
-            <span className="pulse-dot" />
-            LOCAL PROTOTYPE
-          </div>
-          <p>
-            Sample projects are synthetic.
-            <br />
-            Stored locally. AI uses selected sources.
-          </p>
           <button onClick={() => navigate("guide")}>
             <BookOpen size={17} />
             Getting started
@@ -181,21 +259,24 @@ export default function App() {
             <SlidersHorizontal size={17} />
             Workspace settings
           </button>
-          <div className="profile">
-            <span>LE</span>
-            <div>
-              Local estimator<small>Personal workspace</small>
-            </div>
-            <span className="online-dot" />
-          </div>
+          <AccountControl />
         </div>
       </aside>
+      {mobileNav && (
+        <button
+          className="nav-backdrop"
+          aria-label="Close navigation"
+          onClick={() => setMobileNav(false)}
+        />
+      )}
       <div className="app-main">
         <header className="topbar">
           <div>
             <button
               className="icon-button mobile-menu"
               aria-label="Toggle navigation"
+              aria-expanded={mobileNav}
+              aria-controls="workspace-navigation"
               onClick={() => setMobileNav(!mobileNav)}
             >
               <SidebarSimple size={20} />
@@ -205,9 +286,14 @@ export default function App() {
             </button>
             <span className="slash">/</span>
             <span>
-              {project?.title ??
+              {order?.title ??
+                project?.title ??
                 {
-                  projects: "Projects",
+                  projects: "Orders",
+                  orders: "Orders",
+                  decisions: "Needs review",
+                  bids: "Bid queue",
+                  quotes: "Quotes",
                   catalog: "Equipment catalog",
                   activity: "Activity",
                   settings: "Settings",
@@ -218,20 +304,44 @@ export default function App() {
           </div>
           <div className="topbar-right">
             <span className="connection">
-              <span className={health.data ? "online-dot" : "offline-dot"} />
-              {health.data ? "All changes saved locally" : "Connecting"}
+              <span
+                className={
+                  health.data && !health.isError ? "online-dot" : "offline-dot"
+                }
+              />
+              {health.isError
+                ? "Server unavailable"
+                : health.data
+                  ? "Local workspace"
+                  : "Connecting…"}
             </span>
             <button
               className="search-trigger"
-              aria-label="Search projects"
+              aria-label="Search orders"
               onClick={() => setSearch(true)}
             >
               <MagnifyingGlass size={17} />
-              <kbd>⌘ K</kbd>
+              {!route.startsWith("project/") && !route.startsWith("order/") && (
+                <kbd>⌘ K</kbd>
+              )}
             </button>
           </div>
         </header>
-        {projects.isError ? (
+        {route.startsWith("order/") ? (
+          <OrderWorkspace
+            key={route.split("?")[0]}
+            id={route.split("/")[1].split("?")[0]}
+            navigate={navigate}
+            notify={notify}
+          />
+        ) : ["projects", "orders", "decisions"].includes(route) ? (
+          <OrderFeed
+            key={route}
+            navigate={navigate}
+            onNew={() => setNewOrder(true)}
+            decisionsOnly={route === "decisions"}
+          />
+        ) : projects.isError ? (
           <div className="page">
             <ErrorNote message="Rivet could not reach its local server. Start the app using the instructions in the README, then refresh." />
             <button onClick={() => projects.refetch()}>Try again</button>
@@ -245,7 +355,7 @@ export default function App() {
             id={route.split("/")[1].split("?")[0]}
             notify={notify}
             assistantReady={health.data?.assistant_configured ?? false}
-            onBack={() => navigate("projects")}
+            onBack={() => navigate("quotes")}
           />
         ) : route === "catalog" ? (
           <Catalog />
@@ -254,15 +364,31 @@ export default function App() {
         ) : route === "settings" ? (
           <Settings health={health.data} />
         ) : route === "guide" ? (
-          <Guide onNew={() => setNewProject(true)} navigate={navigate} />
-        ) : (
+          <OrderGuide onNew={() => setNewOrder(true)} navigate={navigate} />
+        ) : route === "quotes" ? (
           <Projects
             projects={projects.data ?? []}
             navigate={navigate}
             onNew={() => setNewProject(true)}
           />
+        ) : (
+          <WorkQueue navigate={navigate} onNew={() => setNewProject(true)} />
         )}
       </div>
+      {newOrder && (
+        <NewOrder
+          onClose={() => setNewOrder(false)}
+          onCreated={(o) => {
+            setNewOrder(false);
+            qc.invalidateQueries({ queryKey: ["orders"] });
+            qc.invalidateQueries({ queryKey: ["projects"] });
+            navigate("order/" + o.id);
+            notify(
+              "Order created. Add the specifications and current approval package.",
+            );
+          }}
+        />
+      )}
       {newProject && (
         <NewProject
           onClose={() => setNewProject(false)}
@@ -270,13 +396,14 @@ export default function App() {
             setNewProject(false);
             qc.invalidateQueries({ queryKey: ["projects"] });
             navigate("project/" + p.id);
-            notify("Project created. Add your first source document.");
+            qc.invalidateQueries({ queryKey: ["work-queue"] });
+            notify("Bid created. Add the existing quote and project change.");
           }}
         />
       )}
       {search && (
-        <Search
-          projects={projects.data ?? []}
+        <OrderSearch
+          orders={orders.data?.orders ?? []}
           onClose={() => setSearch(false)}
           navigate={(to) => {
             setSearch(false);
@@ -303,216 +430,189 @@ function Projects({
   navigate: (s: string) => void;
   onNew: () => void;
 }) {
-  const [filter, setFilter] = useState("All projects");
+  const [filter, setFilter] = useState("All quotes");
   const [query, setQuery] = useState("");
-  const filtered = projects.filter(
-    (p) =>
-      (filter === "All projects" ||
-        (filter === "Needs review" && (p.blockers > 0 || p.pending > 0)) ||
-        (filter === "Approved" && p.status === "approved")) &&
-      (p.title + " " + p.customer).toLowerCase().includes(query.toLowerCase()),
-  );
-  const total = projects.reduce((a, p) => a + Number(p.total), 0),
-    pending = projects.reduce((a, p) => a + p.pending, 0),
-    featured = projects.find((p) => p.pending > 0);
+  const [sort, setSort] = useState("updated");
+  const needsReview = (p: Project) => p.blockers > 0 || p.pending > 0;
+  const filters = [
+    { label: "All quotes", count: projects.length },
+    { label: "Needs review", count: projects.filter(needsReview).length },
+    {
+      label: "Approved",
+      count: projects.filter((p) => p.status === "approved").length,
+    },
+  ];
+  const filtered = projects
+    .filter(
+      (p) =>
+        (filter === "All quotes" ||
+          (filter === "Needs review" && needsReview(p)) ||
+          (filter === "Approved" && p.status === "approved")) &&
+        `${p.title} ${p.customer} ${p.number}`
+          .toLowerCase()
+          .includes(query.trim().toLowerCase()),
+    )
+    .sort((a, b) =>
+      sort === "name"
+        ? a.title.localeCompare(b.title)
+        : sort === "due"
+          ? (a.due_date || "9999").localeCompare(b.due_date || "9999")
+          : sort === "value"
+            ? Number(b.total) - Number(a.total)
+            : b.updated_at.localeCompare(a.updated_at),
+    );
+  const featured = projects.find((p) => p.pending > 0);
+  const reset = () => {
+    setFilter("All quotes");
+    setQuery("");
+  };
   return (
     <main className="page projects-page">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">YOUR QUOTING WORKSPACE</span>
-          <h1>
-            Projects<span className="muted-period">.</span>
-          </h1>
-          <p>Keep every quote, source, and revision connected.</p>
+          <h1>Quotes</h1>
+          <p>Browse every bid, its current quote, and its revision history.</p>
         </div>
         <button className="primary" onClick={onNew}>
-          <Plus size={17} />
-          New project
+          <Plus size={18} />
+          New bid
         </button>
-      </div>
-      <div className="overview-stats">
-        <div>
-          <span className="stat-label">ACTIVE PROJECTS</span>
-          <strong>
-            {String(
-              projects.filter((p) => p.status !== "approved").length,
-            ).padStart(2, "0")}
-            <small>in your workspace</small>
-          </strong>
-        </div>
-        <div>
-          <span className="stat-label">
-            QUOTED VALUE <span>USD</span>
-          </span>
-          <strong>
-            {usd(total)}
-            <small>across {projects.length} projects</small>
-          </strong>
-        </div>
-        <div>
-          <span className="stat-label">PENDING CHANGES</span>
-          <strong>
-            {String(pending).padStart(2, "0")}
-            <small>
-              {pending ? "waiting for your review" : "you’re up to date"}
-            </small>
-          </strong>
-        </div>
       </div>
       {featured && (
         <button
-          className="attention-banner"
+          className="review-notice"
           onClick={() => navigate("project/" + featured.id + "?changes")}
         >
-          <div className="signal-icon">
-            <GitDiff size={24} />
-          </div>
-          <div>
-            <span className="eyebrow">A NEW REVISION. A CLEAR NEXT STEP.</span>
-            <h3>{featured.title} has changes to review.</h3>
-            <p>Compare the proposed edits with their original sources.</p>
-          </div>
-          <span className="attention-action">
-            Review changes
-            <ArrowUpRight size={19} />
+          <GitDiff size={19} />
+          <span>
+            <strong>{featured.title}</strong> has {featured.pending} pending{" "}
+            {featured.pending === 1 ? "change" : "changes"}.
           </span>
-          <div className="signal-art" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <i />
-            <i />
-          </div>
+          <span className="review-notice-action">
+            Review changes
+            <ArrowRight size={16} />
+          </span>
         </button>
       )}
-      <div className="projects-layout">
-        <section>
-          <div className="list-toolbar">
-            <div className="segmented">
-              {["All projects", "Needs review", "Approved"].map((x) => (
-                <button
-                  key={x}
-                  className={filter === x ? "selected" : ""}
-                  onClick={() => setFilter(x)}
-                >
-                  {x}
-                  {x === "All projects" && <span>{projects.length}</span>}
-                </button>
-              ))}
-            </div>
+      <section className="projects-table-section" aria-label="Projects">
+        <div className="project-filters">
+          <div className="segmented" aria-label="Filter projects">
+            {filters.map((x) => (
+              <button
+                key={x.label}
+                className={filter === x.label ? "selected" : ""}
+                aria-pressed={filter === x.label}
+                onClick={() => setFilter(x.label)}
+              >
+                {x.label}
+                <span>{x.count}</span>
+              </button>
+            ))}
+          </div>
+          <div className="project-list-controls">
             <label className="compact-search">
-              <MagnifyingGlass size={16} />
+              <MagnifyingGlass size={18} />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Find a project"
+                placeholder="Search projects…"
                 aria-label="Find a project"
               />
             </label>
+            <select
+              aria-label="Sort projects"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="updated">Recently updated</option>
+              <option value="due">Due date</option>
+              <option value="name">Project name</option>
+              <option value="value">Quote value</option>
+            </select>
           </div>
-          <div className="project-table-head">
-            <span>PROJECT / CUSTOMER</span>
-            <span>QUOTE VALUE</span>
-            <span>STATUS</span>
-            <span>BID DUE</span>
-            <span />
-          </div>
-          <div className="project-list">
-            {filtered.map((p, i) => (
-              <button
-                className="project-row"
-                key={p.id}
-                onClick={() => navigate("project/" + p.id)}
-              >
-                <div className="project-name">
-                  <span className={"folder-box " + p.color}>
-                    <FolderSimple size={23} weight="duotone" />
-                  </span>
-                  <div>
-                    <h3>{p.title}</h3>
-                    <p>
-                      {p.customer}
-                      <span>·</span>
-                      {p.number}
-                    </p>
-                  </div>
-                </div>
-                <div className="project-value">
-                  {usd(p.total)}
-                  <small>{p.lines} equipment lines</small>
-                </div>
+        </div>
+        <div className="project-table-head">
+          <span>Project</span>
+          <span>Status</span>
+          <span>Quote value</span>
+          <span>Due date</span>
+          <span />
+        </div>
+        <div className="project-list">
+          {filtered.map((p) => (
+            <button
+              className="project-row"
+              key={p.id}
+              aria-label={"Open " + p.title}
+              onClick={() => navigate("project/" + p.id)}
+            >
+              <div className="project-name">
+                <FolderSimple size={21} />
                 <div>
-                  <Status status={p.pending ? "pending" : p.status} />
-                  <small className="rev-label">
-                    Revision {String(p.version).padStart(2, "0")}
+                  <h3>{p.title}</h3>
+                  <p>
+                    {p.customer}
+                    <span>·</span>
+                    {p.number}
+                  </p>
+                </div>
+              </div>
+              <div className="project-status">
+                <Status status={p.pending ? "pending" : p.status} />
+                {p.blockers > 0 && (
+                  <small>
+                    {p.blockers} {p.blockers === 1 ? "check" : "checks"} to
+                    resolve
                   </small>
-                </div>
-                <div className="due-date">
-                  {dateLabel(p.due_date)}
-                  <small>{p.due_date?.slice(0, 4) ?? ""}</small>
-                </div>
-                <ArrowUpRight className="row-arrow" size={18} />
-              </button>
-            ))}
-            {!filtered.length && (
-              <Empty
-                title="No projects here yet"
-                icon={<FolderSimple size={30} />}
-              >
-                {query
-                  ? "Try a different search."
-                  : "Create a project to start building your first quote."}
-              </Empty>
-            )}
-          </div>
-          <div className="list-footer">
-            <span>
-              {filtered.length} project{filtered.length !== 1 ? "s" : ""}
-            </span>
-            <span>
-              <Database size={13} />
-              Saved to your local workspace
-            </span>
-          </div>
-        </section>
-        <aside className="workspace-note">
-          <span className="eyebrow">BUILT AROUND THE DETAILS</span>
-          <div className="connection-graphic" aria-hidden="true">
-            <div className="graphic-top">
-              <Files size={21} />
-              <span>Source</span>
-            </div>
-            <div className="graphic-line" />
-            <div className="graphic-core">
-              <Mark small />
-            </div>
-            <div className="graphic-branches">
-              <span>Quote</span>
-              <span>Evidence</span>
-            </div>
-          </div>
-          <h3>
-            One quote.
-            <br />
-            Every source behind it.
-          </h3>
-          <p>
-            Open a project to trace a value, resolve an exception, or review
-            what changed.
-          </p>
-          <button className="text-button" onClick={() => navigate("guide")}>
-            Explore the workflow
-            <ArrowRight size={15} />
-          </button>
-        </aside>
-      </div>
-      <div className="sample-disclosure">
-        <Info size={15} />
-        <span>
-          The three starter projects use fictional equipment, customers, offers,
-          and prices. Create a project for your own work.
-        </span>
-      </div>
+                )}
+              </div>
+              <div className="project-value">{usd(p.total)}</div>
+              <div className="due-date">{dateLabel(p.due_date)}</div>
+              <CaretRight className="row-arrow" size={17} />
+            </button>
+          ))}
+          {!filtered.length && (
+            <Empty
+              title={
+                projects.length ? "No matching quotes" : "Create your first bid"
+              }
+              icon={
+                projects.length ? (
+                  <ListMagnifyingGlass size={30} />
+                ) : (
+                  <FolderSimple size={30} />
+                )
+              }
+              action={
+                <button
+                  className="secondary"
+                  onClick={projects.length ? reset : onNew}
+                >
+                  {projects.length ? "Clear filters" : "New bid"}
+                </button>
+              }
+            >
+              {projects.length
+                ? "Try another project name, customer, or filter."
+                : "Add a project, then upload the documents for your quote."}
+            </Empty>
+          )}
+        </div>
+        <div className="list-footer">
+          <span>
+            {filtered.length} of {projects.length} projects
+          </span>
+          <span>Amounts in USD</span>
+        </div>
+      </section>
+      {projects.some((p) => p.synthetic) && (
+        <div className="sample-disclosure">
+          <Info size={16} />
+          <span>
+            Sample projects contain fictional customers, equipment, and prices.
+          </span>
+        </div>
+      )}
     </main>
   );
 }
@@ -526,7 +626,7 @@ function NewProject({
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   return (
-    <Modal title="Start a project" eyebrow="A NEW CONNECTION" onClose={onClose}>
+    <Modal title="New bid" onClose={onClose}>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -539,7 +639,7 @@ function NewProject({
                 title: f.get("title"),
                 customer: f.get("customer"),
                 due_date: f.get("due_date") || null,
-                category: "Power distribution",
+                category: "Low-voltage switchgear",
               }),
             );
           } catch (e) {
@@ -550,7 +650,8 @@ function NewProject({
         }}
       >
         <p className="modal-intro">
-          Bring the bid package, equipment, and revisions into one place.
+          Start with the existing quote and the project change. Rivet will keep
+          the resulting decisions and open questions together.
         </p>
         <label>
           Project name
@@ -559,7 +660,7 @@ function NewProject({
             required
             minLength={2}
             maxLength={180}
-            placeholder="e.g. Northline Research Campus"
+            placeholder="e.g. Northline Data Center · Phase 2"
             autoFocus
           />
         </label>
@@ -580,7 +681,7 @@ function NewProject({
           </label>
           <label>
             Equipment category
-            <input value="Power distribution" readOnly />
+            <input value="Low-voltage switchgear" readOnly />
           </label>
         </div>
         {error && <ErrorNote message={error} />}
@@ -593,7 +694,7 @@ function NewProject({
               <Busy />
             ) : (
               <>
-                Create project
+                Create bid
                 <ArrowRight size={17} />
               </>
             )}
@@ -614,10 +715,12 @@ function Search({
 }) {
   const [q, setQ] = useState("");
   const matches = projects.filter((p) =>
-    (p.title + " " + p.customer).toLowerCase().includes(q.toLowerCase()),
+    `${p.title} ${p.customer} ${p.number}`
+      .toLowerCase()
+      .includes(q.trim().toLowerCase()),
   );
   return (
-    <Modal title="Find your next move" onClose={onClose}>
+    <Modal title="Search projects" onClose={onClose}>
       <label className="global-search">
         <MagnifyingGlass size={20} />
         <input
@@ -640,7 +743,7 @@ function Search({
           </button>
         ))}
         {!matches.length && (
-          <Empty title="No matching projects">
+          <Empty title="No matching quotes">
             Try another name or customer.
           </Empty>
         )}
@@ -648,80 +751,284 @@ function Search({
     </Modal>
   );
 }
+type CatalogEntry = {
+  id: string;
+  model: string;
+  manufacturer: string;
+  description: string;
+  synthetic: boolean;
+  offers: {
+    id: string;
+    supplier: string;
+    currency: string;
+    cost: string;
+    unit: string;
+    valid_until: string | null;
+    lead_time: string;
+    max_quantity?: string | null;
+  }[];
+};
 function Catalog() {
   const [search, setSearch] = useState("");
-  const { data, error } = useQuery({
+  const [expandedOffers, setExpandedOffers] = useState<string | null>(null);
+  const today = new Date();
+  const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  type Offer = CatalogEntry["offers"][number];
+  const hasExpiry = (offer: Offer) =>
+    Boolean(offer.valid_until && /^\d{4}-\d{2}-\d{2}$/.test(offer.valid_until));
+  const offerRank = (offer: Offer) =>
+    !hasExpiry(offer) ? 1 : offer.valid_until! >= todayIso ? 0 : 2;
+  const sortedOffers = (offers: Offer[]) =>
+    [...offers].sort(
+      (a, b) =>
+        offerRank(a) - offerRank(b) ||
+        (b.valid_until || "").localeCompare(a.valid_until || "") ||
+        a.supplier.localeCompare(b.supplier) ||
+        a.currency.localeCompare(b.currency) ||
+        a.unit.localeCompare(b.unit) ||
+        Number(a.cost) - Number(b.cost) ||
+        a.id.localeCompare(b.id),
+    );
+  const expiryLabel = (offer: Offer) => {
+    if (!hasExpiry(offer)) return "Expiry not provided";
+    const date = new Date(offer.valid_until + "T12:00:00").toLocaleDateString(
+      "en-US",
+      { month: "short", day: "numeric", year: "numeric" },
+    );
+    return offerRank(offer) === 2 ? `Expired ${date}` : date;
+  };
+  const offerCost = (offer: Offer) =>
+    offer.currency === "USD"
+      ? usd(offer.cost, 2)
+      : `${offer.currency} ${Number(offer.cost).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["catalog"],
-    queryFn: () => api<any[]>("/catalog"),
+    queryFn: () => api<CatalogEntry[]>("/catalog"),
   });
+  const matches =
+    data?.filter((c) =>
+      `${c.model} ${c.description} ${c.manufacturer} ${c.offers.map((offer) => offer.supplier).join(" ")}`
+        .toLowerCase()
+        .includes(search.trim().toLowerCase()),
+    ) ?? [];
   return (
-    <main className="page">
+    <main className="page catalog-page">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">YOUR APPROVED STARTING POINT</span>
-          <h1>
-            Equipment catalog<span className="muted-period">.</span>
-          </h1>
-          <p>Products and offers available for selection in your quotes.</p>
+          <h1>Equipment catalog</h1>
+          <p>Product specifications and supplier offers for your quotes.</p>
         </div>
       </div>
       <div className="info-banner">
         <Info size={18} />
         <p>
-          Import your own catalog or offers from a project’s Sources tab.
-          Confirm the column mapping before using the values.
+          To add products or offers, open a project and import a spreadsheet in
+          Sources.
         </p>
       </div>
-      <label className="compact-search catalog-search">
-        <MagnifyingGlass size={17} />
-        <input
-          placeholder="Search model or equipment"
-          aria-label="Search equipment"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </label>
-      {error && <ErrorNote message={(error as Error).message} />}
-      <div className="catalog-grid">
-        {data
-          ?.filter((c) =>
-            (c.model + " " + c.description)
-              .toLowerCase()
-              .includes(search.toLowerCase()),
-          )
-          .map((c) => (
-            <article className="catalog-item" key={c.id}>
-              <div className="catalog-item-top">
-                <HardDrives size={27} weight="duotone" />
-                {c.synthetic && <span className="micro-tag">SYNTHETIC</span>}
-              </div>
-              <span className="eyebrow">{c.manufacturer}</span>
-              <h3>{c.description}</h3>
-              <code>{c.model}</code>
-              <dl>
-                <div>
-                  <dt>Supplier cost</dt>
-                  <dd>
-                    {usd(c.offers[0]?.cost)}{" "}
-                    <small>/ {c.offers[0]?.unit ?? "—"}</small>
-                  </dd>
-                </div>
-                <div>
-                  <dt>Offer valid through</dt>
-                  <dd>{dateLabel(c.offers[0]?.valid_until)}</dd>
-                </div>
-              </dl>
-              <div className="catalog-lead">
-                <Clock size={14} />
-                {c.offers[0]?.lead_time ?? "No supplier offer attached"}
-              </div>
-            </article>
-          ))}
+      <div className="catalog-toolbar">
+        <label className="compact-search">
+          <MagnifyingGlass size={18} />
+          <input
+            placeholder="Search equipment, manufacturer, or supplier…"
+            aria-label="Search equipment"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </label>
+        <span>{matches.length} products</span>
       </div>
-      {data?.length === 0 && (
-        <Empty title="Your catalog starts here" icon={<Stack size={28} />}>
-          Open a project and import a catalog spreadsheet in Sources.
-        </Empty>
+      {isLoading && <Busy text="Loading equipment…" />}
+      {error && (
+        <>
+          <ErrorNote message={(error as Error).message} />
+          <button className="secondary" onClick={() => refetch()}>
+            Try again
+          </button>
+        </>
+      )}
+      {!isLoading && !error && (
+        <>
+          {matches.length > 0 ? (
+            <div
+              className="catalog-table-scroll"
+              role="region"
+              aria-label="Equipment catalog table"
+              tabIndex={0}
+            >
+              <table className="catalog-table">
+                <thead>
+                  <tr>
+                    <th>Equipment</th>
+                    <th>Manufacturer</th>
+                    <th>Supplier cost</th>
+                    <th>Lead time</th>
+                    <th>Offer expiry</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {matches.flatMap((c) => {
+                    const offers = sortedOffers(c.offers);
+                    const offer = offers[0];
+                    const expanded = expandedOffers === c.id;
+                    const showQuantity = offers.some((item) =>
+                      Object.prototype.hasOwnProperty.call(
+                        item,
+                        "max_quantity",
+                      ),
+                    );
+                    return [
+                      <tr key={c.id}>
+                        <td>
+                          <strong>{c.description}</strong>
+                          <span className="catalog-model">
+                            {c.model}
+                            {c.synthetic && (
+                              <span className="sample-label">Sample</span>
+                            )}
+                          </span>
+                        </td>
+                        <td>{c.manufacturer}</td>
+                        <td className="catalog-cost">
+                          {offer ? (
+                            <>
+                              <span>
+                                {offerCost(offer)}
+                                <small> / {offer.unit}</small>
+                              </span>
+                              <button
+                                className="catalog-offers-toggle"
+                                aria-expanded={expanded}
+                                aria-controls={`catalog-offers-${c.id}`}
+                                aria-label={`${expanded ? "Hide" : "View"} ${offers.length} supplier ${offers.length === 1 ? "offer" : "offers"} for ${c.model}`}
+                                onClick={() =>
+                                  setExpandedOffers(expanded ? null : c.id)
+                                }
+                              >
+                                {offers.length}{" "}
+                                {offers.length === 1 ? "offer" : "offers"}
+                                <CaretRight size={12} />
+                              </button>
+                            </>
+                          ) : (
+                            "No offer"
+                          )}
+                        </td>
+                        <td>{offer?.lead_time || "—"}</td>
+                        <td
+                          className={
+                            offer && offerRank(offer) === 2
+                              ? "catalog-expired"
+                              : ""
+                          }
+                        >
+                          {offer ? expiryLabel(offer) : "—"}
+                        </td>
+                      </tr>,
+                      ...(expanded
+                        ? [
+                            <tr
+                              key={`${c.id}-offers`}
+                              className="catalog-offers-row"
+                            >
+                              <td colSpan={5}>
+                                <div
+                                  id={`catalog-offers-${c.id}`}
+                                  className="catalog-offers-detail"
+                                  role="region"
+                                  aria-label={`Supplier offers for ${c.model}`}
+                                >
+                                  <div className="catalog-offers-heading">
+                                    <h3>Supplier offers for {c.model}</h3>
+                                    <p>
+                                      Dated, unexpired offers appear first,
+                                      ordered by latest expiry. Review the
+                                      supplier and terms before selecting
+                                      equipment.
+                                    </p>
+                                  </div>
+                                  <table className="catalog-offers-table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">Supplier</th>
+                                        <th scope="col">Unit cost</th>
+                                        <th scope="col">Lead time</th>
+                                        <th scope="col">Expiry</th>
+                                        {showQuantity && (
+                                          <th scope="col">Quantity coverage</th>
+                                        )}
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {offers.map((item) => (
+                                        <tr key={item.id}>
+                                          <td>
+                                            {item.supplier ||
+                                              "Supplier not provided"}
+                                          </td>
+                                          <td className="catalog-cost">
+                                            {offerCost(item)}
+                                            <small> / {item.unit}</small>
+                                          </td>
+                                          <td>
+                                            {item.lead_time || "Not provided"}
+                                          </td>
+                                          <td
+                                            className={
+                                              offerRank(item) === 2
+                                                ? "catalog-expired"
+                                                : ""
+                                            }
+                                          >
+                                            {expiryLabel(item)}
+                                          </td>
+                                          {showQuantity && (
+                                            <td>
+                                              {item.max_quantity != null
+                                                ? `Up to ${item.max_quantity} ${item.unit}`
+                                                : "Not provided"}
+                                            </td>
+                                          )}
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                  {!showQuantity && (
+                                    <p className="catalog-quantity-note">
+                                      Check quantity coverage when selecting
+                                      equipment in a quote.
+                                    </p>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>,
+                          ]
+                        : []),
+                    ];
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <Empty
+              title={
+                data?.length ? "No matching equipment" : "No equipment yet"
+              }
+              icon={<Stack size={28} />}
+              action={
+                search ? (
+                  <button className="secondary" onClick={() => setSearch("")}>
+                    Clear search
+                  </button>
+                ) : undefined
+              }
+            >
+              {data?.length
+                ? "Try another model, manufacturer, supplier, or description."
+                : "Import a catalog spreadsheet from a project’s Sources tab."}
+            </Empty>
+          )}
+        </>
       )}
     </main>
   );
@@ -733,7 +1040,8 @@ function Activity({
   projects: Project[];
   navigate: (s: string) => void;
 }) {
-  const { data } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
+    refetchInterval: 5000,
     queryKey: ["all-activity", projects.map((p) => p.id)],
     queryFn: async () => {
       const workspaces = await Promise.all(
@@ -748,13 +1056,24 @@ function Activity({
     <main className="page narrow-page">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">THE RECORD BEHIND THE WORK</span>
-          <h1>
-            Activity<span className="muted-period">.</span>
-          </h1>
-          <p>Every edit and decision, kept in order.</p>
+          <h1>Activity</h1>
+          <p>Recent edits and review decisions across your projects.</p>
         </div>
       </div>
+      {isLoading && <Busy text="Loading activity…" />}
+      {error && (
+        <>
+          <ErrorNote message={(error as Error).message} />
+          <button className="secondary" onClick={() => refetch()}>
+            Try again
+          </button>
+        </>
+      )}
+      {data?.length === 0 && (
+        <Empty title="No activity yet" icon={<Clock size={28} />}>
+          Project edits and review decisions will appear here.
+        </Empty>
+      )}
       <div className="timeline">
         {data?.map((e: any) => (
           <button
@@ -779,41 +1098,43 @@ function Activity({
   );
 }
 function Settings({ health }: { health: Health | undefined }) {
+  const account = useAccount();
   return (
     <main className="page narrow-page">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">WORKSPACE</span>
-          <h1>
-            Settings<span className="muted-period">.</span>
-          </h1>
+          <h1>Workspace settings</h1>
+          <p>Accounts, email, and integration status.</p>
         </div>
       </div>
       <section className="settings-section">
-        <h3>Connection & storage</h3>
+        <h3>Workspace</h3>
         <div>
           <span>
-            Workspace mode
-            <small>Single-user prototype, accessible on localhost.</small>
+            {account.team}
+            <small>
+              {account.mode === "clerk"
+                ? "Access is restricted to signed-in team members."
+                : "Local development workspace."}
+            </small>
           </span>
           <Status status="ready" />
         </div>
         <div>
           <span>
-            Database
+            Document storage
             <small>
-              PostgreSQL · original files stored privately on this device.
+              PostgreSQL and private files on this device. Hosted storage has
+              not been configured.
             </small>
           </span>
-          <span className="micro-tag">LOCAL</span>
+          <span className="micro-tag">Local</span>
         </div>
         <div>
           <span>
             AI assistant
             <small>
-              {health?.assistant_configured
-                ? health.model
-                : "Set OPENAI_API_KEY and OPENAI_MODEL in the server configuration to enable."}
+              {health?.assistant_configured ? health.model : "Not configured"}
             </small>
           </span>
           <Status
@@ -821,44 +1142,12 @@ function Settings({ health }: { health: Health | undefined }) {
           />
         </div>
       </section>
-      <section className="settings-section">
-        <h3>Commercial policy</h3>
-        <div>
-          <span>
-            Quotation model<small>Buy / sell · one currency per quote.</small>
-          </span>
-          <strong>USD</strong>
-        </div>
-        <div>
-          <span>
-            Money & rounding
-            <small>
-              Exact decimal calculations. Unit prices and line totals round to
-              cents.
-            </small>
-          </span>
-          <span className="micro-tag">HALF UP</span>
-        </div>
-        <div>
-          <span>
-            Customer exports
-            <small>
-              Approval required. Internal costs and margins are excluded.
-            </small>
-          </span>
-          <CheckCircle size={22} />
-        </div>
-      </section>
-      <div className="info-banner">
-        <Info size={18} />
-        <p>
-          This local prototype does not include shared-user sign-in, live
-          supplier inventory, or external sending.
-        </p>
-      </div>
+      <IntegrationSettings />
+      <TeamSettings />
     </main>
   );
 }
+
 function Guide({
   onNew,
   navigate,
@@ -870,36 +1159,124 @@ function Guide({
     <main className="page narrow-page">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">GETTING STARTED</span>
-          <h1>
-            From documents
-            <br />
-            to a reviewed quote.
-          </h1>
-          <p>A short path, with you in control at every step.</p>
+          <h1>Getting started</h1>
+          <p>
+            Keep an existing quote current when a data center project changes.
+          </p>
         </div>
       </div>
+      <section
+        className="sample-pack"
+        aria-label="Switchgear bid coordination demo"
+      >
+        <div>
+          <FileCsv size={22} />
+          <div>
+            <h3>Try the switchgear revision workflow</h3>
+            <p>
+              A fictional data center bid: eight sections become ten, with new
+              pricing and a delivery question to resolve.
+            </p>
+          </div>
+        </div>
+        <div className="sample-pack-downloads">
+          <a
+            className="secondary"
+            href={switchgearQuoteUrl}
+            download="switchgear-current-quote.csv"
+          >
+            Current quote
+            <DownloadSimple size={15} />
+          </a>
+          <a
+            className="secondary"
+            href={switchgearOfferUrl}
+            download="switchgear-initial-offer.txt"
+          >
+            Initial offer
+            <DownloadSimple size={15} />
+          </a>
+          <a
+            className="secondary"
+            href={switchgearAddendumUrl}
+            download="switchgear-addendum-02.txt"
+          >
+            Addendum
+            <DownloadSimple size={15} />
+          </a>
+          <a
+            className="secondary"
+            href={switchgearReplyUrl}
+            download="switchgear-revised-offer.txt"
+          >
+            Revised offer
+            <DownloadSimple size={15} />
+          </a>
+        </div>
+        <p className="sample-pack-note">
+          Start a new bid with the current quote and initial offer, then add the
+          addendum. Record a clarification, upload the revised offer, and
+          recheck. The proposed total moves from $140,000 to $187,500 at 20%
+          gross margin. Delivery still needs a decision. All equipment and
+          commercial details are fictional.
+        </p>
+      </section>
+      <section className="sample-pack" aria-label="Workflow test files">
+        <div>
+          <FileCsv size={22} />
+          <div>
+            <h3>Try a complete quote</h3>
+            <p>
+              Two fictional equipment items, with a schedule and an addendum. No
+              API key needed.
+            </p>
+          </div>
+        </div>
+        <div className="sample-pack-downloads">
+          <a
+            className="secondary"
+            href={sampleScheduleUrl}
+            download="equipment-schedule.csv"
+          >
+            <DownloadSimple size={17} />
+            Equipment schedule
+          </a>
+          <a
+            className="secondary"
+            href={sampleAddendumUrl}
+            download="addendum-02.csv"
+          >
+            <DownloadSimple size={17} />
+            Addendum 02
+          </a>
+        </div>
+        <p className="sample-pack-note">
+          The schedule totals $92,000. Applying the addendum brings it to
+          $112,000. Review both lines, then use Review &amp; export to approve
+          and download your quote.
+        </p>
+      </section>
       <div className="guide-steps">
         {[
           [
             "01",
-            "Bring the sources",
-            "Create a project. Upload a text-based PDF, CSV, XLSX, or text request. Confirm spreadsheet columns; unreadable pages stay visible.",
+            "Bring the current quote",
+            "Create a bid for your low-voltage switchgear package. Upload the existing quote and supplier offer. Confirm spreadsheet columns and review the imported baseline.",
           ],
           [
             "02",
-            "Build the draft",
-            "Use a mapped schedule, add equipment manually, or ask the connected assistant. Check quantities, price units, costs, and product selections.",
+            "Investigate the change",
+            "Upload the new addendum. In Work, ask Rivet to compare it with the quote and supplier offer. Review scope, pricing, accessories, and delivery gaps against their sources.",
           ],
           [
             "03",
-            "Review the evidence",
-            "Select any line to inspect its sources. Approve each line after reviewing its commercial values and delivery wording.",
+            "Move the open questions forward",
+            "Review or write a clarification, copy the request to your email, and mark it as requested after sending it yourself. Set a recipient and due date so the waiting work stays visible.",
           ],
           [
             "04",
-            "Handle what changed",
-            "Upload an addendum. Review before-and-after changes with citations before accepting them into a new revision.",
+            "Resume when the answer arrives",
+            "Upload the updated offer, record the reply, and link its source. Recheck with Rivet using the latest project inputs. Review proposed changes before accepting them, then resolve the issue with a note.",
           ],
           [
             "05",
@@ -918,7 +1295,7 @@ function Guide({
       </div>
       <button className="primary" onClick={onNew}>
         <Plus size={17} />
-        Create your project
+        Create your bid
       </button>
     </main>
   );

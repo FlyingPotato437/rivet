@@ -6,13 +6,37 @@ export type Workspace = components["schemas"]["WorkspaceView"];
 export type Doc = components["schemas"]["DocumentView"];
 export type Proposal = components["schemas"]["ProposalView"];
 export type Operation = components["schemas"]["Operation-Input"];
+let tokenProvider: (() => Promise<string>) | null = null;
+export function setTokenProvider(provider: () => Promise<string>) {
+  tokenProvider = provider;
+  return () => {
+    if (tokenProvider === provider) tokenProvider = null;
+  };
+}
+export async function authorizationHeaders(): Promise<Record<string, string>> {
+  const provider = tokenProvider;
+  const token = await provider?.();
+  if (provider !== tokenProvider)
+    throw new Error("Your workspace changed. Try again.");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+export async function apiFetch(path: string, init?: RequestInit) {
+  const provider = tokenProvider;
+  const response = await fetch(path, {
+    ...init,
+    headers: { ...(await authorizationHeaders()), ...init?.headers },
+  });
+  if (provider !== tokenProvider)
+    throw new Error("Your workspace changed. Try again.");
+  return response;
+}
 export async function api<T>(
   path: string,
   body?: unknown,
   method?: string,
 ): Promise<T> {
   const form = body instanceof FormData;
-  const res = await fetch("/api" + path, {
+  const res = await apiFetch("/api" + path, {
     method: method ?? (body === undefined ? "GET" : "POST"),
     headers:
       body === undefined

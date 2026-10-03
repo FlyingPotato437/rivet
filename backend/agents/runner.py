@@ -2,7 +2,7 @@ import json, time, re
 from copy import deepcopy
 from datetime import datetime, timezone
 from sqlalchemy import select
-from backend.storage.db import Session, ORG
+from backend.storage.db import Session
 from backend.storage.models import (
     Run,
     Quote,
@@ -23,9 +23,15 @@ from backend.domain.service import (
     apply_operation,
     validate_sources,
     digest,
+    lock_quote,
 )
 from backend.domain.schemas import Operation
 from backend.domain.pricing import gross_margin, markup, dec
+from backend.domain.coordination import (
+    sync_agent_clarifications,
+    project_clarifications,
+    clarification_view,
+)
 from .gateway import next_action
 
 ALLOWED_OPS = {
@@ -65,6 +71,7 @@ def initial_context(s, r, q, p):
         "steps": r.steps[-20:],
         "overlay": r.overlay,
         "answers": r.answers,
+        "clarifications": [clarification_view(c) for c in project_clarifications(s, p)],
         "remaining_tool_calls": 24 - len(r.steps),
     }
 
@@ -252,8 +259,10 @@ def execute(s, r, q, p, name, args):
             raise ValueError("Ask specific questions as strings.")
         r.questions = questions
         r.status = "waiting_for_input"
+        sync_agent_clarifications(s, r, q, p, questions)
         return {"questions": questions}
     if name == "finalize_proposal":
+        clarifications = args.get("clarifications", [])
         if not r.overlay:
             raise ValueError("No draft operations have been staged.")
         validations = [
@@ -299,11 +308,12 @@ def execute(s, r, q, p, name, args):
         )
         s.add(pr)
         s.flush()
+        sync_agent_clarifications(s, r, q, p, clarifications)
         r.status = "ready_for_review"
         r.result = {
             "proposal_id": pr.id,
             "summary": pr.summary,
-            "clarifications": args.get("clarifications", []),
+            "clarifications": clarifications,
         }
         return r.result
     raise ValueError("Unsupported tool.")
@@ -315,9 +325,9 @@ def run_agent(id, lease_check=lambda: True, provider=next_action):
         if not lease_check():
             return
         with Session.begin() as s:
+            initial = get(s, Run, id)
+            q, p = lock_quote(s, initial.quote_id)
             r = get(s, Run, id, True)
-            q = get(s, Quote, r.quote_id)
-            p = get(s, Project, q.project_id)
             if r.status in (
                 "cancelled",
                 "ready_for_review",
@@ -351,9 +361,9 @@ def run_agent(id, lease_check=lambda: True, provider=next_action):
         if not lease_check():
             return
         with Session.begin() as s:
+            initial = get(s, Run, id)
+            q, p = lock_quote(s, initial.quote_id)
             r = get(s, Run, id, True)
-            q = get(s, Quote, r.quote_id)
-            p = get(s, Project, q.project_id)
             if r.status == "cancelled":
                 return
             if q.version != r.base_version or p.input_revision != r.input_revision:

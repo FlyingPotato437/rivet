@@ -1,13 +1,6 @@
-import {
-  useLayoutEffect,
-  useRef,
-  useState,
-  type RefObject,
-  type ReactNode,
-} from "react";
+import { useLayoutEffect, useRef, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, ArrowUpRight, CheckCircle } from "@phosphor-icons/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,7 +58,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
         });
         gsap.utils
           .toArray<HTMLElement>(
-            ".site-section-heading h2, .site-ai-copy h2, .site-faq-heading h2, .site-final h2",
+            ".site-section-heading h2, .rivet-assistant-heading h2, .site-faq-heading h2, .site-final h2",
           )
           .forEach((title) => {
             gsap.from(title, {
@@ -80,60 +73,6 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
               },
             });
           });
-        gsap.utils
-          .toArray<HTMLElement>(".site-feature")
-          .forEach((card, index) => {
-            gsap.from(card, {
-              y: 60 + (index % 2) * 25,
-              opacity: 0.2,
-              duration: 1.05,
-              ease: "power3.out",
-              scrollTrigger: {
-                trigger: card,
-                start: "top 95%",
-                end: "top 60%",
-                scrub: 0.8,
-              },
-            });
-          });
-        gsap.fromTo(
-          ".site-ai-symbol",
-          { rotateZ: -17, y: 38 },
-          {
-            rotateZ: 8,
-            y: -25,
-            ease: "none",
-            scrollTrigger: {
-              trigger: ".site-intelligence",
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1.5,
-            },
-          },
-        );
-        gsap.from(".site-ai-question", {
-          x: 50,
-          opacity: 0.2,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".site-ai-visual",
-            start: "top 85%",
-            end: "center 60%",
-            scrub: 1,
-          },
-        });
-        gsap.from(".site-ai-answer", {
-          y: 65,
-          rotateX: 10,
-          opacity: 0.2,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".site-ai-visual",
-            start: "top 85%",
-            end: "center 50%",
-            scrub: 1,
-          },
-        });
         gsap.from(".site-footer-word", {
           yPercent: 40,
           opacity: 0.15,
@@ -149,11 +88,50 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
       return () => ctx.revert();
     });
     let live = true;
+    let resizeTimer: number | undefined;
+    let refreshFrame = 0;
+    const scheduleRefresh = () => {
+      window.clearTimeout(resizeTimer);
+      cancelAnimationFrame(refreshFrame);
+      resizeTimer = window.setTimeout(() => {
+        resizeTimer = undefined;
+        refreshFrame = requestAnimationFrame(() => {
+          refreshFrame = 0;
+          if (live) ScrollTrigger.refresh();
+        });
+      }, 100);
+    };
+    const sizes = new WeakMap<Element, { width: number; height: number }>();
+    const contentObserver = new ResizeObserver((entries) => {
+      let changed = false;
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        const previous = sizes.get(entry.target);
+        if (
+          previous &&
+          (Math.abs(previous.width - width) > 0.5 ||
+            Math.abs(previous.height - height) > 0.5)
+        ) {
+          changed = true;
+        }
+        sizes.set(entry.target, { width, height });
+      }
+      if (changed) scheduleRefresh();
+    });
+    // Content boxes exclude transforms and pin spacers, preventing refresh loops.
+    root.current
+      .querySelectorAll(
+        ".site-preview, #product, #workflow, #intelligence, .site-faq-list",
+      )
+      .forEach((element) => contentObserver.observe(element));
     void document.fonts.ready.then(() => {
       if (live) ScrollTrigger.refresh();
     });
     return () => {
       live = false;
+      contentObserver.disconnect();
+      window.clearTimeout(resizeTimer);
+      cancelAnimationFrame(refreshFrame);
       mm.revert();
     };
   }, [root]);
@@ -179,6 +157,7 @@ export function RivetField() {
       pointerX = 0,
       pointerY = 0;
     const motion = { progress: 0 };
+    const assemblyStart = performance.now();
     const mark = new Path2D(
       "M5 5h14.5v6H11v6h8.5v10H5V5Zm14.5 6H27v6h-7.5V11Zm0 6H25l4 10h-7l-2.5-10Z",
     );
@@ -209,6 +188,10 @@ export function RivetField() {
         py = height * (mobile ? 0.75 : 0.49);
       const scale = Math.min(width * (mobile ? 0.49 : 0.25), height * 0.45);
       const slow = media.matches ? 0 : time;
+      const assembled = media.matches
+        ? 1
+        : Math.min(1, (performance.now() - assemblyStart) / 1700);
+      const spread = Math.pow(1 - assembled, 3);
       const progress = media.matches ? 0 : motion.progress;
       const ry =
         -0.4 + Math.sin(slow * 0.2) * 0.12 + pointerX * 0.16 + progress * 0.7;
@@ -234,8 +217,14 @@ export function RivetField() {
             zz = p.y * sx + z * cx;
           const depth = 3.7 / (3.7 + zz);
           return {
-            x: px + (x * cz - y * sz) * scale * depth,
-            y: py + (x * sz + y * cz) * scale * depth,
+            x:
+              px +
+              (x * cz - y * sz) * scale * depth +
+              Math.sin(p.x * 29 + p.y * 17) * scale * spread,
+            y:
+              py +
+              (x * sz + y * cz) * scale * depth +
+              Math.cos(p.y * 31 + p.x * 13) * scale * spread,
             z: zz,
             depth,
             edge: p.edge,
@@ -331,184 +320,5 @@ export function RivetField() {
   }, []);
   return (
     <canvas ref={canvas} className="site-rivet-field" aria-hidden="true" />
-  );
-}
-
-type JourneyStep = {
-  title: string;
-  label: string;
-  copy: string;
-  detail: string;
-};
-export function ScrollJourney({
-  steps,
-  renderVisual,
-}: {
-  steps: readonly JourneyStep[];
-  renderVisual: (step: number) => ReactNode;
-}) {
-  const stage = useRef<HTMLElement>(null);
-  const trigger = useRef<ScrollTrigger | null>(null);
-  const [active, setActive] = useState(0);
-  const [pinned, setPinned] = useState(false);
-  useLayoutEffect(() => {
-    const mm = gsap.matchMedia();
-    mm.add(
-      "(min-width: 900px) and (min-height: 650px) and (prefers-reduced-motion: no-preference)",
-      () => {
-        setPinned(true);
-        const ctx = gsap.context(() => {
-          const panels = gsap.utils.toArray<HTMLElement>(".site-journey-panel");
-          gsap.set(".site-journey-progress", { scaleX: 0 });
-          gsap.set(panels, {
-            x: (i) => i * 20,
-            y: (i) => i * 17,
-            scale: (i) => 1 - i * 0.035,
-            rotateZ: (i) => i * 2,
-            transformOrigin: "center center",
-          });
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: stage.current,
-              start: "top top",
-              end: () => `+=${innerHeight * 2.7}`,
-              pin: true,
-              scrub: 0.85,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-              onUpdate: (s) =>
-                setActive((previous) => {
-                  const next = Math.min(3, Math.floor(s.progress * 4));
-                  return previous === next ? previous : next;
-                }),
-            },
-          });
-          trigger.current = tl.scrollTrigger!;
-          tl.to(
-            ".site-journey-progress",
-            { scaleX: 1, duration: 4, ease: "none" },
-            0,
-          );
-          panels.forEach((panel, i) => {
-            if (i < 3)
-              tl.to(
-                panel,
-                {
-                  x: -110,
-                  y: -105,
-                  rotateZ: -9,
-                  scale: 1.05,
-                  autoAlpha: 0,
-                  duration: 0.6,
-                  ease: "power2.inOut",
-                },
-                i + 0.64,
-              );
-            if (i > 0)
-              tl.to(
-                panel,
-                {
-                  x: 0,
-                  y: 0,
-                  rotateZ: 0,
-                  scale: 1,
-                  duration: 0.7,
-                  ease: "power2.inOut",
-                },
-                i - 0.38,
-              );
-          });
-        }, stage);
-        return () => {
-          trigger.current = null;
-          ctx.revert();
-          setPinned(false);
-        };
-      },
-    );
-    return () => mm.revert();
-  }, []);
-  const choose = (i: number) => {
-    if (trigger.current)
-      window.scrollTo({
-        top:
-          trigger.current.start +
-          ((i + 0.35) / 4) * (trigger.current.end - trigger.current.start),
-        behavior: "smooth",
-      });
-    else setActive(i);
-  };
-  return (
-    <div className="site-journey-shell" id="workflow">
-      <section
-        ref={stage}
-        className={`site-journey ${pinned ? "is-pinned" : ""}`}
-        aria-labelledby="journey-heading"
-      >
-        <div className="site-wrap site-journey-inner">
-          <div className="site-journey-heading">
-            <h2 id="journey-heading">
-              From scattered documents.
-              <br />
-              <span>To a quote that holds together.</span>
-            </h2>
-            <p>Follow the details through every part of the process.</p>
-          </div>
-          <div className="site-journey-body">
-            <div className="site-journey-copy">
-              <div className="site-journey-nav" aria-label="Quoting workflow">
-                {steps.map((step, i) => (
-                  <button
-                    key={step.label}
-                    aria-pressed={active === i}
-                    onClick={() => choose(i)}
-                  >
-                    {step.label}
-                    {i < 3 && <ArrowRight size={12} />}
-                  </button>
-                ))}
-              </div>
-              <div className="site-journey-track">
-                <span className="site-journey-progress" />
-              </div>
-              <div
-                className="site-journey-current"
-                key={active}
-                aria-live="polite"
-              >
-                <h3>{steps[active].title}</h3>
-                <p>{steps[active].copy}</p>
-                <span>
-                  <CheckCircle size={16} />
-                  {steps[active].detail}
-                </span>
-              </div>
-              <a className="site-text-link" href="#projects">
-                Try it in the workspace <ArrowUpRight size={16} />
-              </a>
-            </div>
-            <div
-              className="site-journey-stack"
-              aria-label={`${steps[active].label} illustration`}
-            >
-              {steps.map((step, i) => (
-                <div
-                  key={step.label}
-                  className={`site-journey-panel ${active === i ? "is-active" : ""}`}
-                  style={{ zIndex: 4 - i }}
-                  aria-hidden={active !== i}
-                >
-                  <div className="site-journey-panel-label">
-                    <span>{step.label}</span>
-                    <span>RIVET WORKFLOW</span>
-                  </div>
-                  {renderVisual(i)}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
   );
 }

@@ -1,3 +1,3 @@
 tag,description,quantity,unit,model,cost,price,lead_time
-PDU-A,Example power distribution unit,8,each,,8000.00,10000.00,20 weeks after approved submittal
-TX-A,Example dry type transformer,2,each,,4500.00,6000.00,Needs confirmation
+PDU-A,Fictional power distribution unit for workflow testing,8,each,DEMO-PDU-300,8000.00,10000.00,20 weeks after approved submittal — fictional test wording
+TX-A,Fictional dry-type transformer for workflow testing,2,each,DEMO-TX-75,4500.00,6000.00,18 weeks after approved submittal — fictional test wording

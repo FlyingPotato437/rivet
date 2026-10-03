@@ -1,0 +1,117 @@
+{
+  "title": "Larkspur DC-04 \u00b7 switchgear replay",
+  "customer": "Fictional Larkspur Data Centers",
+  "number": "DEMO-4512",
+  "synthetic": true,
+  "category": "Low-voltage switchgear",
+  "attribute_count": 34,
+  "device": "MSB-01",
+  "documents": [
+    {
+      "file": "01-project-specification.pdf",
+      "role": "specification",
+      "revision_label": null
+    },
+    {
+      "file": "02-customer-purchase-order.pdf",
+      "role": "purchase_order",
+      "revision_label": null
+    },
+    {
+      "file": "03-accepted-exception.pdf",
+      "role": "accepted_exception",
+      "revision_label": null
+    },
+    {
+      "file": "04-approval-drawing-Rev-B.pdf",
+      "role": "drawing",
+      "revision_label": "B"
+    },
+    {
+      "file": "05-customer-markups-Rev-B.pdf",
+      "role": "markup",
+      "revision_label": "B"
+    },
+    {
+      "file": "04-approval-drawing-Rev-C.pdf",
+      "role": "drawing",
+      "revision_label": "C"
+    },
+    {
+      "file": "07-bom-Rev-B.pdf",
+      "role": "bom",
+      "revision_label": "B"
+    },
+    {
+      "file": "08-supplier-PO-Rev-B.pdf",
+      "role": "supplier_po",
+      "revision_label": "B"
+    },
+    {
+      "file": "09-nameplate-Rev-B.pdf",
+      "role": "nameplate",
+      "revision_label": "B"
+    }
+  ],
+  "precedence": [
+    {
+      "attribute": "short_circuit_ka",
+      "effective": 85,
+      "source_role": "purchase_order",
+      "overridden": 65
+    },
+    {
+      "attribute": "bus_material",
+      "effective": "aluminum",
+      "source_role": "accepted_exception",
+      "overridden": "copper"
+    }
+  ],
+  "rev_b_failed_attributes": [
+    "main_breaker_trip_a",
+    "enclosure_type",
+    "communications_protocol",
+    "cable_entry",
+    "enclosure_width_mm",
+    "nameplate_text",
+    "short_circuit_ka"
+  ],
+  "rev_c_resolved_attributes": [
+    "main_breaker_trip_a",
+    "enclosure_type",
+    "communications_protocol",
+    "cable_entry",
+    "enclosure_width_mm",
+    "nameplate_text"
+  ],
+  "rev_c_still_failed_attributes": [
+    "short_circuit_ka"
+  ],
+  "claimed_fixed_but_unchanged": {
+    "comment": "7",
+    "attribute": "short_circuit_ka",
+    "before": 65,
+    "after": 65,
+    "required": 85
+  },
+  "comment_count": 11,
+  "conflicts_with_exception": [
+    "8"
+  ],
+  "already_supported_comments": [
+    "9",
+    "10"
+  ],
+  "manual_review_comments": [
+    "11"
+  ],
+  "unlabelled_annotations": [
+    "cloud-unlabelled-clearance"
+  ],
+  "propagation_targets": [
+    "bom",
+    "supplier_po",
+    "nameplate"
+  ],
+  "release": "Blocked: short-circuit rating, exception decision, and unresolved review evidence require disposition."
+}

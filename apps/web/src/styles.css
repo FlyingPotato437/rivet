@@ -1,6 +1,8 @@
 :root {
-  font-family: "Geist", sans-serif;
-  color: #e7e6eb;
+  --font-sans: "Onest", sans-serif;
+  --copy: #c2c4c9;
+  font-family: var(--font-sans);
+  color: var(--text);
   background: #08080a;
   font-synthesis: none;
   font-weight: 400;
@@ -9,13 +11,13 @@
   --surface: #101013;
   --surface2: #151519;
   --line: #25252b;
-  --muted: #898890;
-  --subtle: #5d5c64;
-  --text: #e7e6eb;
+  --muted: #9b9da2;
+  --subtle: #74777e;
+  --text: #e9eaeb;
   --violet: #b5a5e9;
   --green: #90bfa2;
   --amber: #cbb287;
-  --mono: "Geist Mono", monospace;
+  --mono: "IBM Plex Mono", monospace;
   color-scheme: dark;
 }
 * {
@@ -829,7 +831,7 @@ form > .form-row {
 }
 .project-value small {
   display: block;
-  font-family: "Geist", sans-serif;
+  font-family: var(--font-sans);
   font-size: 9px;
   color: #71677f;
   margin-top: 7px;
@@ -1133,7 +1135,7 @@ form > .form-row {
   margin: 0 4px;
 }
 .version-pill .status {
-  font-family: "Geist", sans-serif;
+  font-family: var(--font-sans);
   background: none;
   border: 0;
   font-size: 10px;
@@ -1181,7 +1183,7 @@ form > .form-row {
   color: #b6a5c4;
 }
 .review-summary small {
-  font-family: "Geist", sans-serif;
+  font-family: var(--font-sans);
   font-size: 11px;
   color: #7b6a8b;
 }
@@ -1375,7 +1377,7 @@ form > .form-row {
   color: #b7a5c3;
 }
 .quantity-cell small {
-  font-family: "Geist", sans-serif;
+  font-family: var(--font-sans);
   font-size: 8px;
   color: #6e5b7d;
   margin-top: 6px;
@@ -3195,7 +3197,7 @@ form > .form-row {
 }
 /* Rivet's working surface is neutral; light is reserved for attention and action. */
 :root {
-  --muted: #919097;
+  --muted: #9b9da2;
 }
 .topbar,
 .sidebar {

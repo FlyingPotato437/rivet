@@ -1,0 +1,131 @@
+.rivet-assembly {
+  position: relative;
+  width: 100%;
+  padding-block: 24px 28px;
+  background: transparent;
+  scroll-margin-top: 90px;
+}
+.rivet-assembly-heading {
+  width: min(100% - 40px, 700px);
+  margin-inline: auto;
+  text-align: center;
+}
+.rivet-assembly-heading h2 {
+  margin: 0;
+  color: #e9eaef;
+  font-family: var(--site-display, var(--font-sans, sans-serif));
+  font-weight: 500;
+  font-size: clamp(35px, 3.7vw, 54px);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+}
+.rivet-assembly-stage {
+  width: min(100%, 1440px);
+  height: clamp(380px, 35vw, 500px);
+  margin: 12px auto 0;
+  overflow: hidden;
+  contain: layout paint;
+}
+.rivet-assembly-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.rivet-assembly-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 21px;
+  margin: 0 20px;
+  color: #b9b7c2;
+  font-family: var(--site-sans, var(--font-sans, sans-serif));
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+}
+.rivet-assembly-caption i {
+  display: block;
+  height: 3px;
+  width: 3px;
+  flex: 0 0 3px;
+  border-radius: 50%;
+  background: #bf9eff;
+  box-shadow: 0 0 9px #9870f580;
+}
+.rivet-assembly-steps {
+  width: min(1120px, calc(100% - 100px));
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 25px;
+  margin: 24px auto 0;
+  padding: 20px 0 0;
+  list-style: none;
+  border-top: 1px solid #ffffff18;
+  font-family: var(--site-sans, var(--font-sans, sans-serif));
+}
+.rivet-assembly-steps li {
+  display: flex;
+  min-width: 0;
+  gap: 12px;
+}
+.rivet-assembly-steps li > span {
+  color: #80768f;
+  font-size: 10px;
+  margin-top: 3px;
+}
+.rivet-assembly-steps strong {
+  display: block;
+  color: #e5e3ec;
+  font-size: 13px;
+  font-weight: 500;
+}
+.rivet-assembly-steps p {
+  margin: 6px 0 0;
+  color: #9a97a5;
+  font-size: 11px;
+  line-height: 1.55;
+}
+@media (max-width: 900px) {
+  .rivet-assembly-heading h2 {
+    font-size: 42px;
+  }
+  .rivet-assembly-steps {
+    width: calc(100% - 56px);
+    gap: 18px;
+  }
+}
+@media (max-width: 600px) {
+  .rivet-assembly {
+    padding-block: 20px 24px;
+  }
+  .rivet-assembly-heading h2 {
+    font-size: clamp(31px, 8vw, 40px);
+  }
+  .rivet-assembly-stage {
+    height: clamp(280px, 82vw, 360px);
+    margin-top: 8px;
+  }
+  .rivet-assembly-caption {
+    gap: 15px;
+    font-size: 11px;
+  }
+  .rivet-assembly-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 16px;
+    margin-top: 22px;
+    padding-top: 18px;
+  }
+  .rivet-assembly-steps li {
+    gap: 9px;
+  }
+  .rivet-assembly-steps p {
+    font-size: 10px;
+    margin-top: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rivet-assembly {
+    scroll-behavior: auto;
+  }
+}

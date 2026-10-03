@@ -11,7 +11,7 @@ class ProjectCreate(Strict):
     title: str = Field(min_length=2, max_length=180)
     customer: str = Field(min_length=2, max_length=180)
     due_date: str | None = None
-    category: str = "Power distribution"
+    category: str = "Low-voltage switchgear"
 
 
 class LineInput(Strict):
@@ -71,6 +71,34 @@ class RunRequest(Strict):
 
 class Answer(Strict):
     answer: str = Field(min_length=1, max_length=8000)
+
+
+class ClarificationCreate(Strict):
+    title: str = Field(min_length=2, max_length=200)
+    question: str = Field(min_length=3, max_length=8000)
+    recipient: str = Field(default="", max_length=200)
+    due_date: str | None = None
+    line_ids: list[str] = Field(default_factory=list, max_length=100)
+    source_ids: list[str] = Field(default_factory=list, max_length=100)
+    run_id: str | None = None
+
+
+class ClarificationRevision(Strict):
+    expected_revision: int = Field(ge=1)
+
+
+class ClarificationUpdate(ClarificationRevision):
+    title: str | None = Field(default=None, min_length=2, max_length=200)
+    question: str | None = Field(default=None, min_length=3, max_length=8000)
+    recipient: str | None = Field(default=None, max_length=200)
+    due_date: str | None = None
+    status: Literal["draft", "awaiting_reply", "answered", "resolved"] | None = None
+    resolution_note: str | None = Field(default=None, max_length=4000)
+
+
+class ClarificationAnswer(ClarificationRevision):
+    answer: str = Field(min_length=1, max_length=8000)
+    source_ids: list[str] = Field(default_factory=list, max_length=100)
 
 
 class Mapping(Strict):
@@ -189,3 +217,4 @@ class WorkspaceView(BaseModel):
     history: list[dict]
     events: list[dict]
     runs: list[dict]
+    clarifications: list[dict] = Field(default_factory=list)

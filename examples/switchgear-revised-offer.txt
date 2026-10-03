@@ -1,0 +1,21 @@
+FICTIONAL DEMO REVISED OFFER — NOT A REAL SUPPLIER COMMITMENT
+
+Project: Northline Data Center · Switchgear demo
+Supplier: Fictional Switchgear Works
+Offer: DEMO-OFFER-002, supersedes DEMO-OFFER-001 for tag SG-01 only
+Equipment tag: SG-01
+Demo model: DEMO-LVSG-SECTION
+
+Updated scope: 10 identical configurable low-voltage switchgear sections, unit each. All ten sections are covered by this revised fictional offer.
+Supplier unit cost: USD 15,000.00 each.
+Supplier extended cost: 10 x USD 15,000.00 = USD 150,000.00.
+Supplier lead time: 18-20 weeks after approved submittals. This is a lead-time qualification, not a confirmed date at the customer site.
+The requested 14-week site-delivery target after order placement is NOT confirmed. Customer acceptance of the delivery difference remains outstanding.
+Freight, installation, taxes, engineering validation, and unlisted accessories remain excluded. No real electrical ratings or compliance claims are made.
+
+FICTIONAL INTERNAL ESTIMATOR WORKSHEET — HUMAN REVIEW REQUIRED
+Apply the team's existing 20% gross-margin rule to the revised supplier cost. This is gross margin, not markup.
+Selling unit price = USD 15,000.00 / (1 - 0.20) = USD 18,750.00.
+Proposed selling total = 10 x USD 18,750.00 = USD 187,500.00.
+Change from the original USD 140,000.00 quote: +USD 47,500.00.
+The pricing and quantity changes require human approval; the unresolved delivery condition must remain visible.

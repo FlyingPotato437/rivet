@@ -1,10 +1,14 @@
 # Rivet
 
-An evidence-first equipment quoting workspace. Rivet has its own product identity, with Lumina-inspired dark surfaces, crisp Geist typography, restrained lighting, and quiet motion. It is not a copy of Memorable's landing page.
+Rivet builds a comment and change record for custom equipment orders. The PM reviews extracted comments, links the correct drawing location, records the team's response, and preserves who requested or approved each change. Customer and production teams can receive the same reviewed record.
+
+The default workspace has **Comment log**, **Changes & history**, **Documents**, and **Approved record**. It supports any custom equipment category; the retained engineering checker remains scoped to its electrical attributes and is outside the primary flow. No fix suggestions or automatic sending are part of this version.
+
+[Current comment-record architecture and boundaries](docs/comment-record-architecture.md).
 
 ## Run locally
 
-The app is a single-user localhost prototype. Its PostgreSQL cluster is separate from your other projects.
+The app runs locally with Clerk sign-in and organization-scoped workspaces when keys are configured. Without Clerk, explicit local development remains available behind the loopback boundary. Its PostgreSQL cluster is separate from your other projects. See [accounts and email setup](docs/accounts-email-setup.md).
 
 ```sh
 cd /Users/srikanthsamy1/Desktop/CodeProjects/rivet
@@ -16,31 +20,59 @@ initdb -D .data/postgres --auth=trust --encoding=UTF8 --locale=C
 pg_ctl -D .data/postgres -l .data/postgres.log -o '-p 55432 -h 127.0.0.1' start
 createdb -h 127.0.0.1 -p 55432 rivet
 uv run alembic upgrade head
-uv run python -m backend.seed
+RIVET_AUTH_MODE=local uv run python -m backend.seed
 uv run python scripts/dev.py
 ```
+
+After pulling updates, run `uv run alembic upgrade head` before starting the API and worker.
 
 On this machine the database is already initialized. After a reboot, start that cluster with the `pg_ctl` command, then run `uv run python scripts/dev.py`.
 
 Open **http://127.0.0.1:5178**. API documentation is at **http://127.0.0.1:8787/docs**. The launcher starts the web UI, FastAPI, and a separate durable worker; Ctrl-C stops them. Database shutdown is explicit: `pg_ctl -D .data/postgres stop`.
 
-## What works
+## The order workflow
 
-- A full public-facing homepage at `/`: a dimensional animated Rivet mark, scroll-driven product reveal, pinned workflow story, interactive read-only sample quote, features, FAQs, and footer. Open the app at `/#projects`; the workspace logo returns home. Motion respects reduced-motion preferences, with direct step controls on small screens.
+Open `/#orders` for the order feed. `/#decisions` filters orders with comments needing review. The current workspace has **Comment log**, **Changes & history**, **Documents**, and **Approved record**.
 
-- Projects, exact-decimal quote lines, quantity editing with keyboard controls, cost/price edits with reasons, explicit gross margin versus markup, catalog selection, line review, and terms.
-- Private original uploads: text PDFs, CSV, XLSX, and text. Source lines, PDF word geometry, sheet/cell locations, formulas, and per-page/sheet coverage are retained. Missing formula caches and scanned pages are flagged.
-- User-confirmed spreadsheet column mapping for schedules, existing quotes, addenda, catalog records, and supplier offers. Missing costs stay unknown. Duplicate conflicting rows are rejected. Partial addenda preserve omitted equipment.
-- Pending atomic proposals, original/changed value comparisons, source citations, requirement coverage, immutable quote revisions, optimistic concurrency, checked restoration, and idempotent retries.
-- Approval of a specific quote/input revision. Uploads and meaningful edits invalidate current approval. Customer PDF and XLSX exports come from the approved immutable snapshot and exclude internal costs, margins, and source attachments.
-- A separate PostgreSQL-backed worker with row locks, leases, recovery, and checkpoints. An OpenAI Responses adapter provides a bounded tool loop, source-scoped reads, actual catalog/offer lookup, deterministic math, tentative overlays, validation, no-progress detection, cancellation, and human-input pause/resume.
-- Synthetic starter projects and example import files. All sample equipment, suppliers, offers, pricing, delivery wording, and review states are fictional.
+1. Create an order in any equipment category. Add marked-up PDFs, drawings, or saved EML emails with attachments. Specify the revision you know; unknown values remain unconfirmed.
+2. Review imported comments beside their original source. Native PDF annotations retain their author, source date, page, and region. The source page and the drawing a comment refers to are separate fields. Scanned areas require transcription.
+3. Correct the extracted text, link the actual drawing location, record a response and its author, and set open/responded/closed explicitly. Each save retains the original text, actor, reason, and before/after values.
+4. Compare two source documents, then record confirmed changes with before/after values, linked comments, requester, approver, and date. Text comparison does not inspect drawing geometry.
+5. Ask questions through the Rivet bar. Answers cite the supplied order sources and records. Questions never modify the record or send messages.
+6. Once each comment is reviewed, approve a frozen record. Create a read-only local link or export Excel/PDF. Future edits remain in the working version.
+7. Add customer, manufacturer, and production recipients. Relevant updates create notice drafts. Download a draft or explicitly review and send it through Resend after configuring a verified sender.
 
-## Model connection
+The prior quote tools remain under **Quote tools**. The engineering engine, obligation ledger, release checks, and synthetic Larkspur fixtures are retained for later stages; see [the earlier engine architecture](docs/order-architecture.md). They are not the current PM workflow.
 
-Set `OPENAI_API_KEY` and `OPENAI_MODEL` in `.env` and restart the API/worker. Both remain server-side. This machine's existing authorized OpenAI key was reused without printing it. The adapter sets `store: false`. Starting an assistant run sends the relevant project context and requested source excerpts to OpenAI; ordinary manual editing and mapped imports run locally.
+## Test with real documents
 
-The assistant's authority ends at a pending proposal or clarification. It cannot approve, export, send messages, purchase, or execute arbitrary code. Human answers are labeled human-entered, not supplier confirmations. Model output and all source instructions remain untrusted and pass domain validation.
+[Public-document test report and limitations](docs/public-document-validation.md).
+
+```sh
+uv run --with pypdf python scripts/prepare_public_documents.py
+RIVET_PUBLIC_DOCUMENTS=1 uv run pytest tests/test_public_documents.py -q -s
+# With the local app and worker running, create two clearly labeled sample orders:
+uv run python scripts/seed_public_records.py
+```
+
+Preparation verifies original SHA-256 hashes and preserves selected original pages and annotations. The manifest records original page numbers. Neither script resets existing orders or marks comments approved. Tests use the separate `rivet_test` database.
+
+## Implemented architecture
+
+- `backend/records/service.py`: versioned comments, change records, audit events, frozen approvals, notices, and token-scoped shares.
+- `backend/records/assistant.py`: read-only questions with validated source/comment/change references and no mutation tools.
+- `backend/records/api.py`: application endpoints and saved-email attachment intake.
+- `backend/records/exports.py`: Excel comment/change logs and PDF response matrices.
+- `backend/ingestion/parser.py`: durable parsing of immutable originals, source areas, annotations and email metadata.
+- `apps/web/src/RecordFeed.tsx`, `RecordWorkspace.tsx`, and `OrderEvidence.tsx`: the current workspace and PDF source review.
+
+## Model connection and integration boundary
+
+The existing server-side connection uses `OPENAI_API_KEY` and `OPENAI_MODEL` in `.env`. Restart the API and worker after changing them. Keys never belong in frontend code. Comment extraction, manual review, source inspection, text comparisons, and exports work without a model key. Questions in the Rivet bar use the configured model and send bounded order context with `store: false`. No additional key is required when this connection is already configured.
+
+The previous engineering workflow remains in the code and API for later stages. The current record workflow adds EML import, editable comments, source-linked text comparisons, frozen approvals, local read-only links, recipient lists, notice drafts, and Excel/PDF logs. Mailbox synchronization beyond Resend, Outlook drafts, scan/vision interpretation, CAD attribute reads/edits, ERP writes, pricing-rule integration, reviewer profiles, and learned checks are extension stages. They are not shown as connected. Clerk sign-in, organization isolation, authenticated downloads, Resend intake, and explicit notice sending are implemented. Hosting, a production Clerk instance, and receiving/sending domain configuration remain deployment steps. See [accounts and email setup](docs/accounts-email-setup.md).
+
+The existing decimal-pricing quote workspace remains available; it has not been represented as an automated engineering change-pricing service. [Retained quote workflow](docs/quote-workflow.md).
 
 ## Verify
 
@@ -50,37 +82,30 @@ uv run pytest -q
 npm run build
 ```
 
-Tests use a dedicated `rivet_test` database, rebuilding only its schema. They cover decimal pricing, stale writes, concurrent writers, idempotency, transaction rollback, tenant isolation, cross-project evidence, spreadsheet mapping, partial addenda, formula coverage, approval invalidation, snapshot exports, internal-field leakage, lease recovery, checked restoration, and a simulated adaptive agent pause/resume.
+Tests rebuild only the dedicated `rivet_test` schema. Order coverage includes precedence, alias decisions, rejected/stale proposals, immutable history, conflicting sources, real PDF markup extraction, fabricated “fixed” claims, downstream evidence, signed waivers, exact-snapshot release, idempotency, exports, and cross-order evidence isolation. Prior quote/coordination tests remain in the suite.
 
-PDF export uses locally installed Google Chrome, or Playwright's Chromium if Chrome is unavailable (`uv run playwright install chromium`). The checked-in OpenAPI file generates the frontend request and response types:
+Regenerate API types after changing routes:
 
 ```sh
 uv run python scripts/schema.py
 node node_modules/openapi-typescript/bin/cli.js docs/openapi.json -o apps/web/src/api-schema.d.ts
 ```
 
-## Architecture
+## Data
 
-`apps/web`: React, TypeScript, Vite, TanStack Query/Table, PDF.js, self-hosted Geist fonts.
+See [data retention](docs/data-retention.md). Originals and prior snapshots are retained. `.data` contains the local database and private uploads; do not remove it to upgrade the app. Migrations add the order tables without replacing the existing quote schema.
 
-`backend/api`: typed FastAPI requests, localhost/host/origin boundary, command and review endpoints.
+## Try the authenticated public-document demo
 
-`backend/domain`: Decimal pricing, validation, transactions, immutable snapshots, approvals, customer allowlist, PDF/XLSX export.
+With Clerk development keys, Postgres, and the worker running:
 
-`backend/ingestion`: private original storage, PDF/spreadsheet/text parsers, coverage and confirmed mappings.
+```sh
+uv run --with pypdf python scripts/prepare_public_documents.py
+uv run python -m scripts.setup_demo
+```
 
-`backend/agents`: server-side model gateway and resumable tool/verification loop. Only observable tool requests, outputs, plans and concise summaries are persisted, not hidden reasoning.
+Restart Rivet and open `http://127.0.0.1:5178/#orders` → **Try the demo**. This signs into a separate Clerk development team with two real public review packages. No signup, password, or inbox code is required. Setup is repeatable and preserves edits; it uses normal document ingestion and never copies existing teams. Use this public practice team only for demo files. Personal accounts and teams remain separate.
 
-`backend/storage`: SQLAlchemy models, PostgreSQL, jobs and blob storage. `migrations` contains the initial Alembic migration. Runtime files live under ignored `.data`; secrets under ignored `.env`.
+The drawing review contains 13 native annotations; the scanned package exposes two areas for manual transcription. Use **Review next**, open the original source (with zoom and publisher page mapping), record your response, and **Save & next**. Connected records link the original annotation, PM-selected drawing, email, change, and history. All reviews remain explicit. The agent answers with citations and cannot change records or send messages.
 
-## Prototype boundaries
-
-This is not a shared production deployment. The app refuses non-local clients and explicitly refuses `RIVET_LOCAL_ONLY=false`. Before a shared pilot, add authenticated server sessions, organization membership and role enforcement, composite tenant foreign keys, CSRF/session policy, an isolated storage adapter, deployment controls, and tenant migration tests. The prototype uses a fixed development organization and identity; passing tenant-isolation tests does not make it a multi-user product.
-
-Initial catalog checks establish identity, offer units, currency, expiry and quantity coverage. They do not certify engineering equivalence. Requirement coverage currently models explicit equipment tags and quantities; arbitrary technical clauses and semantic precedence require estimator review. Unreadable scans need transcription, and PDF geometry highlights are approximate. There is no OCR, live inventory, external sending, inbox/ERP integration, automatic engineering design, tax calculation, commission pricing, multi-currency, or guaranteed arrival-date calculation.
-
-The worker limits retries and steps, but a production queue should add parse-process resource isolation, heartbeat observability, configurable cost accounting, scheduled retry backoff and operator retry controls. The agent keeps finite progress and can stop for human input; a full held-out customer-package evaluation, organization memory approval workflow, and production adaptive-agent acceptance remain required before pilot claims.
-
-## Data retention and backup
-
-See [docs/data-retention.md](docs/data-retention.md). No originals are overwritten. Do not delete `.data` unless deliberately resetting a disposable workspace; it contains the database and private uploads.
+See [demo and account setup](docs/accounts-email-setup.md), [public document results](docs/public-document-validation.md), and [record relationships](docs/comment-record-architecture.md). Live email forwarding and remote share links still require the documented domain/provider and hosting setup.

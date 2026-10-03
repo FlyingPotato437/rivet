@@ -4,7 +4,7 @@ from datetime import date
 from decimal import Decimal
 from fastapi import HTTPException
 from sqlalchemy import select
-from backend.storage.db import ORG, ACTOR
+from backend.identity import current_org, current_actor
 from backend.storage.models import (
     Project,
     Quote,
@@ -19,6 +19,7 @@ from backend.storage.models import (
     Catalog,
     Offer,
     Idempotency,
+    Clarification,
     uid,
 )
 from .pricing import dec, money, extended, gross_margin, markup
@@ -36,7 +37,7 @@ def digest(obj):
 
 
 def scoped(cls):
-    return select(cls).where(cls.organization_id == ORG)
+    return select(cls).where(cls.organization_id == current_org())
 
 
 def get(s, cls, id, lock=False):
@@ -97,7 +98,8 @@ def snapshot(s, q, p):
     }
 
 
-def save_version(s, q, p, summary, actor=ACTOR):
+def save_version(s, q, p, summary, actor=None):
+    actor = actor or current_actor()
     s.flush()
     data = snapshot(s, q, p)
     s.add(
@@ -170,6 +172,16 @@ def checks(s, q, p):
         add(
             "reconcile",
             "Review new source documents and reconcile the quote with this input revision.",
+        )
+    for issue in s.scalars(
+        scoped(Clarification).where(
+            Clarification.project_id == p.id, Clarification.status != "resolved"
+        )
+    ):
+        add(
+            "clarification",
+            f"{issue.title}: {'answer needs review' if issue.status == 'answered' else 'clarification remains open'}.",
+            issue.line_ids[0] if len(issue.line_ids) == 1 else None,
         )
     for d in docs(s, p):
         if d.state not in ("ready", "mapped"):
@@ -393,7 +405,7 @@ def apply_operation(s, q, p, op):
             meta.pop("calculation", None)
         else:
             meta.pop("calculation", None)
-        meta["override"] = {"actor": ACTOR, "reason": op.reason}
+        meta["override"] = {"actor": current_actor(), "reason": op.reason}
     elif typ == "update_description":
         if not (op.value or "").strip():
             fail("Description is required.")
@@ -425,7 +437,7 @@ def apply_operation(s, q, p, op):
         if l.price is None or l.cost is None:
             fail("Add supplier cost and selling price before approving this line.")
         l.review = "approved"
-        meta["review_actor"] = ACTOR
+        meta["review_actor"] = current_actor()
         meta["review_reason"] = op.reason
     elif typ == "attach_evidence":
         pass
@@ -464,7 +476,7 @@ def apply_operation(s, q, p, op):
             else "human entered",
             "source_ids": op.source_ids,
             "review": "unreviewed",
-            "actor": ACTOR,
+            "actor": current_actor(),
         }
         meta["field_evidence"] = field_evidence
     if typ == "review_line":
@@ -487,6 +499,7 @@ def command(s, q, p, operations, summary="Updated quote"):
 def idempotent(s, key, body, action):
     if not key or len(key) > 160:
         fail("A valid idempotency key is required.")
+    key = current_org() + ":" + key
     prior = s.scalar(scoped(Idempotency).where(Idempotency.key == key))
     fingerprint = digest(body)
     if prior:

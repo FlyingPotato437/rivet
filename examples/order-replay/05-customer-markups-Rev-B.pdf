@@ -1,0 +1,54 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R /Annots [6 0 R 7 0 R] >>
+endobj
+5 0 obj
+<< /Length 1374 >>
+stream
+BT /F1 17 Tf 42 795 Td (Larkspur DC-04 / customer engineer markups) Tj /F1 8 Tf 0 -22 Td (FICTIONAL REPLAY - not a design certification or commercial offer) Tj ET
+BT /F1 9 Tf 42 747 Td (Document role: markup) Tj ET
+BT /F1 9 Tf 42 729 Td (Revision: B) Tj ET
+BT /F1 9 Tf 42 711 Td (Comment 1 | MSB-01 | main_breaker_trip_a: 3000 A | Revise the main trip setting.) Tj ET
+BT /F1 9 Tf 42 693 Td (Comment 2 | MSB-01 | enclosure_type: NEMA 3R | Show the specified enclosure.) Tj ET
+BT /F1 9 Tf 42 675 Td (Comment 3 | MSB-01 | communications_protocol: Modbus TCP | Match the controls schedule.) Tj ET
+BT /F1 9 Tf 42 657 Td (Comment 4 | MSB-01 | cable_entry: top | Coordinate top-entry cables.) Tj ET
+BT /F1 9 Tf 42 639 Td (Comment 5 | MSB-01 | enclosure_width_mm: 2400 mm | Correct the overall width.) Tj ET
+BT /F1 9 Tf 42 621 Td (Comment 6 | MSB-01 | nameplate_text: MSB-01 / 480 V / 85 kA | Correct the label.) Tj ET
+BT /F1 9 Tf 42 603 Td (Comment 8 | MSB-01 | bus_material: copper | Provide copper per specification.) Tj ET
+BT /F1 9 Tf 42 585 Td (Comment 9 | MSB-01 | metering: multifunction | Confirm the meter type shown.) Tj ET
+BT /F1 9 Tf 42 567 Td (Comment 10 | MSB-01 | bus_plating: silver | Confirm bus plating.) Tj ET
+BT /F1 9 Tf 42 549 Td (Comment 11 | MSB-01 | Confirm lifting-eye clearance; detail is unclear.) Tj ET
+BT /F1 8 Tf 42 30 Td (Rivet replay / page 1) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Annot /Subtype /FreeText /Rect [80 180 530 250] /Contents (Comment 7 | MSB-01 | short_circuit_ka: 85 kA | Match the purchase order rating.) /NM (review-comment-7) /C [0.55 0.28 0.85] /F 4 /DA (/Helvetica 9 Tf 0.5 0.1 0.5 rg) >>
+endobj
+7 0 obj
+<< /Type /Annot /Subtype /Polygon /Rect [350 92 560 165] /Contents () /NM (cloud-unlabelled-clearance) /C [0.55 0.28 0.85] /F 4 /Vertices [350 92 560 92 560 165 350 165] /BE << /S /C /I 1 >> >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000000339 00000 n 
+0000001764 00000 n 
+0000002017 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+2226
+%%EOF

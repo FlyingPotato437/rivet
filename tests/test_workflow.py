@@ -653,3 +653,143 @@ def test_manual_quantity_change_preserves_source_requirement_failure(client):
     assert "requirement_quantity" in {
         x["code"] for x in workspace(client, p)["quote"]["checks"]
     }
+
+
+def test_example_package_complete_quote_lifecycle(client):
+    """The downloadable examples must complete the user-facing happy path."""
+    from pathlib import Path
+
+    examples = Path(__file__).resolve().parents[1] / "examples"
+    p = project(client)
+    d = upload(
+        client,
+        p,
+        "equipment-schedule.csv",
+        (examples / "equipment-schedule.csv").read_bytes(),
+    )
+    w = workspace(client, p)
+    fields = (
+        "tag",
+        "description",
+        "quantity",
+        "unit",
+        "model",
+        "cost",
+        "price",
+        "lead_time",
+    )
+    response = post(
+        client,
+        "/documents/" + d["id"] + "/mapping",
+        {
+            "expected_input_revision": w["quote"]["input_revision"],
+            "mapping": {field: field for field in fields},
+            "purpose": "schedule",
+        },
+    )
+    assert response.status_code == 200, response.text
+    w = workspace(client, p)
+    assert not w["quote"]["lines"]
+    response = post(
+        client, "/proposals/" + w["proposals"][0]["id"] + "/accept", request(w)
+    )
+    assert response.status_code == 200, response.text
+    w = workspace(client, p)
+    assert w["quote"]["total"] == "92000.00"
+    assert all(line["model"].startswith("DEMO-") for line in w["quote"]["lines"])
+    pdu = next(line for line in w["quote"]["lines"] if line["tag"] == "PDU-A")
+    response = cmd(
+        client,
+        w,
+        [
+            {
+                "type": "set_lead_time",
+                "line_id": pdu["id"],
+                "value": pdu["lead_time"] + "; Test revision",
+                "expected_before": pdu["lead_time"],
+                "reason": "Exercise manual revision workflow",
+            }
+        ],
+    )
+    assert response.status_code == 200, response.text
+
+    def approve_current():
+        current = workspace(client, p)
+        response = cmd(
+            client,
+            current,
+            [
+                {
+                    "type": "review_line",
+                    "line_id": line["id"],
+                    "reason": "Reviewed fictional test equipment",
+                }
+                for line in current["quote"]["lines"]
+            ],
+        )
+        assert response.status_code == 200, response.text
+        current = workspace(client, p)
+        assert not current["quote"]["checks"], current["quote"]["checks"]
+        response = post(
+            client, "/quotes/" + current["quote"]["id"] + "/approve", request(current)
+        )
+        assert response.status_code == 200, response.text
+        return workspace(client, p)
+
+    w = approve_current()
+    first_exports = {}
+    for fmt in ("pdf", "xlsx"):
+        response = post(
+            client, "/quotes/" + w["quote"]["id"] + "/exports?format=" + fmt, request(w)
+        )
+        assert response.status_code == 200, response.text
+        url = response.json()["url"]
+        first_exports[fmt] = (url, client.get(url).content)
+        assert first_exports[fmt][1].startswith(b"%PDF" if fmt == "pdf" else b"PK")
+
+    addendum = upload(
+        client,
+        p,
+        "addendum-02.csv",
+        (examples / "addendum-02.csv").read_bytes(),
+        "addendum",
+    )
+    w = workspace(client, p)
+    assert w["quote"]["status"] == "draft"
+    assert (
+        post(
+            client, "/quotes/" + w["quote"]["id"] + "/exports?format=pdf", request(w)
+        ).status_code
+        == 422
+    )
+    response = post(
+        client,
+        "/documents/" + addendum["id"] + "/mapping",
+        {
+            "expected_input_revision": w["quote"]["input_revision"],
+            "mapping": {field: field for field in ("tag", "quantity", "lead_time")},
+            "purpose": "addendum",
+        },
+    )
+    assert response.status_code == 200, response.text
+    w = workspace(client, p)
+    proposal = next(pr for pr in w["proposals"] if pr["status"] == "pending")
+    response = post(client, "/proposals/" + proposal["id"] + "/accept", request(w))
+    assert response.status_code == 200, response.text
+    w = workspace(client, p)
+    assert w["quote"]["total"] == "112000.00"
+    assert {line["tag"]: line["quantity"] for line in w["quote"]["lines"]} == {
+        "PDU-A": "10",
+        "TX-A": "2",
+    }
+    w = approve_current()
+    for fmt in ("pdf", "xlsx"):
+        response = post(
+            client, "/quotes/" + w["quote"]["id"] + "/exports?format=" + fmt, request(w)
+        )
+        assert response.status_code == 200, response.text
+        url = response.json()["url"]
+        assert url != first_exports[fmt][0]
+        assert client.get(url).content.startswith(b"%PDF" if fmt == "pdf" else b"PK")
+        assert client.get(first_exports[fmt][0]).content == first_exports[fmt][1]
+    assert len(w["history"]) >= 6

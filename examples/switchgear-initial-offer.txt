@@ -1,0 +1,20 @@
+FICTIONAL DEMO DATA — NOT A REAL SUPPLIER OFFER OR ENGINEERING CONFIGURATION
+
+Project: Northline Data Center · Switchgear demo
+Supplier: Fictional Switchgear Works
+Offer: DEMO-OFFER-001, initial scope
+Equipment tag: SG-01
+Description: Configurable low-voltage switchgear sections represented as identical commercial placeholders. No voltage rating, fault rating, protection selection, compliance claim, or engineering design is supplied by this fixture.
+Demo model: DEMO-LVSG-SECTION
+
+This offer covers exactly 8 sections, unit each.
+Supplier cost: USD 14,000.00 per section, USD 112,000.00 for 8 sections.
+Quantities above 8 are outside this offer. Updated supplier pricing and scope confirmation are required before quoting 10 sections; the eight-section price must not be assumed to cover ten.
+Supplier lead time: 16-18 weeks after approved submittals. This is not a confirmed delivery date at the job site.
+Freight, installation, taxes, engineering validation, and unlisted accessories are excluded.
+
+FICTIONAL INTERNAL ESTIMATOR WORKSHEET
+The existing quote uses a team-approved 20% gross-margin pricing rule, not 20% markup.
+Formula: selling unit price = supplier unit cost / (1 - 0.20), rounded to cents.
+For the original eight-section scope: USD 14,000.00 / 0.80 = USD 17,500.00 selling price per section; existing quote total USD 140,000.00.
+People must review product selections and commercial commitments. This worksheet is test data only.

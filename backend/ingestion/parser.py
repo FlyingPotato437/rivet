@@ -16,7 +16,7 @@ from backend.storage.db import BLOBS
 from backend.domain.service import get, scoped, lines, validate_sources, fail
 from backend.domain.schemas import LineInput, Operation
 
-ALLOWED = {".pdf", ".csv", ".xlsx", ".txt"}
+ALLOWED = {".pdf", ".csv", ".xlsx", ".txt", ".eml"}
 FIELDS = (
     "tag",
     "description",
@@ -69,7 +69,41 @@ def parse(s, d):
         spans.append(sp)
         return sp
 
-    if ext == ".csv":
+    if ext == ".eml":
+        from email import policy
+        from email.parser import BytesParser
+
+        message = BytesParser(policy=policy.default).parsebytes(path.read_bytes())
+        part = message.get_body(preferencelist=("plain",))
+        body = part.get_content() if part else ""
+        d.meta = {
+            **d.meta,
+            "email": {
+                "subject": str(message.get("Subject", "")),
+                "from": str(message.get("From", "")),
+                "to": str(message.get("To", "")),
+                "date": str(message.get("Date", "")),
+                "message_id": str(message.get("Message-ID", "")),
+            },
+        }
+        if body.strip():
+            span(
+                body.strip(),
+                {
+                    "label": "Email body",
+                    "author": str(message.get("From", "")),
+                    "authored_at": str(message.get("Date", "")),
+                    "email": True,
+                },
+            )
+        coverage = [
+            {
+                "label": "Email",
+                "state": "processed" if body.strip() else "unsupported",
+                "detail": "Plain-text email body; attachments are imported separately.",
+            }
+        ]
+    elif ext == ".csv":
         text = path.read_text(encoding="utf-8-sig")
         reader = csv.DictReader(io.StringIO(text))
         headers = reader.fieldnames or []
@@ -150,12 +184,25 @@ def parse(s, d):
             for n, page in enumerate(pdf.pages, 1):
                 text = page.extract_text() or ""
                 if not text.strip():
+                    unreadable = bool(page.images or page.curves)
+                    page_source = (
+                        span(
+                            "",
+                            {
+                                "page": n,
+                                "bbox": [0, 0, 1, 1],
+                                "approximate": True,
+                                "unreadable": True,
+                            },
+                        )
+                        if unreadable
+                        else None
+                    )
                     coverage.append(
                         {
                             "label": f"Page {n}",
-                            "state": "scanned"
-                            if page.images or page.curves
-                            else "empty",
+                            "state": "scanned" if unreadable else "empty",
+                            "source_id": page_source.id if page_source else None,
                             "detail": "No extractable text. Transcription or visual review required.",
                         }
                     )
@@ -181,6 +228,31 @@ def parse(s, d):
                     )
                 coverage.append(
                     {"label": f"Page {n}", "state": "processed", "words": len(words)}
+                )
+        # PDF annotation objects carry review comments separately from page text.
+        from backend.orders.extraction import parse_pdf_annotations
+
+        for annotation in parse_pdf_annotations(path):
+            span(
+                annotation["text"],
+                {
+                    "page": annotation["page"],
+                    "bbox": annotation["bbox"],
+                    "annotation_id": annotation["id"],
+                    "annotation_type": annotation["kind"],
+                    "author": annotation.get("author", ""),
+                    "authored_at": annotation.get("authored_at", ""),
+                    "approximate": False,
+                },
+            )
+            if annotation.get("needs_review"):
+                coverage.append(
+                    {
+                        "label": f"Page {annotation['page']} annotation",
+                        "annotation_id": annotation["id"],
+                        "state": "unsupported",
+                        "detail": "A graphical annotation has no extractable text. Manual interpretation is required.",
+                    }
                 )
     else:
         text = path.read_text(encoding="utf-8-sig")

@@ -1,0 +1,170 @@
+.auth-page {
+  min-height: 100svh;
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 5%, #28233155, transparent 55%), #101114;
+  color: #f1f0f5;
+}
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  margin-bottom: 44px;
+}
+.auth-brand svg {
+  width: 28px;
+  height: 28px;
+}
+.auth-panel {
+  width: min(100%, 480px);
+  padding: 36px;
+  border: 1px solid #33333b;
+  border-radius: 16px;
+  background: #18191d;
+}
+.auth-kicker {
+  font-size: 12px;
+  color: #c3b2e5;
+  margin-bottom: 18px;
+}
+.auth-panel h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  margin: 0 0 16px;
+}
+.auth-panel p {
+  color: #b8b5c4;
+  line-height: 1.6;
+}
+.auth-actions {
+  display: flex;
+  gap: 12px;
+  margin: 28px 0;
+}
+.auth-actions button {
+  min-height: 44px;
+}
+.auth-footnote {
+  font-size: 13px;
+  color: #a29ead;
+  margin: 24px 0;
+}
+.auth-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 8px;
+  min-width: 0;
+}
+.auth-account > div {
+  min-width: 0;
+}
+.auth-account strong {
+  display: block;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+.auth-account small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+.auth-team-switch {
+  margin: 16px 0 28px;
+  padding: 8px 2px;
+  border-block: 1px solid var(--border);
+}
+.auth-team-switch .cl-organizationSwitcherTrigger {
+  width: 100%;
+  color: inherit;
+  padding: 8px;
+  justify-content: space-between;
+}
+.auth-team-switch .cl-rootBox {
+  width: 100%;
+}
+.auth-team-settings {
+  margin-top: 36px;
+}
+.auth-team-settings > p {
+  color: var(--muted);
+}
+.auth-team-settings .cl-cardBox {
+  width: 100%;
+  max-width: 100%;
+  box-shadow: none;
+}
+.auth-team-settings .cl-rootBox {
+  max-width: 100%;
+}
+.auth-panel .cl-rootBox,
+.auth-panel .cl-cardBox {
+  max-width: 100%;
+  box-shadow: none;
+}
+.auth-panel .cl-card {
+  padding: 0;
+  background: transparent;
+}
+.auth-inline-error {
+  color: #eeb5b5;
+  font-size: 13px;
+}
+.auth-demo {
+  border-top: 1px solid #36313f;
+  padding: 24px 0;
+  margin-top: 24px;
+}
+.auth-demo p {
+  font-size: 13px;
+  margin: 10px 0 18px;
+}
+.auth-demo > button {
+  width: 100%;
+  min-height: 44px;
+}
+.auth-download {
+  position: fixed;
+  z-index: 200;
+  bottom: 24px;
+  right: 24px;
+  max-width: calc(100vw - 48px);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  border: 1px solid #68567c;
+  border-radius: 10px;
+  background: #24202d;
+  box-shadow: 0 8px 30px #0005;
+  font:
+    12px/1.5 Onest,
+    sans-serif;
+  color: #e9e1f2;
+}
+.auth-download strong {
+  display: block;
+  font-weight: 500;
+}
+.auth-download a {
+  color: #dfc7ff;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.auth-download button {
+  font-size: 20px;
+  padding: 0 4px;
+}

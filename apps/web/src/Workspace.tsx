@@ -1,4 +1,7 @@
+import { authorizationHeaders } from "./api";
 import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -21,7 +24,9 @@ import {
   GitDiff,
   Clock,
   LinkSimple,
-  Sparkle,
+  ChatCircleText,
+  CaretDown,
+  SidebarSimple,
   PaperPlaneRight,
   WarningCircle,
   CheckCircle,
@@ -54,6 +59,22 @@ import {
   type Operation,
 } from "./api";
 import { Mark, Status, Modal, Empty, ErrorNote, Busy } from "./ui";
+import { BidCoordinator } from "./BidCoordinator";
+import "./workspace-refinement.css";
+
+function projectLocation() {
+  const query = location.hash.split("?")[1] ?? "";
+  const params = new URLSearchParams(query);
+  const requested = params.get("tab") ?? query.split("&")[0];
+  return {
+    tab: ["coordination", "quote", "sources", "changes", "history"].includes(
+      requested,
+    )
+      ? requested
+      : "coordination",
+    issue: params.get("issue"),
+  };
+}
 
 type Props = {
   id: string;
@@ -72,13 +93,35 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
     queryFn: () => api<Workspace>("/projects/" + id),
     refetchInterval: 2500,
   });
-  const [tab, setTab] = useState(
-    location.hash.includes("?changes") ? "changes" : "quote",
+  const [tab, setTabState] = useState(() => projectLocation().tab);
+  const [issueId, setIssueId] = useState<string | null>(
+    () => projectLocation().issue,
+  );
+  const [reviewRequest, setReviewRequest] = useState(0);
+  const setTab = useCallback(
+    (nextTab: string) => {
+      setTabState(nextTab);
+      setIssueId(null);
+      if (nextTab !== "coordination") setReviewRequest(0);
+      location.hash = `project/${id}?${nextTab}`;
+    },
+    [id],
+  );
+  const selectIssue = useCallback(
+    (nextIssue: string | null) => {
+      setIssueId(nextIssue);
+      setTabState("coordination");
+      location.hash = `project/${id}?coordination${nextIssue ? `&issue=${encodeURIComponent(nextIssue)}` : ""}`;
+    },
+    [id],
   );
   const [selected, setSelected] = useState<string | null>(null);
   const [checked, setChecked] = useState<string[]>([]);
   const [showCosts, setShowCosts] = useState(false);
-  const [panel, setPanel] = useState<"evidence" | "assistant">("evidence");
+  const [panel, setPanel] = useState<"evidence" | "assistant" | null>(null);
+  const [showChecks, setShowChecks] = useState(false);
+  const inspectorRef = useRef<HTMLElement>(null);
+  const inspectorOpen = panel !== null;
   const [modal, setModal] = useState<string | null>(null);
   const [viewer, setViewer] = useState<{ doc: Doc; sourceId?: string } | null>(
     null,
@@ -88,16 +131,54 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
   const [actionError, setActionError] = useState("");
   const [query, setQuery] = useState("");
   useEffect(() => {
-    setTab(location.hash.includes("?changes") ? "changes" : "quote");
+    const syncRoute = () => {
+      const route = projectLocation();
+      setTabState(route.tab);
+      setIssueId(route.issue);
+      if (route.tab !== "coordination") setReviewRequest(0);
+    };
+    syncRoute();
+    window.addEventListener("hashchange", syncRoute);
     setSelected(null);
+    setPanel(null);
+    setShowChecks(false);
     setChecked([]);
     setActionError("");
+    setReviewRequest(0);
+    return () => window.removeEventListener("hashchange", syncRoute);
   }, [id]);
+  useEffect(() => {
+    if (!inspectorOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const frame = requestAnimationFrame(() => {
+      inspectorRef.current
+        ?.querySelector<HTMLButtonElement>(".inspector-close")
+        ?.focus({ preventScroll: true });
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      if (previousFocus?.isConnected)
+        previousFocus.focus({ preventScroll: true });
+    };
+  }, [inspectorOpen]);
+  useEffect(() => {
+    if (!panel || modal || viewer || mapping) return;
+    const closePanel = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setPanel(null);
+      }
+    };
+    window.addEventListener("keydown", closePanel);
+    return () => window.removeEventListener("keydown", closePanel);
+  }, [panel, modal, viewer, mapping]);
   const refresh = useCallback(async () => {
     await Promise.all([
       qc.invalidateQueries({ queryKey: ["workspace", id] }),
       qc.invalidateQueries({ queryKey: ["projects"] }),
       qc.invalidateQueries({ queryKey: ["catalog"] }),
+      qc.invalidateQueries({ queryKey: ["clarifications", id] }),
+      qc.invalidateQueries({ queryKey: ["work-queue"] }),
     ]);
   }, [id, qc]);
   const command = async (
@@ -129,7 +210,6 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
     const f = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "k") {
         e.preventDefault();
-        setPanel("assistant");
         setModal("command");
       }
     };
@@ -154,7 +234,11 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
   const q = w.quote,
     line = q.lines.find((l) => l.id === selected) ?? null;
   const pending = w.proposals.filter((p) => p.status === "pending");
-  const activeRun = w.runs[0] as any;
+  const reviewedCount = q.lines.filter((l) => l.review === "approved").length;
+  const selectLine = (lineId: string) => {
+    setSelected(lineId);
+    setPanel("evidence");
+  };
   const openSource = (sourceId: string) => {
     const sp = w.sources.find((s: any) => s.id === sourceId) as any;
     const d = w.documents.find((d) => d.id === sp?.document_id);
@@ -182,17 +266,17 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
     }
   };
   return (
-    <main className="workspace-page">
+    <main className="workspace-page workspace-refined">
       <div className="project-heading">
         <div>
           <button className="back-link" onClick={onBack}>
             <ArrowLeft size={14} />
-            All projects
+            Work queue
           </button>
           <div className="title-line">
             <h1>{w.project.title}</h1>
             {w.project.synthetic && (
-              <span className="micro-tag">SYNTHETIC DEMO</span>
+              <span className="micro-tag">Sample project</span>
             )}
           </div>
           <div className="project-meta">
@@ -207,15 +291,27 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
             </span>
           </div>
         </div>
-        <button className="primary" onClick={() => setModal("export")}>
-          <DownloadSimple size={17} />
-          Review & export
-          <ArrowUpRight size={15} />
-        </button>
+        <div className="workspace-heading-actions">
+          <button
+            className="secondary"
+            onClick={() => {
+              setTab("coordination");
+              setReviewRequest((n) => n + 1);
+            }}
+          >
+            <GitDiff size={17} />
+            Review change
+          </button>
+          <button className="primary" onClick={() => setModal("export")}>
+            <DownloadSimple size={17} />
+            Review & export
+          </button>
+        </div>
       </div>
-      <div className="workspace-tabs">
+      <nav className="workspace-tabs" aria-label="Project sections">
         <div>
           {[
+            ["coordination", "Work", null],
             ["quote", "Quote", q.lines.length],
             ["sources", "Sources", w.documents.length],
             ["changes", "Changes", pending.length],
@@ -224,26 +320,30 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
             <button
               key={name}
               className={tab === name ? "active" : ""}
+              aria-current={tab === name ? "page" : undefined}
               onClick={() => setTab(String(name))}
             >
               {label}
-              <span
-                className={
-                  name === "changes" && Number(count) > 0 ? "violet-count" : ""
-                }
-              >
-                {count}
-              </span>
+              {count !== null && (
+                <span
+                  className={
+                    name === "changes" && Number(count) > 0
+                      ? "violet-count"
+                      : ""
+                  }
+                >
+                  {count}
+                </span>
+              )}
             </button>
           ))}
         </div>
         <span className="version-pill">
-          <span className="online-dot" />
-          REV {String(q.version).padStart(2, "0")}
+          Revision {q.version}
           <span className="divider" />
           <Status status={q.status} />
         </span>
-      </div>
+      </nav>
       {actionError && (
         <div className="workspace-error">
           <ErrorNote message={actionError} />
@@ -256,12 +356,29 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
           </button>
         </div>
       )}
+      {tab === "coordination" && (
+        <BidCoordinator
+          w={w}
+          configured={assistantReady}
+          issueId={issueId}
+          reviewRequest={reviewRequest}
+          onSelectIssue={selectIssue}
+          onUpload={() => setModal("upload")}
+          onSources={() => setTab("sources")}
+          onQuote={() => setTab("quote")}
+          onChanges={() => setTab("changes")}
+          onReviewInputs={() => setModal("reconcile")}
+          openSource={openSource}
+          refresh={refresh}
+          notify={notify}
+        />
+      )}
       {tab === "quote" && (
         <>
           <div className="quote-summary">
-            <div>
+            <div className="quote-total">
               <span className="stat-label">
-                QUOTE TOTAL <small>USD</small>
+                Quote total <small>USD</small>
               </span>
               <strong>{usd(q.total, 2)}</strong>
               {!q.total_complete && (
@@ -270,43 +387,71 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
                 </small>
               )}
             </div>
-            <div>
-              <span className="stat-label">GROSS MARGIN</span>
+            <div className="quote-margin">
+              <span className="stat-label">Gross margin</span>
               <strong>
                 {q.margin ?? "—"}
-                <small>%</small>
+                {q.margin !== null && <small>%</small>}
               </strong>
             </div>
-            <div>
-              <span className="stat-label">EQUIPMENT</span>
-              <strong>
-                {String(q.lines.length).padStart(2, "0")}
-                <small>lines</small>
-              </strong>
-            </div>
-            <div className="review-summary">
-              <span className="stat-label">REVIEW PROGRESS</span>
-              <div>
-                <span>
-                  {q.lines.filter((l) => l.review === "approved").length}
-                  <small> / {q.lines.length} reviewed</small>
+            <div className="quote-review-status">
+              <span className="stat-label">Line review</span>
+              <span className="review-count">
+                <strong>{reviewedCount}</strong> of {q.lines.length} reviewed
+              </span>
+              {q.checks.length > 0 ? (
+                <button
+                  className="review-check-toggle"
+                  aria-expanded={showChecks}
+                  aria-controls="quote-review-checks"
+                  onClick={() => setShowChecks(!showChecks)}
+                >
+                  {q.checks.length} {q.checks.length === 1 ? "check" : "checks"}{" "}
+                  to resolve
+                  <CaretDown size={14} />
+                </button>
+              ) : (
+                <span className="review-ready">
+                  <CheckCircle size={14} />{" "}
+                  {w.quote.status === "approved"
+                    ? "Revision approved"
+                    : "Ready for approval"}
                 </span>
-                <div className="progress-track">
-                  <i
-                    style={{
-                      width:
-                        (q.lines.length
-                          ? (q.lines.filter((l) => l.review === "approved")
-                              .length /
-                              q.lines.length) *
-                            100
-                          : 0) + "%",
-                    }}
-                  />
-                </div>
-              </div>
+              )}
             </div>
           </div>
+          {q.checks.length > 0 && showChecks && (
+            <section id="quote-review-checks" className="readiness-box">
+              <div>
+                <WarningCircle size={18} />
+                <h3>Resolve before approval</h3>
+              </div>
+              {q.checks.slice(0, 4).map((c, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    if (c.code === "clarification") {
+                      setPanel(null);
+                      setTab("coordination");
+                    } else if (c.line_id) selectLine(c.line_id);
+                    else if (c.code === "reconcile") setModal("reconcile");
+                    else setTab("sources");
+                  }}
+                >
+                  <span>{c.message}</span>
+                  <CaretRight size={15} />
+                </button>
+              ))}
+              {q.checks.length > 4 && (
+                <button
+                  className="text-button"
+                  onClick={() => setModal("export")}
+                >
+                  View all {q.checks.length} checks <ArrowRight size={15} />
+                </button>
+              )}
+            </section>
+          )}
           {pending.length > 0 && (
             <button
               className="inline-change-banner"
@@ -314,11 +459,15 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
             >
               <GitDiff size={17} />
               <strong>{pending[0].title}</strong>
-              <span>{pending.length} proposal waiting for review</span>
+              <span>
+                {pending.length === 1
+                  ? "Review changes"
+                  : `${pending.length} proposals to review`}
+              </span>
               <ArrowRight size={16} />
             </button>
           )}
-          <div className="quote-layout">
+          <div className={"quote-layout" + (panel ? " has-inspector" : "")}>
             <section className="quote-main">
               <div className="quote-toolbar">
                 <label className="compact-search">
@@ -333,10 +482,11 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
                 <div>
                   <button
                     className="quiet-button"
+                    aria-pressed={showCosts}
                     onClick={() => setShowCosts(!showCosts)}
                   >
                     {showCosts ? <EyeSlash size={16} /> : <Eye size={16} />}
-                    Costs
+                    {showCosts ? "Hide costs" : "Show costs"}
                   </button>
                   <button
                     className="quiet-button"
@@ -353,6 +503,14 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
                     <Plus size={16} />
                     Add line
                   </button>
+                  {selected && panel !== "evidence" && (
+                    <button
+                      className="quiet-button"
+                      onClick={() => setPanel("evidence")}
+                    >
+                      <SidebarSimple size={16} /> Details
+                    </button>
+                  )}
                 </div>
               </div>
               {checked.length > 0 && (
@@ -375,7 +533,7 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
                     Mark reviewed
                   </button>
                   <button onClick={() => setModal("command")}>
-                    <Sparkle size={14} />
+                    <ChatCircleText size={14} />
                     Ask Rivet
                   </button>
                   <button
@@ -394,7 +552,7 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
                     .includes(query.toLowerCase()),
                 )}
                 selected={selected}
-                onSelect={setSelected}
+                onSelect={selectLine}
                 checked={checked}
                 setChecked={setChecked}
                 showCosts={showCosts}
@@ -415,10 +573,26 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
                   ])
                 }
               />
+              {q.lines.length > 0 &&
+                !q.lines.some((l) =>
+                  (l.tag + " " + l.description + " " + l.model)
+                    .toLowerCase()
+                    .includes(query.toLowerCase()),
+                ) && (
+                  <div className="quote-no-results">
+                    <p>No equipment matches “{query}”.</p>
+                    <button
+                      className="text-button"
+                      onClick={() => setQuery("")}
+                    >
+                      Clear search
+                    </button>
+                  </div>
+                )}
               {!q.lines.length && (
                 <Empty
                   icon={<Stack size={32} />}
-                  title="Your quote starts with a source"
+                  title="Add equipment to this quote"
                   action={
                     <button
                       className="primary"
@@ -432,15 +606,15 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
                     </button>
                   }
                 >
-                  Import an equipment schedule, ask Rivet to prepare a draft, or
-                  add your first line.
+                  Upload a schedule to create your first equipment lines, or add
+                  a line manually.
                 </Empty>
               )}
               <div className="grid-footer">
                 <span>
                   {q.lines.length} equipment lines
-                  <span className="footer-dot">·</span>USD
-                  <span className="footer-dot">·</span>Price per stated unit
+                  <span className="footer-dot">·</span>Prices in USD per stated
+                  unit
                 </span>
                 <div>
                   <span>Subtotal</span>
@@ -449,116 +623,99 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
               </div>
               <div className="grid-help">
                 <span>
-                  <kbd>↵</kbd>edit quantity<kbd>tab</kbd>save<kbd>esc</kbd>
-                  cancel
+                  Click a line for source evidence. Click a quantity or price to
+                  edit.
                 </span>
-                <button onClick={() => setModal("command")}>
-                  <Sparkle size={13} />
-                  Ask Rivet<kbd>⌘ K</kbd>
-                </button>
+                <span>
+                  <kbd>↑</kbd>
+                  <kbd>↓</kbd> Navigate
+                </span>
               </div>
-              <section className="terms-section">
+              <details className="terms-section">
+                <summary>
+                  Terms & exclusions <CaretDown size={15} />
+                </summary>
                 <div>
-                  <h3>Terms & exclusions</h3>
+                  <p>{q.terms || "No terms added yet."}</p>
                   <button
                     className="text-button"
                     onClick={() => setModal("terms")}
                   >
-                    <NotePencil size={14} />
-                    Edit
+                    <NotePencil size={15} /> Edit terms
                   </button>
                 </div>
-                <p>{q.terms}</p>
-              </section>
-              {q.checks.length > 0 && (
-                <section className="readiness-box">
-                  <div>
-                    <WarningCircle size={18} />
-                    <h3>
-                      {q.checks.length} item{q.checks.length !== 1 ? "s" : ""}{" "}
-                      before approval
-                    </h3>
-                  </div>
-                  {q.checks.slice(0, 4).map((c, i) => (
-                    <button
-                      key={i}
-                      onClick={() => {
-                        if (c.line_id) {
-                          setSelected(c.line_id);
-                          setPanel("evidence");
-                        } else if (c.code === "reconcile")
-                          setModal("reconcile");
-                        else setTab("sources");
-                      }}
-                    >
-                      <span>{c.message}</span>
-                      <CaretRight size={14} />
-                    </button>
-                  ))}
-                  {q.checks.length > 4 && (
-                    <button
-                      className="text-button"
-                      onClick={() => setModal("export")}
-                    >
-                      View all review items
-                      <ArrowRight size={14} />
-                    </button>
-                  )}
-                </section>
-              )}
+              </details>
             </section>
-            <aside className="inspector">
-              <div className="inspector-tabs">
-                <button
-                  className={panel === "evidence" ? "active" : ""}
-                  onClick={() => setPanel("evidence")}
-                >
-                  <LinkSimple size={15} />
-                  Evidence
-                </button>
-                <button
-                  className={panel === "assistant" ? "active" : ""}
-                  onClick={() => setPanel("assistant")}
-                >
-                  <Sparkle size={15} />
-                  Rivet assistant
-                </button>
-              </div>
-              {panel === "evidence" ? (
-                <Evidence
-                  w={w}
-                  line={line}
-                  openSource={openSource}
-                  selectProduct={() => setModal("catalog")}
-                  edit={() => setModal("edit")}
-                  review={() =>
-                    line &&
-                    safeCommand(
-                      [
-                        {
-                          type: "review_line",
-                          line_id: line.id,
-                          reason: "Reviewed line details and sources",
-                        },
-                      ],
-                      "Line reviewed",
-                    )
-                  }
-                  busy={busy}
-                  goSources={() => setTab("sources")}
-                />
-              ) : (
-                <Assistant
-                  w={w}
-                  configured={assistantReady}
-                  refresh={refresh}
-                  notify={notify}
-                  selected={
-                    checked.length ? checked : selected ? [selected] : []
-                  }
-                />
-              )}
-            </aside>
+            {panel && (
+              <aside
+                ref={inspectorRef}
+                className="inspector"
+                aria-label={
+                  panel === "evidence"
+                    ? "Equipment details"
+                    : "Project assistant"
+                }
+              >
+                <div className="inspector-tabs">
+                  <button
+                    className={panel === "evidence" ? "active" : ""}
+                    onClick={() => setPanel("evidence")}
+                  >
+                    <LinkSimple size={15} />
+                    Details
+                  </button>
+                  <button
+                    className={panel === "assistant" ? "active" : ""}
+                    onClick={() => setPanel("assistant")}
+                  >
+                    <ChatCircleText size={15} />
+                    Assistant
+                  </button>
+                  <button
+                    className="inspector-close icon-button"
+                    aria-label="Close details panel"
+                    onClick={() => setPanel(null)}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                {panel === "evidence" ? (
+                  <Evidence
+                    w={w}
+                    line={line}
+                    openSource={openSource}
+                    selectProduct={() => setModal("catalog")}
+                    edit={() => setModal("edit")}
+                    review={() =>
+                      line &&
+                      safeCommand(
+                        [
+                          {
+                            type: "review_line",
+                            line_id: line.id,
+                            reason: "Reviewed line details and sources",
+                          },
+                        ],
+                        "Line reviewed",
+                      )
+                    }
+                    busy={busy}
+                    goSources={() => setTab("sources")}
+                  />
+                ) : (
+                  <Assistant
+                    w={w}
+                    openSource={openSource}
+                    configured={assistantReady}
+                    refresh={refresh}
+                    notify={notify}
+                    selected={
+                      checked.length ? checked : selected ? [selected] : []
+                    }
+                  />
+                )}
+              </aside>
+            )}
           </div>
         </>
       )}
@@ -579,8 +736,7 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
         <div className="changes-page">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">REVIEW BEFORE YOU REVISE</span>
-              <h2>See exactly what changed.</h2>
+              <h2>Proposed changes</h2>
               <p>
                 Accepting a proposal creates a new draft. Every change stays in
                 the history.
@@ -701,11 +857,15 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
       {modal === "upload" && (
         <Upload
           id={id}
-          initialKind={tab === "changes" ? "addendum" : "schedule"}
+          initialKind={
+            tab === "changes" || tab === "coordination"
+              ? "addendum"
+              : "schedule"
+          }
           onClose={() => setModal(null)}
           onDone={async () => {
             setModal(null);
-            setTab("sources");
+            if (tab !== "coordination") setTab("sources");
             await refresh();
             notify("Document uploaded. Rivet is reading the source.");
           }}
@@ -757,13 +917,17 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
           title="Ask Rivet"
           eyebrow={
             checked.length
-              ? `${checked.length} LINES SELECTED`
-              : "PROJECT ASSISTANT"
+              ? `${checked.length} lines selected`
+              : "Project assistant"
           }
           onClose={() => setModal(null)}
         >
           <Assistant
             w={w}
+            openSource={(sourceId) => {
+              setModal(null);
+              openSource(sourceId);
+            }}
             configured={assistantReady}
             refresh={refresh}
             notify={notify}
@@ -779,9 +943,12 @@ export function QuoteWorkspace({ id, notify, assistantReady, onBack }: Props) {
           notify={notify}
           onFix={(c) => {
             setModal(null);
-            if (c.line_id) {
+            if (c.code === "clarification") {
+              setPanel(null);
+              setTab("coordination");
+            } else if (c.line_id) {
               setTab("quote");
-              setSelected(c.line_id);
+              selectLine(c.line_id);
             } else if (c.code === "reconcile") setModal("reconcile");
             else setTab("sources");
           }}
@@ -927,16 +1094,13 @@ function QuoteGrid({
       },
       {
         accessorKey: "description",
-        header: "EQUIPMENT",
+        header: "Equipment",
         cell: ({ row }) => (
           <button
             className="equipment-cell"
             onClick={() => onSelect(row.original.id)}
           >
-            <span>
-              {row.original.tag}
-              <LinkSimple size={12} />
-            </span>
+            <span>{row.original.tag}</span>
             <strong>{row.original.description}</strong>
             <small>{row.original.model || "Product selection needed"}</small>
           </button>
@@ -944,7 +1108,7 @@ function QuoteGrid({
       },
       {
         accessorKey: "quantity",
-        header: "QTY",
+        header: "Quantity",
         cell: ({ row }) => (
           <EditableQty
             line={row.original}
@@ -957,7 +1121,7 @@ function QuoteGrid({
         ? ([
             {
               accessorKey: "cost",
-              header: "UNIT COST",
+              header: "Unit cost",
               cell: ({ row }: any) => (
                 <button
                   className="money-cell"
@@ -971,7 +1135,7 @@ function QuoteGrid({
         : []),
       {
         accessorKey: "price",
-        header: "UNIT PRICE",
+        header: "Unit price",
         cell: ({ row }) => (
           <button className="money-cell" onClick={() => edit(row.original)}>
             {usd(row.original.price)}
@@ -980,23 +1144,23 @@ function QuoteGrid({
       },
       {
         accessorKey: "extended",
-        header: "AMOUNT",
+        header: "Amount",
         cell: ({ row }) => (
           <span className="amount-cell">{usd(row.original.extended)}</span>
         ),
       },
       {
         accessorKey: "review",
-        header: "REVIEW",
+        header: "Review",
         cell: ({ row }) => (
           <button
             className="review-cell"
             onClick={() => onSelect(row.original.id)}
           >
             {row.original.review === "approved" ? (
-              <CheckCircle weight="fill" size={15} />
+              <CheckCircle size={16} />
             ) : (
-              <span className="review-hollow" />
+              <Clock size={16} className="review-pending" />
             )}
             <span>
               {row.original.review === "approved" ? "Reviewed" : "To review"}
@@ -1099,46 +1263,14 @@ function Evidence({
   if (!line)
     return (
       <div className="evidence-intro">
-        <div className="evidence-symbol">
-          <LinkSimple size={26} />
-        </div>
-        <span className="eyebrow">EVERY VALUE HAS A STORY</span>
-        <h3>Follow the evidence.</h3>
+        <h3>Select a line</h3>
         <p>
-          Select an equipment line to see the source behind its values and what
-          still needs review.
+          Choose equipment in the quote to review its sources, pricing and
+          delivery.
         </p>
-        <div className="evidence-summary">
-          <div>
-            <Files size={16} />
-            <span>Project documents</span>
-            <strong>{w.documents.length}</strong>
-          </div>
-          <div>
-            <CheckCircle size={16} />
-            <span>Lines reviewed</span>
-            <strong>
-              {w.quote.lines.filter((l) => l.review === "approved").length} /{" "}
-              {w.quote.lines.length}
-            </strong>
-          </div>
-          <div>
-            <WarningCircle size={16} />
-            <span>Open checks</span>
-            <strong>{w.quote.checks.length}</strong>
-          </div>
-        </div>
         <button className="text-button" onClick={goSources}>
-          Browse sources
-          <ArrowUpRight size={15} />
+          Browse documents <ArrowRight size={15} />
         </button>
-        <div className="inspector-note">
-          <ShieldCheck size={16} />
-          <span>
-            A source tells you where a value came from. You decide if it belongs
-            in the quote.
-          </span>
-        </div>
       </div>
     );
   const meta = line.meta as any,
@@ -1153,11 +1285,11 @@ function Evidence({
       <h3>{line.description}</h3>
       <code>{line.model || "No product selected"}</code>
       <div className="origin-row">
-        <span className="label">VALUE ORIGIN</span>
+        <span className="label">Value origin</span>
         <span>{meta.origin ?? "Human entered"}</span>
       </div>
       <div className="evidence-label">
-        <span>SOURCE EVIDENCE</span>
+        <span>Source evidence</span>
         <span>{sourceIds.length}</span>
       </div>
       {sourceIds.map((id) => {
@@ -1194,7 +1326,7 @@ function Evidence({
           </p>
         </div>
       )}
-      <div className="evidence-label">COMMERCIAL DETAILS</div>
+      <div className="evidence-label">Commercial details</div>
       <dl className="line-details">
         <div>
           <dt>Supplier cost</dt>
@@ -1215,7 +1347,7 @@ function Evidence({
       </dl>
       {meta.calculation && (
         <div className="calculation">
-          <span>CALCULATED PRICE</span>
+          <span>Calculated price</span>
           <p>
             {meta.calculation.type === "set_gross_margin"
               ? "Cost ÷ (1 − margin)"
@@ -1274,10 +1406,7 @@ function Sources({
     <div className="sources-page">
       <div className="section-heading">
         <div>
-          <span className="eyebrow">
-            INPUT REVISION {String(w.project.input_revision).padStart(2, "0")}
-          </span>
-          <h2>The source of truth.</h2>
+          <h2>Project sources</h2>
           <p>
             Original documents stay intact. New uploads trigger a fresh review.
           </p>
@@ -1297,7 +1426,7 @@ function Sources({
         {w.documents.map((d) => (
           <article key={d.id}>
             <div className="file-icon">
-              <FileText size={26} weight="duotone" />
+              <FileText size={23} />
             </div>
             <button className="source-name" onClick={() => onView(d)}>
               <h3>{d.name}</h3>
@@ -1331,7 +1460,7 @@ function Sources({
       {!w.documents.length && (
         <button className="upload-zone" onClick={onUpload}>
           <UploadSimple size={35} />
-          <h3>Bring your bid package.</h3>
+          <h3>Upload your first document</h3>
           <p>PDF, CSV, XLSX, or text · up to 20 MB per file</p>
           <span className="secondary">
             Choose a document
@@ -1340,27 +1469,14 @@ function Sources({
         </button>
       )}
       <RequirementCoverage w={w} />
-      <div className="source-bottom">
+      <div className="source-assistant-action">
         <div>
-          <ShieldCheck size={20} />
-          <h3>Originals preserved.</h3>
-          <p>
-            Each upload is an immutable source. Values link back to an exact
-            page, line, or cell.
-          </p>
+          <h3>Prepare a quote from your sources</h3>
+          <p>The assistant proposes changes for you to review.</p>
         </div>
-        <div>
-          <Sparkle size={20} />
-          <h3>Ready to build the draft?</h3>
-          <p>
-            Ask Rivet to investigate your sources and prepare changes for
-            review.
-          </p>
-          <button className="text-button" onClick={startAI}>
-            Open assistant
-            <ArrowRight size={15} />
-          </button>
-        </div>
+        <button className="secondary" onClick={startAI}>
+          <ChatCircleText size={17} /> Open assistant
+        </button>
       </div>
     </div>
   );
@@ -1395,9 +1511,7 @@ function ChangeCard({
           <GitDiff size={22} />
         </div>
         <div>
-          <span className="eyebrow">
-            BASED ON REVISION {String(pr.base_version).padStart(2, "0")}
-          </span>
+          <span className="eyebrow">Based on revision {pr.base_version}</span>
           <h3>{pr.title}</h3>
         </div>
         <Status status={state} />
@@ -1485,14 +1599,166 @@ function ChangeCard({
   );
 }
 
+const SOURCE_UUID =
+  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+
+function AssistantResponse({
+  text,
+  sourceIds = [],
+  w,
+  openSource,
+}: {
+  text: string;
+  sourceIds?: string[];
+  w: Workspace;
+  openSource: (sourceId: string) => void;
+}) {
+  const inlineIds = [
+    ...text.matchAll(new RegExp(`\\[(${SOURCE_UUID})\\]`, "gi")),
+  ].map((match) => match[1]);
+  const ids = [
+    ...new Set([...sourceIds, ...inlineIds].map((id) => id.toLowerCase())),
+  ];
+  const citations = ids.map((id, index) => {
+    const span = w.sources.find(
+      (source: any) => source.id.toLowerCase() === id,
+    ) as any;
+    const document = w.documents.find(
+      (document) => document.id === span?.document_id,
+    );
+    const location = span?.location ?? {};
+    const detail = [
+      location.sheet,
+      location.page
+        ? `Page ${location.page}`
+        : location.row
+          ? `Row ${location.row}`
+          : location.line
+            ? `Line ${location.line}`
+            : location.cells
+              ? `Cells ${location.cells}`
+              : "",
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    return {
+      id,
+      number: index + 1,
+      available: Boolean(span && document),
+      label: document
+        ? `${document.name}${detail ? ` · ${detail}` : ""}`
+        : "Source unavailable",
+    };
+  });
+  const markdown = text.replace(
+    new RegExp(`\\[(${SOURCE_UUID})\\]`, "gi"),
+    (_, id: string) => {
+      const citation = citations.find(
+        (citation) => citation.id === id.toLowerCase(),
+      )!;
+      return `[${citation.number}](#rivet-source-${citation.id})`;
+    },
+  );
+  return (
+    <div className="assistant-response">
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        skipHtml
+        components={{
+          a: ({ href, children }) => {
+            const id = href
+              ?.match(new RegExp(`^#rivet-source-(${SOURCE_UUID})$`, "i"))?.[1]
+              ?.toLowerCase();
+            if (id) {
+              const citation = citations.find((citation) => citation.id === id);
+              return citation?.available ? (
+                <button
+                  type="button"
+                  className="assistant-inline-citation"
+                  title={citation.label}
+                  aria-label={`Source ${citation.number}: ${citation.label}`}
+                  onClick={() => openSource(id)}
+                >
+                  {citation.number}
+                </button>
+              ) : (
+                <span
+                  className="assistant-unavailable-source"
+                  title={`Unavailable source: ${id}`}
+                >
+                  Source unavailable
+                </span>
+              );
+            }
+            return href && /^https?:\/\//i.test(href) ? (
+              <a href={href} target="_blank" rel="noopener noreferrer">
+                {children}
+              </a>
+            ) : (
+              <span>{children}</span>
+            );
+          },
+          img: ({ alt }) => (
+            <span className="assistant-image-description">
+              {alt || "Image omitted"}
+            </span>
+          ),
+          table: ({ children }) => (
+            <div
+              className="assistant-table-scroll"
+              role="region"
+              aria-label="Assistant response table"
+              tabIndex={0}
+            >
+              <table>{children}</table>
+            </div>
+          ),
+        }}
+      >
+        {markdown}
+      </Markdown>
+      {citations.length > 0 && (
+        <div className="assistant-citations" aria-label="Answer sources">
+          <h5>Sources</h5>
+          {citations.map((citation) =>
+            citation.available ? (
+              <button
+                type="button"
+                key={citation.id}
+                title={citation.label}
+                onClick={() => openSource(citation.id)}
+              >
+                <span>{citation.number}</span>
+                <span>{citation.label}</span>
+                <ArrowUpRight size={13} />
+              </button>
+            ) : (
+              <p
+                key={citation.id}
+                className="assistant-unavailable-source"
+                title={`Unavailable source: ${citation.id}`}
+              >
+                <span>{citation.number}</span> Source unavailable in this
+                project
+              </p>
+            ),
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Assistant({
   w,
+  openSource,
   configured,
   refresh,
   notify,
   selected,
 }: {
   w: Workspace;
+  openSource: (sourceId: string) => void;
   configured: boolean;
   refresh: () => Promise<void>;
   notify: (s: string) => void;
@@ -1540,8 +1806,8 @@ function Assistant({
           <Mark small />
         </div>
         <div>
-          <h3>A second set of eyes.</h3>
-          <p>Grounded in your project sources.</p>
+          <h3>Bid coordinator</h3>
+          <p>Investigate the change and prepare the next action.</p>
         </div>
       </div>
       {!configured && (
@@ -1556,47 +1822,62 @@ function Assistant({
       {run && (
         <section className="run-card">
           <div>
-            <span className="eyebrow">LATEST RUN</span>
+            <span className="eyebrow">Latest request</span>
             <Status status={run.status} />
           </div>
           <h4>{run.goal.split("\nSelected")[0]}</h4>
-          {run.plan?.length > 0 && (
-            <ol>
-              {run.plan.map((t: string, i: number) => (
-                <li key={i}>{t}</li>
-              ))}
-            </ol>
+          <p className="run-context">
+            Based on revision {run.base_version}
+            {run.base_version !== w.quote.version ||
+            run.input_revision !== w.quote.input_revision
+              ? ". This project has changed since this request."
+              : ""}
+          </p>
+          {(run.plan?.length > 0 || run.steps?.length > 0) && (
+            <details className="run-activity">
+              <summary>
+                View activity <span>{run.steps?.length ?? 0} steps</span>
+                <CaretDown size={14} />
+              </summary>
+              {run.plan?.length > 0 && (
+                <ol>
+                  {run.plan.map((t: string, i: number) => (
+                    <li key={i}>{t}</li>
+                  ))}
+                </ol>
+              )}
+              <div className="run-steps">
+                {run.steps?.map((s: any, i: number) => (
+                  <details key={i}>
+                    <summary>
+                      {s.result?.error ? (
+                        <WarningCircle size={14} />
+                      ) : (
+                        <CheckCircle size={14} />
+                      )}
+                      <span>{s.tool.replaceAll("_", " ")}</span>
+                      <CaretRight size={12} />
+                    </summary>
+                    <p>
+                      {s.result?.error ??
+                        s.result?.summary ??
+                        (s.result?.spans
+                          ? `Read ${s.result.spans.length} source spans.`
+                          : s.result?.staged
+                            ? `${s.result.staged} changes staged for review.`
+                            : s.result?.price
+                              ? "Calculated price: " + usd(s.result.price, 2)
+                              : s.result?.valid !== undefined
+                                ? s.result.valid
+                                  ? "Tentative draft validated."
+                                  : s.result.errors?.join(" ")
+                                : "Result saved to this run.")}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </details>
           )}
-          <div className="run-steps">
-            {run.steps?.map((s: any, i: number) => (
-              <details key={i}>
-                <summary>
-                  {s.result?.error ? (
-                    <WarningCircle size={14} />
-                  ) : (
-                    <CheckCircle size={14} />
-                  )}
-                  <span>{s.tool.replaceAll("_", " ")}</span>
-                  <CaretRight size={12} />
-                </summary>
-                <p>
-                  {s.result?.error ??
-                    s.result?.summary ??
-                    (s.result?.spans
-                      ? `Read ${s.result.spans.length} source spans.`
-                      : s.result?.staged
-                        ? `${s.result.staged} changes staged for review.`
-                        : s.result?.price
-                          ? "Calculated price: " + usd(s.result.price, 2)
-                          : s.result?.valid !== undefined
-                            ? s.result.valid
-                              ? "Tentative draft validated."
-                              : s.result.errors?.join(" ")
-                            : "Result saved to this run.")}
-                </p>
-              </details>
-            ))}
-          </div>
           {["queued", "executing", "verifying"].includes(run.status) && (
             <>
               <Busy text="Reviewing project evidence…" />
@@ -1619,7 +1900,12 @@ function Assistant({
             <div className="run-questions">
               <h4>A detail needs your input</h4>
               {run.questions.map((s: string, i: number) => (
-                <p key={i}>{s}</p>
+                <AssistantResponse
+                  key={i}
+                  text={s}
+                  w={w}
+                  openSource={openSource}
+                />
               ))}
               <textarea
                 aria-label="Answer the assistant"
@@ -1639,13 +1925,23 @@ function Assistant({
           )}
           {run.result?.error && <ErrorNote message={run.result.error} />}{" "}
           {run.result?.summary && (
-            <p className="run-result">{run.result.summary}</p>
+            <AssistantResponse
+              text={run.result.summary}
+              sourceIds={run.result.source_ids}
+              w={w}
+              openSource={openSource}
+            />
           )}
           {run.result?.clarifications?.length > 0 && (
             <div className="clarifications">
               <h4>Draft clarification</h4>
               {run.result.clarifications.map((c: string, i: number) => (
-                <p key={i}>{c}</p>
+                <AssistantResponse
+                  key={i}
+                  text={c}
+                  w={w}
+                  openSource={openSource}
+                />
               ))}
               <button
                 className="text-button"
@@ -1671,9 +1967,9 @@ function Assistant({
       )}
       {!run && (
         <div className="assistant-suggestions">
-          <p>START WITH A QUESTION</p>
+          <p>Try a request</p>
           {[
-            "Build a quote from this bid package.",
+            "Review this change against the existing switchgear quote.",
             "What changed in the latest addendum?",
             "Find missing prices and uncovered requirements.",
           ].map((s) => (
@@ -1713,7 +2009,7 @@ function Assistant({
               ["queued", "executing"].includes(run?.status)
             }
           >
-            <PaperPlaneRight size={17} weight="fill" />
+            <PaperPlaneRight size={17} />
           </button>
         </div>
       </form>
@@ -1740,7 +2036,6 @@ function LineModal({
   return (
     <Modal
       title={line ? "Edit " + line.tag : "Add equipment"}
-      eyebrow="QUOTE LINE"
       onClose={onClose}
     >
       <form
@@ -1816,6 +2111,12 @@ function LineModal({
               placeholder="Optional — confirm selection"
               readOnly={!!line}
             />
+            {line && (
+              <small className="field-note">
+                Use Select from catalog in equipment details to change this
+                configuration.
+              </small>
+            )}
           </label>
         </div>
         <div className="form-row">
@@ -1891,8 +2192,8 @@ function Pricing({
     [error, setError] = useState("");
   return (
     <Modal
-      title="Set your pricing"
-      eyebrow={`${count} EQUIPMENT LINE${count !== 1 ? "S" : ""}`}
+      title="Set pricing"
+      eyebrow={`${count} equipment line${count !== 1 ? "s" : ""}`}
       onClose={onClose}
     >
       <form
@@ -1940,7 +2241,7 @@ function Pricing({
           />
         </label>
         <div className="pricing-example">
-          <span>EXAMPLE AT {percent || 0}%</span>
+          <span>Example at {percent || 0}%</span>
           <p>
             $8,000 supplier cost <ArrowRight size={17} />
             <strong>
@@ -1989,11 +2290,7 @@ function Upload({
     [drag, setDrag] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   return (
-    <Modal
-      title="Bring in a source"
-      eyebrow="ORIGINALS, ALWAYS PRESERVED"
-      onClose={onClose}
-    >
+    <Modal title="Upload document" onClose={onClose}>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -2092,11 +2389,7 @@ function Paste({
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   return (
-    <Modal
-      title="Capture a request"
-      eyebrow="HUMAN-SUPPLIED SOURCE"
-      onClose={onClose}
-    >
+    <Modal title="Paste request" onClose={onClose}>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -2274,7 +2567,7 @@ function MappingModal({
             "lead_time",
           ];
   return (
-    <Modal title="Match your columns" eyebrow={doc.name} onClose={onClose} wide>
+    <Modal title="Map columns" eyebrow={doc.name} onClose={onClose} wide>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -2391,6 +2684,7 @@ function DocumentViewer({
         const pdfjs = await import("pdfjs-dist");
         pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
         loading = pdfjs.getDocument({
+          httpHeaders: await authorizationHeaders(),
           url: "/api/documents/" + doc.id + "/content",
         });
         const pdf = await loading.promise;
@@ -2417,7 +2711,7 @@ function DocumentViewer({
     };
   }, [doc.id, isPDF, page]);
   return (
-    <Modal title={doc.name} eyebrow="IMMUTABLE ORIGINAL" onClose={onClose} wide>
+    <Modal title={doc.name} eyebrow="Original document" onClose={onClose} wide>
       <div className="document-toolbar">
         <Status status={doc.state} />
         <a
@@ -2542,8 +2836,7 @@ function History({
     <div className="history-page">
       <div className="section-heading">
         <div>
-          <span className="eyebrow">NOTHING GETS OVERWRITTEN</span>
-          <h2>A record of every decision.</h2>
+          <h2>Revision history</h2>
           <p>
             Each revision is an immutable snapshot. Restoring one creates a new
             draft.
@@ -2560,7 +2853,7 @@ function History({
               <h3>
                 {v.summary}
                 {v.version === w.quote.version && (
-                  <span className="micro-tag">CURRENT</span>
+                  <span className="micro-tag">Current</span>
                 )}
               </h3>
               <p>
@@ -2684,8 +2977,8 @@ function ExportReview({
   };
   return (
     <Modal
-      title="A quote ready to stand behind."
-      eyebrow={`CUSTOMER EXPORT · REVISION ${String(q.version).padStart(2, "0")}`}
+      title="Review & export"
+      eyebrow={`Customer quote · Revision ${q.version}`}
       onClose={onClose}
       wide
     >
@@ -2913,8 +3206,7 @@ function RequirementCoverage({ w }: { w: Workspace }) {
   return (
     <section className="coverage-section">
       <div>
-        <span className="eyebrow">REQUIREMENT COVERAGE</span>
-        <h3>Every requirement, accounted for.</h3>
+        <h3>Requirement coverage</h3>
       </div>
       <div className="coverage-table">
         {w.requirements.map((r: any) => {

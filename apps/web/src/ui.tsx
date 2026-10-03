@@ -3,6 +3,11 @@ import {
   X,
   ArrowRight,
   Check,
+  CheckCircle,
+  Circle,
+  Clock,
+  XCircle,
+  CircleHalf,
   WarningCircle,
   CircleNotch,
 } from "@phosphor-icons/react";
@@ -43,9 +48,28 @@ export function Status({ status }: { status: string }) {
     cancelled: "Cancelled",
     completed: "Completed",
   };
+  const StatusIcon = [
+    "approved",
+    "ready",
+    "mapped",
+    "applied",
+    "completed",
+  ].includes(status)
+    ? CheckCircle
+    : ["failed", "rejected", "cancelled"].includes(status)
+      ? XCircle
+      : ["pending", "needs_mapping", "waiting_for_input", "stale"].includes(
+            status,
+          )
+        ? WarningCircle
+        : ["in_review", "ready_for_review"].includes(status)
+          ? CircleHalf
+          : ["queued", "executing"].includes(status)
+            ? Clock
+            : Circle;
   return (
     <span className={"status " + status}>
-      <i />
+      <StatusIcon size={12} aria-hidden="true" />
       {names[status] ?? status.replaceAll("_", " ")}
     </span>
   );

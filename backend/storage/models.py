@@ -13,7 +13,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from .db import ORG
+from backend.identity import current_org, current_actor
 
 
 def uid():
@@ -30,7 +30,9 @@ class Base(DeclarativeBase):
 
 class Row:
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
-    organization_id: Mapped[str] = mapped_column(String(36), default=ORG, index=True)
+    organization_id: Mapped[str] = mapped_column(
+        String(36), default=current_org, index=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
@@ -38,7 +40,7 @@ class Project(Row, Base):
     __tablename__ = "projects"
     title: Mapped[str] = mapped_column(String(180))
     customer: Mapped[str] = mapped_column(String(180))
-    category: Mapped[str] = mapped_column(String(100), default="Power distribution")
+    category: Mapped[str] = mapped_column(String(100), default="Low-voltage switchgear")
     due_date: Mapped[str | None] = mapped_column(String(10))
     input_revision: Mapped[int] = mapped_column(Integer, default=1)
     synthetic: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -159,7 +161,7 @@ class Event(Row, Base):
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
     summary: Mapped[str] = mapped_column(Text)
     kind: Mapped[str] = mapped_column(String(30), default="edit")
-    actor: Mapped[str] = mapped_column(String(100), default="Local estimator")
+    actor: Mapped[str] = mapped_column(String(100), default=current_actor)
     meta: Mapped[dict] = mapped_column(JSONB, default=dict)
 
 
@@ -218,3 +220,134 @@ class Idempotency(Row, Base):
     key: Mapped[str] = mapped_column(String(200), unique=True)
     fingerprint: Mapped[str] = mapped_column(String(64))
     result: Mapped[dict] = mapped_column(JSONB)
+
+
+class Clarification(Row, Base):
+    __tablename__ = "clarifications"
+    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    question: Mapped[str] = mapped_column(Text)
+    recipient: Mapped[str] = mapped_column(String(200), default="")
+    due_date: Mapped[str | None] = mapped_column(String(10))
+    line_ids: Mapped[list] = mapped_column(JSONB, default=list)
+    source_ids: Mapped[list] = mapped_column(JSONB, default=list)
+    run_id: Mapped[str | None] = mapped_column(ForeignKey("agent_runs.id"))
+    last_run_id: Mapped[str | None] = mapped_column(ForeignKey("agent_runs.id"))
+    status: Mapped[str] = mapped_column(String(30), default="draft")
+    answer: Mapped[str] = mapped_column(Text, default="")
+    answer_source_ids: Mapped[list] = mapped_column(JSONB, default=list)
+    resolution_note: Mapped[str] = mapped_column(Text, default="")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class Order(Row, Base):
+    __tablename__ = "orders"
+    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), unique=True)
+    number: Mapped[str] = mapped_column(String(80))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    status: Mapped[str] = mapped_column(String(20), default="draft")
+    state: Mapped[dict] = mapped_column(JSONB, default=dict)
+    snapshot_hash: Mapped[str] = mapped_column(String(64), default="")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class OrderRevision(Row, Base):
+    __tablename__ = "order_revisions"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    revision_label: Mapped[str] = mapped_column(String(40))
+    snapshot: Mapped[dict] = mapped_column(JSONB)
+    checksum: Mapped[str] = mapped_column(String(64))
+    summary: Mapped[str] = mapped_column(Text)
+    actor: Mapped[str] = mapped_column(String(100))
+    __table_args__ = (UniqueConstraint("order_id", "version"),)
+
+
+class OrderEvent(Row, Base):
+    __tablename__ = "order_events"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    kind: Mapped[str] = mapped_column(String(40))
+    summary: Mapped[str] = mapped_column(Text)
+    actor: Mapped[str] = mapped_column(String(100))
+    data: Mapped[dict] = mapped_column(JSONB, default=dict)
+
+
+class OrderAction(Row, Base):
+    __tablename__ = "order_actions"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    type: Mapped[str] = mapped_column(String(30))
+    title: Mapped[str] = mapped_column(String(240))
+    summary: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(20), default="pending")
+    base_version: Mapped[int] = mapped_column(Integer)
+    before: Mapped[dict] = mapped_column(JSONB, default=dict)
+    after: Mapped[dict] = mapped_column(JSONB, default=dict)
+    source_ids: Mapped[list] = mapped_column(JSONB, default=list)
+    evidence_hash: Mapped[str] = mapped_column(String(64))
+    reason: Mapped[str] = mapped_column(Text, default="")
+    fingerprint: Mapped[str] = mapped_column(String(64), index=True)
+
+
+class OrderWaiver(Row, Base):
+    __tablename__ = "order_waivers"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    check_id: Mapped[str] = mapped_column(String(100))
+    fingerprint: Mapped[str] = mapped_column(String(64))
+    signer: Mapped[str] = mapped_column(String(100))
+    reason: Mapped[str] = mapped_column(Text)
+    version: Mapped[int] = mapped_column(Integer)
+
+
+class OrderRelease(Row, Base):
+    __tablename__ = "order_releases"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    snapshot_hash: Mapped[str] = mapped_column(String(64))
+    signer: Mapped[str] = mapped_column(String(100))
+    reason: Mapped[str] = mapped_column(Text)
+
+
+class OrderRecord(Row, Base):
+    __tablename__ = "order_records"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), unique=True)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    data: Mapped[dict] = mapped_column(JSONB, default=dict)
+
+
+class RecordShare(Row, Base):
+    __tablename__ = "record_shares"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    snapshot: Mapped[dict] = mapped_column(JSONB)
+    revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class OrderInbox(Row, Base):
+    __tablename__ = "order_inboxes"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), unique=True)
+    address: Mapped[str] = mapped_column(String(254), unique=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class InboundEmail(Row, Base):
+    __tablename__ = "inbound_emails"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    provider_id: Mapped[str] = mapped_column(String(100), unique=True)
+    status: Mapped[str] = mapped_column(String(30), default="queued")
+    document_id: Mapped[str | None] = mapped_column(ForeignKey("documents.id"))
+    error: Mapped[str] = mapped_column(Text, default="")
+
+
+class NoticeDelivery(Row, Base):
+    __tablename__ = "notice_deliveries"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    notice_id: Mapped[str] = mapped_column(String(36))
+    status: Mapped[str] = mapped_column(String(30), default="queued")
+    payload: Mapped[dict] = mapped_column(JSONB)
+    provider_ids: Mapped[list] = mapped_column(JSONB, default=list)
+    error: Mapped[str] = mapped_column(Text, default="")
+    actor: Mapped[str] = mapped_column(String(100), default=current_actor)
+    __table_args__ = (UniqueConstraint("order_id", "notice_id"),)

@@ -7,46 +7,104 @@ from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from backend.storage.db import Session, ORG, ACTOR, BLOBS, ROOT
+from backend.storage.db import Session, BLOBS, ROOT
+from backend.identity import current_actor, auth_mode
 from backend.storage.models import *
 from backend.domain.schemas import *
 from backend.domain.service import *
 from backend.ingestion.parser import persist_blob, ALLOWED, map_document
 from backend.domain.exports import customer_snapshot, xlsx, pdf, html
 from backend.agents.gateway import configured
+from backend.domain.coordination import (
+    clarification_view,
+    project_clarifications,
+    create_clarification,
+    update_clarification,
+    record_answer,
+    queue_recheck,
+    check_revision,
+    work_queue,
+    touch,
+)
 
 app = FastAPI(title="Rivet API", version="0.1.0")
 app.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver"]
+    TrustedHostMiddleware,
+    allowed_hosts=os.getenv(
+        "RIVET_ALLOWED_HOSTS", "127.0.0.1,localhost,testserver"
+    ).split(","),
 )
 
 
 @app.middleware("http")
-async def local_boundary(request, call_next):
-    if os.getenv("RIVET_LOCAL_ONLY", "true") != "true":
-        return JSONResponse(
-            {
-                "detail": "Shared deployment is disabled. This prototype requires a localhost boundary."
-            },
-            503,
-        )
-    if request.client and request.client.host not in ("127.0.0.1", "::1", "testclient"):
-        return JSONResponse({"detail": "Local access only."}, 403)
-    if request.method not in ("GET", "HEAD", "OPTIONS"):
-        origin = request.headers.get("origin")
-        if origin and origin not in (
-            "http://127.0.0.1:5178",
-            "http://localhost:5178",
-            "http://127.0.0.1:8787",
-            "http://localhost:8787",
+async def workspace_boundary(request, call_next):
+    from starlette.concurrency import run_in_threadpool
+    from backend import auth
+    from backend.identity import auth_mode, Identity, LOCAL_ORG, identity_scope
+
+    mode = auth_mode()
+    local_only = os.getenv("RIVET_LOCAL_ONLY", "true") == "true"
+    try:
+        if mode not in {"local", "clerk"} or (not local_only and mode != "clerk"):
+            raise HTTPException(
+                503, "Shared access requires configured authentication."
+            )
+        if (
+            local_only
+            and request.client
+            and request.client.host not in ("127.0.0.1", "::1", "testclient")
         ):
-            return JSONResponse({"detail": "Origin is not allowed."}, 403)
-        if request.headers.get("x-rivet-client") != "workspace":
-            return JSONResponse({"detail": "Missing workspace request header."}, 403)
-    response = await call_next(request)
+            raise HTTPException(403, "Local access only.")
+        path = request.url.path
+        webhook = path == "/api/webhooks/resend"
+        public = (
+            path in {"/api/health", "/api/auth/config"}
+            or path.startswith("/api/shared/")
+            or webhook
+        )
+        if request.method not in ("GET", "HEAD", "OPTIONS") and not webhook:
+            origin = request.headers.get("origin")
+            if origin and origin not in auth.allowed_origins():
+                raise HTTPException(403, "Origin is not allowed.")
+            if request.headers.get("x-rivet-client") != "workspace":
+                raise HTTPException(403, "Missing workspace request header.")
+        if public:
+            response = await call_next(request)
+        else:
+            identity = (
+                await run_in_threadpool(auth.verify_identity, request)
+                if mode == "clerk"
+                else Identity(LOCAL_ORG, "Local estimator")
+            )
+            auth.authorize(request, identity)
+            with identity_scope(identity):
+                response = await call_next(request)
+    except HTTPException as exc:
+        response = JSONResponse({"detail": exc.detail}, exc.status_code)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Cache-Control"] = "no-store"
     return response
+
+
+@app.get("/api/auth/config")
+def auth_config():
+    from backend.auth import publishable_key
+    from backend.identity import auth_mode
+    from backend.demo import demo_config
+
+    return {
+        "mode": auth_mode(),
+        "publishable_key": publishable_key(),
+        "demo": demo_config(),
+    }
+
+
+@app.get("/api/me")
+def me():
+    from dataclasses import asdict
+    from backend.identity import current_identity, auth_mode
+
+    return {"mode": auth_mode(), **asdict(current_identity())}
 
 
 @app.exception_handler(ValueError)
@@ -70,10 +128,12 @@ def health():
         s.execute(select(1))
     return {
         "status": "ok",
-        "mode": "local",
+        "mode": auth_mode(),
         "assistant_configured": configured(),
         "model": os.getenv("OPENAI_MODEL", ""),
-        "actor": ACTOR,
+        "actor": "Authenticated team"
+        if os.getenv("CLERK_SECRET_KEY")
+        else "Local estimator",
     }
 
 
@@ -141,7 +201,13 @@ def projects():
     with Session() as s:
         return [
             project_view(s, p)
-            for p in s.scalars(scoped(Project).order_by(Project.created_at.desc()))
+            for p in s.scalars(
+                scoped(Project)
+                .where(
+                    Project.id.not_in(scoped(Order).with_only_columns(Order.project_id))
+                )
+                .order_by(Project.created_at.desc())
+            )
         ]
 
 
@@ -248,7 +314,105 @@ def workspace(id: str):
                     .limit(10)
                 )
             ],
+            "clarifications": [
+                clarification_view(c) for c in project_clarifications(s, p)
+            ],
         }
+
+
+@app.get("/api/work-queue")
+def get_work_queue():
+    with Session() as s:
+        return work_queue(s)
+
+
+@app.get("/api/projects/{id}/clarifications")
+def get_clarifications(id: str):
+    with Session() as s:
+        p = get(s, Project, id)
+        return [clarification_view(c) for c in project_clarifications(s, p)]
+
+
+@app.post("/api/projects/{id}/clarifications")
+def new_clarification(
+    id: str, body: ClarificationCreate, idempotency_key: str = Header()
+):
+    with Session.begin() as s:
+        p = get(s, Project, id, True)
+        q = s.scalar(scoped(Quote).where(Quote.project_id == p.id).with_for_update())
+        return idempotent(
+            s,
+            p.id + ":clarify:" + idempotency_key,
+            body.model_dump(),
+            lambda: clarification_view(
+                create_clarification(s, q, p, body.model_dump())
+            ),
+        )
+
+
+def lock_clarification(s, id):
+    initial = get(s, Clarification, id)
+    p = get(s, Project, initial.project_id, True)
+    q = s.scalar(scoped(Quote).where(Quote.project_id == p.id).with_for_update())
+    c = get(s, Clarification, id, True)
+    s.refresh(c)
+    return c, q, p
+
+
+@app.patch("/api/clarifications/{id}")
+def edit_clarification(
+    id: str, body: ClarificationUpdate, idempotency_key: str = Header()
+):
+    with Session.begin() as s:
+        c, q, p = lock_clarification(s, id)
+        return idempotent(
+            s,
+            c.id + ":edit:" + idempotency_key,
+            body.model_dump(exclude_unset=True),
+            lambda: clarification_view(
+                update_clarification(s, c, q, p, body.model_dump(exclude_unset=True))
+            ),
+        )
+
+
+@app.post("/api/clarifications/{id}/answers")
+def answer_clarification(
+    id: str, body: ClarificationAnswer, idempotency_key: str = Header()
+):
+    with Session.begin() as s:
+        c, q, p = lock_clarification(s, id)
+
+        def action():
+            check_revision(c, body.expected_revision)
+            return clarification_view(
+                record_answer(s, c, q, p, body.answer, body.source_ids)
+            )
+
+        return idempotent(
+            s, c.id + ":answer:" + idempotency_key, body.model_dump(), action
+        )
+
+
+@app.post("/api/clarifications/{id}/resume", status_code=202)
+def resume_clarification(
+    id: str, body: ClarificationRevision, idempotency_key: str = Header()
+):
+    if not configured():
+        fail(
+            "The AI connection is not configured. You can record answers and review the quote manually.",
+            503,
+        )
+    with Session.begin() as s:
+        c, q, p = lock_clarification(s, id)
+
+        def action():
+            check_revision(c, body.expected_revision)
+            run = queue_recheck(s, c, q, p, os.getenv("OPENAI_MODEL", ""))
+            return {"clarification": clarification_view(c), "run_id": run.id}
+
+        return idempotent(
+            s, c.id + ":resume:" + idempotency_key, body.model_dump(), action
+        )
 
 
 @app.get("/api/quotes/{id}", response_model=QuoteView)
@@ -358,7 +522,7 @@ def approve(id: str, body: VersionRequest, idempotency_key: str = Header()):
                     quote_id=q.id,
                     version=q.version,
                     input_revision=p.input_revision,
-                    actor=ACTOR,
+                    actor=current_actor(),
                     reason=body.reason,
                 )
             )
@@ -433,11 +597,24 @@ def revert(id: str, body: Revert, idempotency_key: str = Header()):
 def add_document(s, p, name, kind, data, metadata=None):
     ext = Path(name).suffix.lower()
     if ext not in ALLOWED:
-        fail("Upload a text-based PDF, CSV, XLSX, or TXT file.")
+        fail("Upload a PDF, CSV, XLSX, TXT, or EML file.")
     if not data or len(data) > 20 * 1024 * 1024:
         fail("Upload a nonempty file no larger than 20 MB.")
     if ext == ".pdf" and not data.startswith(b"%PDF"):
         fail("This file is not a valid PDF.")
+    if ext == ".pdf":
+        from io import BytesIO
+        import pdfplumber
+
+        try:
+            with pdfplumber.open(BytesIO(data)) as pdf:
+                page_count = len(pdf.pages)
+        except Exception:
+            fail("This PDF cannot be opened. Export an unlocked PDF and try again.")
+        if page_count > 150:
+            fail(
+                "PDFs are limited to 150 pages. Split this package into clearly named sections before importing."
+            )
     blob, sha = persist_blob(data, ext)
     d = Document(
         project_id=p.id,
@@ -462,6 +639,9 @@ def add_document(s, p, name, kind, data, metadata=None):
     )
     s.add(Event(project_id=p.id, summary="Uploaded " + d.name, kind="upload"))
     s.flush()
+    from backend.orders.service import refresh_project_orders
+
+    refresh_project_orders(s, p.id)
     return document_dict(d)
 
 
@@ -469,9 +649,22 @@ def add_document(s, p, name, kind, data, metadata=None):
 async def upload(
     id: str,
     file: UploadFile = File(),
-    kind: Literal["schedule", "specification", "offer", "addendum", "catalog"] = Form(
-        "schedule"
-    ),
+    kind: Literal[
+        "auto",
+        "schedule",
+        "specification",
+        "offer",
+        "addendum",
+        "catalog",
+        "purchase_order",
+        "approval_drawing",
+        "markups",
+        "accepted_exception",
+        "bom",
+        "supplier_po",
+        "nameplate",
+    ] = Form("schedule"),
+    revision_label: str = Form("", max_length=40),
     idempotency_key: str = Header(),
 ):
     data = await file.read(20 * 1024 * 1024 + 1)
@@ -483,9 +676,34 @@ async def upload(
             {
                 "name": file.filename,
                 "kind": kind,
+                "revision_label": revision_label,
                 "hash": hashlib.sha256(data).hexdigest(),
             },
-            lambda: add_document(s, p, file.filename or "document.txt", kind, data),
+            lambda: add_document(
+                s,
+                p,
+                file.filename or "document.txt",
+                kind,
+                data,
+                {
+                    **({"revision_label": revision_label} if revision_label else {}),
+                    **(
+                        {"order_role": kind}
+                        if kind
+                        in {
+                            "specification",
+                            "purchase_order",
+                            "approval_drawing",
+                            "markups",
+                            "accepted_exception",
+                            "bom",
+                            "supplier_po",
+                            "nameplate",
+                        }
+                        else {}
+                    ),
+                },
+            ),
         )
 
 
@@ -625,11 +843,23 @@ def answer(id: str, body: Answer, idempotency_key: str = Header()):
                 *r.answers,
                 {
                     "answer": body.answer,
-                    "actor": ACTOR,
+                    "actor": current_actor(),
                     "at": now().isoformat(),
                     "origin": "human entered",
                 },
             ]
+            # The legacy assistant answer route also updates durable issues.
+            for issue in project_clarifications(s, p):
+                if issue.run_id == r.id and issue.status in (
+                    "draft",
+                    "awaiting_reply",
+                    "answered",
+                ):
+                    issue.answer = body.answer.strip()
+                    issue.status = "answered"
+                    issue.answer_source_ids = []
+                    issue.resolution_note = ""
+                    touch(issue)
             r.status = "queued"
             r.questions = []
             s.add(
@@ -781,3 +1011,18 @@ def job(id: str):
             "error": j.error,
             "attempts": j.attempts,
         }
+
+
+# Engineering orders are first-class, versioned workspaces. Existing quote and
+# project routes remain available for legacy bids and immutable source storage.
+from backend.orders.api import router as orders_router
+
+app.include_router(orders_router)
+
+from backend.records.api import router as records_router
+
+app.include_router(records_router)
+
+from backend.email_api import router as email_router
+
+app.include_router(email_router)
