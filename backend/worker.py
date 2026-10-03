@@ -177,7 +177,16 @@ def process_scoped(task):
 
 def main():
     logging.info("Rivet worker ready")
+    next_coordination = 0.0
     while True:
+        if time.monotonic() >= next_coordination:
+            try:
+                from backend.records.automation import scheduled_pass
+
+                scheduled_pass()
+            except Exception as exc:
+                logging.warning("Scheduled coordination failed (%s)", type(exc).__name__)
+            next_coordination = time.monotonic() + 60
         task = claim()
         if task:
             process(task)

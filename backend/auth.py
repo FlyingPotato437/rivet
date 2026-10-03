@@ -5,17 +5,7 @@ import os
 from fastapi import HTTPException
 from clerk_backend_api import authenticate_request, AuthenticateRequestOptions
 from backend.identity import Identity, tenant_id
-
-
-def allowed_origins():
-    return [
-        x.strip().rstrip("/")
-        for x in os.getenv(
-            "RIVET_ALLOWED_ORIGINS",
-            "http://127.0.0.1:5178,http://localhost:5178,http://127.0.0.1:8787,http://localhost:8787",
-        ).split(",")
-        if x.strip()
-    ]
+from backend.config import allowed_origins
 
 
 def publishable_key():

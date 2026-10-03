@@ -1,0 +1,6 @@
+FICTIONAL RIVET WORKFLOW EXAMPLE — all people and equipment are invented.
+Document role: markup
+Revision: B
+Comment 7: Please confirm the trip unit for CB-12 on sheet E-10.
+Comment 8: Please confirm the finish for MSB-2. The drawing sheet is not specified.
+Comment 11: Please update the item marked in red. No device tag or drawing sheet was provided.

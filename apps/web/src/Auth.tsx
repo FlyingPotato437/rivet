@@ -23,7 +23,7 @@ import {
 import { ui } from "@clerk/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Mark } from "./ui";
-import { apiFetch, setTokenProvider } from "./api";
+import { apiFetch, isApiUrl, setTokenProvider } from "./api";
 import "./auth.css";
 
 type Account = {
@@ -53,7 +53,7 @@ export function Authentication({ children }: { children: ReactNode }) {
   }>();
   const [error, setError] = useState("");
   useEffect(() => {
-    fetch("/api/auth/config")
+    apiFetch("/api/auth/config")
       .then(async (response) => {
         if (!response.ok)
           throw new Error("Rivet could not load its sign-in configuration.");
@@ -137,8 +137,7 @@ function SecureDownloads({ children }: { children: ReactNode }) {
       );
       if (!anchor) return;
       const url = new URL(anchor.href, location.href);
-      if (url.origin !== location.origin || !url.pathname.startsWith("/api/"))
-        return;
+      if (!isApiUrl(url.href)) return;
       event.preventDefault();
       if (pending.current) return;
       pending.current = true;
@@ -146,7 +145,7 @@ function SecureDownloads({ children }: { children: ReactNode }) {
       setError("");
       void (async () => {
         try {
-          const response = await apiFetch(url.pathname + url.search);
+          const response = await apiFetch(url.href);
           if (!response.ok)
             throw new Error(
               (await response.json()).detail || "Unable to download this file.",

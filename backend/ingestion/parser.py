@@ -82,8 +82,11 @@ def parse(s, d):
                 "subject": str(message.get("Subject", "")),
                 "from": str(message.get("From", "")),
                 "to": str(message.get("To", "")),
+                "cc": str(message.get("Cc", "")),
                 "date": str(message.get("Date", "")),
                 "message_id": str(message.get("Message-ID", "")),
+                "in_reply_to": str(message.get("In-Reply-To", "")),
+                "references": str(message.get("References", "")),
             },
         }
         if body.strip():

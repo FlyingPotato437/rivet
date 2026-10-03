@@ -1,0 +1,8 @@
+FICTIONAL RIVET WORKFLOW EXAMPLE — not an engineering design.
+Document role: drawing
+Drawing sheet: E-10
+Revision: C
+Equipment tag: CB-12
+Description: Feeder breaker in switchboard MSB-1.
+Trip unit: TU-3000-DEMO
+Review note: Proposed revision only. No customer approval or production release recorded.

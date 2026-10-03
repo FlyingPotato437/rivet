@@ -34,6 +34,10 @@ export function RecordFeed({
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const orders = query.data?.orders ?? [];
+  const connectedDemo = orders.find(
+    (order) => order.number === "DEMO-CONNECTED-01",
+  );
+  const drawingDemo = orders.find((order) => order.number === "PUBLIC-ALACHUA");
   const visible = orders.filter(
     (o) =>
       (!decisionsOnly || o.counts.review > 0) &&
@@ -63,23 +67,29 @@ export function RecordFeed({
       {account.demo && (
         <section className="record-demo-guide">
           <div>
-            <span className="eyebrow">Public-document demo</span>
-            <h2>Start with the switchgear review</h2>
+            <span className="eyebrow">Practice workspace</span>
+            <h2>
+              {connectedDemo
+                ? "Try the connected review"
+                : "Start with the switchgear review"}
+            </h2>
             <p>
-              Open a comment, check the highlighted PDF source, and save your
-              review. Then record a response or change and export the log. All
-              edits stay in this practice team.
+              {connectedDemo
+                ? "Explore how drawing references connect, review a suggestion, and undo a recorded action using a fictional order. Public PDF examples are available below. All edits stay in this practice team."
+                : "Open a comment, check the highlighted PDF source, and save your review. Then record a response or change and export the log. All edits stay in this practice team."}
             </p>
           </div>
           <button
             className="secondary"
-            disabled={!orders.some((o) => o.number === "PUBLIC-ALACHUA")}
+            disabled={!connectedDemo && !drawingDemo}
             onClick={() => {
-              const order = orders.find((o) => o.number === "PUBLIC-ALACHUA");
-              if (order) navigate(`order/${order.id}`);
+              if (connectedDemo) navigate(`order/${connectedDemo.id}`);
+              else if (drawingDemo)
+                navigate(`order/${drawingDemo.id}?tab=comments`);
             }}
           >
-            Open drawing review <ArrowRight size={16} />
+            {connectedDemo ? "Open work queue" : "Open drawing review"}{" "}
+            <ArrowRight size={16} />
           </button>
         </section>
       )}

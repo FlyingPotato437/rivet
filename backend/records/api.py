@@ -1,9 +1,6 @@
 from difflib import SequenceMatcher
-from email import policy
 from email.message import EmailMessage
-from email.parser import BytesParser
 from hashlib import sha256
-from pathlib import Path
 from typing import Literal
 
 from fastapi import APIRouter, Form, Header, UploadFile
@@ -13,7 +10,7 @@ from backend.domain.service import fail, get, idempotent, scoped
 from backend.orders.service import lock_order
 from backend.storage import db
 from backend.storage.db import Session
-from backend.storage.models import Document, Order, Project, RecordShare, Span
+from backend.storage.models import Document, Order, RecordShare, Span
 
 from . import service as svc
 from .schemas import (
@@ -21,8 +18,12 @@ from .schemas import (
     Ask,
     ChangeWrite,
     CommentWrite,
+    CoordinationSettingsWrite,
+    NoticeRecipientsWrite,
     ShareWrite,
     SubscriberWrite,
+    SuggestionWrite,
+    TaskWrite,
     Write,
 )
 
@@ -118,6 +119,13 @@ def subscribe(id: str, body: SubscriberWrite, idempotency_key: str = Header()):
 @router.post("/orders/{id}/record/subscribers/{item}/remove")
 def unsubscribe(id: str, item: str, body: Write, idempotency_key: str = Header()):
     return mutate(id, body, idempotency_key, "unsubscribe", item)
+
+
+@router.post("/orders/{id}/record/notices/{item}/recipients")
+def notice_recipients(
+    id: str, item: str, body: NoticeRecipientsWrite, idempotency_key: str = Header()
+):
+    return mutate(id, body, idempotency_key, "notice_recipients", item)
 
 
 @router.post("/orders/{id}/record/approvals")
@@ -294,3 +302,46 @@ def ask(id: str, body: Ask):
         w = svc.view(s, lock_order(s, id))
     # No database lock or mutation capability is held during the provider call.
     return answer(body.question, w, [m.model_dump() for m in body.history])
+
+
+def coordinate(id, body, key, kind, item=""):
+    with Session.begin() as s:
+        order = lock_order(s, id)
+        record = svc.ensure(s, order)
+        return idempotent(
+            s,
+            f"record-coordinate:{id}:{kind}:{item}:{key}",
+            body.model_dump(),
+            lambda: svc.coordinate(s, order, record, body, kind, item),
+        )
+
+
+@router.post("/orders/{id}/record/coordination/run")
+def coordination_run(id: str, body: Write, idempotency_key: str = Header()):
+    return coordinate(id, body, idempotency_key, "run")
+
+
+@router.post("/orders/{id}/record/coordination/suggestions/{item}")
+def coordination_suggestion(
+    id: str, item: str, body: SuggestionWrite, idempotency_key: str = Header()
+):
+    return coordinate(id, body, idempotency_key, "suggestion", item)
+
+
+@router.post("/orders/{id}/record/coordination/activity/{item}/undo")
+def coordination_undo(id: str, item: str, body: Write, idempotency_key: str = Header()):
+    return coordinate(id, body, idempotency_key, "undo", item)
+
+
+@router.post("/orders/{id}/record/coordination/tasks/{item}")
+def coordination_task(
+    id: str, item: str, body: TaskWrite, idempotency_key: str = Header()
+):
+    return coordinate(id, body, idempotency_key, "task", item)
+
+
+@router.post("/orders/{id}/record/coordination/settings")
+def coordination_settings(
+    id: str, body: CoordinationSettingsWrite, idempotency_key: str = Header()
+):
+    return coordinate(id, body, idempotency_key, "settings")

@@ -1,5 +1,6 @@
 import { useAccount } from "./Auth";
 import { OrderInboxPanel, SendNoticeButton } from "./Integrations";
+import { NoticeRecipients } from "./NoticeRecipients";
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -17,18 +18,23 @@ import {
   Plus,
   UploadSimple,
   WarningCircle,
+  SidebarSimple,
   X,
 } from "@phosphor-icons/react";
 import { api, when } from "./api";
-import { Busy, Empty, ErrorNote, Mark, Modal } from "./ui";
+import { Busy, Empty, ErrorNote, Modal } from "./ui";
 import { OrderEvidence } from "./OrderEvidence";
 import { CommentConnections, RecordContext } from "./RecordConnections";
+import { RecordCoordination } from "./RecordCoordination";
+import { RecordAgent } from "./RecordAgent";
+import "./record-agent.css";
 import type { RecordView, RecordComment, RecordChange } from "./record-types";
 import "./order-workspace.css";
 import "./record-workspace.css";
-const tabs = ["comments", "changes", "documents", "sharing"] as const;
+const tabs = ["work", "comments", "changes", "documents", "sharing"] as const;
 type Tab = (typeof tabs)[number];
 const names = {
+  work: "Work queue",
   comments: "Comment log",
   changes: "Changes & history",
   documents: "Documents",
@@ -72,7 +78,7 @@ export function RecordWorkspace({
     ? (incoming as Tab)
     : incoming === "history"
       ? "changes"
-      : "comments";
+      : "work";
   const [selected, setSelected] = useState<string | null>(null),
     [source, setSource] = useState(""),
     [upload, setUpload] = useState(false),
@@ -81,6 +87,9 @@ export function RecordWorkspace({
     [filter, setFilter] = useState("all"),
     [search, setSearch] = useState(""),
     [revision, setRevision] = useState("all");
+  const [agentOpen, setAgentOpen] = useState(
+    () => window.matchMedia("(min-width: 1440px)").matches,
+  );
   const linkedComment = new URLSearchParams(
     location.hash.split("?")[1] ?? "",
   ).get("comment");
@@ -92,6 +101,15 @@ export function RecordWorkspace({
       setRevision("all");
     }
   }, [tab, linkedComment]);
+  useEffect(() => {
+    if (!source) return;
+    const frame = requestAnimationFrame(() =>
+      window.document
+        .querySelector<HTMLButtonElement>(".record-inline-evidence-head button")
+        ?.focus(),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [source]);
   async function save(path: string, body: unknown) {
     setBusy(true);
     setError("");
@@ -151,352 +169,429 @@ export function RecordWorkspace({
     review: w.comments.filter((c) => !c.reviewed).length,
   };
   return (
-    <main className="page record-workspace">
-      <div className="record-breadcrumb">
-        <button className="text-button" onClick={() => navigate("orders")}>
-          <ArrowLeft size={14} />
-          Orders
-        </button>
-        <span>/</span>
-        <span>{w.order.number}</span>
-        {w.order.synthetic && <small>Sample order</small>}
-      </div>
-      <header className="record-heading">
-        <div>
-          <h1>{w.order.title}</h1>
-          <p>
-            {w.order.customer}
-            <span>·</span>
-            {w.order.category}
-          </p>
-        </div>
-        <button className="primary" onClick={() => setUpload(true)}>
-          <UploadSimple size={17} />
-          Add documents
-        </button>
-      </header>
-      <div className="record-statusline">
-        <span>
-          <ChatText size={16} />
-          {w.comments.length} comments
-        </span>
-        <button
-          onClick={() => {
-            setFilter("open");
-            navigate(`order/${id}`);
-          }}
-        >
-          {counts.open} open
-        </button>
-        <button
-          onClick={() => {
-            setFilter("review");
-            navigate(`order/${id}`);
-          }}
-          className={counts.review ? "attention" : ""}
-        >
-          {counts.review > 0 && <WarningCircle size={15} />} {counts.review}{" "}
-          need review
-        </button>
-        <span className="record-updated">Saved record · v{w.version}</span>
-      </div>
-      {demoNotice(w.order.synthetic)}
-      <RecordContext
-        w={w}
-        openSharing={() => navigate(`order/${id}?tab=sharing`)}
-        openChanges={() => navigate(`order/${id}?tab=changes`)}
-      />
-      <nav className="ow-tabs record-tabs" aria-label="Order record views">
-        {tabs.map((t) => (
-          <button
-            key={t}
-            className={tab === t ? "active" : ""}
-            aria-current={tab === t ? "page" : undefined}
-            onClick={() => {
-              setSelected(null);
-              navigate(`order/${id}?tab=${t}`);
-            }}
-          >
-            {names[t]}
+    <div
+      className={
+        "record-studio " + (agentOpen ? "agent-open" : "agent-collapsed")
+      }
+    >
+      <main
+        className={
+          "page record-workspace" + (document ? " viewing-source" : "")
+        }
+        aria-label="Order workspace"
+      >
+        <div className="record-breadcrumb">
+          <button className="text-button" onClick={() => navigate("orders")}>
+            <ArrowLeft size={14} />
+            Orders
           </button>
-        ))}
-      </nav>
-      {error && <ErrorNote message={error} />}{" "}
-      {query.isError && (
-        <ErrorNote message="Could not refresh. Showing the last saved record." />
-      )}
-      {tab === "comments" && (
-        <>
-          <div className="record-toolbar">
-            <div className="record-filters">
-              {[
-                ["all", "All"],
-                ["review", "Needs review"],
-                ["open", "Open"],
-                ["responded", "Responded"],
-                ["closed", "Closed"],
-              ].map(([value, label]) => (
-                <button
-                  key={value}
-                  className={filter === value ? "selected" : ""}
-                  aria-pressed={filter === value}
-                  onClick={() => setFilter(value)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            <div className="record-tools">
-              <label className="record-search">
-                <MagnifyingGlass size={15} />
-                <input
-                  aria-label="Search comments"
-                  placeholder="Search comments…"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </label>
-              <select
-                aria-label="Filter revision"
-                value={revision}
-                onChange={(e) => setRevision(e.target.value)}
-              >
-                <option value="all">All revisions</option>
-                {[...new Set(w.comments.map((c) => c.revision))].map((r) => (
-                  <option key={r}>{r}</option>
-                ))}
-              </select>
-              <button className="secondary" onClick={() => setSelected("new")}>
-                <Plus size={15} />
-                Add comment
-              </button>
-              {counts.review > 0 && (
-                <button
-                  className="primary"
-                  onClick={() => {
-                    const next = visible.find((c) => !c.reviewed);
-                    if (next) setSelected(next.id);
-                    else {
-                      setFilter("review");
-                      setSearch("");
-                      setRevision("all");
-                      setSelected(w.comments.find((c) => !c.reviewed)!.id);
-                    }
-                  }}
-                >
-                  Review next <ArrowRight size={14} />
-                </button>
-              )}
-            </div>
+          <span>/</span>
+          <span>{w.order.number}</span>
+          {w.order.synthetic && (
+            <small title="Practice order. Responses and approvals entered here are test records; source files remain unchanged.">
+              Sample order
+            </small>
+          )}
+        </div>
+        <header className="record-heading">
+          <div>
+            <h1>{w.order.title}</h1>
+            <p>
+              {w.order.customer}
+              <span>·</span>
+              {w.order.category}
+            </p>
           </div>
-          <div className={"record-log-layout " + (comment ? "has-detail" : "")}>
-            <section className="record-log" aria-label="Comment log">
-              <div className="record-log-head">
-                <span>Comment / revision</span>
-                <span>Comment and source</span>
-                <span>Status</span>
-              </div>
-              {visible.map((c) => (
-                <button
-                  key={c.id}
-                  className={
-                    "record-comment-row " +
-                    (selected === c.id ? "selected" : "")
-                  }
-                  onClick={() => setSelected(c.id)}
-                >
-                  <span className="record-comment-number">
-                    {c.number}
-                    <small>Rev {c.revision}</small>
-                  </span>
-                  <span className="record-comment-summary">
-                    <strong>{c.text}</strong>
-                    <span>
-                      {c.author || "Author not stated"}
-                      <i>·</i>
-                      {c.source_page
-                        ? `Source p. ${c.source_page}`
-                        : c.origin === "manual"
-                          ? "Manual entry"
-                          : "Source attached"}
-                      {c.target_source_id && (
-                        <>
-                          <i>·</i>Drawing linked
-                        </>
-                      )}
-                    </span>
-                    <small
-                      className={!c.reviewed ? "attention" : "record-reviewed"}
-                    >
-                      {!c.reviewed ? (
-                        <WarningCircle size={12} />
-                      ) : (
-                        <Check size={12} />
-                      )}{" "}
-                      {c.confidence}
-                    </small>
-                  </span>
-                  <span className={"record-status " + c.status}>
-                    {c.status}
-                  </span>
-                </button>
-              ))}
-              {!visible.length && (
-                <Empty
-                  title={
-                    w.comments.length
-                      ? "No matching comments"
-                      : "No comments yet"
-                  }
-                  icon={<ChatText size={28} />}
-                >
-                  {w.documents.some((d) => d.state === "queued")
-                    ? "Your files are being read. Comments will appear here."
-                    : "Upload a marked-up PDF or EML email, or add a comment manually."}
-                </Empty>
-              )}
-            </section>
-            {comment && (
-              <CommentEditor
-                key={selected}
-                comment={comment}
-                w={w}
-                busy={busy}
-                hasNext={visible.some((c) => !c.reviewed && c.id !== selected)}
-                close={() => setSelected(null)}
-                openSource={setSource}
-                openChanges={() =>
-                  navigate(`order/${id}?tab=changes&comment=${selected}`)
-                }
-                save={async (body, advance) => {
-                  if (
-                    await save(
-                      `/comments${selected === "new" ? "" : "/" + selected}`,
-                      body,
-                    )
-                  )
-                    setSelected(
-                      advance
-                        ? (visible.find((c) => !c.reviewed && c.id !== selected)
-                            ?.id ?? null)
-                        : null,
-                    );
-                }}
-              />
-            )}
-          </div>
-          <footer className="record-log-footer">
-            <span>
-              {visible.length} comments · Original source text is retained.
-            </span>
-            <Exports id={id} />
-          </footer>
-        </>
-      )}
-      {tab === "documents" && (
-        <section>
-          <div className="ow-section-heading">
-            <div>
-              <h2>Source documents</h2>
-              <p>Original files, review markups, and imported emails.</p>
-            </div>
-            <button className="text-button" onClick={() => setUpload(true)}>
-              <Plus size={16} />
+          <div className="record-heading-actions">
+            <button className="secondary" onClick={() => setUpload(true)}>
+              <UploadSimple size={16} />
               Add documents
             </button>
+            <button
+              className={
+                "secondary record-agent-toggle " + (agentOpen ? "active" : "")
+              }
+              aria-expanded={agentOpen}
+              aria-controls="record-agent-panel"
+              title="Toggle Rivet · ⌘/Ctrl J"
+              onClick={() => setAgentOpen(!agentOpen)}
+            >
+              <SidebarSimple size={17} />
+              Rivet
+            </button>
           </div>
-          <div className="record-document-list">
-            {w.documents.map((d) => (
-              <button key={d.id} onClick={() => setSource(d.id)}>
-                <FileText size={23} />
-                <span>
-                  <strong>{d.name}</strong>
-                  <small>
-                    {d.email
-                      ? `${d.email.from} · ${d.email.subject}`
-                      : d.role.replaceAll("_", " ")}
-                    {d.revision_label ? ` · Rev ${d.revision_label}` : ""}
-                  </small>
-                </span>
-                <span
-                  className={
-                    "record-status " + (d.state === "failed" ? "open" : "")
-                  }
-                >
-                  {d.state === "queued"
-                    ? "Processing"
-                    : d.state === "failed"
-                      ? "Failed"
-                      : "View source"}
-                </span>
-                <ArrowUpRight size={16} />
-              </button>
-            ))}
-          </div>
-          {!w.documents.length && (
-            <Empty title="No documents uploaded">
-              Add the submittal and review comments to start the record.
-            </Empty>
+        </header>
+        <div className="record-statusline">
+          <span>
+            <ChatText size={16} />
+            {w.comments.length} comments
+          </span>
+          <button
+            onClick={() => {
+              setSource("");
+              setFilter("open");
+              navigate(`order/${id}?tab=comments`);
+            }}
+          >
+            {counts.open} open
+          </button>
+          <button
+            onClick={() => {
+              setSource("");
+              setFilter("review");
+              navigate(`order/${id}?tab=comments`);
+            }}
+            className={counts.review ? "attention" : ""}
+          >
+            {counts.review > 0 && <WarningCircle size={15} />} {counts.review}{" "}
+            need review
+          </button>
+          <span className="record-updated">Saved record · v{w.version}</span>
+        </div>
+        {(tab === "sharing" || tab === "changes") && (
+          <RecordContext
+            w={w}
+            openSharing={() => navigate(`order/${id}?tab=sharing`)}
+            openChanges={() => navigate(`order/${id}?tab=changes`)}
+          />
+        )}
+        <nav className="ow-tabs record-tabs" aria-label="Order record views">
+          {tabs.map((t) => (
+            <button
+              key={t}
+              className={tab === t ? "active" : ""}
+              aria-current={tab === t ? "page" : undefined}
+              onClick={() => {
+                setSource("");
+                setSelected(null);
+                navigate(`order/${id}?tab=${t}`);
+              }}
+            >
+              {names[t]}
+            </button>
+          ))}
+        </nav>
+        <div className="record-center-views" hidden={!!document}>
+          {error && <ErrorNote message={error} />}{" "}
+          {query.isError && (
+            <ErrorNote message="Could not refresh. Showing the last saved record." />
           )}
-          <OrderInboxPanel id={w.order.id} />
-        </section>
-      )}
-      {tab === "changes" && (
-        <Changes
-          w={w}
-          error={error}
-          busy={busy}
-          save={save}
-          openSource={setSource}
-          openComment={(commentId) =>
-            navigate(`order/${id}?tab=comments&comment=${commentId}`)
-          }
-          clearComment={() => navigate(`order/${id}?tab=changes`)}
-          linkedComment={linkedComment}
-        />
-      )}
-      {tab === "sharing" && (
-        <Sharing
-          w={w}
-          saveError={error}
-          busy={busy}
-          save={save}
-          notify={notify}
-          refresh={() => void query.refetch()}
-        />
-      )}
-      <RecordAssistant
-        key={id}
+          {tab === "work" && (
+            <RecordCoordination
+              key={`coordination:${id}`}
+              w={w}
+              busy={busy}
+              error={error}
+              save={save}
+              openSource={setSource}
+              openComment={(commentId) =>
+                navigate(`order/${id}?tab=comments&comment=${commentId}`)
+              }
+              openSharing={() => navigate(`order/${id}?tab=sharing`)}
+              addDocuments={() => setUpload(true)}
+            />
+          )}
+          {tab === "comments" && (
+            <>
+              <div className="record-toolbar">
+                <div className="record-filters">
+                  {[
+                    ["all", "All"],
+                    ["review", "Needs review"],
+                    ["open", "Open"],
+                    ["responded", "Responded"],
+                    ["closed", "Closed"],
+                  ].map(([value, label]) => (
+                    <button
+                      key={value}
+                      className={filter === value ? "selected" : ""}
+                      aria-pressed={filter === value}
+                      onClick={() => setFilter(value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="record-tools">
+                  <label className="record-search">
+                    <MagnifyingGlass size={15} />
+                    <input
+                      aria-label="Search comments"
+                      placeholder="Search comments…"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                  </label>
+                  <select
+                    aria-label="Filter revision"
+                    value={revision}
+                    onChange={(e) => setRevision(e.target.value)}
+                  >
+                    <option value="all">All revisions</option>
+                    {[...new Set(w.comments.map((c) => c.revision))].map(
+                      (r) => (
+                        <option key={r}>{r}</option>
+                      ),
+                    )}
+                  </select>
+                  <button
+                    className="secondary"
+                    onClick={() => setSelected("new")}
+                  >
+                    <Plus size={15} />
+                    Add comment
+                  </button>
+                  {counts.review > 0 && (
+                    <button
+                      className="primary"
+                      onClick={() => {
+                        const next = visible.find((c) => !c.reviewed);
+                        if (next) setSelected(next.id);
+                        else {
+                          setFilter("review");
+                          setSearch("");
+                          setRevision("all");
+                          setSelected(w.comments.find((c) => !c.reviewed)!.id);
+                        }
+                      }}
+                    >
+                      Review next <ArrowRight size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div
+                className={"record-log-layout " + (comment ? "has-detail" : "")}
+              >
+                <section className="record-log" aria-label="Comment log">
+                  <div className="record-log-head">
+                    <span>Comment / revision</span>
+                    <span>Comment and source</span>
+                    <span>Status</span>
+                  </div>
+                  {visible.map((c) => (
+                    <button
+                      key={c.id}
+                      className={
+                        "record-comment-row " +
+                        (selected === c.id ? "selected" : "")
+                      }
+                      onClick={() => setSelected(c.id)}
+                    >
+                      <span className="record-comment-number">
+                        {c.number}
+                        <small>Rev {c.revision}</small>
+                      </span>
+                      <span className="record-comment-summary">
+                        <strong>{c.text}</strong>
+                        <span>
+                          {c.author || "Author not stated"}
+                          <i>·</i>
+                          {c.source_page
+                            ? `Source p. ${c.source_page}`
+                            : c.origin === "manual"
+                              ? "Manual entry"
+                              : "Source attached"}
+                          {c.target_source_id && (
+                            <>
+                              <i>·</i>Drawing linked
+                            </>
+                          )}
+                        </span>
+                        <small
+                          className={
+                            !c.reviewed ? "attention" : "record-reviewed"
+                          }
+                        >
+                          {!c.reviewed ? (
+                            <WarningCircle size={12} />
+                          ) : (
+                            <Check size={12} />
+                          )}{" "}
+                          {c.confidence}
+                        </small>
+                      </span>
+                      <span className={"record-status " + c.status}>
+                        {c.status}
+                      </span>
+                    </button>
+                  ))}
+                  {!visible.length && (
+                    <Empty
+                      title={
+                        w.comments.length
+                          ? "No matching comments"
+                          : "No comments yet"
+                      }
+                      icon={<ChatText size={28} />}
+                    >
+                      {w.documents.some((d) => d.state === "queued")
+                        ? "Your files are being read. Comments will appear here."
+                        : "Upload a marked-up PDF or EML email, or add a comment manually."}
+                    </Empty>
+                  )}
+                </section>
+                {comment && (
+                  <CommentEditor
+                    key={selected}
+                    comment={comment}
+                    w={w}
+                    busy={busy}
+                    hasNext={visible.some(
+                      (c) => !c.reviewed && c.id !== selected,
+                    )}
+                    close={() => setSelected(null)}
+                    openSource={setSource}
+                    openChanges={() =>
+                      navigate(`order/${id}?tab=changes&comment=${selected}`)
+                    }
+                    save={async (body, advance) => {
+                      if (
+                        await save(
+                          `/comments${selected === "new" ? "" : "/" + selected}`,
+                          body,
+                        )
+                      )
+                        setSelected(
+                          advance
+                            ? (visible.find(
+                                (c) => !c.reviewed && c.id !== selected,
+                              )?.id ?? null)
+                            : null,
+                        );
+                    }}
+                  />
+                )}
+              </div>
+              <footer className="record-log-footer">
+                <span>
+                  {visible.length} comments · Original source text is retained.
+                </span>
+                <Exports id={id} />
+              </footer>
+            </>
+          )}
+          {tab === "documents" && (
+            <section>
+              <div className="ow-section-heading">
+                <div>
+                  <h2>Source documents</h2>
+                  <p>Original files, review markups, and imported emails.</p>
+                </div>
+                <button className="text-button" onClick={() => setUpload(true)}>
+                  <Plus size={16} />
+                  Add documents
+                </button>
+              </div>
+              <div className="record-document-list">
+                {w.documents.map((d) => (
+                  <button key={d.id} onClick={() => setSource(d.id)}>
+                    <FileText size={23} />
+                    <span>
+                      <strong>{d.name}</strong>
+                      <small>
+                        {d.email
+                          ? `${d.email.from} · ${d.email.subject}`
+                          : d.role.replaceAll("_", " ")}
+                        {d.revision_label ? ` · Rev ${d.revision_label}` : ""}
+                      </small>
+                    </span>
+                    <span
+                      className={
+                        "record-status " + (d.state === "failed" ? "open" : "")
+                      }
+                    >
+                      {d.state === "queued"
+                        ? "Processing"
+                        : d.state === "failed"
+                          ? "Failed"
+                          : "View source"}
+                    </span>
+                    <ArrowUpRight size={16} />
+                  </button>
+                ))}
+              </div>
+              {!w.documents.length && (
+                <Empty title="No documents uploaded">
+                  Add the submittal and review comments to start the record.
+                </Empty>
+              )}
+              <OrderInboxPanel id={w.order.id} />
+            </section>
+          )}
+          {tab === "changes" && (
+            <Changes
+              w={w}
+              error={error}
+              busy={busy}
+              save={save}
+              openSource={setSource}
+              openComment={(commentId) =>
+                navigate(`order/${id}?tab=comments&comment=${commentId}`)
+              }
+              clearComment={() => navigate(`order/${id}?tab=changes`)}
+              linkedComment={linkedComment}
+            />
+          )}
+          {tab === "sharing" && (
+            <Sharing
+              w={w}
+              saveError={error}
+              busy={busy}
+              save={save}
+              notify={notify}
+              refresh={() => void query.refetch()}
+            />
+          )}
+        </div>
+        {upload && (
+          <RecordUpload
+            w={w}
+            close={() => setUpload(false)}
+            done={() => {
+              setUpload(false);
+              void query.refetch();
+              void qc.invalidateQueries({ queryKey: ["records"] });
+              notify("Documents queued for reading");
+            }}
+          />
+        )}
+        {document && (
+          <OrderEvidence
+            key={source}
+            inline
+            document={document}
+            sources={w.sources.filter((s) => s.document_id === document.id)}
+            selectedId={selectedSource?.id}
+            close={() => setSource("")}
+          />
+        )}
+      </main>
+      <RecordAgent
+        key={`agent:${id}`}
         w={w}
+        open={agentOpen}
+        setOpen={setAgentOpen}
+        save={save}
+        saveError={error}
+        recordBusy={busy}
+        focusedCommentId={selected || linkedComment || ""}
+        focusedSourceId={source}
         openSource={setSource}
-        openComment={(id) => {
-          setSelected(id);
-          navigate(`order/${w.order.id}`);
+        openComment={(commentId) => {
+          setSource("");
+          navigate(`order/${id}?tab=comments&comment=${commentId}`);
         }}
-        openChanges={() => navigate(`order/${w.order.id}?tab=changes`)}
+        openChanges={() => {
+          setSource("");
+          navigate(`order/${id}?tab=changes`);
+        }}
+        openWork={() => {
+          setSource("");
+          navigate(`order/${id}?tab=work`);
+        }}
       />
-      {upload && (
-        <RecordUpload
-          w={w}
-          close={() => setUpload(false)}
-          done={() => {
-            setUpload(false);
-            void query.refetch();
-            void qc.invalidateQueries({ queryKey: ["records"] });
-            notify("Documents queued for reading");
-          }}
-        />
-      )}
-      {document && (
-        <OrderEvidence
-          key={source}
-          document={document}
-          sources={w.sources.filter((s) => s.document_id === document.id)}
-          selectedId={selectedSource?.id}
-          close={() => setSource("")}
-        />
-      )}
-    </main>
+    </div>
   );
 }
 function Exports({ id }: { id: string }) {
@@ -512,15 +607,6 @@ function Exports({ id }: { id: string }) {
       </a>
     </div>
   );
-}
-function demoNotice(sample: boolean) {
-  // Kept independent of account hooks so the loaded record keeps hook order stable.
-  return sample ? (
-    <p className="record-practice-note">
-      Practice order · Responses and approvals entered here are test records.
-      Public sources remain unchanged.
-    </p>
-  ) : null;
 }
 function AuditFields({ defaultReason = "" }: { defaultReason?: string }) {
   const account = useAccount();
@@ -1591,6 +1677,7 @@ function Sharing({
               </summary>
               <p>{n.body}</p>
               <p>{n.recipients.map((r) => r.email).join(", ")}</p>
+              <NoticeRecipients w={w} notice={n} busy={busy} save={save} />
               <a
                 className="text-button"
                 href={`/api/orders/${w.order.id}/record/notices/${n.id}/draft`}
@@ -1800,169 +1887,5 @@ export function SharedRecord({ token }: { token: string }) {
         </>
       )}
     </main>
-  );
-}
-function RecordAssistant({
-  w,
-  openSource,
-  openComment,
-  openChanges,
-}: {
-  w: RecordView;
-  openSource: (s: string) => void;
-  openComment: (s: string) => void;
-  openChanges: () => void;
-}) {
-  type Answer = {
-    answer: string;
-    source_ids: string[];
-    comment_ids: string[];
-    change_ids: string[];
-    version: number;
-  };
-  const [prompt, setPrompt] = useState(""),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState(""),
-    [messages, setMessages] = useState<{ question: string; result: Answer }[]>(
-      [],
-    ),
-    [dismissed, setDismissed] = useState(false);
-  const input = useRef<HTMLTextAreaElement>(null);
-  useEffect(() => {
-    const key = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        input.current?.focus();
-        input.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }
-    };
-    window.addEventListener("keydown", key);
-    return () => window.removeEventListener("keydown", key);
-  }, []);
-  async function ask(question: string) {
-    if (!question.trim() || busy) return;
-    setBusy(true);
-    setError("");
-    setDismissed(false);
-    try {
-      const result = await api<Answer>(`/orders/${w.order.id}/record/ask`, {
-        question,
-        history: messages.slice(-3).flatMap((m) => [
-          { role: "user", content: m.question.slice(0, 6000) },
-          { role: "assistant", content: m.result.answer.slice(0, 6000) },
-        ]),
-      });
-      setMessages((prev) => [...prev, { question, result }]);
-      setPrompt("");
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
-  const latest = messages.at(-1);
-  return (
-    <section className="ow-command" aria-label="Rivet command bar">
-      <div className="ow-command-top">
-        <div>
-          <Mark small />
-          <strong>Rivet</strong>
-          <span>Ask about the order. Follow the source.</span>
-        </div>
-        <kbd>⌘ K</kbd>
-      </div>
-      {latest && !dismissed && (
-        <div className="ow-command-answer" aria-live="polite">
-          <button
-            className="icon-button ow-dismiss-answer"
-            aria-label="Dismiss answer"
-            onClick={() => setDismissed(true)}
-          >
-            <X size={15} />
-          </button>
-          <p>{latest.result.answer}</p>
-          <div className="record-answer-links">
-            {latest.result.comment_ids.map((id) => (
-              <button key={id} onClick={() => openComment(id)}>
-                Comment {w.comments.find((c) => c.id === id)?.number}{" "}
-                <ArrowUpRight size={12} />
-              </button>
-            ))}
-            {latest.result.source_ids.map((id) => {
-              const source = w.sources.find((s) => s.id === id);
-              return (
-                <button key={id} onClick={() => openSource(id)}>
-                  {w.documents.find((d) => d.id === source?.document_id)
-                    ?.name ?? "Source"}
-                  {source?.location.page ? ` · p. ${source.location.page}` : ""}{" "}
-                  <ArrowUpRight size={12} />
-                </button>
-              );
-            })}
-            {latest.result.change_ids.map((id) => (
-              <button key={id} onClick={openChanges}>
-                {w.changes.find((c) => c.id === id)?.title || "Change record"}{" "}
-                <ArrowUpRight size={12} />
-              </button>
-            ))}
-          </div>
-          <small className="record-answer-version">
-            Answered from record v{latest.result.version}
-            {latest.result.version !== w.version
-              ? " · The record has since changed."
-              : ""}
-          </small>
-        </div>
-      )}
-      {error && <ErrorNote message={error} />}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          void ask(prompt);
-        }}
-      >
-        <textarea
-          ref={input}
-          rows={1}
-          aria-label="Ask Rivet about this order"
-          placeholder="What changed? Who needs to respond?"
-          maxLength={6000}
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              void ask(prompt);
-            }
-          }}
-        />
-        <button
-          className="ow-command-send"
-          disabled={busy || !prompt.trim()}
-          aria-label="Send question"
-        >
-          {busy ? <Busy text="" /> : <ArrowRight size={19} />}
-        </button>
-      </form>
-      <div className="ow-command-examples">
-        {[
-          "What changed since the previous revision?",
-          "Which comments need a response?",
-          "What is unclear?",
-        ].map((q) => (
-          <button
-            key={q}
-            disabled={busy}
-            onClick={() => {
-              setPrompt(q);
-              input.current?.focus();
-            }}
-          >
-            {q}
-            <ArrowUpRight size={11} />
-          </button>
-        ))}
-      </div>
-    </section>
   );
 }

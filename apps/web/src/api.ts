@@ -1,4 +1,8 @@
 import type { components } from "./api-schema";
+import { createApiRouting } from "./api-routing";
+export const { apiUrl, isApiUrl } = createApiRouting(
+  import.meta.env.VITE_API_URL || "", window.location.origin,
+);
 export type Quote = components["schemas"]["QuoteView"];
 export type Line = components["schemas"]["LineView"];
 export type Project = components["schemas"]["ProjectView"];
@@ -21,9 +25,12 @@ export async function authorizationHeaders(): Promise<Record<string, string>> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 export async function apiFetch(path: string, init?: RequestInit) {
+  const url = apiUrl(path);
   const provider = tokenProvider;
-  const response = await fetch(path, {
+  const response = await fetch(url, {
     ...init,
+    credentials: "omit",
+    redirect: "error",
     headers: { ...(await authorizationHeaders()), ...init?.headers },
   });
   if (provider !== tokenProvider)

@@ -1,0 +1,7 @@
+FICTIONAL RIVET WORKFLOW EXAMPLE — not an engineering design.
+Document role: drawing
+Drawing sheet: E-11
+Revision: B
+Equipment tag: MSB-2
+Description: Switchboard front elevation.
+Finish: RAL 7035-DEMO

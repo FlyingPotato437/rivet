@@ -1,0 +1,17 @@
+# Allow only runtime source and locked dependencies into the build context.
+**
+!Dockerfile
+!.dockerignore
+!pyproject.toml
+!uv.lock
+!alembic.ini
+!backend/
+!backend/**
+!migrations/
+!migrations/**
+!scripts/
+!scripts/container_entrypoint.py
+**/__pycache__/
+**/*.pyc
+**/.env*
+**/.data/

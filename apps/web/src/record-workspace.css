@@ -127,7 +127,7 @@
   align-items: start;
 }
 .record-log-layout.has-detail {
-  grid-template-columns: minmax(0, 1.2fr) minmax(330px, 1fr);
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.35fr);
 }
 .record-log {
   border: 1px solid #302d37;
@@ -180,7 +180,7 @@
   min-width: 0;
 }
 .record-comment-summary strong {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.7;
   font-weight: 450;
   display: -webkit-box;
@@ -194,7 +194,7 @@
   gap: 6px;
   flex-wrap: wrap;
   color: #96919e;
-  font-size: 11px;
+  font-size: 12px;
   margin-top: 7px;
 }
 .record-comment-summary i {
@@ -204,7 +204,7 @@
   display: flex;
   gap: 5px;
   align-items: center;
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 8px;
 }
 .attention {
@@ -262,13 +262,13 @@
 }
 .record-detail label {
   margin: 0;
-  font-size: 11px;
+  font-size: 13px;
   color: #b8b1c3;
 }
 .record-detail input,
 .record-detail textarea,
 .record-detail select {
-  font-size: 12px !important;
+  font-size: 14px !important;
   line-height: 1.65;
 }
 .record-detail select {
@@ -1129,5 +1129,83 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #494050 transparent;
+  }
+}
+
+.record-workspace {
+  container-type: inline-size;
+}
+.record-workspace .record-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.record-workspace .record-tools {
+  width: 100%;
+  gap: 10px;
+}
+.record-workspace .record-search {
+  flex: 1 1 180px;
+  width: auto;
+  max-width: 360px;
+}
+.record-workspace .record-search input {
+  width: 100% !important;
+}
+.record-workspace .record-tools input,
+.record-workspace .record-tools select {
+  font-size: 13px !important;
+}
+.record-filters button {
+  font-size: 13px;
+}
+.record-log-layout.has-detail .record-log-head {
+  display: none;
+}
+.record-log-layout.has-detail .record-comment-row {
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 10px 14px;
+  padding: 18px 16px;
+}
+.record-log-layout.has-detail .record-comment-row > .record-status {
+  grid-column: 2;
+}
+.record-log-layout.has-detail .record-comment-number {
+  font-size: 14px;
+}
+.record-log-layout.has-detail .record-comment-number small {
+  font-size: 12px;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.record-log-head,
+.record-status,
+.record-metadata-summary small,
+.record-connections details,
+.record-unclear,
+.record-location-hint {
+  font-size: 12px;
+}
+.record-detail {
+  top: 80px;
+}
+@container (max-width: 800px) {
+  .record-log-layout.has-detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .record-log-layout.has-detail .record-detail {
+    grid-row: 1;
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+@media (max-width: 600px) {
+  .record-detail input,
+  .record-detail textarea,
+  .record-detail select {
+    font-size: 16px !important;
   }
 }

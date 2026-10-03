@@ -1,4 +1,4 @@
-import { authorizationHeaders } from "./api";
+import { apiUrl, authorizationHeaders } from "./api";
 import { useEffect, useRef, useState } from "react";
 import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import {
@@ -50,12 +50,14 @@ export function OrderEvidence({
   selectedId,
   close,
   contentUrl,
+  inline = false,
 }: {
   document: OrderDocument;
   sources: OrderSource[];
   selectedId?: string;
   close: () => void;
   contentUrl?: string;
+  inline?: boolean;
 }) {
   const selected = sources.find((s) => s.id === selectedId);
   const [page, setPage] = useState(Number(selected?.location.page ?? 1));
@@ -78,7 +80,7 @@ export function OrderEvidence({
         pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
         loadingTask = pdfjs.getDocument({
           httpHeaders: await authorizationHeaders(),
-          url: contentUrl || `/api/documents/${document.id}/content`,
+          url: apiUrl(contentUrl || `/api/documents/${document.id}/content`),
         });
         const doc = await loadingTask.promise;
         if (disposed) return;
@@ -104,13 +106,8 @@ export function OrderEvidence({
     };
   }, [document.id, pdf, page, contentUrl]);
   const bbox = selected?.location.bbox;
-  return (
-    <Modal
-      title={document.name}
-      eyebrow={document.role?.replaceAll("_", " ") || "Source evidence"}
-      onClose={close}
-      wide
-    >
+  const content = (
+    <>
       <div className="ow-source-toolbar">
         <span>{document.revision_label || "Original source"}</span>
         <a
@@ -149,7 +146,7 @@ export function OrderEvidence({
             ))}
         </div>
       )}
-      {selected && (
+      {selected && !inline && (
         <blockquote className="ow-citation">
           <span>
             {selected.location.page
@@ -162,6 +159,16 @@ export function OrderEvidence({
               "No readable text in this area. Review the original below."}
           </p>
         </blockquote>
+      )}
+      {selected && inline && (
+        <details className="record-inline-excerpt">
+          <summary>
+            Selected excerpt · {selected.location.page
+              ? `page ${selected.location.page}`
+              : selected.location.cells || `line ${selected.location.line || "—"}`}
+          </summary>
+          <p>{selected.text || "No readable text in this area. Review the original below."}</p>
+        </details>
       )}
       {error && <ErrorNote message={error} />}{" "}
       {pdf ? (
@@ -243,6 +250,32 @@ export function OrderEvidence({
           )}
         </div>
       )}
+    </>
+  );
+  if (inline) {
+    return (
+      <section className="record-inline-evidence" aria-label="Source document">
+        <header className="record-inline-evidence-head">
+          <button className="text-button" onClick={close}>
+            <CaretLeft size={16} /> Back to record
+          </button>
+          <div>
+            <span>{document.role?.replaceAll("_", " ") || "Source evidence"}</span>
+            <h2>{document.name}</h2>
+          </div>
+        </header>
+        {content}
+      </section>
+    );
+  }
+  return (
+    <Modal
+      title={document.name}
+      eyebrow={document.role?.replaceAll("_", " ") || "Source evidence"}
+      onClose={close}
+      wide
+    >
+      {content}
     </Modal>
   );
 }

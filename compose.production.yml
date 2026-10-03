@@ -1,0 +1,90 @@
+name: rivet
+
+x-app: &app
+  build: .
+  image: rivet-app:local
+  env_file: .env.production
+  environment:
+    RIVET_ENV: production
+    RIVET_AUTH_MODE: clerk
+    RIVET_LOCAL_ONLY: "false"
+    RIVET_DEMO_ENABLED: "false"
+    RIVET_DATA_DIR: /var/lib/rivet
+    RIVET_COMPOSE_DATABASE: "true"
+    RIVET_DATABASE_URL: postgresql+psycopg://rivet:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}@postgres:5432/rivet
+  volumes:
+    - documents:/var/lib/rivet
+  init: true
+  restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  shm_size: 256mb
+
+services:
+  postgres:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_USER: rivet
+      POSTGRES_DB: rivet
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rivet -d rivet"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # Database and API ports stay private to this Docker network.
+
+  migrate:
+    <<: *app
+    command: ["migrate"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    <<: *app
+    command: ["api"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/api/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+
+  worker:
+    <<: *app
+    command: ["worker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    stop_grace_period: 150s
+
+  proxy:
+    image: caddy:2-alpine
+    environment:
+      RIVET_API_HOST: ${RIVET_API_HOST:?Set RIVET_API_HOST in .env.production}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  postgres:
+  documents:
+  caddy_data:
+  caddy_config:

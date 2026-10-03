@@ -2745,6 +2745,74 @@
         }
       }
     },
+    "/api/orders/{id}/record/notices/{item}/recipients": {
+      "post": {
+        "tags": [
+          "Comment records"
+        ],
+        "summary": "Notice Recipients",
+        "operationId": "notice_recipients_api_orders__id__record_notices__item__recipients_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoticeRecipientsWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/orders/{id}/record/approvals": {
       "post": {
         "tags": [
@@ -3264,6 +3332,328 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Ask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/{id}/record/coordination/run": {
+      "post": {
+        "tags": [
+          "Comment records"
+        ],
+        "summary": "Coordination Run",
+        "operationId": "coordination_run_api_orders__id__record_coordination_run_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Write"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/{id}/record/coordination/suggestions/{item}": {
+      "post": {
+        "tags": [
+          "Comment records"
+        ],
+        "summary": "Coordination Suggestion",
+        "operationId": "coordination_suggestion_api_orders__id__record_coordination_suggestions__item__post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuggestionWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/{id}/record/coordination/activity/{item}/undo": {
+      "post": {
+        "tags": [
+          "Comment records"
+        ],
+        "summary": "Coordination Undo",
+        "operationId": "coordination_undo_api_orders__id__record_coordination_activity__item__undo_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Write"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/{id}/record/coordination/tasks/{item}": {
+      "post": {
+        "tags": [
+          "Comment records"
+        ],
+        "summary": "Coordination Task",
+        "operationId": "coordination_task_api_orders__id__record_coordination_tasks__item__post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "item",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/{id}/record/coordination/settings": {
+      "post": {
+        "tags": [
+          "Comment records"
+        ],
+        "summary": "Coordination Settings",
+        "operationId": "coordination_settings_api_orders__id__record_coordination_settings_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoordinationSettingsWrite"
               }
             }
           }
@@ -4232,6 +4622,61 @@
         ],
         "title": "ConversationMessage"
       },
+      "CoordinationSettingsWrite": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "actor": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Actor"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Reason"
+          },
+          "weekly_digest_enabled": {
+            "type": "boolean",
+            "title": "Weekly Digest Enabled"
+          },
+          "customer_due_date": {
+            "type": "string",
+            "title": "Customer Due Date",
+            "default": ""
+          },
+          "role_owners": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "enum": [
+                "pm",
+                "drafting",
+                "production",
+                "commercial"
+              ]
+            },
+            "type": "object",
+            "title": "Role Owners"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "actor",
+          "reason",
+          "weekly_digest_enabled",
+          "role_owners"
+        ],
+        "title": "CoordinationSettingsWrite"
+      },
       "DocumentView": {
         "properties": {
           "id": {
@@ -4606,6 +5051,45 @@
           "mapping"
         ],
         "title": "Mapping"
+      },
+      "NoticeRecipientsWrite": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "actor": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Actor"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Reason"
+          },
+          "recipient_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Recipient Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "actor",
+          "reason",
+          "recipient_ids"
+        ],
+        "title": "NoticeRecipientsWrite"
       },
       "Operation-Input": {
         "properties": {
@@ -5496,6 +5980,118 @@
           "team"
         ],
         "title": "SubscriberWrite"
+      },
+      "SuggestionWrite": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "actor": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Actor"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Reason"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "accept",
+              "skip"
+            ],
+            "title": "Action"
+          },
+          "target_source_id": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Target Source Id",
+            "default": ""
+          },
+          "draft": {
+            "type": "string",
+            "maxLength": 32000,
+            "title": "Draft",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "actor",
+          "reason",
+          "action"
+        ],
+        "title": "SuggestionWrite"
+      },
+      "TaskWrite": {
+        "properties": {
+          "expected_version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Version"
+          },
+          "actor": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Actor"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Reason"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "pm",
+              "drafting",
+              "production",
+              "commercial"
+            ],
+            "title": "Role"
+          },
+          "owner": {
+            "type": "string",
+            "maxLength": 180,
+            "title": "Owner",
+            "default": ""
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "in_progress",
+              "done"
+            ],
+            "title": "Status"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Note",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_version",
+          "actor",
+          "reason",
+          "role",
+          "status"
+        ],
+        "title": "TaskWrite"
       },
       "TextInput": {
         "properties": {

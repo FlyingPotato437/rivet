@@ -5,13 +5,13 @@ from datetime import timedelta
 from hashlib import sha256
 
 from sqlalchemy import select
-from .connections import connections
 
 from backend.domain.service import fail, get, scoped
 from backend.identity import auth_mode, current_actor
 from backend.orders.extraction import extract_order_document
 from backend.storage.models import (
     Document,
+    NoticeDelivery,
     OrderRecord,
     Project,
     RecordShare,
@@ -19,6 +19,8 @@ from backend.storage.models import (
     now,
     uid,
 )
+
+from .connections import connections
 
 
 def stamp():
@@ -306,6 +308,10 @@ def ensure(s, order):
             )
         migrated.append(legacy["id"])
         added = True
+    from .automation import synchronize
+
+    docs_view, sources_view = source_data(s, order)
+    added = synchronize(data, docs_view, sources_view) or added
     if added:
         record.version += 1
         record.data = data
@@ -363,7 +369,18 @@ def view(s, order, record=None):
 
     email = mail_status()
     docs, sources = source_data(s, order)
+    from .automation import projection
+
+    # Deliveries freeze their own recipients and payload. Project their actual
+    # state without rewriting the immutable draft or changing record versions.
+    delivery_by_notice = {
+        delivery.notice_id: {"status": delivery.status, "payload": delivery.payload}
+        for delivery in s.scalars(
+            scoped(NoticeDelivery).where(NoticeDelivery.order_id == order.id)
+        )
+    }
     return {
+        "coordination": projection(record.data, docs, sources, delivery_by_notice),
         "order": {
             "id": order.id,
             "project_id": p.id,
@@ -374,7 +391,7 @@ def view(s, order, record=None):
             "synthetic": p.synthetic,
         },
         "version": record.version,
-        **deepcopy(record.data),
+        **{k: deepcopy(v) for k, v in record.data.items() if k != "coordination"},
         "approvals": [
             {k: v for k, v in a.items() if k != "snapshot"}
             for a in record.data["approvals"]
@@ -505,6 +522,41 @@ def change_record(s, order, record, body, kind, item_id=""):
             body.actor,
             reason=body.reason,
         )
+    elif kind == "notice_recipients":
+        notice = next((n for n in data["notices"] if n["id"] == item_id), None)
+        if not notice:
+            fail("Notice not found.", 404)
+        if notice.get("status") != "draft" or s.scalar(
+            scoped(NoticeDelivery).where(
+                NoticeDelivery.order_id == order.id,
+                NoticeDelivery.notice_id == item_id,
+            )
+        ):
+            fail(
+                "This notice has entered the delivery queue and its recipients cannot be changed.",
+                409,
+            )
+        subscribers = {person["id"]: person for person in data["subscribers"]}
+        if set(body.recipient_ids) - subscribers.keys():
+            fail(
+                "Choose recipients saved on this order. Refresh if the recipient list changed.",
+                422,
+            )
+        recipients = [deepcopy(subscribers[value]) for value in body.recipient_ids]
+        if notice["recipients"] == recipients:
+            return view(s, order, record)
+        before = {"recipients": deepcopy(notice["recipients"])}
+        notice["recipients"] = recipients
+        event(
+            data,
+            "notice_recipients",
+            "Updated recipients for draft: " + notice["title"],
+            body.actor,
+            before,
+            {"recipients": deepcopy(recipients)},
+            body.reason,
+            notice["id"],
+        )
     elif kind == "approval":
         docs, sources = source_data(s, order)
         if not data["comments"]:
@@ -534,6 +586,10 @@ def change_record(s, order, record, body, kind, item_id=""):
         event(
             data, kind, "Approved record: " + body.label, body.actor, reason=body.reason
         )
+    from .automation import synchronize
+
+    docs, sources = source_data(s, order)
+    synchronize(data, docs, sources)
     record.data = data
     record.version += 1
     order.updated_at = now()
@@ -590,3 +646,41 @@ def shared(s, token):
     if not row or row.revoked or row.expires_at < now():
         fail("This record link has expired or been revoked.", 404)
     return row
+
+
+def coordinate(s, order, record, body, kind, item_id=""):
+    from .automation import mutate
+
+    if auth_mode() == "clerk":
+        body = body.model_copy(update={"actor": current_actor()})
+    if body.expected_version != record.version:
+        fail("The record changed. Refresh before applying this action.", 409)
+    data = deepcopy(record.data)
+    if kind == "undo":
+        activity = next(
+            (
+                x
+                for x in data.get("coordination", {}).get("activity", [])
+                if x["id"] == item_id
+            ),
+            {},
+        )
+        undo = activity.get("undo") or {}
+        if undo.get("type") == "notice" and s.scalar(
+            scoped(NoticeDelivery).where(
+                NoticeDelivery.order_id == order.id,
+                NoticeDelivery.notice_id == undo.get("after", {}).get("id"),
+            )
+        ):
+            fail(
+                "This notice has entered the delivery queue and can no longer be undone.",
+                409,
+            )
+    docs, sources = source_data(s, order)
+    mutate(data, docs, sources, body, kind, item_id)
+    if data != record.data:
+        record.data = data
+        record.version += 1
+        order.updated_at = now()
+        s.flush()
+    return view(s, order, record)

@@ -28,11 +28,11 @@ const questions = [
   ],
   [
     "What happens when a comment is unclear?",
-    "Rivet flags it for review. The source page stays separate from the drawing location it refers to. A PM can correct any extracted field and link the correct drawing area; every edit is recorded.",
+    "Rivet matches explicit equipment tags and drawing identifiers within the order. Unambiguous matches can be linked automatically, with their evidence and an undo action. Conflicting matches go to the Work queue; missing references get a clarification draft. The original source is always retained.",
   ],
   [
     "Does Rivet suggest engineering fixes?",
-    "The first version focuses on documentation. It reads and organizes comments, retains source links, and records human responses and approvals. It does not propose fixes or send messages automatically.",
+    "Rivet prepares documentation and coordination work: drawing links, clarification drafts, assignments, and status updates. Engineers decide the technical response, and people record approvals. A linked drawing or completed task is not proof of engineering compliance.",
   ],
   [
     "What happens when a new revision arrives?",
@@ -40,11 +40,11 @@ const questions = [
   ],
   [
     "Can the customer and factory see the same record?",
-    "Approved versions have revocable read-only links. The current prototype runs locally, so these links work on this computer. Team accounts are connected. Public hosting and a receiving domain are still needed for remote access and email forwarding. Excel and PDF exports can be shared through your existing channels.",
+    "Approved versions have revocable read-only links. On a hosted workspace, recipients can open the reviewed record and its included sources. Excel and PDF exports also work through your existing channels. Links from a local demo remain local to that computer.",
   ],
   [
     "How do change notices work?",
-    "Add notice recipients from the customer, manufacturer, and production teams. Changes prepare email drafts for that list. Review the draft before sending it from your email app, or explicitly send through Rivet after a verified sender is configured.",
+    "Add recipients from the customer, manufacturer, and production teams. Changes prepare notices for review, and you can enable a weekly digest draft per order. Review before sending from your email app or through a configured verified sender. Drafts are never treated as sent messages.",
   ],
 ];
 
@@ -177,8 +177,8 @@ export function Landing() {
             <div className="site-preview-caption">
               <span>Interactive preview</span>
               <span>
-                Explore a comment, its drawing location, and the recorded
-                response. Fictional sample.
+                Follow one review from the original comment to a drawing link,
+                response, and notice draft. Fictional example.
               </span>
             </div>
           </section>

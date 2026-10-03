@@ -473,3 +473,130 @@
     }
   }
 }
+
+.op-connected {
+  padding: 30px 28px 20px;
+  min-height: 360px;
+}
+.op-chain {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  position: relative;
+  gap: 12px;
+}
+.op-chain::before {
+  content: "";
+  position: absolute;
+  height: 1px;
+  background: #39323f;
+  top: 23px;
+  left: 10%;
+  right: 10%;
+}
+.op-chain > button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 11px;
+  padding: 0;
+  color: #a29ba9;
+  font-size: 11px;
+  text-align: center;
+}
+.op-chain > button > span {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: #18171e;
+  border: 1px solid #39323f;
+  border-radius: 50%;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.op-chain > button.active {
+  color: #e5d6f8;
+}
+.op-chain > button.active > span {
+  background: #30263d;
+  border-color: #b89dd5;
+}
+.op-chain-detail {
+  max-width: 620px;
+  padding: 30px 0 20px;
+}
+.op-chain-status {
+  color: #c5acdf;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+.op-chain-detail h4 {
+  font:
+    500 20px/1.45 "Onest",
+    sans-serif;
+  margin: 10px 0;
+  letter-spacing: -0.035em;
+}
+.op-chain-detail p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: #d3cbdc;
+}
+.op-chain-detail small {
+  display: block;
+  margin-top: 12px;
+  color: #aaa1b3;
+  line-height: 1.7;
+}
+.op-chain-footer {
+  border-top: 1px solid #302c37;
+  padding-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  font-size: 10px;
+  color: #a89db4;
+}
+.op-chain-footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #d0b8ee;
+}
+@media (max-width: 600px) {
+  .op-connected {
+    padding: 22px 16px 16px;
+  }
+  .op-chain {
+    gap: 5px;
+  }
+  .op-chain > button {
+    font-size: 9px;
+    gap: 8px;
+  }
+  .op-chain > button > span {
+    height: 35px;
+    width: 35px;
+  }
+  .op-chain::before {
+    top: 17px;
+  }
+  .op-chain-detail h4 {
+    font-size: 17px;
+  }
+  .op-preview .op-tabs {
+    gap: 18px;
+    overflow-x: auto;
+  }
+  .op-tabs button {
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .op-chain > button > span {
+    transition: none;
+  }
+}

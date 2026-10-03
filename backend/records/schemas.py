@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from backend.orders.schemas import StrictModel
 
@@ -43,6 +43,19 @@ class SubscriberWrite(Write):
     team: Literal["Manufacturer", "Customer", "Production"]
 
 
+class NoticeRecipientsWrite(Write):
+    recipient_ids: list[str] = Field(min_length=1, max_length=50)
+
+    @field_validator("recipient_ids")
+    @classmethod
+    def unique_recipients(cls, values):
+        if any(not value or len(value) > 100 for value in values):
+            raise ValueError("Choose valid saved recipient IDs.")
+        if len(values) != len(set(values)):
+            raise ValueError("Choose each recipient only once.")
+        return values
+
+
 class ApprovalWrite(Write):
     label: str = Field(min_length=1, max_length=180)
 
@@ -59,3 +72,43 @@ class ConversationMessage(StrictModel):
 class Ask(StrictModel):
     question: str = Field(min_length=1, max_length=6000)
     history: list[ConversationMessage] = Field(default_factory=list, max_length=6)
+
+
+class SuggestionWrite(Write):
+    action: Literal["accept", "skip"]
+    target_source_id: str = Field(default="", max_length=100)
+    draft: str = Field(default="", max_length=32000)
+
+
+class TaskWrite(Write):
+    role: Literal["pm", "drafting", "production", "commercial"]
+    owner: str = Field(default="", max_length=180)
+    status: Literal["open", "in_progress", "done"]
+    note: str = Field(default="", max_length=4000)
+
+
+class CoordinationSettingsWrite(Write):
+    weekly_digest_enabled: bool
+    customer_due_date: str = ""
+    role_owners: dict[Literal["pm", "drafting", "production", "commercial"], str]
+
+    @field_validator("customer_due_date")
+    @classmethod
+    def valid_date(cls, value):
+        from datetime import date
+
+        if value:
+            parsed = date.fromisoformat(value)
+            if parsed.isoformat() != value:
+                raise ValueError("Use a YYYY-MM-DD date.")
+        return value
+
+    @field_validator("role_owners")
+    @classmethod
+    def valid_owners(cls, value):
+        if any(len(owner) > 180 for owner in value.values()):
+            raise ValueError("Owner names must be at most 180 characters.")
+        return {
+            role: value.get(role, "")
+            for role in ("pm", "drafting", "production", "commercial")
+        }

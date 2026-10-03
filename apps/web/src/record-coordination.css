@@ -1,0 +1,926 @@
+.coordination {
+  --coord-line: #302d38;
+  --coord-muted: #aba5b5;
+  --coord-accent: #d4baf8;
+}
+.coordination button,
+.coordination-settings button {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+.coordination button:focus-visible,
+.coordination summary:focus-visible {
+  outline: 2px solid #c5a8ed;
+  outline-offset: 4px;
+}
+.coordination-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin: 3px 0 24px;
+}
+.coordination-intro h2 {
+  max-width: 65ch;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: -0.015em;
+  margin: 0 0 5px;
+}
+.coordination-intro p {
+  font-size: 13px;
+  color: var(--coord-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+.coordination-controls {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.coordination-controls button {
+  min-height: 34px;
+  font-size: 12px;
+}
+.coordination-controls .icon-only {
+  padding: 8px;
+}
+.coordination-due {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 12px;
+  color: #d5c5e4;
+  margin-top: 10px;
+}
+.coordination-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 290px);
+  align-items: start;
+  gap: 26px;
+}
+.coordination-main {
+  min-width: 0;
+}
+.coordination-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.coordination-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.coordination-views button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  border-radius: 5px;
+  color: #b7b0c2;
+  font-size: 13px;
+  cursor: pointer;
+}
+.coordination-views button.active {
+  background: #282230;
+  color: #e2d3f6;
+}
+.coordination-views button:hover {
+  background: #242029;
+}
+.coordination-views button span {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+.coordination-history-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #a8a0b3;
+  white-space: nowrap;
+}
+.coordination-history-toggle input,
+.coordination-checkbox input {
+  accent-color: #bfa0e6;
+  width: 14px !important;
+  height: 14px;
+  flex: none;
+  margin: 0 !important;
+}
+.coordination-list {
+  border: 1px solid var(--coord-line);
+  border-radius: 9px;
+  overflow: hidden;
+  background: #131117;
+}
+.coordination-suggestion,
+.coordination-task {
+  padding: 22px;
+  border-bottom: 1px solid var(--coord-line);
+}
+.coordination-suggestion:last-child,
+.coordination-task:last-child {
+  border-bottom: 0;
+}
+.coordination-suggestion h3,
+.coordination-task h3 {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+  margin: 12px 0 7px;
+  color: #f0eaf7;
+  text-wrap: pretty;
+}
+.coordination-suggestion > p,
+.coordination-task > p {
+  max-width: 72ch;
+  font-size: 13px;
+  line-height: 1.75;
+  margin: 0 0 14px;
+  color: #b6afbf;
+}
+.coordination-kind {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: #a9a0b8;
+}
+.coordination-kind > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.coordination-kind > span:first-child {
+  text-transform: capitalize;
+  color: #c9b7df;
+}
+.coordination-kind .needs-human {
+  color: #ddbb91;
+}
+.coordination-kind .is-explicit {
+  color: #a8c8b7;
+}
+.coordination-suggestion blockquote {
+  margin: 14px 0;
+  padding: 9px 12px;
+  border-left: 2px solid #5b476f;
+  color: #d4ccdf;
+  font-size: 13px;
+  line-height: 1.75;
+  background: #19151e;
+  overflow-wrap: anywhere;
+}
+.coordination-suggestion blockquote > span {
+  display: block;
+  color: #9f94ac;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+.coordination-proposed-link {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background: #1b1722;
+  color: #d9c6f1;
+  border: 1px solid #3d324b;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 14px 0;
+}
+.coordination-proposed-link:hover {
+  background: #241d2e;
+  border-color: #6d538a;
+}
+.coordination-proposed-link > span {
+  flex: 1;
+  min-width: 0;
+}
+.coordination-proposed-link strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+}
+.coordination-proposed-link small {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #aea1bf;
+}
+.coordination-proposed-link > svg {
+  flex: none;
+}
+.coordination-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 17px;
+}
+.coordination-actions button {
+  min-height: 32px;
+  font-size: 12px;
+  padding: 7px 11px;
+}
+.coordination-actions .primary {
+  background: #d4c1eb;
+  color: #21162e;
+  border-color: #d4c1eb;
+}
+.coordination-actions .primary:hover {
+  background: #e1d2f2;
+}
+.coordination-actions .coordination-skip {
+  margin-left: auto;
+  color: #a89faf;
+}
+.coordination-evidence {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.coordination-evidence button {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #c7b5dc;
+  text-align: left;
+  min-width: 0;
+  max-width: 100%;
+}
+.coordination-evidence button > span {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.coordination-evidence button > svg {
+  flex: none;
+}
+.coordination-evidence > details {
+  font-size: 12px;
+  color: #b7a8c7;
+}
+.coordination-evidence > details button {
+  display: flex;
+  margin-top: 7px;
+}
+.coordination-draft {
+  border: 1px solid #34303e;
+  border-radius: 5px;
+  margin: 12px 0;
+}
+.coordination-draft summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #d8cde7;
+}
+.coordination-draft summary span {
+  color: #a49bab;
+  font-size: 12px;
+}
+.coordination-draft p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+  font-size: 13px;
+  margin: 0;
+  padding: 0 12px 14px;
+  color: #d6cddd;
+}
+.coordination-editor {
+  display: grid;
+  gap: 14px;
+  padding: 16px 0 0;
+  margin-top: 15px;
+  border-top: 1px solid var(--coord-line);
+}
+.coordination-editor label,
+.coordination-settings label {
+  display: grid;
+  gap: 7px;
+  font-size: 12px;
+  color: #c8bfce;
+}
+.coordination-editor input,
+.coordination-editor textarea,
+.coordination-editor select,
+.coordination-settings input {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 13px;
+}
+.coordination-editor textarea {
+  line-height: 1.75;
+  resize: vertical;
+}
+.coordination-editor-note {
+  font-size: 12px;
+  color: #aaa0b5;
+  line-height: 1.7;
+  margin: 0;
+}
+.coordination-task-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.coordination-task-role {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #beaecf;
+  font-size: 12px;
+}
+.coordination-task-owner {
+  color: #ded5e8;
+  font-size: 12px;
+  margin: 10px 0;
+}
+.coordination-task .coordination-task-note {
+  white-space: pre-wrap;
+  border-left: 2px solid #494052;
+  padding-left: 10px;
+}
+.coordination-task > .text-button {
+  font-size: 12px;
+}
+.coordination-activity {
+  border-top: 1px solid var(--coord-line);
+}
+.coordination-activity > article {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 19px 0;
+  border-bottom: 1px solid var(--coord-line);
+  align-items: start;
+}
+.coordination-activity-dot {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #282331;
+  color: #c1a1e7;
+  margin-top: 1px;
+}
+.coordination-activity header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 7px;
+}
+.coordination-activity h3 {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.65;
+}
+.coordination-activity time,
+.coordination-activity-meta {
+  font-size: 12px;
+  color: #9c93a6;
+}
+.coordination-activity p {
+  color: #b5aabb;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 6px 0;
+}
+.coordination-activity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.coordination-activity > article > button {
+  font-size: 12px;
+  margin-top: 3px;
+}
+.coordination-activity .is-undone .coordination-activity-dot {
+  background: #252329;
+  color: #a69bac;
+}
+.coordination-activity .is-undone h3 {
+  color: #b0a6ba;
+}
+.coordination-footnote {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #92889e;
+  font-size: 12px;
+  padding: 16px 0;
+  line-height: 1.7;
+}
+.coordination-rail {
+  padding: 20px;
+  background: #17131d;
+  border: 1px solid #342b40;
+  border-radius: 8px;
+}
+.coordination-rail > header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d9c5f0;
+}
+.coordination-rail h3 {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+.coordination-rail-note {
+  color: #b0a3bd;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 8px 0 19px;
+}
+.coordination-readiness {
+  border-top: 1px solid #342b40;
+  padding: 15px 0;
+}
+.coordination-readiness h4 {
+  font-size: 12px;
+  font-weight: 500;
+  color: #d2c6df;
+  margin: 0 0 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.coordination-readiness h4 > span {
+  color: #a294b1;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.coordination-readiness details {
+  margin: 10px 0;
+}
+.coordination-readiness summary {
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #d1c7db;
+}
+.coordination-readiness summary > span:first-child {
+  display: flex;
+  flex: none;
+  padding-top: 1px;
+}
+.coordination-readiness summary > span:nth-child(2) {
+  flex: 1;
+}
+.coordination-readiness summary > small {
+  color: #a99ab8;
+  font-size: 12px;
+  padding-top: 2px;
+}
+.coordination-readiness p {
+  color: #b8abbf;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 9px 0;
+}
+.coordination-readiness details > button {
+  margin-right: 9px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+.coordination-check-pass {
+  color: #9ac2ab;
+}
+.coordination-check-review {
+  color: #d6b380;
+}
+.coordination .coordination-sharing {
+  font-size: 12px;
+  text-align: left;
+  line-height: 1.5;
+  margin: 3px 0 19px;
+}
+.coordination-digest {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  border-top: 1px solid #342b40;
+  padding-top: 17px;
+  color: #bfaed1;
+}
+.coordination-digest > svg {
+  flex: none;
+  margin-top: 1px;
+}
+.coordination-digest > div {
+  flex: 1;
+}
+.coordination-digest strong {
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+}
+.coordination-digest span {
+  display: block;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #a396b1;
+  margin-top: 5px;
+}
+.coordination-digest > button {
+  font-size: 12px;
+}
+.coordination-anchors {
+  border-top: 1px solid var(--coord-line);
+  margin-top: 5px;
+  padding-top: 17px;
+}
+.coordination-anchors > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #c9b7de;
+  cursor: pointer;
+}
+.coordination-anchors > summary > span {
+  margin-left: auto;
+  color: #9e91ac;
+}
+.coordination-anchors > p {
+  color: #b1a6bb;
+  font-size: 12px;
+  line-height: 1.8;
+  max-width: 70ch;
+  margin: 14px 0;
+}
+.coordination-anchors > input {
+  font-size: 12px;
+  width: 100%;
+  margin: 0 0 12px;
+}
+.coordination-anchor-list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+.coordination-anchor-list > details {
+  padding: 11px 0;
+  border-bottom: 1px solid #2a2531;
+}
+.coordination-anchor-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 12px;
+  color: #d0c0e0;
+}
+.coordination-anchor-list strong {
+  font-weight: 500;
+}
+.coordination-anchor-list small {
+  font-size: 12px;
+  color: #a594b6;
+}
+.coordination-anchor-list > details > button {
+  font-size: 12px;
+  margin: 8px 12px 0 0;
+}
+.coordination-settings {
+  display: grid;
+  gap: 21px;
+}
+.coordination-settings > p {
+  color: #b4aabd;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0;
+}
+.coordination-owner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+}
+.coordination-settings .coordination-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 8px;
+}
+.coordination-checkbox input {
+  margin-top: 2px !important;
+}
+.coordination-checkbox strong {
+  font-weight: 500;
+  font-size: 13px;
+}
+.coordination-checkbox small {
+  display: block;
+  margin-top: 6px;
+  line-height: 1.75;
+  color: #aa9db7;
+}
+.coordination-settings .coordination-actions {
+  margin-top: 0;
+}
+.record-anchor-reason {
+  padding: 10px 0;
+}
+.record-anchor-reason p {
+  font-size: 12px;
+  line-height: 1.75;
+  color: #b4a6c2;
+  margin: 5px 0 8px;
+}
+.record-anchor-reason small {
+  font-size: 12px;
+  color: #c5b0dc;
+}
+@media (max-width: 1180px) {
+  .coordination-layout {
+    grid-template-columns: minmax(0, 1fr) 245px;
+    gap: 18px;
+  }
+  .coordination-rail {
+    padding: 16px;
+  }
+  .coordination-suggestion,
+  .coordination-task {
+    padding: 18px;
+  }
+}
+@media (max-width: 980px) {
+  .coordination-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .coordination-rail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 22px;
+  }
+  .coordination-rail > header,
+  .coordination-rail-note {
+    grid-column: 1 / -1;
+  }
+  .coordination-digest {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .coordination-intro h2 {
+    font-size: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .coordination-intro {
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .coordination-controls {
+    width: 100%;
+  }
+  .coordination-views {
+    width: 100%;
+  }
+  .coordination-views button {
+    font-size: 12px;
+    gap: 6px;
+    padding: 8px;
+  }
+  .coordination-toolbar {
+    gap: 10px;
+  }
+  .coordination-suggestion,
+  .coordination-task {
+    padding: 17px 14px;
+  }
+  .coordination-suggestion h3,
+  .coordination-task h3 {
+    font-size: 15px;
+  }
+  .coordination-rail {
+    display: block;
+  }
+  .coordination-digest {
+    border-top: 1px solid #342b40;
+    padding-top: 16px;
+  }
+  .coordination-owner-grid {
+    grid-template-columns: 1fr;
+  }
+  .coordination-editor .form-row {
+    grid-template-columns: 1fr;
+  }
+  .coordination-activity > article {
+    grid-template-columns: 19px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .coordination-activity > article > button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coordination button,
+  .coordination-settings button {
+    transition: none;
+  }
+}
+.coordination-focused .coordination-intro {
+  align-items: baseline;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.coordination-focused .coordination-intro h2 {
+  font-size: 13px;
+  font-weight: 400;
+  color: #b8adbf;
+  line-height: 1.8;
+}
+.coordination-focused .coordination-intro > button {
+  flex: none;
+  font-size: 12px;
+}
+.coordination-focused .coordination-toolbar {
+  margin-bottom: 9px;
+}
+.coordination-focused .coordination-views {
+  gap: 1px;
+}
+.coordination-focused .coordination-views button {
+  font-size: 12px;
+  padding: 8px;
+}
+.coordination-focused .coordination-list {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid #302a35;
+  border-radius: 0;
+}
+.coordination-focused .coordination-suggestion {
+  padding: 0;
+  border-bottom: 1px solid #302a35;
+}
+.coordination-review-row > summary {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  list-style: none;
+  padding: 19px 3px;
+  cursor: pointer;
+}
+.coordination-review-row > summary::-webkit-details-marker {
+  display: none;
+}
+.coordination-review-row > summary:hover {
+  background: #bca5eb05;
+}
+.coordination-row-icon {
+  color: #b89ad1;
+  display: flex;
+  flex: none;
+}
+.coordination-row-title {
+  flex: 1;
+  min-width: 0;
+}
+.coordination-row-title strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e1d6eb;
+  line-height: 1.7;
+}
+.coordination-row-title small {
+  display: block;
+  text-transform: capitalize;
+  font-size: 12px;
+  color: #a595b4;
+  line-height: 1.6;
+  margin-top: 3px;
+}
+.coordination-row-preview {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #b5a9bf;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+.coordination-row-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #bba4cf;
+  font-size: 12px;
+  flex: none;
+}
+.coordination-review-row[open] > summary .coordination-row-action svg {
+  transform: rotate(90deg);
+}
+.coordination-row-detail {
+  padding: 0 4px 20px 34px;
+}
+.coordination-row-detail > p {
+  font-size: 12px;
+  color: #bcb0c6;
+  line-height: 1.8;
+  margin: 10px 0 13px;
+}
+.coordination-focused .coordination-task {
+  padding: 19px 2px;
+  background: transparent;
+}
+.coordination-focused .coordination-task h3 {
+  font-size: 14px;
+  margin-top: 8px;
+}
+.coordination-focused .coordination-task > p {
+  font-size: 12px;
+}
+.coordination-focused .coordination-footnote {
+  font-size: 12px;
+}
+.coordination-readiness-view > p {
+  font-size: 12px;
+  color: #b2a4bf;
+  line-height: 1.8;
+  margin: 0 0 17px;
+}
+.coordination-readiness-view > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+.coordination-readiness-view > button {
+  font-size: 12px;
+  margin-top: 14px;
+}
+.coordination-focused .coordination-anchors {
+  margin: 0;
+  padding: 14px 0;
+}
+.coordination-focused .coordination-anchor-list {
+  max-height: none;
+}
+@media (max-width: 1400px) {
+  .record-studio.agent-open .coordination-readiness-view > div {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+@media (max-width: 600px) {
+  .coordination-readiness-view > div {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .coordination-row-detail {
+    padding-left: 0;
+  }
+  .coordination-row-action {
+    font-size: 0;
+    gap: 0;
+  }
+  .coordination-row-title strong {
+    font-size: 13px;
+  }
+  .coordination-focused .coordination-intro {
+    flex-direction: row;
+  }
+}

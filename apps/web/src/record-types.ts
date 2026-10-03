@@ -38,6 +38,8 @@ export type RecordChange = {
 export type RecordDocument = OrderDocument & {
   email?: { subject: string; from: string; date: string };
   created_at: string;
+  extracted_sheet_ids?: string[];
+  extracted_revision_ids?: string[];
 };
 export type RecordOrder = {
   id: string;
@@ -57,6 +59,7 @@ export type RecordApproval = {
   version: number;
 };
 export type RecordView = {
+  coordination?: RecordCoordinationView;
   connections: {
     comments: Record<
       string,
@@ -112,6 +115,111 @@ export type RecordView = {
     created_at: string;
     expires_at: string;
   }[];
+};
+export type CoordinationRole = "pm" | "drafting" | "production" | "commercial";
+export type CoordinationSuggestion = {
+  id: string;
+  kind:
+    | "drawing_link"
+    | "clarification"
+    | "status_update"
+    | "impact_review"
+    | "weekly_digest"
+    | "reminder";
+  title: string;
+  reason: string;
+  confidence: "explicit" | "needs_review";
+  comment_id: string;
+  source_ids: string[];
+  target_source_id: string;
+  candidates: { source_id: string; label: string; reason: string }[];
+  draft: string;
+  status: "pending" | "accepted" | "skipped" | "stale";
+  created_at: string;
+  resolved_at: string;
+};
+export type CoordinationTask = {
+  id: string;
+  title: string;
+  role: CoordinationRole;
+  owner: string;
+  status: "open" | "in_progress" | "done";
+  comment_id: string;
+  source_ids: string[];
+  reason: string;
+  note: string;
+  created_at: string;
+  updated_at: string;
+};
+export type CoordinationCheck = {
+  id: string;
+  label: string;
+  status: "pass" | "blocked" | "needs_review";
+  detail: string;
+  comment_ids: string[];
+  source_ids: string[];
+};
+export type CoordinationSettings = {
+  weekly_digest_enabled: boolean;
+  customer_due_date: string;
+  role_owners: Record<CoordinationRole, string>;
+};
+export type RecordCoordinationView = {
+  anchors: {
+    id: string;
+    kind:
+      | "equipment"
+      | "sheet"
+      | "revision"
+      | "comment"
+      | "email_thread"
+      | "person";
+    value: string;
+    source_ids: string[];
+    comment_ids: string[];
+    document_ids: string[];
+  }[];
+  links: {
+    id: string;
+    type:
+      | "references"
+      | "answers"
+      | "caused_change"
+      | "included_in_approval"
+      | "notified";
+    from_type: string;
+    from_id: string;
+    to_type: string;
+    to_id: string;
+    source_ids: string[];
+    reason: string;
+    confidence: "explicit" | "needs_review";
+    automatic: boolean;
+  }[];
+  suggestions: CoordinationSuggestion[];
+  activity: {
+    id: string;
+    kind: string;
+    title: string;
+    reason: string;
+    at: string;
+    actor: string;
+    comment_id: string;
+    source_ids: string[];
+    undoable: boolean;
+    undone_at: string;
+  }[];
+  tasks: CoordinationTask[];
+  readiness: { resubmit: CoordinationCheck[]; release: CoordinationCheck[] };
+  settings: CoordinationSettings;
+  metrics: {
+    accepted_unchanged: number;
+    accepted_edited: number;
+    skipped: number;
+    pending: number;
+  };
+  summary: string;
+  last_run_at: string;
 };
 export type RecordSummary = RecordOrder & {
   version: number;

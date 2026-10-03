@@ -1,0 +1,14 @@
+{
+  "title": "Connected review · fictional switchboard",
+  "number": "DEMO-CONNECTED-01",
+  "customer": "Example customer · fictional",
+  "category": "Low-voltage switchboard · workflow demonstration",
+  "initial_documents": [
+    { "file": "drawing-E-10-rev-B.txt", "role": "drawing", "revision": "B" },
+    { "file": "drawing-E-11-rev-B.txt", "role": "drawing", "revision": "B" },
+    { "file": "drawing-E-12-rev-B.txt", "role": "drawing", "revision": "B" },
+    { "file": "production-bom-rev-B.csv", "role": "bom", "revision": "B" },
+    { "file": "customer-comments-round-2.txt", "role": "markup", "revision": "B" }
+  ],
+  "later_revision": { "file": "drawing-E-10-rev-C.txt", "role": "drawing", "revision": "C" }
+}

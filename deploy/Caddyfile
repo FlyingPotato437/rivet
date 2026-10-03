@@ -1,0 +1,12 @@
+{$RIVET_API_HOST} {
+    # The app accepts 20 MB files; allow room for multipart/email envelopes.
+    request_body {
+        max_size 30MB
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy no-referrer
+        Strict-Transport-Security "max-age=31536000"
+    }
+    reverse_proxy api:8787
+}

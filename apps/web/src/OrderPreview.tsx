@@ -6,6 +6,8 @@ import {
   FileText,
   WarningCircle,
   Check,
+  LinkSimple,
+  EnvelopeSimple,
 } from "@phosphor-icons/react";
 import { Mark } from "./ui";
 import "./order-preview.css";
@@ -46,7 +48,7 @@ const sample = [
 ];
 export function SampleOrderPreview() {
   const [selected, setSelected] = useState(0),
-    [tab, setTab] = useState("Comment log"),
+    [tab, setTab] = useState("Connected example"),
     [source, setSource] = useState(false);
   const c = sample[selected];
   return (
@@ -99,7 +101,7 @@ export function SampleOrderPreview() {
           <span>Revision 03</span>
         </div>
         <nav className="op-tabs" aria-label="Sample record views">
-          {["Comment log", "Change record"].map((t) => (
+          {["Connected example", "Comment log", "Change record"].map((t) => (
             <button
               key={t}
               className={tab === t ? "active" : ""}
@@ -109,7 +111,9 @@ export function SampleOrderPreview() {
             </button>
           ))}
         </nav>
-        {tab === "Comment log" ? (
+        {tab === "Connected example" ? (
+          <ConnectedExample />
+        ) : tab === "Comment log" ? (
           <div className="op-review">
             <div className="op-queue">
               {sample.map((row, i) => (
@@ -207,6 +211,90 @@ export function SampleOrderPreview() {
             <ArrowRight size={15} />
           </a>
         </footer>
+      </div>
+    </div>
+  );
+}
+
+const connectedSteps = [
+  {
+    label: "Comment 07",
+    icon: ChatText,
+    state: "Original retained",
+    title: "A comment on page 2 refers to another sheet.",
+    text: "“Please confirm the trip unit for CB-12 on sheet E-10.”",
+    detail:
+      "The comment’s source page stays attached. It is separate from the drawing the reviewer refers to.",
+  },
+  {
+    label: "Drawing E-10",
+    icon: LinkSimple,
+    state: "Exact anchors",
+    title: "CB-12 + E-10 identify the drawing.",
+    text: "The same equipment tag and sheet identifier occur in the comment and one drawing area in revision B.",
+    detail:
+      "Rivet records the link and the evidence behind it. Ambiguous matches go to the Work queue for review.",
+  },
+  {
+    label: "Response",
+    icon: Check,
+    state: "Person reviews",
+    title: "The PM records the team’s response.",
+    text: "“The proposed trip unit is shown in revision C. Engineering review remains open.”",
+    detail:
+      "Illustrative response. A recorded reply does not close the engineering review or approve the design.",
+  },
+  {
+    label: "Revision C",
+    icon: FileText,
+    state: "Impact review",
+    title: "The change stays connected to the comment.",
+    text: "The PM records the change from revision B to C and links comment 07. Production receives an internal review task.",
+    detail:
+      "The task tracks the BOM follow-up. Rivet does not assume the production BOM has been updated.",
+  },
+  {
+    label: "Notice draft",
+    icon: EnvelopeSimple,
+    state: "Awaiting send",
+    title: "Prepare the update for the affected teams.",
+    text: "A change notice brings the recorded change and open work together for the configured recipients.",
+    detail:
+      "Review the message and recipients before sending. This fictional example has sent no messages.",
+  },
+];
+
+function ConnectedExample() {
+  const [step, setStep] = useState(0);
+  const current = connectedSteps[step];
+  return (
+    <div className="op-connected">
+      <nav className="op-chain" aria-label="Explore one connected review">
+        {connectedSteps.map((item, index) => (
+          <button
+            key={item.label}
+            className={index === step ? "active" : ""}
+            aria-pressed={index === step}
+            onClick={() => setStep(index)}
+          >
+            <span>
+              <item.icon size={20} weight="duotone" />
+            </span>
+            {item.label}
+          </button>
+        ))}
+      </nav>
+      <div className="op-chain-detail" aria-live="polite">
+        <span className="op-chain-status">{current.state}</span>
+        <h4>{current.title}</h4>
+        <p>{current.text}</p>
+        <small>{current.detail}</small>
+      </div>
+      <div className="op-chain-footer">
+        <span>Illustrative workflow · CB-12</span>
+        <button onClick={() => setStep((step + 1) % connectedSteps.length)}>
+          Next step <ArrowRight size={15} />
+        </button>
       </div>
     </div>
   );

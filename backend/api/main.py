@@ -2,9 +2,12 @@ import os, json, secrets, hashlib
 from pathlib import Path
 from datetime import date
 from typing import Literal
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, UploadFile, File, Form, Header, HTTPException
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from backend.config import allowed_origins, allowed_hosts, validate_configuration, production
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from backend.storage.db import Session, BLOBS, ROOT
@@ -27,12 +30,24 @@ from backend.domain.coordination import (
     touch,
 )
 
-app = FastAPI(title="Rivet API", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(app):
+    validate_configuration()
+    if not os.access(BLOBS, os.W_OK):
+        raise RuntimeError("Rivet's document storage is not writable.")
+    yield
+
+
+app = FastAPI(
+    title="Rivet API", version="0.1.0", lifespan=lifespan,
+    docs_url=None if production() else "/docs",
+    redoc_url=None if production() else "/redoc",
+    openapi_url=None if production() else "/openapi.json",
+)
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=os.getenv(
-        "RIVET_ALLOWED_HOSTS", "127.0.0.1,localhost,testserver"
-    ).split(","),
+    allowed_hosts=allowed_hosts(),
 )
 
 
@@ -84,6 +99,18 @@ async def workspace_boundary(request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Cache-Control"] = "no-store"
     return response
+
+
+# Outermost user middleware: browser preflights do not have Clerk tokens, and
+# allowed origins must also receive CORS headers on authentication errors.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins(),
+    allow_credentials=False,  # Clerk bearer tokens; no cross-site API cookies.
+    allow_methods=["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Rivet-Client", "Idempotency-Key", "Range"],
+    expose_headers=["Content-Disposition", "Content-Length", "Content-Range", "Accept-Ranges"],
+)
 
 
 @app.get("/api/auth/config")

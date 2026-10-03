@@ -908,6 +908,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders/{id}/record/notices/{item}/recipients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Notice Recipients */
+        post: operations["notice_recipients_api_orders__id__record_notices__item__recipients_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/orders/{id}/record/approvals": {
         parameters: {
             query?: never;
@@ -1072,6 +1089,91 @@ export interface paths {
         put?: never;
         /** Ask */
         post: operations["ask_api_orders__id__record_ask_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/record/coordination/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Coordination Run */
+        post: operations["coordination_run_api_orders__id__record_coordination_run_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/record/coordination/suggestions/{item}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Coordination Suggestion */
+        post: operations["coordination_suggestion_api_orders__id__record_coordination_suggestions__item__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/record/coordination/activity/{item}/undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Coordination Undo */
+        post: operations["coordination_undo_api_orders__id__record_coordination_activity__item__undo_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/record/coordination/tasks/{item}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Coordination Task */
+        post: operations["coordination_task_api_orders__id__record_coordination_tasks__item__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/record/coordination/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Coordination Settings */
+        post: operations["coordination_settings_api_orders__id__record_coordination_settings_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1450,6 +1552,26 @@ export interface components {
             /** Content */
             content: string;
         };
+        /** CoordinationSettingsWrite */
+        CoordinationSettingsWrite: {
+            /** Expected Version */
+            expected_version: number;
+            /** Actor */
+            actor: string;
+            /** Reason */
+            reason: string;
+            /** Weekly Digest Enabled */
+            weekly_digest_enabled: boolean;
+            /**
+             * Customer Due Date
+             * @default
+             */
+            customer_due_date: string;
+            /** Role Owners */
+            role_owners: {
+                [key: string]: string;
+            };
+        };
         /** DocumentView */
         DocumentView: {
             /** Id */
@@ -1583,6 +1705,17 @@ export interface components {
              * @enum {string}
              */
             purpose: "schedule" | "addendum" | "catalog" | "offers" | "quote";
+        };
+        /** NoticeRecipientsWrite */
+        NoticeRecipientsWrite: {
+            /** Expected Version */
+            expected_version: number;
+            /** Actor */
+            actor: string;
+            /** Reason */
+            reason: string;
+            /** Recipient Ids */
+            recipient_ids: string[];
         };
         /** Operation */
         "Operation-Input": {
@@ -1885,6 +2018,59 @@ export interface components {
              * @enum {string}
              */
             team: "Manufacturer" | "Customer" | "Production";
+        };
+        /** SuggestionWrite */
+        SuggestionWrite: {
+            /** Expected Version */
+            expected_version: number;
+            /** Actor */
+            actor: string;
+            /** Reason */
+            reason: string;
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "accept" | "skip";
+            /**
+             * Target Source Id
+             * @default
+             */
+            target_source_id: string;
+            /**
+             * Draft
+             * @default
+             */
+            draft: string;
+        };
+        /** TaskWrite */
+        TaskWrite: {
+            /** Expected Version */
+            expected_version: number;
+            /** Actor */
+            actor: string;
+            /** Reason */
+            reason: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "pm" | "drafting" | "production" | "commercial";
+            /**
+             * Owner
+             * @default
+             */
+            owner: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "open" | "in_progress" | "done";
+            /**
+             * Note
+             * @default
+             */
+            note: string;
         };
         /** TextInput */
         TextInput: {
@@ -3842,6 +4028,44 @@ export interface operations {
             };
         };
     };
+    notice_recipients_api_orders__id__record_notices__item__recipients_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                id: string;
+                item: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NoticeRecipientsWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     approve_api_orders__id__record_approvals_post: {
         parameters: {
             query?: never;
@@ -4165,6 +4389,194 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["Ask"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    coordination_run_api_orders__id__record_coordination_run_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Write"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    coordination_suggestion_api_orders__id__record_coordination_suggestions__item__post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                id: string;
+                item: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuggestionWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    coordination_undo_api_orders__id__record_coordination_activity__item__undo_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                id: string;
+                item: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Write"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    coordination_task_api_orders__id__record_coordination_tasks__item__post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                id: string;
+                item: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    coordination_settings_api_orders__id__record_coordination_settings_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CoordinationSettingsWrite"];
             };
         };
         responses: {

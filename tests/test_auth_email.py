@@ -147,7 +147,30 @@ def test_signed_actor_cannot_be_spoofed_and_members_cannot_configure_mail(client
         },
     )
     assert r.status_code == 200, r.text
-    assert r.json()["events"][0]["actor"] == "user_org_alpha"
+    # Automatic coordination may add later audit entries, so check the actual
+    # human edit rather than assuming it remains the newest event.
+    edited = next(event for event in r.json()["events"] if event["kind"] == "comment")
+    assert edited["actor"] == "user_org_alpha"
+    assert all(event["actor"] != "Forged CEO" for event in r.json()["events"])
+    coordinated = client.post(
+        base + "/coordination/settings",
+        headers=a,
+        json={
+            "expected_version": r.json()["version"],
+            "actor": "Forged CEO",
+            "reason": "Test verified identity on coordination actions",
+            "weekly_digest_enabled": False,
+            "customer_due_date": "",
+            "role_owners": {},
+        },
+    )
+    assert coordinated.status_code == 200, coordinated.text
+    setting = next(
+        item
+        for item in coordinated.json()["coordination"]["activity"]
+        if item["kind"] == "settings"
+    )
+    assert setting["actor"] == "user_org_alpha"
     assert (
         client.post(
             "/api/integrations/email/check", headers=auth(role="member"), json={}

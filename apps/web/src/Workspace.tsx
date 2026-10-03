@@ -1,4 +1,4 @@
-import { authorizationHeaders } from "./api";
+import { apiUrl, authorizationHeaders } from "./api";
 import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -2685,7 +2685,7 @@ function DocumentViewer({
         pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
         loading = pdfjs.getDocument({
           httpHeaders: await authorizationHeaders(),
-          url: "/api/documents/" + doc.id + "/content",
+          url: apiUrl("/api/documents/" + doc.id + "/content"),
         });
         const pdf = await loading.promise;
         if (cancelled) {

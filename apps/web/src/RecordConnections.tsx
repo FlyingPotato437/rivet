@@ -29,11 +29,50 @@ export function CommentConnections({
     (d) => d.id === (source?.document_id || links.document_id),
   );
   const events = w.events.filter((e) => links.event_ids.includes(e.id));
+  const references =
+    w.coordination?.links.filter(
+      (link) =>
+        link.from_type === "comment" &&
+        link.from_id === id &&
+        link.type === "references",
+    ) ?? [];
   return (
     <section className="record-connections" aria-label="Connected records">
       <div className="record-connections-label">
         <LinkSimple size={13} /> Connected records
       </div>
+      {references.length > 0 && (
+        <details>
+          <summary>
+            <LinkSimple size={13} />
+            Why these references are connected
+          </summary>
+          {references.map((link) => (
+            <div className="record-anchor-reason" key={link.id}>
+              <small>
+                {link.automatic ? "Linked automatically" : "Recorded link"} ·{" "}
+                {link.confidence === "explicit"
+                  ? "Explicit reference"
+                  : "Needs review"}
+              </small>
+              <p>{link.reason}</p>
+              {link.source_ids.map((sourceId) => (
+                <button
+                  className="text-button"
+                  key={sourceId}
+                  onClick={() => openSource(sourceId)}
+                >
+                  Source
+                  {w.sources.find((s) => s.id === sourceId)?.location.page
+                    ? ` · p. ${w.sources.find((s) => s.id === sourceId)?.location.page}`
+                    : ""}
+                  <ArrowUpRight size={12} />
+                </button>
+              ))}
+            </div>
+          ))}
+        </details>
+      )}
       <div className="record-connected-links">
         {doc && (
           <button
