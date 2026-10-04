@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -67,7 +68,8 @@ export function RecordAgent({
   );
   const input = useRef<HTMLTextAreaElement>(null);
   const panel = useRef<HTMLElement>(null);
-  const end = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  const latestTurn = useRef<HTMLDivElement>(null);
   const queued = w.documents.filter((d) => d.state === "queued");
   const failed = w.documents.filter((d) => d.state === "failed");
   const pending =
@@ -195,12 +197,28 @@ export function RecordAgent({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", key);
       if (previous?.isConnected) previous.focus();
+      else
+        requestAnimationFrame(() =>
+          document
+            .querySelector<HTMLButtonElement>(".record-agent-toggle")
+            ?.focus(),
+        );
     };
   }, [open, drawer, setOpen]);
   useEffect(() => {
-    if (view === "conversation" && messages.length)
-      end.current?.scrollIntoView({ block: "nearest" });
-  }, [messages.length, view]);
+    if (!activeQuestion || !body.current || !latestTurn.current) return;
+    const container = body.current;
+    const turn = latestTurn.current;
+    const frame = requestAnimationFrame(() => {
+      const top =
+        turn.getBoundingClientRect().top -
+        container.getBoundingClientRect().top +
+        container.scrollTop -
+        32;
+      container.scrollTo({ top: Math.max(0, top), behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeQuestion]);
   async function ask(question: string) {
     if (!question.trim() || asking) return;
     setAsking(true);
@@ -334,7 +352,7 @@ export function RecordAgent({
             Activity <span>{activity.length}</span>
           </button>
         </nav>
-        <div className="record-agent-body">
+        <div className="record-agent-body" ref={body}>
           {view === "conversation" && (
             <>
               {focusedDocument && (
@@ -352,7 +370,7 @@ export function RecordAgent({
                   <small>Answers still use the full order record.</small>
                 </div>
               )}
-              {focused && (
+              {focused && !focusedDocument && (
                 <div className="record-agent-context">
                   <span>
                     <ChatText size={13} />
@@ -385,7 +403,7 @@ export function RecordAgent({
                   </div>
                 </div>
               )}
-              {!messages.length && (
+              {!messages.length && !asking && (
                 <div className="record-agent-welcome">
                   <h2>
                     {focused
@@ -398,13 +416,7 @@ export function RecordAgent({
                   </p>
                   <div className="record-agent-prompts">
                     {suggestions.map((question) => (
-                      <button
-                        key={question}
-                        onClick={() => {
-                          setPrompt(question);
-                          input.current?.focus();
-                        }}
-                      >
+                      <button key={question} onClick={() => void ask(question)}>
                         {question}
                         <ArrowUpRight size={13} />
                       </button>
@@ -412,7 +424,7 @@ export function RecordAgent({
                   </div>
                 </div>
               )}
-              {pending.length > 0 && !messages.length && (
+              {pending.length > 0 && !messages.length && !asking && (
                 <button className="record-agent-pending" onClick={visitWork}>
                   <ListChecks size={17} />
                   <span>
@@ -423,53 +435,92 @@ export function RecordAgent({
                 </button>
               )}
               {messages.map((message, index) => (
-                <div className="record-agent-exchange" key={index}>
+                <div
+                  className="record-agent-exchange"
+                  key={index}
+                  ref={
+                    index === messages.length - 1 && !asking
+                      ? latestTurn
+                      : undefined
+                  }
+                >
                   <div className="record-agent-question">
                     {message.question}
                   </div>
                   <article className="record-agent-answer">
-                    <header>
-                      <Mark small />
-                      <strong>Rivet</strong>
-                    </header>
-                    <p>{message.result.answer}</p>
-                    <div className="record-agent-citations">
-                      {message.result.comment_ids.map((id) => (
-                        <button
-                          key={`comment:${id}`}
-                          onClick={() => visitComment(id)}
-                        >
-                          <ChatText size={12} />
-                          Comment {w.comments.find((c) => c.id === id)?.number}
-                          <ArrowUpRight size={11} />
-                        </button>
-                      ))}
-                      {message.result.source_ids.map((id) => (
-                        <SourceButton
-                          key={`source:${id}`}
-                          w={w}
-                          id={id}
-                          open={visitSource}
-                        />
-                      ))}
-                      {message.result.change_ids.map((id) => (
-                        <button
-                          key={`change:${id}`}
-                          onClick={() => {
-                            openChanges();
-                            if (
-                              window.matchMedia("(max-width: 1439px)").matches
-                            )
-                              setOpen(false);
-                          }}
-                        >
-                          <LinkSimple size={12} />
-                          {w.changes.find((c) => c.id === id)?.title ||
-                            "Change record"}
-                          <ArrowUpRight size={11} />
-                        </button>
-                      ))}
+                    <div className="record-agent-prose">
+                      <ReactMarkdown
+                        allowedElements={[
+                          "p",
+                          "ul",
+                          "ol",
+                          "li",
+                          "strong",
+                          "em",
+                          "code",
+                          "pre",
+                          "blockquote",
+                          "br",
+                          "h1",
+                          "h2",
+                          "h3",
+                          "h4",
+                        ]}
+                        unwrapDisallowed
+                        skipHtml
+                      >
+                        {message.result.answer.replace(
+                          /^[ \t]*[•●]\s+/gm,
+                          "- ",
+                        )}
+                      </ReactMarkdown>
                     </div>
+                    <details className="record-agent-citation-group">
+                      <summary>
+                        {message.result.source_ids.length +
+                          message.result.comment_ids.length +
+                          message.result.change_ids.length}{" "}
+                        references
+                      </summary>
+                      <div className="record-agent-citations">
+                        {message.result.comment_ids.map((id) => (
+                          <button
+                            key={`comment:${id}`}
+                            onClick={() => visitComment(id)}
+                          >
+                            <ChatText size={12} />
+                            Comment{" "}
+                            {w.comments.find((c) => c.id === id)?.number}
+                            <ArrowUpRight size={11} />
+                          </button>
+                        ))}
+                        {message.result.source_ids.map((id) => (
+                          <SourceButton
+                            key={`source:${id}`}
+                            w={w}
+                            id={id}
+                            open={visitSource}
+                          />
+                        ))}
+                        {message.result.change_ids.map((id) => (
+                          <button
+                            key={`change:${id}`}
+                            onClick={() => {
+                              openChanges();
+                              if (
+                                window.matchMedia("(max-width: 1439px)").matches
+                              )
+                                setOpen(false);
+                            }}
+                          >
+                            <LinkSimple size={12} />
+                            {w.changes.find((c) => c.id === id)?.title ||
+                              "Change record"}
+                            <ArrowUpRight size={11} />
+                          </button>
+                        ))}
+                      </div>
+                    </details>
                     <small>
                       Record v{message.result.version}
                       {message.result.version !== w.version
@@ -480,7 +531,7 @@ export function RecordAgent({
                 </div>
               ))}
               {asking && (
-                <div className="record-agent-exchange">
+                <div className="record-agent-exchange" ref={latestTurn}>
                   <div className="record-agent-question">{activeQuestion}</div>
                   <div className="record-agent-working" role="status">
                     <CircleNotch size={15} />
@@ -489,7 +540,6 @@ export function RecordAgent({
                 </div>
               )}
               {error && <ErrorNote message={error} />}
-              <div ref={end} />
             </>
           )}
           {view === "activity" && (

@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Landing } from "./Landing";
-import { WorkspaceAccess } from "./Auth";
+import { Authentication, WorkspaceAccess } from "./Auth";
 
 const SharedRecord = lazy(() =>
   import("./RecordWorkspace").then((m) => ({ default: m.SharedRecord })),
@@ -35,7 +35,9 @@ export default function Root() {
       <Suspense
         fallback={<div className="site-loading">Opening approved record…</div>}
       >
-        <SharedRecord token={location.hash.slice(8)} />
+        <Authentication>
+          <SharedRecord token={location.hash.slice(8)} />
+        </Authentication>
       </Suspense>
     );
   return workspace ? (
@@ -46,9 +48,11 @@ export default function Root() {
         </div>
       }
     >
-      <WorkspaceAccess>
-        <WorkspaceApp />
-      </WorkspaceAccess>
+      <Authentication>
+        <WorkspaceAccess>
+          <WorkspaceApp />
+        </WorkspaceAccess>
+      </Authentication>
     </Suspense>
   ) : (
     <Landing />

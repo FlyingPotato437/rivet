@@ -32,7 +32,7 @@ Open **http://127.0.0.1:5178**. API documentation is at **http://127.0.0.1:8787/
 
 ## Deploy
 
-Deploy `apps/web` to Vercel as **Vite**, with `VITE_API_URL` set to the HTTPS origin
+Deploy the repository root (`./`) to Vercel as **Vite**, with `VITE_API_URL` set to the HTTPS origin
 of your hosted API. Run FastAPI, the durable worker, and PostgreSQL using
 `compose.production.yml` on a server. The API and worker share a persistent
 document volume; Caddy provides HTTPS. The image includes Chromium for PDF

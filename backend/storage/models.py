@@ -28,6 +28,19 @@ class Base(DeclarativeBase):
     pass
 
 
+class PilotRequest(Base):
+    """Public opt-in inquiries, separate from all customer workspace records."""
+
+    __tablename__ = "pilot_requests"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    email: Mapped[str] = mapped_column(String(254), unique=True)
+    name: Mapped[str] = mapped_column(String(120))
+    company: Mapped[str] = mapped_column(String(180))
+    workflow: Mapped[str] = mapped_column(String(1200), default="")
+    consent: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
 class Row:
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
     organization_id: Mapped[str] = mapped_column(

@@ -5,6 +5,42 @@
     "version": "0.1.0"
   },
   "paths": {
+    "/api/pilot-requests": {
+      "post": {
+        "summary": "Request Pilot",
+        "operationId": "request_pilot_api_pilot_requests_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PilotInquiry"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/config": {
       "get": {
         "summary": "Auth Config",
@@ -5458,6 +5494,53 @@
           "reason"
         ],
         "title": "OrderWaive"
+      },
+      "PilotInquiry": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "minLength": 5,
+            "title": "Email"
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 2,
+            "title": "Company"
+          },
+          "workflow": {
+            "type": "string",
+            "maxLength": 1200,
+            "title": "Workflow",
+            "default": ""
+          },
+          "consent": {
+            "type": "boolean",
+            "title": "Consent"
+          },
+          "website": {
+            "type": "string",
+            "maxLength": 200,
+            "title": "Website",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "company",
+          "consent"
+        ],
+        "title": "PilotInquiry"
       },
       "ProjectCreate": {
         "properties": {

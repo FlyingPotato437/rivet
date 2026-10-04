@@ -23,7 +23,7 @@ import {
 import { ui } from "@clerk/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Mark } from "./ui";
-import { apiFetch, isApiUrl, setTokenProvider } from "./api";
+import { apiFetch, apiUrl, isApiUrl, setTokenProvider } from "./api";
 import "./auth.css";
 
 type Account = {
@@ -53,13 +53,34 @@ export function Authentication({ children }: { children: ReactNode }) {
   }>();
   const [error, setError] = useState("");
   useEffect(() => {
-    apiFetch("/api/auth/config")
+    const controller = new AbortController();
+    // Sign-in configuration is public and must not race an existing session's
+    // token provider when entering from the marketing site or in StrictMode.
+    fetch(apiUrl("/api/auth/config"), {
+      credentials: "omit",
+      redirect: "error",
+      signal: controller.signal,
+    })
       .then(async (response) => {
-        if (!response.ok)
-          throw new Error("Rivet could not load its sign-in configuration.");
-        setConfig(await response.json());
+        if (
+          !response.ok ||
+          !response.headers.get("content-type")?.includes("application/json")
+        )
+          throw new Error(
+            "The workspace service is unavailable. Please try again later.",
+          );
+        const value = await response.json();
+        if (!controller.signal.aborted) setConfig(value);
       })
-      .catch((e) => setError(e.message));
+      .catch((e) => {
+        if (!controller.signal.aborted)
+          setError(
+            e instanceof TypeError
+              ? "Rivet could not connect to the workspace service. Check your connection and try again."
+              : e.message,
+          );
+      });
+    return () => controller.abort();
   }, []);
   if (error)
     return (

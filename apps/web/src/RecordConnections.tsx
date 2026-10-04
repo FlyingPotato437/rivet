@@ -58,6 +58,7 @@ export function CommentConnections({
               <p>{link.reason}</p>
               {link.source_ids.map((sourceId) => (
                 <button
+                  type="button"
                   className="text-button"
                   key={sourceId}
                   onClick={() => openSource(sourceId)}
@@ -76,6 +77,7 @@ export function CommentConnections({
       <div className="record-connected-links">
         {doc && (
           <button
+            type="button"
             className="text-button"
             onClick={() => openSource(source?.id || doc.id)}
           >
@@ -86,6 +88,7 @@ export function CommentConnections({
         )}
         {drawing ? (
           <button
+            type="button"
             className="text-button"
             onClick={() => openSource(drawing.id)}
           >
@@ -101,6 +104,7 @@ export function CommentConnections({
         )}
         {links.email_document_id && (
           <button
+            type="button"
             className="text-button"
             onClick={() => openSource(links.email_document_id)}
           >
@@ -108,7 +112,7 @@ export function CommentConnections({
           </button>
         )}
         {links.change_ids.length > 0 && (
-          <button className="text-button" onClick={openChanges}>
+          <button type="button" className="text-button" onClick={openChanges}>
             {links.change_ids.length} linked{" "}
             {links.change_ids.length === 1 ? "change" : "changes"}
             <ArrowUpRight size={12} />
@@ -167,7 +171,7 @@ export function RecordContext({
       className="record-context"
       aria-label="Record and communication status"
     >
-      <button onClick={changed ? openChanges : openSharing}>
+      <button type="button" onClick={changed ? openChanges : openSharing}>
         <WarningCircle size={14} />
         {changed
           ? `${changed} ${changed === 1 ? "update" : "updates"} since record approval`
@@ -176,7 +180,7 @@ export function RecordContext({
             : "No record approval yet"}
         <ArrowUpRight size={12} />
       </button>
-      <button onClick={openSharing}>
+      <button type="button" onClick={openSharing}>
         <ChatText size={14} />
         {missing.length
           ? `${missing.join(" & ")} recipients not set`

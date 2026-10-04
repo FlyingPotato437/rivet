@@ -615,9 +615,9 @@ export function RivetAssembly() {
     >
       <div className="rivet-assembly-heading">
         <h2 id="rivet-assembly-heading">
-          Built to hold it
+          From returned comments
           <br />
-          all together.
+          to a complete record.
         </h2>
         <p>
           Collect the comments, confirm their drawing locations, and keep the
@@ -640,10 +640,7 @@ export function RivetAssembly() {
       </div>
       <ol className="rivet-assembly-steps">
         {[
-          [
-            "Import",
-            "Add the submittal, marked-up PDFs, and saved emails.",
-          ],
+          ["Import", "Add the submittal, marked-up PDFs, and saved emails."],
           [
             "Review",
             "Confirm each comment, author, date, and drawing location.",

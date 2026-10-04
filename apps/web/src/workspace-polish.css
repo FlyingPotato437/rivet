@@ -1,0 +1,302 @@
+/* Shared rhythm for the record workspace, including asynchronously loaded views. */
+.record-review-note {
+  padding: 13px 14px;
+  border: 1px solid #5b4935;
+  border-radius: 6px;
+  background: #292219;
+  font-size: 12px;
+  color: #d6bc94;
+}
+.record-review-note summary {
+  cursor: pointer;
+  line-height: 1.7;
+}
+.record-review-note summary svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.record-review-note ul {
+  padding-left: 19px;
+  margin: 13px 0 0;
+  line-height: 1.8;
+}
+.app-shell .record-detail-top {
+  margin-bottom: 22px;
+}
+.app-shell .record-detail .record-connections {
+  margin-block: 8px;
+}
+.app-shell .page {
+  padding-top: 40px;
+  padding-bottom: 64px;
+}
+.app-shell .page-heading {
+  margin-bottom: 36px;
+  gap: 24px;
+}
+.app-shell .page-heading p {
+  line-height: 1.75;
+  max-width: 65ch;
+}
+.app-shell .record-studio .record-workspace {
+  padding: 28px 36px 64px;
+}
+.app-shell .record-studio .record-heading {
+  margin: 22px 0;
+  gap: 28px;
+}
+.app-shell .record-heading-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.app-shell .record-heading-actions button {
+  min-height: 38px;
+}
+.app-shell .record-studio .record-statusline {
+  margin: 20px 0;
+  gap: 12px 24px;
+}
+.app-shell .record-studio .record-tabs {
+  gap: 28px;
+  margin-bottom: 28px;
+}
+.app-shell .record-studio .record-tabs button {
+  padding-block: 14px;
+}
+.app-shell .record-context {
+  gap: 12px 24px;
+}
+.app-shell .record-demo-guide {
+  padding: 22px 26px;
+  gap: 24px;
+  margin: 28px 0;
+  background: #19161e;
+}
+.app-shell .record-demo-guide h2 {
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+.app-shell .record-demo-guide p {
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.7;
+}
+.app-shell .record-overview {
+  margin-block: 28px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.app-shell .record-order-row {
+  min-height: 108px;
+  padding: 22px 24px;
+  gap: 24px;
+  border-radius: 8px;
+}
+.app-shell .record-order-row:focus-visible {
+  outline: 2px solid #b79acc;
+  outline-offset: -2px;
+}
+.app-shell .record-order-row:hover {
+  background: #1b1820;
+}
+.app-shell .record-comment-row {
+  padding-block: 18px;
+}
+.app-shell .coordination-focused .coordination-intro {
+  margin-bottom: 24px;
+}
+.app-shell .coordination-focused .coordination-toolbar {
+  margin-bottom: 22px;
+  gap: 16px;
+}
+.app-shell .coordination-review-row > summary {
+  padding-block: 22px;
+}
+.app-shell .coordination-row-detail {
+  padding-bottom: 28px;
+}
+.app-shell .coordination-focused .coordination-task {
+  padding: 24px;
+}
+.app-shell .record-agent-header {
+  padding: 20px 22px 17px;
+}
+.app-shell .record-agent-header button {
+  width: 32px;
+  height: 32px;
+}
+.app-shell .record-agent-scope {
+  padding: 16px 22px 0;
+}
+.app-shell .record-agent-status {
+  padding: 16px 22px;
+}
+.app-shell .record-agent-tabs {
+  padding-inline: 22px;
+}
+.app-shell .record-agent-tabs button {
+  padding-block: 12px;
+}
+.app-shell .record-agent-body {
+  padding: 32px 22px 40px;
+  scroll-padding-top: 32px;
+}
+.app-shell .record-agent-welcome {
+  padding: 0 0 20px;
+}
+.app-shell .record-agent-welcome h2 {
+  font-size: 17px;
+  margin-bottom: 12px;
+}
+.app-shell .record-agent-welcome p {
+  font-size: 14px;
+}
+.app-shell .record-agent-prompts {
+  margin-top: 24px;
+}
+.app-shell .record-agent-prompts button {
+  padding-block: 15px;
+  line-height: 1.6;
+}
+.app-shell .record-agent-context {
+  margin-bottom: 30px;
+}
+.app-shell .record-agent-question {
+  margin: 0 0 28px 12px;
+  padding: 14px 16px;
+}
+.app-shell .record-agent-exchange {
+  margin-bottom: 40px;
+}
+.app-shell .record-agent-answer > p {
+  margin-top: 0;
+  line-height: 1.85;
+}
+.record-agent-prose {
+  color: #d9cde4;
+  font-size: 14px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.record-agent-prose p {
+  margin: 0 0 16px;
+}
+.record-agent-prose ul,
+.record-agent-prose ol {
+  padding-left: 20px;
+  margin: 12px 0 18px;
+}
+.record-agent-prose li {
+  padding-left: 3px;
+  margin-bottom: 10px;
+}
+.record-agent-prose h1,
+.record-agent-prose h2,
+.record-agent-prose h3,
+.record-agent-prose h4 {
+  font: 550 15px/1.6 var(--font-sans);
+  letter-spacing: 0;
+  margin: 22px 0 12px;
+}
+.record-agent-prose pre {
+  overflow-x: auto;
+  padding: 12px;
+  background: #211a28;
+  font-size: 12px;
+}
+.record-agent-prose blockquote {
+  border-left: 2px solid #816792;
+  margin: 14px 0;
+  padding-left: 14px;
+}
+.app-shell .record-agent-citation-group {
+  margin-top: 16px;
+}
+.app-shell .record-agent-citation-group > summary {
+  color: #c2acd4;
+  font-size: 12px;
+  cursor: pointer;
+  padding-block: 5px;
+}
+.app-shell .record-agent-citations button {
+  min-height: 34px;
+  padding: 8px 10px;
+}
+.app-shell .record-agent-composer {
+  padding: 16px 18px;
+}
+.app-shell .record-agent-composer textarea {
+  padding: 14px;
+}
+.app-shell .record-agent-composer > p {
+  margin-top: 10px;
+}
+.app-shell .record-agent-send {
+  height: 32px;
+  width: 32px;
+}
+.app-shell .settings-section {
+  margin-block: 32px;
+}
+.app-shell .settings-section > div {
+  padding-block: 22px;
+}
+.app-shell .workspace-legacy-tools {
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+  padding-top: 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.workspace-legacy-tools summary {
+  cursor: pointer;
+}
+.workspace-legacy-tools p {
+  line-height: 1.8;
+}
+.workspace-legacy-tools a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: #d2b9e8;
+}
+@media (max-width: 1100px) {
+  .app-shell .record-studio .record-workspace {
+    padding-inline: 26px;
+  }
+  .app-shell .record-studio .record-heading {
+    flex-wrap: wrap;
+  }
+  .app-shell .record-heading-actions {
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 600px) {
+  .app-shell .page {
+    padding: 26px 18px 48px;
+  }
+  .app-shell .record-studio .record-workspace {
+    padding: 22px 18px 48px;
+  }
+  .app-shell .record-studio .record-tabs {
+    gap: 22px;
+  }
+  .app-shell .record-demo-guide {
+    padding: 20px;
+    align-items: flex-start;
+  }
+  .app-shell .record-overview {
+    gap: 12px 20px;
+    font-size: 12px;
+  }
+  .app-shell .record-order-row {
+    padding: 20px 12px;
+    gap: 12px;
+  }
+  .app-shell .record-agent-body {
+    padding: 28px 22px 36px;
+  }
+  .app-shell .record-agent-composer textarea {
+    font-size: 16px;
+  }
+}

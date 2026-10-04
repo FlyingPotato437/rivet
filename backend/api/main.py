@@ -45,6 +45,8 @@ app = FastAPI(
     redoc_url=None if production() else "/redoc",
     openapi_url=None if production() else "/openapi.json",
 )
+from backend.pilot import router as pilot_router
+app.include_router(pilot_router)
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=allowed_hosts(),
@@ -73,11 +75,17 @@ async def workspace_boundary(request, call_next):
         path = request.url.path
         webhook = path == "/api/webhooks/resend"
         public = (
-            path in {"/api/health", "/api/auth/config"}
+            path in {"/api/health", "/api/auth/config", "/api/pilot-requests"}
             or path.startswith("/api/shared/")
             or webhook
         )
         if request.method not in ("GET", "HEAD", "OPTIONS") and not webhook:
+            if path == "/api/pilot-requests":
+                length = request.headers.get("content-length", "0")
+                if not length.isdigit():
+                    raise HTTPException(400, "Invalid request length.")
+                if int(length) > 6000:
+                    raise HTTPException(413, "Pilot request is too large.")
             origin = request.headers.get("origin")
             if origin and origin not in auth.allowed_origins():
                 raise HTTPException(403, "Origin is not allowed.")

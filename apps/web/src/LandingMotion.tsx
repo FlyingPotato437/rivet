@@ -19,17 +19,6 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
           ease: "power3.out",
           clearProps: "transform,opacity",
         });
-        gsap.to(".site-hero-copy", {
-          y: -75,
-          opacity: 0.2,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".site-hero-stage",
-            start: "20% top",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
         gsap.fromTo(
           ".site-hero-product",
           { y: 90, rotateX: 12, scale: 0.93 },
@@ -58,7 +47,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
         });
         gsap.utils
           .toArray<HTMLElement>(
-            ".site-section-heading h2, .rivet-assistant-heading h2, .site-faq-heading h2, .site-final h2",
+            ".site-section-heading h2, .site-pilot-copy h2, .site-faq-heading h2",
           )
           .forEach((title) => {
             gsap.from(title, {
@@ -121,7 +110,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
     // Content boxes exclude transforms and pin spacers, preventing refresh loops.
     root.current
       .querySelectorAll(
-        ".site-preview, #product, #workflow, #intelligence, .site-faq-list",
+        ".site-preview, #preview, #workflow, #pilot, .site-faq-list",
       )
       .forEach((element) => contentObserver.observe(element));
     void document.fonts.ready.then(() => {

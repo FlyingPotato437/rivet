@@ -12,7 +12,7 @@ create DNS records, or supply production credentials.
 
 | Component | Deployment | Persistence |
 | --- | --- | --- |
-| React/Vite | Vercel, root `apps/web` | Static build |
+| React/Vite | Vercel, repository root `./` | Static build |
 | HTTPS ingress | Caddy, server ports 80/443 | Certificate volume |
 | FastAPI | Docker `api` service | Shared `documents` volume |
 | Background processing | Docker `worker` service | Same database and `documents` volume |
@@ -130,26 +130,32 @@ Import `FlyingPotato437/rivet` and use:
 | Vercel setting | Value |
 | --- | --- |
 | Framework preset | Vite |
-| Root Directory | `apps/web` |
+| Root Directory | `./` |
 | Node.js Version | `24.x` |
+| Install Command | `npm ci --include=dev` |
 | Build Command | `npm run build` |
-| Output Directory | `dist` |
+| Output Directory | `apps/web/dist` |
 | Environment variable | `VITE_API_URL=https://api.your-domain.com` |
 
-Keep access to files outside the root directory enabled if Vercel prompts for
-it: the npm workspace lockfile is at the repository root. Use the repository's
-lockfile with npm's workspace installation; no second lockfile is needed in
-`apps/web`.
+The root `vercel.json` supplies these settings and overrides framework detection.
+Do not use the FastAPI preset or `vite build` directly at the repository root.
+The root npm script runs the frontend workspace build, and the install command
+includes Vite and TypeScript even when production dependency pruning is enabled.
+
+An existing project rooted at `apps/web` is also supported by its own
+`vercel.json` (output `dist`, install from the repository lockfile). Keep access
+to files outside that directory enabled. Prefer `./` for new imports.
 
 Use Node 24 for the frontend build. The locked PDF viewer requires Node 22.13+
 or 24+, so Node 20 does not satisfy all dependencies. Node 24 is an available
 [Vercel Node.js version](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
 
-`apps/web/vercel.json` supplies the framework, build, output, and response-header
-settings. `VITE_API_URL` is a **public, build-time value**. It must be an origin,
+Both configurations also set basic security response headers. `VITE_API_URL` is a **public, build-time value**. It must be an origin,
 without `/api`, a query, credentials, or a fragment. Redeploy the frontend after
-changing it. A Vercel build fails if this variable is missing or is an insecure
-HTTP API origin.
+changing it. A configured HTTP API origin is rejected on Vercel. The public
+marketing page can build and load without an API URL, but sign-in, order work,
+and pilot form submissions require the hosted API. Without it, the form reports
+an error and never pretends a request was saved.
 
 The application uses hash routes, so `/#orders` and `/#shared/<token>` need no
 SPA rewrite. API requests, PDF source reads, and downloads are routed directly
@@ -238,3 +244,26 @@ For a different container host, configure the same production variables from
 then run the `api` and `worker` roles separately against the same database and
 shared persistent volume. The current blob implementation does not support
 independent per-service filesystems.
+
+## Pilot waitlist
+
+Apply migration `0006` with the other migrations before enabling the landing
+page form. `POST /api/pilot-requests` accepts public opt-ins; it validates fields,
+requires contact consent, deduplicates normalized email addresses, checks origins,
+and limits the intake to 100 new requests per hour. A honeypot filters basic bots.
+Inquiries are independent of workspace tenants, and there is no public listing.
+The existing API backup covers this table. Put the API behind provider-level
+rate limiting before a high-traffic campaign; the intake cap is intentionally
+small and can be exhausted by unsolicited submissions.
+
+No notification email is sent automatically. Operators with server/database
+access can export requests into a new private CSV file:
+
+```sh
+python scripts/export_pilot_requests.py --output /private/path/rivet-pilot-requests.csv
+```
+
+Use a private directory outside the repository for contact exports. The file
+uses owner-only permissions and neutralizes spreadsheet formulas. Follow up
+manually with opted-in contacts. An optional frontend `VITE_PILOT_EMAIL` adds an
+email fallback if saving a form fails; use a real monitored address and rebuild.

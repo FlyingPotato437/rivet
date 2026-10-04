@@ -67,16 +67,9 @@ export function RecordFeed({
       {account.demo && (
         <section className="record-demo-guide">
           <div>
-            <span className="eyebrow">Practice workspace</span>
-            <h2>
-              {connectedDemo
-                ? "Try the connected review"
-                : "Start with the switchgear review"}
-            </h2>
+            <h2>Explore a sample order</h2>
             <p>
-              {connectedDemo
-                ? "Explore how drawing references connect, review a suggestion, and undo a recorded action using a fictional order. Public PDF examples are available below. All edits stay in this practice team."
-                : "Open a comment, check the highlighted PDF source, and save your review. Then record a response or change and export the log. All edits stay in this practice team."}
+              Public PDFs and a fictional review. Edits stay in this demo team.
             </p>
           </div>
           <button

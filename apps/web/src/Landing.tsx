@@ -9,13 +9,14 @@ import {
 } from "@phosphor-icons/react";
 import { Mark } from "./ui";
 import "./landing.css";
-import { RivetField, useLandingMotion } from "./LandingMotion";
+import { useLandingMotion } from "./LandingMotion";
 import { RivetAssembly } from "./RivetAssembly";
 import "./landing-motion.css";
-import { SourceJunction } from "./SourceJunction";
-import { AssistantScroll } from "./AssistantScroll";
+import { HeroReview } from "./HeroReview";
+import { PilotWaitlist } from "./PilotWaitlist";
 import { SiteAtmosphere } from "./SiteAtmosphere";
 import { SampleOrderPreview } from "./OrderPreview";
+import "./site-refinement.css";
 
 const questions = [
   [
@@ -62,7 +63,7 @@ export function Landing() {
   const goTo = () => setMenu(false);
   return (
     <IconContext.Provider value={{ weight: "regular" }}>
-      <div className="rivet-site" ref={root}>
+      <div className="rivet-site" id="home" ref={root}>
         <SiteAtmosphere />
         <a className="site-skip" href="#main">
           Skip to content
@@ -88,21 +89,27 @@ export function Landing() {
               aria-label="Main navigation"
               className={menu ? "site-links is-open" : "site-links"}
             >
-              <a href="#product" onClick={goTo}>
+              <a href="#preview" onClick={goTo}>
                 Product
               </a>
               <a href="#workflow" onClick={goTo}>
                 How it works
               </a>
-              <a href="#intelligence" onClick={goTo}>
-                Changes
+              <a href="#pilot" onClick={goTo}>
+                Pilot
               </a>
               <a href="#faq" onClick={goTo}>
                 FAQs
               </a>
+              <a className="site-mobile-signin" href="#orders" onClick={goTo}>
+                Sign in
+              </a>
             </nav>
-            <a className="site-nav-cta" href="#projects">
-              Open workspace <ArrowUpRight size={15} />
+            <a className="site-signin" href="#orders">
+              Sign in
+            </a>
+            <a className="site-nav-cta" href="#pilot">
+              Request a pilot <ArrowUpRight size={15} />
             </a>
             <button
               className="site-menu"
@@ -117,43 +124,62 @@ export function Landing() {
         <main id="main">
           <section className="site-hero" aria-labelledby="hero-heading">
             <div className="site-hero-stage">
-              <RivetField />
               <div className="site-hero-grain" aria-hidden="true" />
-              <div className="site-hero-copy site-wrap">
-                <a className="site-intro" href="#product">
-                  <span>Comment records for custom equipment</span>
-                  <ArrowRight size={14} />
-                </a>
-                <h1 id="hero-heading">
-                  Projects change.
-                  <br />
-                  <span>Keep the order in sync.</span>
-                </h1>
-                <p>
-                  Rivet brings every review comment, response, and approved
-                  change into one record, linked to the drawings. Keep your
-                  customer and production teams working from the same
-                  information.
-                </p>
-                <div className="site-actions">
-                  <a
-                    className="site-button site-button-primary"
-                    href="#projects"
-                  >
-                    Open workspace <ArrowRight size={17} />
+              <div className="site-hero-layout site-wrap">
+                <div className="site-hero-copy">
+                  <a className="site-intro" href="#preview">
+                    <span>For custom equipment manufacturers</span>
+                    <ArrowRight size={14} />
                   </a>
-                  <a
-                    className="site-button site-button-secondary"
-                    href="#workflow"
-                  >
-                    See how it works <ArrowRight size={17} />
-                  </a>
+                  <h1 id="hero-heading">
+                    Every comment.
+                    <br />
+                    Every revision.
+                    <br />
+                    <span>One order record.</span>
+                  </h1>
+                  <p>
+                    Rivet turns returned submittals, marked-up drawings, and
+                    emails into a connected record of what was asked, how it was
+                    answered, and what changed.
+                  </p>
+                  <div className="site-actions">
+                    <a
+                      className="site-button site-button-primary"
+                      href="#pilot"
+                    >
+                      Request a pilot <ArrowRight size={17} />
+                    </a>
+                    <a
+                      className="site-button site-button-secondary"
+                      href="#preview"
+                    >
+                      Explore the product <ArrowRight size={17} />
+                    </a>
+                  </div>
+                  <span className="site-hero-note">
+                    Built for the manufacturer’s side of the submittal process.
+                  </span>
                 </div>
+                <HeroReview />
               </div>
             </div>
           </section>
-          <SourceJunction />
-          <RivetAssembly />
+          <section
+            className="site-inputs site-wrap"
+            aria-label="Supported sources"
+          >
+            <span>Start with what your customers send.</span>
+            <div>
+              <span>Marked-up PDFs</span>
+              <i />
+              <span>Submittal revisions</span>
+              <i />
+              <span>Saved emails</span>
+              <i />
+              <span>Comment trackers</span>
+            </div>
+          </section>
           <section
             className="site-product-reveal site-wrap"
             aria-labelledby="preview-heading"
@@ -161,9 +187,9 @@ export function Landing() {
           >
             <div className="site-product-heading">
               <h2 id="preview-heading">
-                Every comment and change.
+                Review the work.
                 <br />
-                All within reach.
+                <span>Keep the source in reach.</span>
               </h2>
               <p>
                 Review the comment log, follow each source, and record the
@@ -182,7 +208,37 @@ export function Landing() {
               </span>
             </div>
           </section>
-          <AssistantScroll />
+          <RivetAssembly />
+          <section
+            className="site-principles site-wrap"
+            aria-label="How Rivet handles your work"
+          >
+            <div>
+              <span>01 / Evidence</span>
+              <h3>Open the original.</h3>
+              <p>
+                Go from a comment to its source page. The original wording and
+                document stay attached.
+              </p>
+            </div>
+            <div>
+              <span>02 / Review</span>
+              <h3>Keep decisions with people.</h3>
+              <p>
+                Unclear references are flagged. Your team records technical
+                responses and approvals.
+              </p>
+            </div>
+            <div>
+              <span>03 / Communication</span>
+              <h3>Prepare the handoff.</h3>
+              <p>
+                Share a reviewed record and prepare change notices for the
+                customer and production team.
+              </p>
+            </div>
+          </section>
+          <PilotWaitlist />
           <section
             className="site-faq site-wrap site-section"
             id="faq"
@@ -190,11 +246,11 @@ export function Landing() {
           >
             <div className="site-faq-heading site-reveal">
               <h2 id="faq-heading">
-                Before you
+                A few practical
                 <br />
-                <span>get started.</span>
+                <span>questions.</span>
               </h2>
-              <p>Get to know the workspace.</p>
+              <p>What to expect from Rivet and the pilot.</p>
             </div>
             <div className="site-faq-list">
               {questions.map(([q, a]) => (
@@ -210,23 +266,6 @@ export function Landing() {
               ))}
             </div>
           </section>
-          <section className="site-final site-wrap site-reveal">
-            <div className="site-final-mark">
-              <Mark />
-            </div>
-            <h2>
-              Keep your next
-              <br />
-              <span>order in sync.</span>
-            </h2>
-            <p>The comment, the response, and the approval — together.</p>
-            <a className="site-button site-button-primary" href="#projects">
-              Open Rivet <ArrowRight size={17} />
-            </a>
-            <span className="site-final-caption">
-              Explore the local workspace with sample orders.
-            </span>
-          </section>
         </main>
         <footer className="site-footer site-wrap">
           <div className="site-footer-top">
@@ -239,13 +278,13 @@ export function Landing() {
                 <Mark />
                 <span>rivet.</span>
               </a>
-              <p>Every detail, in order.</p>
+              <p>Comment and revision records for equipment manufacturers.</p>
             </div>
             <div>
               <span>Product</span>
-              <a href="#product">Overview</a>
+              <a href="#preview">Overview</a>
               <a href="#workflow">How it works</a>
-              <a href="#intelligence">Changes</a>
+              <a href="#pilot">Pilot waitlist</a>
             </div>
             <div>
               <span>Explore</span>
@@ -259,7 +298,7 @@ export function Landing() {
           </div>
           <div className="site-footer-bottom">
             <span>© {new Date().getFullYear()} Rivet</span>
-            <span>Comment records for custom equipment.</span>
+            <span>For custom equipment manufacturers.</span>
             <a
               href="#home"
               onClick={() => window.scrollTo({ top: 0, behavior: "instant" })}

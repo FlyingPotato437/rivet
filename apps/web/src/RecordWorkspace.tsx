@@ -185,8 +185,6 @@ export function RecordWorkspace({
             <ArrowLeft size={14} />
             Orders
           </button>
-          <span>/</span>
-          <span>{w.order.number}</span>
           {w.order.synthetic && (
             <small title="Practice order. Responses and approvals entered here are test records; source files remain unchanged.">
               Sample order
@@ -207,18 +205,20 @@ export function RecordWorkspace({
               <UploadSimple size={16} />
               Add documents
             </button>
-            <button
-              className={
-                "secondary record-agent-toggle " + (agentOpen ? "active" : "")
-              }
-              aria-expanded={agentOpen}
-              aria-controls="record-agent-panel"
-              title="Toggle Rivet · ⌘/Ctrl J"
-              onClick={() => setAgentOpen(!agentOpen)}
-            >
-              <SidebarSimple size={17} />
-              Rivet
-            </button>
+            {!agentOpen && (
+              <button
+                className={
+                  "secondary record-agent-toggle " + (agentOpen ? "active" : "")
+                }
+                aria-expanded={agentOpen}
+                aria-controls="record-agent-panel"
+                title="Toggle Rivet · ⌘/Ctrl J"
+                onClick={() => setAgentOpen(!agentOpen)}
+              >
+                <SidebarSimple size={17} />
+                Ask Rivet
+              </button>
+            )}
           </div>
         </header>
         <div className="record-statusline">
@@ -686,9 +686,6 @@ function CommentEditor({
     <aside className="record-detail" ref={detail}>
       <div className="record-detail-top">
         <div>
-          <span className="eyebrow">
-            {c.id ? "Comment details" : "Manual entry"}
-          </span>
           <h2>{c.id ? `Comment ${c.number}` : "Add comment"}</h2>
         </div>
         <button
@@ -699,25 +696,6 @@ function CommentEditor({
           <X size={18} />
         </button>
       </div>
-      {c.flags && !c.reviewed && (
-        <div className="record-unclear">
-          <WarningCircle size={17} />
-          <span>
-            <strong>Needs human review</strong>
-            {c.flags.map((f) => (
-              <span key={f}>{f}</span>
-            ))}
-          </span>
-        </div>
-      )}
-      {c.id && (
-        <CommentConnections
-          id={c.id}
-          w={w}
-          openSource={openSource}
-          openChanges={openChanges}
-        />
-      )}
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -735,25 +713,6 @@ function CommentEditor({
           );
         }}
       >
-        {c.id && (
-          <div className="record-metadata-summary">
-            <span>
-              <small>Author</small>
-              {c.author || "Not stated"}
-            </span>
-            <span>
-              <small>Comment date</small>
-              {c.authored_at?.replace(
-                /^D:(\d{4})(\d{2})(\d{2}).*/,
-                "$1-$2-$3",
-              ) || "Not stated"}
-            </span>
-            <span>
-              <small>Revision</small>
-              {c.revision || "Not stated"}
-            </span>
-          </div>
-        )}
         <label>
           Comment
           <textarea
@@ -780,6 +739,28 @@ function CommentEditor({
               </button>
             ))}
           </details>
+        )}
+        {c.flags && c.flags.length > 0 && !c.reviewed && (
+          <details className="record-review-note">
+            <summary>
+              <WarningCircle size={16} /> {c.flags.length}{" "}
+              {c.flags.length === 1 ? "detail" : "details"} to confirm before
+              marking reviewed
+            </summary>
+            <ul>
+              {c.flags.map((flag) => (
+                <li key={flag}>{flag}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+        {c.id && (
+          <CommentConnections
+            id={c.id}
+            w={w}
+            openSource={openSource}
+            openChanges={openChanges}
+          />
         )}
         <details className="record-edit-metadata" open={!c.id || undefined}>
           <summary>Edit author, date, revision & drawing link</summary>

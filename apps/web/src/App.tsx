@@ -49,6 +49,7 @@ type Health = {
   actor: string;
 };
 export default function App() {
+  const account = useAccount();
   const qc = useQueryClient();
   const [route, setRoute] = useState(
     () => location.hash.slice(1) || "projects",
@@ -59,8 +60,12 @@ export default function App() {
   const [search, setSearch] = useState(false);
   const [toast, setToast] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
+  const legacyRoute =
+    ["quotes", "bids", "catalog", "activity"].includes(route) ||
+    route.startsWith("project/");
   const projects = useQuery({
     queryKey: ["projects"],
+    enabled: legacyRoute,
     queryFn: () => api<Project[]>("/projects"),
     refetchInterval: 5000,
   });
@@ -209,46 +214,49 @@ export default function App() {
             </button>
           ))}
         </div>
-        <details className="order-tools">
-          <summary>
-            Quote tools
-            <CaretRight size={13} />
-          </summary>
-          <nav>
-            <button
-              className={
-                route === "quotes" || route.startsWith("project/")
-                  ? "active"
-                  : ""
-              }
-              onClick={() => navigate("quotes")}
-            >
-              <Folder size={17} />
-              Quotes
-            </button>
-            <button
-              className={route === "bids" ? "active" : ""}
-              onClick={() => navigate("bids")}
-            >
-              <ListChecks size={17} />
-              Bid queue
-            </button>
-            <button
-              className={route === "catalog" ? "active" : ""}
-              onClick={() => navigate("catalog")}
-            >
-              <Stack size={17} />
-              Equipment catalog
-            </button>
-            <button
-              className={route === "activity" ? "active" : ""}
-              onClick={() => navigate("activity")}
-            >
-              <Clock size={17} />
-              Quote activity
-            </button>
-          </nav>
-        </details>
+        {["quotes", "bids", "catalog", "activity"].includes(route) ||
+        route.startsWith("project/") ? (
+          <details className="order-tools" open>
+            <summary>
+              Quote tools
+              <CaretRight size={13} />
+            </summary>
+            <nav>
+              <button
+                className={
+                  route === "quotes" || route.startsWith("project/")
+                    ? "active"
+                    : ""
+                }
+                onClick={() => navigate("quotes")}
+              >
+                <Folder size={17} />
+                Quotes
+              </button>
+              <button
+                className={route === "bids" ? "active" : ""}
+                onClick={() => navigate("bids")}
+              >
+                <ListChecks size={17} />
+                Bid queue
+              </button>
+              <button
+                className={route === "catalog" ? "active" : ""}
+                onClick={() => navigate("catalog")}
+              >
+                <Stack size={17} />
+                Equipment catalog
+              </button>
+              <button
+                className={route === "activity" ? "active" : ""}
+                onClick={() => navigate("activity")}
+              >
+                <Clock size={17} />
+                Quote activity
+              </button>
+            </nav>
+          </details>
+        ) : null}
         <div className="sidebar-bottom">
           <button onClick={() => navigate("guide")}>
             <BookOpen size={17} />
@@ -286,7 +294,7 @@ export default function App() {
             </button>
             <span className="slash">/</span>
             <span>
-              {order?.title ??
+              {order?.number ??
                 project?.title ??
                 {
                   projects: "Orders",
@@ -312,7 +320,9 @@ export default function App() {
               {health.isError
                 ? "Server unavailable"
                 : health.data
-                  ? "Local workspace"
+                  ? account.mode === "clerk"
+                    ? "Connected"
+                    : "Local workspace"
                   : "Connecting…"}
             </span>
             <button
@@ -341,9 +351,13 @@ export default function App() {
             onNew={() => setNewOrder(true)}
             decisionsOnly={route === "decisions"}
           />
+        ) : route === "settings" ? (
+          <Settings health={health.data} />
+        ) : route === "guide" ? (
+          <OrderGuide onNew={() => setNewOrder(true)} navigate={navigate} />
         ) : projects.isError ? (
           <div className="page">
-            <ErrorNote message="Rivet could not reach its local server. Start the app using the instructions in the README, then refresh." />
+            <ErrorNote message="Rivet could not load these records. Check your connection and try again." />
             <button onClick={() => projects.refetch()}>Try again</button>
           </div>
         ) : projects.isLoading ? (
@@ -361,10 +375,6 @@ export default function App() {
           <Catalog />
         ) : route === "activity" ? (
           <Activity projects={projects.data ?? []} navigate={navigate} />
-        ) : route === "settings" ? (
-          <Settings health={health.data} />
-        ) : route === "guide" ? (
-          <OrderGuide onNew={() => setNewOrder(true)} navigate={navigate} />
         ) : route === "quotes" ? (
           <Projects
             projects={projects.data ?? []}
@@ -1124,11 +1134,11 @@ function Settings({ health }: { health: Health | undefined }) {
           <span>
             Document storage
             <small>
-              PostgreSQL and private files on this device. Hosted storage has
-              not been configured.
+              Original files stay with the order. Access follows workspace
+              permissions.
             </small>
           </span>
-          <span className="micro-tag">Local</span>
+          <span className="micro-tag">Private</span>
         </div>
         <div>
           <span>
@@ -1144,6 +1154,15 @@ function Settings({ health }: { health: Health | undefined }) {
       </section>
       <IntegrationSettings />
       <TeamSettings />
+      <details className="workspace-legacy-tools">
+        <summary>Additional tools</summary>
+        <p>
+          The earlier quote workflow is available separately from order reviews.
+        </p>
+        <a href="#quotes">
+          Open quote tools <ArrowUpRight size={14} />
+        </a>
+      </details>
     </main>
   );
 }
