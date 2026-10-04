@@ -9,13 +9,12 @@ import {
 } from "@phosphor-icons/react";
 import { Mark } from "./ui";
 import "./landing.css";
-import { useLandingMotion } from "./LandingMotion";
+import { RivetField, useLandingMotion } from "./LandingMotion";
 import { RivetAssembly } from "./RivetAssembly";
 import "./landing-motion.css";
 import { HeroReview } from "./HeroReview";
 import { PilotWaitlist } from "./PilotWaitlist";
 import { SiteAtmosphere } from "./SiteAtmosphere";
-import { SampleOrderPreview } from "./OrderPreview";
 import "./site-refinement.css";
 
 const questions = [
@@ -161,7 +160,9 @@ export function Landing() {
                     Built for the manufacturer’s side of the submittal process.
                   </span>
                 </div>
-                <HeroReview />
+                <div className="site-hero-mark" aria-hidden="true">
+                  <RivetField />
+                </div>
               </div>
             </div>
           </section>
@@ -192,19 +193,19 @@ export function Landing() {
                 <span>Keep the source in reach.</span>
               </h2>
               <p>
-                Review the comment log, follow each source, and record the
-                response. Compare revisions without losing the conversation.
+                Follow a returned drawing from the original markup to a captured
+                comment, a confirmed reference, and a recorded response.
               </p>
             </div>
-            <div className="site-hero-product">
+            <div className="site-hero-product site-product-demo">
               <div className="site-product-halo" aria-hidden="true" />
-              <SampleOrderPreview />
+              <HeroReview />
             </div>
             <div className="site-preview-caption">
-              <span>Interactive preview</span>
+              <span>Explore the four steps</span>
               <span>
-                Follow one review from the original comment to a drawing link,
-                response, and notice draft. Fictional example.
+                Select a step or let the example play. Illustrative documents;
+                technical decisions stay with your team.
               </span>
             </div>
           </section>

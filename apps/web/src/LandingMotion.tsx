@@ -138,6 +138,9 @@ export function RivetField() {
     const context = el.getContext("2d", { alpha: true });
     if (!context) return;
     const c = context;
+    // Sample the mark in its own coordinates, including when React remounts
+    // this effect on a canvas that already has a device-pixel transform.
+    c.resetTransform();
     const media = matchMedia("(prefers-reduced-motion: reduce)");
     let width = 0,
       height = 0,
@@ -172,10 +175,11 @@ export function RivetField() {
     function draw(time = 0) {
       if (!visible || document.hidden || width === 0) return;
       c.clearRect(0, 0, width, height);
-      const mobile = width < 700;
-      const px = width * (mobile ? 0.6 : 0.78),
-        py = height * (mobile ? 0.75 : 0.49);
-      const scale = Math.min(width * (mobile ? 0.49 : 0.25), height * 0.45);
+      // The field now lives in its own hero column, so its optical center is
+      // local to that column on both desktop and stacked mobile layouts.
+      const px = width * 0.55,
+        py = height * 0.49;
+      const scale = Math.min(width * 0.46, height * 0.44);
       const slow = media.matches ? 0 : time;
       const assembled = media.matches
         ? 1
@@ -230,10 +234,10 @@ export function RivetField() {
         const size = Math.max(0.75, scale * 0.0044 * p.depth);
         c.fillRect(p.x, p.y, size * (p.edge ? 1.4 : 1), size * 0.8);
       }
-      // Traces approach the mark, expressing many document details joining one quote.
+      // Traces approach the mark as the individual pixels assemble.
       for (let row = 0; row < 22; row++) {
         const y = py - scale * 0.9 + row * scale * 0.084;
-        const start = width * (mobile ? 0.1 : 0.38),
+        const start = width * 0.01,
           end = px - scale * 0.7;
         if (end <= start) continue;
         const fade = c.createLinearGradient(start, 0, end, 0);

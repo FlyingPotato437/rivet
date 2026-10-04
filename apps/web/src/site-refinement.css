@@ -45,6 +45,75 @@
   align-items: center;
   gap: 64px;
 }
+.site-hero-mark {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1.08;
+  isolation: isolate;
+}
+.site-hero-mark .site-rivet-field {
+  z-index: 0;
+}
+.site-product-demo .hero-review {
+  max-width: none;
+}
+@media (min-width: 801px) {
+  .site-product-demo .hero-review {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  }
+  .site-product-demo .hero-review-top,
+  .site-product-demo .hero-playback {
+    grid-column: 1 / -1;
+  }
+  .site-product-demo .hero-drawing {
+    padding: 24px 24px 20px;
+    border-right: 1px solid #3a2f45;
+  }
+  .site-product-demo .hero-annotation {
+    top: 92px;
+    right: 24px;
+    width: 215px;
+  }
+  .site-product-demo .hero-connector {
+    position: absolute;
+    top: 54%;
+    right: -17px;
+    width: 34px;
+    height: 4px;
+    flex-direction: row;
+    z-index: 1;
+  }
+  .site-product-demo .hero-connector span {
+    width: 26px;
+    height: 1px;
+  }
+  .site-product-demo .hero-record {
+    align-self: center;
+    margin: 28px;
+  }
+  .site-product-demo .hero-record-body {
+    min-height: 164px;
+    padding: 22px;
+  }
+  .site-product-demo .hero-record-body strong {
+    font-size: 16px;
+  }
+  .site-product-demo .hero-record-body p {
+    font-size: 13px;
+  }
+  .site-product-demo .hero-playback button {
+    padding-block: 18px;
+    font-size: 13px;
+  }
+}
+@media (max-width: 800px) {
+  .site-hero-mark {
+    width: min(100%, 520px);
+    justify-self: center;
+    aspect-ratio: 1.3;
+  }
+}
 .rivet-site .site-hero-copy {
   width: auto;
   max-width: none;
