@@ -26,9 +26,28 @@
 .app-shell .record-detail .record-connections {
   margin-block: 8px;
 }
+/* One shared surface hierarchy: navigation, order context, then the working record. */
+.app-shell {
+  --desk-panel: #19191e;
+  --desk-raised: #202026;
+  --desk-line: #333239;
+  --desk-muted: #aaa6b2;
+  --desk-accent: #c6b0e5;
+}
+.app-shell .app-main {
+  background:
+    radial-gradient(ellipse at 75% 0, #28222e55, transparent 55%), #111114;
+}
+.app-shell .sidebar {
+  background: #0d0d10;
+  border-color: #26252c;
+}
+.app-shell .topbar {
+  background: #111114;
+  border-color: #29272f;
+}
 .app-shell .page {
-  padding-top: 40px;
-  padding-bottom: 64px;
+  padding: 40px clamp(24px, 3.2vw, 52px) 64px;
 }
 .app-shell .page-heading {
   margin-bottom: 36px;
@@ -38,39 +57,590 @@
   line-height: 1.75;
   max-width: 65ch;
 }
+.app-shell .record-studio {
+  padding: 24px;
+  gap: 20px;
+}
 .app-shell .record-studio .record-workspace {
-  padding: 28px 36px 64px;
+  padding: 0;
+  border: 1px solid var(--desk-line);
+  border-radius: 14px;
+  background: var(--desk-panel);
+  box-shadow:
+    0 12px 36px #08060c25,
+    0 1px 0 #ffffff04 inset;
+  overflow: clip;
+  container-type: inline-size;
+  container-name: order;
+}
+.app-shell .record-order-header {
+  padding: 26px 32px 0;
+  background: linear-gradient(115deg, #24222b50, transparent 65%);
+}
+.app-shell .record-breadcrumb {
+  font-size: 12px;
+  gap: 12px;
 }
 .app-shell .record-studio .record-heading {
-  margin: 22px 0;
-  gap: 28px;
+  margin: 22px 0 24px;
+  gap: 24px;
+  align-items: center;
+}
+.app-shell .record-heading > div:first-child {
+  min-width: 0;
+}
+.app-shell .record-studio .record-heading h1 {
+  font-size: clamp(24px, 2vw, 30px);
+  font-weight: 550;
+  letter-spacing: -0.045em;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.app-shell .record-studio .record-heading p {
+  color: var(--desk-muted);
+  line-height: 1.6;
+  gap: 8px;
 }
 .app-shell .record-heading-actions {
   flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 10px;
 }
 .app-shell .record-heading-actions button {
-  min-height: 38px;
+  min-height: 40px;
 }
 .app-shell .record-studio .record-statusline {
-  margin: 20px 0;
-  gap: 12px 24px;
+  margin: 0;
+  padding: 0 0 24px;
+  gap: 12px 22px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.app-shell .record-statusline > button {
+  min-height: 28px;
+  border-radius: 5px;
+  padding: 3px 8px;
+  background: #ffffff04;
+}
+.app-shell .record-statusline > button:hover {
+  background: #ffffff0c;
+}
+.app-shell .record-statusline > button.attention {
+  background: #c39d6520;
+}
+.app-shell .record-statusline .record-updated {
+  font-size: 11px;
+  color: #aaa4b3;
 }
 .app-shell .record-studio .record-tabs {
+  padding: 0 32px;
+  margin: 0;
   gap: 28px;
-  margin-bottom: 28px;
+  background: #15151a;
+  border-top: 1px solid #ffffff04;
+  border-bottom: 1px solid var(--desk-line);
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 .app-shell .record-studio .record-tabs button {
-  padding-block: 14px;
+  padding: 18px 0;
+  white-space: nowrap;
+  font-size: 13px;
 }
-.app-shell .record-context {
+.app-shell .record-tabs button.active {
+  color: #eadff5;
+  border-color: var(--desk-accent);
+}
+.app-shell .record-center-views {
+  padding: 30px 32px 36px;
+  min-height: 360px;
+}
+.app-shell .record-studio .record-context {
+  margin: 0;
+  padding: 0 32px 20px;
   gap: 12px 24px;
 }
-.app-shell .record-demo-guide {
-  padding: 22px 26px;
+.app-shell .record-workspace .ow-section-heading {
+  align-items: flex-start;
   gap: 24px;
-  margin: 28px 0;
-  background: #19161e;
+  margin-bottom: 26px;
+}
+.app-shell .record-workspace .ow-section-heading h2,
+.app-shell .coordination-focused .coordination-intro h2 {
+  font: 550 19px/1.4 var(--font-sans);
+  color: var(--text);
+  letter-spacing: -0.025em;
+  margin: 0 0 8px;
+}
+.app-shell .record-workspace .ow-section-heading p {
+  max-width: 62ch;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--desk-muted);
+  margin: 0;
+}
+.app-shell .record-workspace .empty {
+  padding: 54px 24px;
+}
+/* Filter controls share one intentional toolbar, with a flexible search row. */
+.app-shell .record-workspace .record-toolbar {
+  display: grid;
+  gap: 18px;
+  margin: 0 0 22px;
+}
+.app-shell .record-filters {
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.app-shell .record-filters button {
+  padding: 8px 12px;
+  min-height: 36px;
+  font-size: 13px;
+}
+.app-shell .record-filters button.selected {
+  background: #c6b0e519;
+  color: #e1d0f3;
+}
+.app-shell .record-workspace .record-tools {
+  width: 100%;
+  gap: 10px;
+}
+.app-shell .record-workspace .record-search {
+  flex: 1 1 180px;
+  width: auto;
+  max-width: none;
+  height: 40px;
+  padding: 0 12px;
+  margin: 0;
+  background: #121216;
+  border-color: var(--desk-line);
+}
+.app-shell .record-workspace .record-search input {
+  flex: 1;
+  width: 100% !important;
+  font-size: 13px !important;
+}
+.app-shell .record-workspace .record-tools select {
+  height: 40px;
+  min-width: 135px;
+  padding-inline: 12px !important;
+  background: #121216;
+  border-color: var(--desk-line);
+}
+.app-shell .record-tools > button {
+  min-height: 40px;
+}
+.app-shell .record-log {
+  background: #16161b;
+  border-color: var(--desk-line);
+  border-radius: 9px;
+}
+.app-shell .record-log-head,
+.app-shell .record-comment-row {
+  grid-template-columns: 74px minmax(0, 1fr) 110px;
+  gap: 20px;
+  padding: 22px;
+}
+.app-shell .record-log-head {
+  padding-block: 13px;
+  font-size: 11px;
+  color: #b3afbd;
+  background: #222128;
+}
+.app-shell .record-comment-row {
+  border-color: #2c2b33;
+  min-height: 108px;
+}
+.app-shell .record-comment-row:hover {
+  background: #222027;
+}
+.app-shell .record-comment-row.selected {
+  background: #2a2333;
+}
+.app-shell .record-comment-row:focus-visible {
+  outline-offset: -3px;
+}
+.app-shell .record-comment-number {
+  font: 500 13px/1.6 var(--font-sans);
+  color: #d8c7ec;
+}
+.app-shell .record-comment-number small {
+  font-size: 11px;
+  margin-top: 5px;
+  color: var(--desk-muted);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app-shell .record-comment-summary strong {
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 1.65;
+  -webkit-line-clamp: 2;
+  color: #eee9f2;
+}
+.app-shell .record-comment-summary > span {
+  margin-top: 10px;
+  gap: 5px 8px;
+  line-height: 1.6;
+  font-size: 12px;
+  color: var(--desk-muted);
+}
+.app-shell .record-comment-summary > span > span {
+  overflow-wrap: anywhere;
+}
+.app-shell .record-comment-summary i {
+  color: #645f6f;
+}
+.app-shell .record-comment-state {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding-top: 1px;
+}
+.app-shell .record-comment-state > small {
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.5;
+}
+.app-shell .record-status {
+  font-size: 11px;
+  padding: 4px 8px;
+}
+.app-shell .record-log-footer {
+  padding-top: 7px;
+  gap: 16px;
+  flex-wrap: wrap;
+  line-height: 1.7;
+}
+.app-shell .record-log-layout.has-detail {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 22px;
+}
+.app-shell .record-log-layout.has-detail .record-log-head {
+  display: none;
+}
+.app-shell .has-detail .record-comment-row {
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 10px 14px;
+  padding: 20px 16px;
+}
+.app-shell .has-detail .record-comment-state {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.app-shell .record-detail {
+  padding: 26px;
+  background: var(--desk-raised);
+  border-color: #4b4058;
+  box-shadow: 0 8px 24px #09070d30;
+  border-radius: 10px;
+}
+.app-shell .record-detail form {
+  gap: 22px;
+}
+.app-shell .record-detail .record-connections {
+  margin-block: 4px;
+}
+.app-shell .record-detail label {
+  line-height: 1.65;
+}
+.app-shell .record-save-actions {
+  background: var(--desk-raised);
+  padding: 16px 0 0;
+  border-top: 1px solid var(--desk-line);
+  gap: 12px;
+}
+/* Queue items have a clear title and a quieter evidence preview. */
+.app-shell .coordination-focused .coordination-intro {
+  margin-bottom: 24px;
+  align-items: flex-start;
+  gap: 24px;
+}
+.app-shell .coordination-intro p {
+  max-width: 60ch;
+  color: var(--desk-muted);
+}
+.app-shell .coordination-intro > button {
+  padding: 8px 0 8px 12px;
+}
+.app-shell .coordination-focused .coordination-toolbar {
+  margin-bottom: 20px;
+  gap: 16px;
+}
+.app-shell .coordination-focused .coordination-views {
+  gap: 4px;
+}
+.app-shell .coordination-focused .coordination-views button {
+  padding: 9px 12px;
+  font-size: 13px;
+  min-height: 37px;
+}
+.app-shell .coordination-focused .coordination-list {
+  border: 1px solid var(--desk-line);
+  border-radius: 10px;
+  background: #16161b;
+  overflow: clip;
+}
+.app-shell .coordination-focused .coordination-suggestion {
+  border-color: #302d37;
+}
+.app-shell .coordination-focused .coordination-suggestion:last-child {
+  border-bottom: 0;
+}
+.app-shell .coordination-review-row > summary {
+  padding: 24px;
+  align-items: flex-start;
+  gap: 16px;
+}
+.app-shell .coordination-row-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #2e2638;
+  color: #cbb1e5;
+}
+.app-shell .coordination-row-title strong {
+  font-size: 14px;
+  font-weight: 550;
+  color: #eee7f5;
+  line-height: 1.6;
+}
+.app-shell .coordination-row-preview {
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--desk-muted);
+  max-width: 72ch;
+}
+.app-shell .coordination-row-action {
+  padding-top: 6px;
+}
+.app-shell .coordination-review-row[open] {
+  background: #1e1b25;
+}
+.app-shell .coordination-row-detail {
+  margin: 0 24px 24px 74px;
+  padding: 20px 0 0;
+  border-top: 1px solid #39303f;
+}
+.app-shell .coordination-row-detail > p {
+  font-size: 13px;
+}
+.app-shell .coordination-focused .coordination-task {
+  padding: 26px;
+  border-color: var(--desk-line);
+}
+.app-shell .coordination-focused .coordination-task h3 {
+  font-size: 16px;
+}
+.app-shell .coordination-focused .coordination-task > p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.app-shell .coordination-focused .coordination-footnote {
+  margin-top: 22px;
+  font-size: 11px;
+}
+/* Comparison, original documents and distribution are separate working groups. */
+.app-shell .record-comparison {
+  padding: 26px;
+  margin: 32px 0;
+  border: 1px solid var(--desk-line);
+  background: #141419;
+  border-radius: 10px;
+}
+.app-shell .record-comparison h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.app-shell .record-comparison > .form-row {
+  gap: 22px;
+  margin: 22px 0;
+}
+.app-shell .record-comparison label {
+  line-height: 1.7;
+  min-width: 0;
+}
+.app-shell .record-diff {
+  border-color: #37323e;
+  margin: 18px 0;
+}
+.app-shell .record-diff > div {
+  padding: 22px;
+  background: #1d1b23;
+}
+.app-shell .record-diff > div:last-child {
+  background: #211c29;
+}
+.app-shell .record-diff p {
+  font-size: 13px;
+  line-height: 1.8;
+}
+.app-shell .record-diff small {
+  font-size: 11px;
+  color: #b9a9ca;
+}
+.app-shell .record-changes > article {
+  padding: 24px;
+  border: 1px solid var(--desk-line);
+  background: #1d1b23;
+  border-radius: 9px;
+  margin: 18px 0;
+}
+.app-shell .record-changes h3 {
+  margin-top: 10px;
+}
+.app-shell .record-change-values {
+  gap: 24px;
+  line-height: 1.8;
+}
+.app-shell .record-change-links {
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.app-shell .record-change-links button {
+  margin-left: 0;
+}
+.app-shell .record-change-links button:last-child {
+  margin-left: auto;
+}
+.app-shell .record-history-section {
+  border-top: 1px solid var(--desk-line);
+  margin-top: 32px;
+}
+.app-shell .record-history-section > summary {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 22px 0;
+  cursor: pointer;
+  color: #d6c9e2;
+  font-size: 14px;
+}
+.app-shell .record-history-section > summary > span:last-of-type {
+  margin-left: auto;
+  color: var(--desk-muted);
+  font-size: 12px;
+}
+.app-shell .record-timeline {
+  border-left: 1px solid #48404f;
+  padding-left: 24px;
+  margin: 6px 0 22px 8px;
+}
+.app-shell .record-timeline summary {
+  align-items: flex-start;
+  line-height: 1.65;
+}
+.app-shell .record-timeline summary > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.app-shell .record-timeline summary strong {
+  font-size: 13px;
+}
+.app-shell .record-timeline summary small {
+  font-size: 11px;
+}
+.app-shell .record-document-list {
+  border: 1px solid var(--desk-line);
+  background: #16161b;
+  border-radius: 10px;
+  overflow: clip;
+}
+.app-shell .record-document-list > button {
+  padding: 24px;
+  gap: 18px;
+  border-color: var(--desk-line);
+}
+.app-shell .record-document-list > button:last-child {
+  border-bottom: 0;
+}
+.app-shell .record-document-list > button:hover {
+  background: #24212b;
+}
+.app-shell .record-document-list strong {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.app-shell .record-document-list small {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.app-shell .record-approval {
+  padding: 28px;
+  gap: 20px;
+  background: linear-gradient(120deg, #302638, #211e29);
+  border-color: #51405e;
+  box-shadow: 0 6px 20px #08060c25;
+}
+.app-shell .record-approval p {
+  font-size: 13px;
+  margin: 10px 0;
+}
+.app-shell .record-note {
+  line-height: 1.85;
+  color: var(--desk-muted);
+}
+.app-shell .record-sharing-grid {
+  gap: 24px;
+  margin: 30px 0;
+}
+.app-shell .record-sharing-grid > section {
+  padding: 24px;
+  border: 1px solid var(--desk-line);
+  border-radius: 10px;
+  background: #141419;
+}
+.app-shell .record-sharing-grid h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+.app-shell .record-sharing-grid .ow-section-heading {
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.app-shell .record-recipient {
+  padding: 20px 0;
+  font-size: 13px;
+}
+.app-shell .record-recipient > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.app-shell .record-recipient small,
+.app-shell .record-notice small {
+  font-size: 11px;
+  line-height: 1.7;
+  margin-top: 6px;
+}
+.app-shell .record-notice {
+  padding: 20px 0;
+}
+.app-shell .record-notice summary {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.app-shell .record-notice p {
+  font-size: 13px;
+}
+/* Orders are a single list with aligned actions and enough room for long names. */
+.app-shell .record-demo-guide {
+  padding: 20px 24px;
+  gap: 24px;
+  margin: 26px 0;
+  background: #211c29;
 }
 .app-shell .record-demo-guide h2 {
   font-size: 16px;
@@ -82,41 +652,114 @@
   line-height: 1.7;
 }
 .app-shell .record-overview {
-  margin-block: 28px;
+  margin: 28px 0;
   gap: 24px;
   flex-wrap: wrap;
 }
+.app-shell .record-feed .order-feed-list {
+  border: 1px solid var(--desk-line);
+  border-radius: 12px;
+  background: var(--desk-panel);
+  box-shadow: 0 8px 28px #08060c20;
+  overflow: clip;
+}
+.app-shell .record-feed .order-feed-toolbar {
+  padding: 20px 24px;
+  margin: 0;
+  border-bottom: 1px solid var(--desk-line);
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.app-shell .record-feed .order-feed-bottom {
+  padding: 18px 24px;
+  margin: 0;
+}
 .app-shell .record-order-row {
-  min-height: 108px;
-  padding: 22px 24px;
+  min-height: 118px;
+  padding: 24px;
   gap: 24px;
-  border-radius: 8px;
+  border-radius: 0;
+  border-color: var(--desk-line);
+}
+.app-shell .record-order-name {
+  gap: 9px;
+}
+.app-shell .record-order-name strong {
+  line-height: 1.5;
+  font-size: 15px;
+}
+.app-shell .record-order-row > svg:first-child {
+  padding: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 9px;
+  color: #ceb4e8;
+  background: #2c2535;
 }
 .app-shell .record-order-row:focus-visible {
   outline: 2px solid #b79acc;
-  outline-offset: -2px;
+  outline-offset: -3px;
 }
 .app-shell .record-order-row:hover {
-  background: #1b1820;
+  background: #24202b;
 }
-.app-shell .record-comment-row {
-  padding-block: 18px;
+/* Source inspection keeps room for the document itself. */
+.app-shell .record-inline-evidence {
+  padding: 24px 32px 32px;
 }
-.app-shell .coordination-focused .coordination-intro {
-  margin-bottom: 24px;
+.app-shell .record-studio .viewing-source .record-heading {
+  margin: 18px 0;
 }
-.app-shell .coordination-focused .coordination-toolbar {
-  margin-bottom: 22px;
-  gap: 16px;
+.app-shell .record-studio .viewing-source .record-heading h1 {
+  font-size: 21px;
 }
-.app-shell .coordination-review-row > summary {
-  padding-block: 22px;
+.app-shell .record-studio .viewing-source .record-tabs {
+  margin-bottom: 0;
 }
-.app-shell .coordination-row-detail {
-  padding-bottom: 28px;
+@container order (max-width: 950px) {
+  .app-shell .record-log-layout.has-detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-shell .record-detail {
+    grid-row: 1;
+    position: static;
+  }
 }
-.app-shell .coordination-focused .coordination-task {
-  padding: 24px;
+@container order (max-width: 700px) {
+  .app-shell .record-studio .record-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .app-shell .record-heading-actions {
+    justify-content: flex-start;
+    margin: 0;
+  }
+  .app-shell .record-tools > .record-search {
+    flex-basis: 100%;
+  }
+  .app-shell .record-log-head,
+  .app-shell .record-comment-row {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    padding: 18px;
+  }
+  .app-shell .record-log-head > span:last-child {
+    display: none;
+  }
+  .app-shell .record-comment-state {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .app-shell .record-sharing-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-shell .record-comparison > .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .app-shell .record-agent-header {
   padding: 20px 22px 17px;
@@ -262,7 +905,7 @@
 }
 @media (max-width: 1100px) {
   .app-shell .record-studio .record-workspace {
-    padding-inline: 26px;
+    padding: 0;
   }
   .app-shell .record-studio .record-heading {
     flex-wrap: wrap;
@@ -276,7 +919,7 @@
     padding: 26px 18px 48px;
   }
   .app-shell .record-studio .record-workspace {
-    padding: 22px 18px 48px;
+    padding: 0;
   }
   .app-shell .record-studio .record-tabs {
     gap: 22px;
@@ -298,5 +941,384 @@
   }
   .app-shell .record-agent-composer textarea {
     font-size: 16px;
+  }
+}
+
+/* Compact screens retain the same groups without squeezing the record. */
+@media (min-width: 1440px) {
+  .app-shell .record-studio.agent-open {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+  .app-shell .record-agent {
+    top: 84px;
+    height: calc(100dvh - 108px);
+    min-height: 0;
+    border: 1px solid #3b3046;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px #08060c35;
+  }
+}
+@media (max-width: 1100px) {
+  .app-shell .record-studio {
+    padding: 18px;
+  }
+  .app-shell .record-order-header {
+    padding: 24px 24px 0;
+  }
+  .app-shell .record-studio .record-tabs {
+    padding-inline: 24px;
+    gap: 24px;
+  }
+  .app-shell .record-center-views {
+    padding: 26px 24px 30px;
+  }
+  .app-shell .record-order-state {
+    min-width: 105px;
+  }
+}
+@media (max-width: 600px) {
+  .app-shell .record-studio {
+    padding: 10px;
+  }
+  .app-shell .record-studio .record-workspace {
+    border-radius: 10px;
+  }
+  .app-shell .record-order-header {
+    padding: 20px 18px 0;
+  }
+  .app-shell .record-studio .record-heading h1 {
+    font-size: 23px;
+  }
+  .app-shell .record-heading-actions {
+    width: 100%;
+  }
+  .app-shell .record-heading-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+  .app-shell .record-center-views {
+    padding: 24px 16px;
+  }
+  .app-shell .record-studio .record-tabs {
+    padding-inline: 18px;
+    gap: 22px;
+  }
+  .app-shell .record-studio .record-context {
+    padding: 0 18px 18px;
+  }
+  .app-shell .record-workspace .ow-section-heading {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .app-shell .record-tools > button {
+    flex: 1;
+    justify-content: center;
+  }
+  .app-shell .record-workspace .record-tools select {
+    max-width: none;
+    flex: 1 1 100%;
+  }
+  .app-shell .record-filters {
+    gap: 2px;
+  }
+  .app-shell .record-filters button {
+    font-size: 12px;
+    padding-inline: 9px;
+  }
+  .app-shell .coordination-focused .coordination-intro {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .app-shell .coordination-intro > button {
+    padding-left: 0;
+  }
+  .app-shell .coordination-review-row > summary {
+    padding: 20px 16px;
+    gap: 12px;
+  }
+  .app-shell .coordination-row-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .app-shell .coordination-row-action {
+    padding-top: 5px;
+  }
+  .app-shell .coordination-row-detail {
+    margin: 0 16px 22px;
+  }
+  .app-shell .record-detail {
+    padding: 20px 16px;
+  }
+  .app-shell .record-comparison,
+  .app-shell .record-sharing-grid > section {
+    padding: 20px 16px;
+  }
+  .app-shell .record-diff > div {
+    padding: 18px;
+  }
+  .app-shell .record-diff {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-shell .record-approval {
+    padding: 22px 18px;
+  }
+  .app-shell .record-approval > .secondary {
+    margin-left: 0;
+  }
+  .app-shell .record-order-row {
+    gap: 14px;
+    padding: 22px 18px;
+  }
+  .app-shell .record-order-name strong {
+    font-size: 14px;
+  }
+  .app-shell .record-order-state {
+    min-width: 70px;
+  }
+  .app-shell .record-feed .order-feed-toolbar {
+    padding: 18px;
+  }
+  .app-shell .record-feed .order-feed-search {
+    width: 100%;
+  }
+  .app-shell .record-inline-evidence {
+    padding: 20px 16px;
+  }
+}
+
+.app-shell .record-changes > .empty {
+  min-height: 0;
+  align-items: flex-start;
+  text-align: left;
+  padding: 24px;
+  border: 1px dashed #3b3543;
+  border-radius: 8px;
+  background: #141419;
+}
+.app-shell .record-changes > .empty p {
+  max-width: 65ch;
+  margin: 8px 0 0;
+}
+.app-shell .record-history-section > summary::-webkit-details-marker {
+  display: none;
+}
+.app-shell .record-history-section[open] > summary .record-history-chevron {
+  transform: rotate(90deg);
+}
+.app-shell .modal {
+  width: 560px;
+  padding: 32px;
+  border-radius: 14px;
+  border-color: #45404d;
+  background: #1c1b21;
+}
+.app-shell .modal.wide {
+  width: 1030px;
+}
+.app-shell .modal > header {
+  margin-bottom: 26px;
+}
+.app-shell .modal label {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.app-shell .modal-intro {
+  font-size: 14px;
+  color: #bcb5c7;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+.app-shell .modal .form-row {
+  gap: 20px;
+}
+.app-shell .modal .record-file-picker {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  margin: 0 0 26px;
+  border: 1px dashed #645373;
+  border-radius: 9px;
+  background: #24202c;
+}
+.app-shell .record-file-picker > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #e4d5f0;
+  font-size: 14px;
+}
+.app-shell .record-file-picker input[type="file"] {
+  width: 100%;
+  font-size: 12px;
+  background: transparent !important;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.app-shell .record-file-picker input::file-selector-button {
+  font: inherit;
+  border: 1px solid #655573;
+  border-radius: 5px;
+  background: #352c40;
+  color: #efe2f9;
+  padding: 9px 12px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+.app-shell .record-file-picker input::file-selector-button:hover {
+  background: #473754;
+}
+.app-shell .modal:has(> .record-change-form) {
+  width: 720px;
+  scroll-padding-block: 24px 100px;
+}
+.app-shell .record-comment-picker {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.app-shell .record-comment-picker legend {
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.app-shell .record-comment-picker legend > span {
+  float: right;
+  color: var(--desk-muted);
+  font-size: 12px;
+}
+.app-shell .record-picker-search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  margin: 0;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px 8px 0 0;
+  background: #141419;
+}
+.app-shell .record-picker-search > input {
+  flex: 1;
+  min-width: 0;
+  border: 0 !important;
+  margin: 0;
+  box-shadow: none;
+  background: transparent !important;
+}
+.app-shell .record-picker-search:focus-within {
+  outline: 2px solid var(--desk-accent);
+  outline-offset: -2px;
+}
+.app-shell .record-picker-options {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--desk-line);
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+}
+.app-shell .record-picker-options > label {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  margin: 0;
+  border-bottom: 1px solid #ffffff09;
+  cursor: pointer;
+}
+.app-shell .record-picker-options > label:last-child {
+  border-bottom: 0;
+}
+.app-shell .record-picker-options > label.selected {
+  background: #b89bc516;
+}
+.app-shell .record-picker-options input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--desk-accent);
+}
+.app-shell .record-picker-options > label > span {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+.app-shell .record-picker-options strong {
+  color: #e5d9ef;
+  font-weight: 500;
+  font-size: 12px;
+}
+.app-shell .record-picker-options > label > span > span {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  color: #bbb4c4;
+}
+.app-shell .record-picker-options > p {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--desk-muted);
+}
+.app-shell .record-optional-fields {
+  padding: 18px 0;
+  margin-bottom: 22px;
+  border-block: 1px solid var(--desk-line);
+}
+.app-shell .record-optional-fields > summary,
+.app-shell .record-sharing-help > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: #c7bbd3;
+}
+.app-shell .record-optional-fields > summary > span {
+  margin-left: 8px;
+  color: var(--desk-muted);
+  font-size: 12px;
+}
+.app-shell .record-optional-fields > .form-row {
+  margin-top: 20px;
+}
+.app-shell .record-change-form > .modal-actions {
+  position: sticky;
+  bottom: -32px;
+  z-index: 1;
+  margin: 24px -32px -32px;
+  padding: 18px 32px;
+  background: #1c1b21;
+  box-shadow: 0 -8px 20px #1c1b2166;
+}
+.app-shell .record-sharing-help {
+  margin: 20px 0 28px;
+}
+.app-shell .record-sharing-help > .record-note {
+  max-width: 78ch;
+  margin-top: 14px;
+}
+.app-shell .record-view-sharing > section > .empty {
+  min-height: 0;
+  align-items: flex-start;
+  text-align: left;
+  padding: 28px;
+  border: 1px dashed #3b3543;
+  border-radius: 8px;
+  background: #141419;
+}
+.app-shell .record-view-sharing > section > .empty p {
+  max-width: 65ch;
+}
+@media (max-width: 600px) {
+  .app-shell .modal {
+    padding: 24px 20px;
+  }
+  .app-shell .modal .form-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .app-shell .record-change-form > .modal-actions {
+    bottom: -24px;
+    margin: 24px -20px -24px;
+    padding: 16px 20px;
   }
 }

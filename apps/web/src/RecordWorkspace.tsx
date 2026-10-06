@@ -87,9 +87,7 @@ export function RecordWorkspace({
     [filter, setFilter] = useState("all"),
     [search, setSearch] = useState(""),
     [revision, setRevision] = useState("all");
-  const [agentOpen, setAgentOpen] = useState(
-    () => window.matchMedia("(min-width: 1440px)").matches,
-  );
+  const [agentOpen, setAgentOpen] = useState(false);
   const linkedComment = new URLSearchParams(
     location.hash.split("?")[1] ?? "",
   ).get("comment");
@@ -180,73 +178,78 @@ export function RecordWorkspace({
         }
         aria-label="Order workspace"
       >
-        <div className="record-breadcrumb">
-          <button className="text-button" onClick={() => navigate("orders")}>
-            <ArrowLeft size={14} />
-            Orders
-          </button>
-          {w.order.synthetic && (
-            <small title="Practice order. Responses and approvals entered here are test records; source files remain unchanged.">
-              Sample order
-            </small>
-          )}
-        </div>
-        <header className="record-heading">
-          <div>
-            <h1>{w.order.title}</h1>
-            <p>
-              {w.order.customer}
-              <span>·</span>
-              {w.order.category}
-            </p>
-          </div>
-          <div className="record-heading-actions">
-            <button className="secondary" onClick={() => setUpload(true)}>
-              <UploadSimple size={16} />
-              Add documents
+        <div className="record-order-header">
+          <div className="record-breadcrumb">
+            <button className="text-button" onClick={() => navigate("orders")}>
+              <ArrowLeft size={14} />
+              Orders
             </button>
-            {!agentOpen && (
-              <button
-                className={
-                  "secondary record-agent-toggle " + (agentOpen ? "active" : "")
-                }
-                aria-expanded={agentOpen}
-                aria-controls="record-agent-panel"
-                title="Toggle Rivet · ⌘/Ctrl J"
-                onClick={() => setAgentOpen(!agentOpen)}
-              >
-                <SidebarSimple size={17} />
-                Ask Rivet
-              </button>
+            {w.order.synthetic && (
+              <small title="Practice order. Responses and approvals entered here are test records; source files remain unchanged.">
+                Sample order
+              </small>
             )}
           </div>
-        </header>
-        <div className="record-statusline">
-          <span>
-            <ChatText size={16} />
-            {w.comments.length} comments
-          </span>
-          <button
-            onClick={() => {
-              setSource("");
-              setFilter("open");
-              navigate(`order/${id}?tab=comments`);
-            }}
-          >
-            {counts.open} open
-          </button>
-          <button
-            onClick={() => {
-              setSource("");
-              setFilter("review");
-              navigate(`order/${id}?tab=comments`);
-            }}
-            className={counts.review ? "attention" : ""}
-          >
-            {counts.review > 0 && <WarningCircle size={15} />} {counts.review}{" "}
-            need review
-          </button>
-          <span className="record-updated">Saved record · v{w.version}</span>
+          <header className="record-heading">
+            <div>
+              <h1>{w.order.title}</h1>
+              <p>
+                {w.order.customer}
+                <span>·</span>
+                {w.order.category}
+              </p>
+            </div>
+            <div className="record-heading-actions">
+              <button className="secondary" onClick={() => setUpload(true)}>
+                <UploadSimple size={16} />
+                Add documents
+              </button>
+              {!agentOpen && (
+                <button
+                  className={
+                    "secondary record-agent-toggle " +
+                    (agentOpen ? "active" : "")
+                  }
+                  aria-expanded={agentOpen}
+                  aria-controls="record-agent-panel"
+                  title="Toggle Rivet · ⌘/Ctrl J"
+                  onClick={() => setAgentOpen(!agentOpen)}
+                >
+                  <SidebarSimple size={17} />
+                  Ask Rivet
+                </button>
+              )}
+            </div>
+          </header>
+          <div className="record-statusline">
+            <span>
+              <ChatText size={16} />
+              {w.comments.length} comments
+            </span>
+            <button
+              onClick={() => {
+                setSource("");
+                setFilter("open");
+                navigate(`order/${id}?tab=comments`);
+              }}
+            >
+              {counts.open} open
+            </button>
+            <button
+              onClick={() => {
+                setSource("");
+                setFilter("review");
+                navigate(`order/${id}?tab=comments`);
+              }}
+              className={counts.review ? "attention" : ""}
+            >
+              {counts.review > 0 && <WarningCircle size={15} />} {counts.review}{" "}
+              need review
+            </button>
+            <span className="record-updated">
+              <CheckCircle size={14} /> Saved · v{w.version}
+            </span>
+          </div>
         </div>
         {(tab === "sharing" || tab === "changes") && (
           <RecordContext
@@ -271,7 +274,10 @@ export function RecordWorkspace({
             </button>
           ))}
         </nav>
-        <div className="record-center-views" hidden={!!document}>
+        <div
+          className={`record-center-views record-view-${tab}`}
+          hidden={!!document}
+        >
           {error && <ErrorNote message={error} />}{" "}
           {query.isError && (
             <ErrorNote message="Could not refresh. Showing the last saved record." />
@@ -294,7 +300,11 @@ export function RecordWorkspace({
           {tab === "comments" && (
             <>
               <div className="record-toolbar">
-                <div className="record-filters">
+                <div
+                  className="record-filters"
+                  role="group"
+                  aria-label="Filter comments"
+                >
                   {[
                     ["all", "All"],
                     ["review", "Needs review"],
@@ -365,7 +375,7 @@ export function RecordWorkspace({
               >
                 <section className="record-log" aria-label="Comment log">
                   <div className="record-log-head">
-                    <span>Comment / revision</span>
+                    <span>Reference</span>
                     <span>Comment and source</span>
                     <span>Status</span>
                   </div>
@@ -380,12 +390,17 @@ export function RecordWorkspace({
                     >
                       <span className="record-comment-number">
                         {c.number}
-                        <small>Rev {c.revision}</small>
+                        <small title={`Revision ${c.revision}`}>
+                          Rev {c.revision}
+                        </small>
                       </span>
                       <span className="record-comment-summary">
                         <strong>{c.text}</strong>
                         <span>
-                          {c.author || "Author not stated"}
+                          <span title={c.author || undefined}>
+                            {c.author?.replace(/\s*<[^>]+>\s*$/, "") ||
+                              "Author not stated"}
+                          </span>
                           <i>·</i>
                           {c.source_page
                             ? `Source p. ${c.source_page}`
@@ -398,21 +413,24 @@ export function RecordWorkspace({
                             </>
                           )}
                         </span>
+                      </span>
+                      <span className="record-comment-state">
+                        <span className={"record-status " + c.status}>
+                          {c.status}
+                        </span>
                         <small
                           className={
                             !c.reviewed ? "attention" : "record-reviewed"
                           }
+                          title={c.confidence}
                         >
                           {!c.reviewed ? (
                             <WarningCircle size={12} />
                           ) : (
                             <Check size={12} />
-                          )}{" "}
-                          {c.confidence}
+                          )}
+                          {c.reviewed ? "Reviewed" : "Needs review"}
                         </small>
-                      </span>
-                      <span className={"record-status " + c.status}>
-                        {c.status}
                       </span>
                     </button>
                   ))}
@@ -424,10 +442,26 @@ export function RecordWorkspace({
                           : "No comments yet"
                       }
                       icon={<ChatText size={28} />}
+                      action={
+                        w.comments.length > 0 ? (
+                          <button
+                            className="secondary"
+                            onClick={() => {
+                              setSearch("");
+                              setFilter("all");
+                              setRevision("all");
+                            }}
+                          >
+                            Clear filters
+                          </button>
+                        ) : undefined
+                      }
                     >
-                      {w.documents.some((d) => d.state === "queued")
-                        ? "Your files are being read. Comments will appear here."
-                        : "Upload a marked-up PDF or EML email, or add a comment manually."}
+                      {w.comments.length > 0
+                        ? "Try another search or clear the filters to see every comment."
+                        : w.documents.some((d) => d.state === "queued")
+                          ? "Your files are being read. Comments will appear here."
+                          : "Upload a marked-up PDF or EML email, or add a comment manually."}
                     </Empty>
                   )}
                 </section>
@@ -976,12 +1010,10 @@ function RecordUpload({
           Add the submittal, marked-up files, or saved emails. Comments retain
           their original source.
         </p>
-        <p className="record-note">
-          Up to 20 MB per file and 150 pages per PDF. Split larger packages into
-          named sections.
-        </p>
-        <label>
-          Files
+        <label className="record-file-picker">
+          <span>
+            <UploadSimple size={20} /> Select documents
+          </span>
           <input
             type="file"
             name="files"
@@ -1006,9 +1038,9 @@ function RecordUpload({
           </label>
         </div>
         <p className="record-note">
-          PDF, TXT, CSV, XLSX, or EML · 20 MB per file. Email attachments are
-          imported with the message. Scanned pages and unclear locations require
-          review.
+          PDF, TXT, CSV, XLSX, or EML · Up to 20 MB per file and 150 pages per
+          PDF. Email attachments are included. Scanned pages and unclear
+          locations need review.
         </p>
         {error && <ErrorNote message={error} />}
         <footer className="modal-actions">
@@ -1026,6 +1058,80 @@ function RecordUpload({
         </footer>
       </form>
     </Modal>
+  );
+}
+function RelatedComments({
+  comments,
+  initialIds,
+}: {
+  comments: RecordComment[];
+  initialIds: string[];
+}) {
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState(() => new Set(initialIds));
+  const query = search.trim().toLowerCase();
+  const matches = comments.filter((c) =>
+    `${c.number} ${c.text} ${c.author || ""}`.toLowerCase().includes(query),
+  );
+  return (
+    <fieldset className="record-comment-picker">
+      <legend>
+        Related comments <span>{selected.size} selected</span>
+      </legend>
+      {[...selected].map((id) => (
+        <input key={id} type="hidden" name="comment_ids" value={id} />
+      ))}
+      {comments.length > 0 ? (
+        <>
+          <label className="record-picker-search">
+            <MagnifyingGlass size={16} />
+            <input
+              type="search"
+              aria-label="Search related comments"
+              placeholder="Search by number, text, or author…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") e.preventDefault();
+              }}
+            />
+          </label>
+          <div className="record-picker-options">
+            {matches.map((c) => (
+              <label
+                key={c.id}
+                className={selected.has(c.id) ? "selected" : ""}
+              >
+                <input
+                  type="checkbox"
+                  checked={selected.has(c.id)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setSelected((current) => {
+                      const next = new Set(current);
+                      if (checked) next.add(c.id);
+                      else next.delete(c.id);
+                      return next;
+                    });
+                  }}
+                />
+                <span>
+                  <strong>Comment {c.number}</strong>
+                  <span>{c.text}</span>
+                </span>
+              </label>
+            ))}
+            {!matches.length && (
+              <p>No matching comments. Try another search.</p>
+            )}
+          </div>
+        </>
+      ) : (
+        <p className="record-note">
+          No comments in this order yet. You can link them later.
+        </p>
+      )}
+    </fieldset>
   );
 }
 function Changes({
@@ -1068,6 +1174,13 @@ function Changes({
       ),
     enabled: !!before && !!after && before !== after,
   });
+  const sourceLabel = (id: string, index: number, total: number) => {
+    const location = w.sources.find((source) => source.id === id)?.location;
+    const label = total > 1 ? `Source ${index + 1}` : "View source";
+    if (location?.page) return `${label} · p. ${location.page}`;
+    if (location?.line) return `${label} · line ${location.line}`;
+    return label;
+  };
   return (
     <section>
       <div className="ow-section-heading">
@@ -1227,26 +1340,28 @@ function Changes({
                   <div>
                     <small>Previous</small>
                     <p>{c.before || "—"}</p>
-                    {c.before_source_ids.slice(0, 2).map((s) => (
+                    {c.before_source_ids.slice(0, 2).map((s, index) => (
                       <button
                         className="text-button"
                         onClick={() => openSource(s)}
                         key={s}
                       >
-                        View source <ArrowUpRight size={13} />
+                        {sourceLabel(s, index, c.before_source_ids.length)}
+                        <ArrowUpRight size={13} />
                       </button>
                     ))}
                   </div>
                   <div>
                     <small>New</small>
                     <p>{c.after || "—"}</p>
-                    {c.after_source_ids.slice(0, 2).map((s) => (
+                    {c.after_source_ids.slice(0, 2).map((s, index) => (
                       <button
                         className="text-button"
                         onClick={() => openSource(s)}
                         key={s}
                       >
-                        View source <ArrowUpRight size={13} />
+                        {sourceLabel(s, index, c.after_source_ids.length)}
+                        <ArrowUpRight size={13} />
                       </button>
                     ))}
                     <button
@@ -1274,64 +1389,74 @@ function Changes({
           )}
         </div>
       )}
-      <h3 className="record-history-title">Record history</h3>
-      <div className="record-timeline">
-        {w.events
-          .filter(
-            (e) =>
-              !linkedComment ||
-              e.item_id === linkedComment ||
-              w.changes.some(
-                (c) =>
-                  c.id === e.item_id && c.comment_ids.includes(linkedComment),
-              ),
-          )
-          .map((e) => (
-            <details key={e.id}>
-              <summary>
-                <Clock size={15} />
-                <span>
-                  <strong>{e.summary}</strong>
-                  <small>
-                    {e.actor} · {when(e.at)}
-                  </small>
-                </span>
-              </summary>
-              {e.reason && <p>{e.reason}</p>}
-              {e.before && e.after ? (
-                <div className="record-audit-diff">
-                  {Object.entries(e.after as Record<string, unknown>)
-                    .filter(
-                      ([k, v]) =>
-                        !["updated_at", "flags"].includes(k) &&
-                        JSON.stringify(v) !==
-                          JSON.stringify(
-                            (e.before as Record<string, unknown>)[k],
-                          ),
-                    )
-                    .map(([k, v]) => (
-                      <p key={k}>
-                        <strong>{k.replaceAll("_", " ")}</strong>
-                        <span>
-                          {String(
-                            (e.before as Record<string, unknown>)[k] ??
-                              "Not set",
-                          )}{" "}
-                          → {String(v ?? "Not set")}
-                        </span>
-                      </p>
-                    ))}
-                </div>
-              ) : null}
-            </details>
-          ))}
-      </div>
+      <details className="record-history-section">
+        <summary>
+          <Clock size={17} />
+          <span>Record history</span>
+          <span>
+            {linkedComment ? "Linked events" : `${w.events.length} events`}
+          </span>
+          <ArrowRight size={15} className="record-history-chevron" />
+        </summary>
+        <div className="record-timeline">
+          {w.events
+            .filter(
+              (e) =>
+                !linkedComment ||
+                e.item_id === linkedComment ||
+                w.changes.some(
+                  (c) =>
+                    c.id === e.item_id && c.comment_ids.includes(linkedComment),
+                ),
+            )
+            .map((e) => (
+              <details key={e.id}>
+                <summary>
+                  <Clock size={15} />
+                  <span>
+                    <strong>{e.summary}</strong>
+                    <small>
+                      {e.actor} · {when(e.at)}
+                    </small>
+                  </span>
+                </summary>
+                {e.reason && <p>{e.reason}</p>}
+                {e.before && e.after ? (
+                  <div className="record-audit-diff">
+                    {Object.entries(e.after as Record<string, unknown>)
+                      .filter(
+                        ([k, v]) =>
+                          !["updated_at", "flags"].includes(k) &&
+                          JSON.stringify(v) !==
+                            JSON.stringify(
+                              (e.before as Record<string, unknown>)[k],
+                            ),
+                      )
+                      .map(([k, v]) => (
+                        <p key={k}>
+                          <strong>{k.replaceAll("_", " ")}</strong>
+                          <span>
+                            {String(
+                              (e.before as Record<string, unknown>)[k] ??
+                                "Not set",
+                            )}{" "}
+                            → {String(v ?? "Not set")}
+                          </span>
+                        </p>
+                      ))}
+                  </div>
+                ) : null}
+              </details>
+            ))}
+        </div>
+      </details>
       {edit && (
         <Modal
           title={edit.id ? "Edit change record" : "Record a change"}
           onClose={() => setEdit(null)}
         >
           <form
+            className="record-change-form"
             onSubmit={async (e) => {
               e.preventDefault();
               const form = e.currentTarget;
@@ -1387,43 +1512,40 @@ function Changes({
                 />
               </label>
             </div>
-            <label>
-              Related comments
-              <select
-                multiple
-                name="comment_ids"
-                defaultValue={edit.comment_ids ?? []}
-                aria-label="Related comments"
-              >
-                {w.comments.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    #{c.number} · {c.text.slice(0, 85)}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <RelatedComments
+              comments={w.comments}
+              initialIds={edit.comment_ids ?? []}
+            />
             <label>
               Requested by
               <input name="requested_by" defaultValue={edit.requested_by} />
             </label>
-            <div className="form-row">
-              <label>
-                Approved by
-                <input
-                  name="approved_by"
-                  defaultValue={edit.approved_by}
-                  placeholder="Leave blank if not approved"
-                />
-              </label>
-              <label>
-                Approval date
-                <input
-                  name="approved_at"
-                  type="date"
-                  defaultValue={edit.approved_at}
-                />
-              </label>
-            </div>
+            <details
+              className="record-optional-fields"
+              open={edit.approved_by || edit.approved_at ? true : undefined}
+            >
+              <summary>
+                Approval details <span>Optional</span>
+              </summary>
+              <div className="form-row">
+                <label>
+                  Approved by
+                  <input
+                    name="approved_by"
+                    defaultValue={edit.approved_by}
+                    placeholder="Leave blank if not approved"
+                  />
+                </label>
+                <label>
+                  Approval date
+                  <input
+                    name="approved_at"
+                    type="date"
+                    defaultValue={edit.approved_at}
+                  />
+                </label>
+              </div>
+            </details>
             <AuditFields />
             {error && <ErrorNote message={error} />}
             <footer className="modal-actions">
@@ -1539,12 +1661,18 @@ function Sharing({
           comments can remain visible in an approved record.
         </Empty>
       )}
-      <p className="record-note">
-        Approval records the reviewed log; equipment design and production
-        release remain separate. Referenced original files are included in the
-        read-only view. This local version’s links work on this computer; remote
-        access requires hosting. Links expire after 30 days.
-      </p>
+      <details className="record-sharing-help">
+        <summary>What approval and sharing include</summary>
+        <p className="record-note">
+          Approval saves the reviewed log; equipment design and production
+          release remain separate. Read-only links include referenced original
+          files and expire after 30 days.
+          {["localhost", "127.0.0.1", "::1", "[::1]"].includes(
+            location.hostname,
+          ) &&
+            " Links from this local workspace work on this computer. Remote access requires hosting."}
+        </p>
+      </details>
       {shareUrl && (
         <div className="record-share-url">
           <input aria-label="Read-only record link" value={shareUrl} readOnly />

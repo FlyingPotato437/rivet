@@ -102,6 +102,9 @@ export function RecordCoordination({
       <div className="coordination-intro">
         <div>
           <h2>Work queue</h2>
+          <p>
+            Confirm source links, review follow-ups, and assign the next action.
+          </p>
           {c.settings.customer_due_date && (
             <span className="coordination-due">
               <CalendarBlank size={14} />
@@ -129,7 +132,7 @@ export function RecordCoordination({
         >
           {(
             [
-              ["suggestions", "Suggestions", pending.length],
+              ["suggestions", "To review", pending.length],
               ["tasks", "Assigned work", tasks.length],
               ["readiness", "Readiness", null],
               ["references", "References", c.anchors.length],
