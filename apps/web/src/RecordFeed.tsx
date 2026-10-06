@@ -81,7 +81,7 @@ export function RecordFeed({
                 navigate(`order/${drawingDemo.id}?tab=comments`);
             }}
           >
-            {connectedDemo ? "Open work queue" : "Open drawing review"}{" "}
+            {connectedDemo ? "Open sample order" : "Open drawing review"}{" "}
             <ArrowRight size={16} />
           </button>
         </section>

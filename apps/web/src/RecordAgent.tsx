@@ -17,6 +17,7 @@ import {
 import { api, when } from "./api";
 import { useAccount } from "./Auth";
 import { ErrorNote, Mark } from "./ui";
+import { Attribution, ActivityAttribution } from "./RecordAttribution";
 import type { RecordView } from "./record-types";
 
 type Answer = {
@@ -90,6 +91,7 @@ export function RecordAgent({
         reason: event.reason,
         at: event.at,
         actor: event.actor,
+        actor_kind: event.actor_kind,
         comment_id: "",
         source_ids: w.sources
           .filter(
@@ -299,7 +301,7 @@ export function RecordAgent({
           <div>
             <Mark small />
             <strong>Rivet</strong>
-            <span>Order assistant</span>
+            <span>AI assistant</span>
           </div>
           <button
             className="icon-button"
@@ -448,6 +450,10 @@ export function RecordAgent({
                     {message.question}
                   </div>
                   <article className="record-agent-answer">
+                    <div className="record-agent-answer-origin">
+                      <Attribution kind="ai">AI answer</Attribution>
+                      <span>No record changes</span>
+                    </div>
                     <div className="record-agent-prose">
                       <ReactMarkdown
                         allowedElements={[
@@ -596,13 +602,16 @@ export function RecordAgent({
                       <div>
                         <h3>{item.title}</h3>
                         <div className="record-agent-event-meta">
-                          <span title={item.actor}>
-                            {item.actor === account.userId
-                              ? account.name
-                              : item.actor.startsWith("user_")
-                                ? "Team member"
-                                : item.actor || "Rivet"}
-                          </span>
+                          <ActivityAttribution
+                            kind={item.actor_kind}
+                            actor={
+                              item.actor === account.userId
+                                ? account.name
+                                : item.actor.startsWith("user_")
+                                  ? "Team member"
+                                  : item.actor
+                            }
+                          />
                           <time dateTime={item.at}>{when(item.at)}</time>
                         </div>
                         <details>
@@ -725,14 +734,14 @@ export function RecordAgent({
                 </button>
               </div>
             </form>
-            <p>Answers use this record. Review proposals in the work queue.</p>
+            <p>AI answers use this record. Review suggestions in Overview.</p>
           </footer>
         )}
         {view === "activity" && (
           <footer className="record-agent-activity-footer">
             <button className="secondary" onClick={visitWork}>
               <ListChecks size={14} />
-              Review work queue <ArrowRight size={13} />
+              Review suggestions <ArrowRight size={13} />
             </button>
             <span>
               {w.coordination?.last_run_at

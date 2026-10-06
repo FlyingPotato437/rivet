@@ -20,6 +20,7 @@ import {
 } from "@phosphor-icons/react";
 import { useAccount } from "./Auth";
 import { when } from "./api";
+import { Attribution } from "./RecordAttribution";
 import { Empty, ErrorNote, Modal } from "./ui";
 import type {
   CoordinationCheck,
@@ -38,7 +39,6 @@ const roleNames: Record<CoordinationRole, string> = {
   commercial: "Commercial",
 };
 type Save = (path: string, body: unknown) => Promise<boolean>;
-type View = "suggestions" | "tasks" | "readiness" | "references";
 
 export function RecordCoordination({
   w,
@@ -60,8 +60,8 @@ export function RecordCoordination({
   addDocuments: () => void;
 }) {
   const account = useAccount();
-  const [view, setView] = useState<View>("suggestions");
   const [showHistory, setShowHistory] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [settings, setSettings] = useState(false);
   const c = w.coordination;
   const write: Write = (path, reason, fields = {}, version = w.version) =>
@@ -74,7 +74,7 @@ export function RecordCoordination({
   if (!c)
     return (
       <Empty
-        title="Prepare the work queue"
+        title="Prepare the order overview"
         icon={<ListChecks size={27} />}
         action={
           <button
@@ -93,15 +93,14 @@ export function RecordCoordination({
     );
   const pending = c.suggestions.filter((s) => s.status === "pending");
   const tasks = c.tasks.filter((t) => t.status !== "done");
-  const accepted = c.metrics.accepted_unchanged + c.metrics.accepted_edited;
   return (
     <section
       className="coordination coordination-focused"
-      aria-label="Order work queue"
+      aria-label="Order overview"
     >
       <div className="coordination-intro">
         <div>
-          <h2>Work queue</h2>
+          <h2>Order overview</h2>
           <p>
             Confirm source links, review follow-ups, and assign the next action.
           </p>
@@ -121,49 +120,31 @@ export function RecordCoordination({
           onClick={() => setSettings(true)}
         >
           <SlidersHorizontal size={15} />
-          Configure
+          Owners & due date
         </button>
       </div>
-      <div className="coordination-toolbar">
-        <div
-          className="coordination-views"
-          role="group"
-          aria-label="Work queue views"
-        >
-          {(
-            [
-              ["suggestions", "To review", pending.length],
-              ["tasks", "Assigned work", tasks.length],
-              ["readiness", "Readiness", null],
-              ["references", "References", c.anchors.length],
-            ] as const
-          ).map(([key, label, count]) => (
-            <button
-              key={key}
-              className={view === key ? "active" : ""}
-              aria-pressed={view === key}
-              onClick={() => {
-                setView(key);
-                setShowHistory(false);
-              }}
-            >
-              {label}
-              {count !== null && <span>{count}</span>}
-            </button>
-          ))}
-        </div>
-        {(view === "suggestions" || view === "tasks") && (
+      <section
+        className="coordination-work-section"
+        aria-label="Rivet suggestions"
+      >
+        <div className="coordination-section-heading">
+          <div>
+            <h3>
+              Suggested by Rivet <span>{pending.length}</span>
+            </h3>
+            <p>
+              Prepared automatically from this order. Review before applying.
+            </p>
+          </div>
           <label className="coordination-history-toggle">
             <input
               type="checkbox"
               checked={showHistory}
               onChange={(e) => setShowHistory(e.target.checked)}
             />
-            Include {view === "tasks" ? "completed" : "resolved"}
+            Include resolved
           </label>
-        )}
-      </div>
-      {view === "suggestions" && (
+        </div>
         <div className="coordination-list">
           {(showHistory ? c.suggestions : pending).map((s) => (
             <Suggestion
@@ -191,11 +172,8 @@ export function RecordCoordination({
                     Add documents
                   </button>
                 ) : (
-                  <button
-                    className="text-button"
-                    onClick={() => setView("readiness")}
-                  >
-                    Check readiness <ArrowRight size={14} />
+                  <button className="text-button" onClick={openSharing}>
+                    Approval & sharing <ArrowRight size={14} />
                   </button>
                 )
               }
@@ -206,10 +184,26 @@ export function RecordCoordination({
             </Empty>
           )}
         </div>
-      )}
-      {view === "tasks" && (
+      </section>
+      <section className="coordination-work-section" aria-label="Assigned work">
+        <div className="coordination-section-heading">
+          <div>
+            <h3>
+              Assigned work <span>{tasks.length}</span>
+            </h3>
+            <p>Responsibilities and progress for your team.</p>
+          </div>
+          <label className="coordination-history-toggle">
+            <input
+              type="checkbox"
+              checked={showCompleted}
+              onChange={(e) => setShowCompleted(e.target.checked)}
+            />
+            Include completed
+          </label>
+        </div>
         <div className="coordination-list">
-          {(showHistory ? c.tasks : tasks).map((task) => (
+          {(showCompleted ? c.tasks : tasks).map((task) => (
             <Task
               key={task.id}
               task={task}
@@ -220,7 +214,7 @@ export function RecordCoordination({
               openSource={openSource}
             />
           ))}
-          {!(showHistory ? c.tasks : tasks).length && (
+          {!(showCompleted ? c.tasks : tasks).length && (
             <Empty
               title="No outstanding assignments"
               icon={<Users size={25} />}
@@ -230,54 +224,13 @@ export function RecordCoordination({
             </Empty>
           )}
         </div>
-      )}
-      {view === "readiness" && (
-        <div className="coordination-readiness-view">
-          <p>
-            Checks against recorded information. Engineering acceptance remains
-            with your team.
-          </p>
-          <div>
-            <Readiness
-              title="For resubmittal"
-              checks={c.readiness.resubmit}
-              w={w}
-              openComment={openComment}
-              openSource={openSource}
-            />
-            <Readiness
-              title="For release"
-              checks={c.readiness.release}
-              w={w}
-              openComment={openComment}
-              openSource={openSource}
-            />
-          </div>
-          <button className="text-button" onClick={openSharing}>
-            Approved record & recipients <ArrowRight size={14} />
-          </button>
-        </div>
-      )}
-      {view === "references" && (
-        <AnchorIndex
-          w={w}
-          openSource={openSource}
-          openComment={openComment}
-          expanded
-        />
-      )}
+      </section>
       <div className="coordination-footnote">
         <span>
           {c.last_run_at
             ? `Checked ${when(c.last_run_at)}`
             : "Checks run when information arrives."}
         </span>
-        {accepted > 0 && (
-          <span>
-            {c.metrics.accepted_unchanged} accepted unchanged ·{" "}
-            {c.metrics.accepted_edited} edited
-          </span>
-        )}
       </div>
       {settings && (
         <Settings
@@ -358,6 +311,10 @@ function Suggestion({
           </span>
           <span className="coordination-row-title">
             <strong>{s.title}</strong>
+            <Attribution kind={s.origin || "automatic"}>
+              {s.origin === "ai" ? "AI suggestion" : "Rivet suggestion"}
+              {s.status === "pending" ? " · Not applied" : ""}
+            </Attribution>
             <span className="coordination-row-preview">
               {selectedComment?.text || s.reason}
             </span>
@@ -387,6 +344,19 @@ function Suggestion({
           </div>
 
           <p>{s.reason}</p>
+          {s.status === "accepted" && (
+            <p className="record-provenance-note">
+              {s.edited ? "Edited and accepted" : "Accepted"}
+              {s.resolved_by
+                ? ` by ${s.resolved_by}`
+                : " by a team member"} · {when(s.resolved_at)}
+            </p>
+          )}
+          {s.status === "skipped" && s.resolved_by && (
+            <p className="record-provenance-note">
+              Skipped by {s.resolved_by} · {when(s.resolved_at)}
+            </p>
+          )}
           {selectedComment && (
             <blockquote>
               <span>Comment {selectedComment.number} · Original text</span>
@@ -409,7 +379,8 @@ function Suggestion({
           {!link && s.draft && !edit && (
             <details className="coordination-draft">
               <summary>
-                Prepared draft <span>Not sent</span>
+                {s.origin === "ai" ? "AI draft" : "Rivet draft"}{" "}
+                <span>Not sent</span>
               </summary>
               <p>{s.draft}</p>
             </details>
@@ -570,6 +541,12 @@ function Task({
         </span>
       </div>
       <h3>{task.title}</h3>
+      <div className="record-provenance-line">
+        <Attribution kind="automatic">Created by Rivet</Attribution>
+        {task.updated_by && (
+          <Attribution kind="human">Updated by {task.updated_by}</Attribution>
+        )}
+      </div>
       <p>{task.reason}</p>
       <div className="coordination-task-owner">
         {task.owner || "No owner assigned"}
@@ -750,6 +727,56 @@ function EvidenceLinks({
   );
 }
 
+export function RecordReadiness({
+  w,
+  openComment,
+  openSource,
+}: {
+  w: RecordView;
+  openComment: (id: string) => void;
+  openSource: (id: string) => void;
+}) {
+  if (!w.coordination) return null;
+  const checks = [
+    ...w.coordination.readiness.resubmit,
+    ...w.coordination.readiness.release,
+  ];
+  const unresolved = checks.filter((check) => check.status !== "pass").length;
+  return (
+    <details className="record-readiness-panel">
+      <summary>
+        <ListChecks size={17} />
+        <strong>Readiness checks</strong>
+        <span>
+          {unresolved ? `${unresolved} to review` : "Checks complete"}
+        </span>
+        <ArrowRight size={14} />
+      </summary>
+      <div className="coordination-readiness-view">
+        <p>
+          <Attribution kind="automatic">Checked by Rivet</Attribution> Based on
+          recorded information. Your team confirms engineering acceptance.
+        </p>
+        <div>
+          <Readiness
+            title="For resubmittal"
+            checks={w.coordination.readiness.resubmit}
+            w={w}
+            openComment={openComment}
+            openSource={openSource}
+          />
+          <Readiness
+            title="For release"
+            checks={w.coordination.readiness.release}
+            w={w}
+            openComment={openComment}
+            openSource={openSource}
+          />
+        </div>
+      </div>
+    </details>
+  );
+}
 function Readiness({
   title,
   checks,
@@ -821,7 +848,7 @@ function Readiness({
   );
 }
 
-function AnchorIndex({
+export function AnchorIndex({
   w,
   openSource,
   openComment,
@@ -841,8 +868,9 @@ function AnchorIndex({
         Connected references<span>{anchors.length}</span>
       </summary>
       <p>
-        Exact identifiers found in this order. Shared references connect
-        sources; they do not establish approval or an implemented design change.
+        <Attribution kind="automatic">Indexed by Rivet</Attribution> Exact
+        identifiers found in this order. Shared references connect sources; they
+        do not establish approval or an implemented design change.
       </p>
       <input
         aria-label="Search connected references"

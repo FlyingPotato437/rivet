@@ -233,7 +233,7 @@ const connectedSteps = [
     title: "CB-12 + E-10 identify the drawing.",
     text: "The same equipment tag and sheet identifier occur in the comment and one drawing area in revision B.",
     detail:
-      "Rivet records the link and the evidence behind it. Ambiguous matches go to the Work queue for review.",
+      "Rivet records the link and the evidence behind it. Ambiguous matches appear in Overview for review.",
   },
   {
     label: "Response",

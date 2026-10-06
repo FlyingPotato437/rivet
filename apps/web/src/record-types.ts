@@ -92,6 +92,7 @@ export type RecordView = {
     kind: string;
     summary: string;
     actor: string;
+    actor_kind?: "ai" | "automatic" | "human" | "unknown";
     at: string;
     reason: string;
     before: unknown;
@@ -106,6 +107,9 @@ export type RecordView = {
     recipients: { name: string; email: string; team: string }[];
     at: string;
     status: string;
+    origin?: "ai" | "automatic";
+    reviewed_by?: string;
+    edited?: boolean;
   }[];
   approvals: RecordApproval[];
   shares: {
@@ -137,6 +141,9 @@ export type CoordinationSuggestion = {
   status: "pending" | "accepted" | "skipped" | "stale";
   created_at: string;
   resolved_at: string;
+  origin?: "ai" | "automatic";
+  resolved_by?: string;
+  edited?: boolean;
 };
 export type CoordinationTask = {
   id: string;
@@ -150,6 +157,7 @@ export type CoordinationTask = {
   note: string;
   created_at: string;
   updated_at: string;
+  updated_by?: string;
 };
 export type CoordinationCheck = {
   id: string;
@@ -204,6 +212,7 @@ export type RecordCoordinationView = {
     reason: string;
     at: string;
     actor: string;
+    actor_kind?: "ai" | "automatic" | "human" | "unknown";
     comment_id: string;
     source_ids: string[];
     undoable: boolean;

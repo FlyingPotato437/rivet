@@ -162,14 +162,17 @@ def candidate_pages(comment, pages):
 
 
 def activity(
-    data, kind, title, reason, actor="Rivet", comment_id="", source_ids=None, undo=None
+    data, kind, title, reason, actor=None, comment_id="", source_ids=None, undo=None
 ):
+    actor_kind = "automatic" if actor is None else "human"
+    actor = "Rivet" if actor is None else actor
     entry = {
         "id": uid(),
         "kind": kind,
         "title": title,
         "reason": reason,
         "actor": actor,
+        "actor_kind": actor_kind,
         "comment_id": comment_id,
         "source_ids": source_ids or [],
         "at": stamp(),
@@ -187,6 +190,7 @@ def activity(
             "summary": title,
             "reason": reason,
             "actor": actor,
+            "actor_kind": actor_kind,
             "at": entry["at"],
             "before": (undo or {}).get("before"),
             "after": (undo or {}).get("after"),
@@ -194,6 +198,12 @@ def activity(
         },
     )
     return entry
+
+
+def automatic_activity(item):
+    return item.get("actor_kind") == "automatic" or (
+        "actor_kind" not in item and item.get("actor") == "Rivet"
+    )
 
 
 def evidence(data, documents, sources):
@@ -275,6 +285,7 @@ def synchronize(data, documents, sources, scheduled=False, instant=None):
             "status": "pending",
             "created_at": stamp(),
             "resolved_at": "",
+            "origin": "automatic",
             "evidence_hash": proposal_evidence,
         }
         co["suggestions"].append(item)
@@ -349,7 +360,7 @@ def synchronize(data, documents, sources, scheduled=False, instant=None):
                     a
                     for a in co["activity"]
                     if a["kind"] == "drawing_link"
-                    and a["actor"] == "Rivet"
+                    and automatic_activity(a)
                     and a["comment_id"] == comment["id"]
                     and not a["undone_at"]
                 ),
@@ -786,7 +797,7 @@ def projection(data, documents, sources, delivery_by_notice=None):
                     for a in co["activity"]
                     if a["kind"] == "drawing_link"
                     and a.get("comment_id") == cid
-                    and a.get("actor") == "Rivet"
+                    and automatic_activity(a)
                     and not a.get("undone_at")
                     and (a.get("undo") or {}).get("after", {}).get("target_source_id")
                     == target
@@ -1034,6 +1045,7 @@ def mutate(data, documents, sources, body, kind, item_id=""):
         item.update(
             body.model_dump(exclude={"expected_version", "actor", "reason"}),
             updated_at=stamp(),
+            updated_by=actor,
         )
         activity(
             data,
@@ -1085,7 +1097,7 @@ def mutate(data, documents, sources, body, kind, item_id=""):
         if item["status"] != "pending":
             fail("This suggestion is no longer current. Refresh the record.", 409)
         if body.action == "skip":
-            item.update(status="skipped", resolved_at=stamp())
+            item.update(status="skipped", resolved_at=stamp(), resolved_by=actor)
             activity(
                 data,
                 "suggestion",
@@ -1147,6 +1159,9 @@ def mutate(data, documents, sources, body, kind, item_id=""):
                     "status": "draft",
                     "at": stamp(),
                     "suggestion_id": item["id"],
+                    "origin": item.get("origin", "automatic"),
+                    "reviewed_by": actor,
+                    "edited": draft != item["draft"],
                 }
                 data["notices"].insert(0, notice)
                 item["edited"] = draft != item["draft"]
@@ -1164,7 +1179,7 @@ def mutate(data, documents, sources, body, kind, item_id=""):
                         "after_hash": digest(notice),
                     },
                 )
-            item.update(status="accepted", resolved_at=stamp())
+            item.update(status="accepted", resolved_at=stamp(), resolved_by=actor)
     synchronize(data, documents, sources)
 
 

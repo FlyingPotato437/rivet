@@ -28,7 +28,7 @@ const questions = [
   ],
   [
     "What happens when a comment is unclear?",
-    "Rivet matches explicit equipment tags and drawing identifiers within the order. Unambiguous matches can be linked automatically, with their evidence and an undo action. Conflicting matches go to the Work queue; missing references get a clarification draft. The original source is always retained.",
+    "Rivet matches explicit equipment tags and drawing identifiers within the order. Unambiguous matches can be linked automatically, with their evidence and an undo action. Conflicting matches appear in Overview; missing references get a clarification draft. The original source is always retained.",
   ],
   [
     "Does Rivet suggest engineering fixes?",

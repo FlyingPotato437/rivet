@@ -4,7 +4,12 @@ from uuid import uuid4
 from sqlalchemy import select
 from test_records import create, edit_body, post, upload, view
 
-from backend.records.automation import anchors_in, scheduled_pass
+from backend.records.automation import (
+    activity,
+    anchors_in,
+    automatic_activity,
+    scheduled_pass,
+)
 from backend.storage.db import Session
 from backend.storage.models import NoticeDelivery, OrderRecord, now
 
@@ -76,6 +81,11 @@ def test_exact_ambiguous_and_missing_anchors_are_distinct_and_stable(client):
         x["kind"] == "clarification" and x["comment_id"] == c11["id"] for x in proposals
     )
     assert len([x for x in w["coordination"]["links"] if x["automatic"]]) == 1
+    assert all(x["actor_kind"] == "automatic" for x in w["coordination"]["activity"])
+    assert all(x["origin"] == "automatic" for x in proposals)
+    assert all(
+        x["actor_kind"] == "automatic" for x in w["events"] if x["kind"] == "intake"
+    )
     assert view(client, o) == w
     assert action(client, o, w, "run").json() == w
     assert not any(
@@ -131,6 +141,15 @@ def test_accept_edit_skip_and_idempotency_require_current_order_evidence(client)
     assert r.status_code == 200, r.text
     w = r.json()
     assert client.post(path, json=body, headers=headers).json() == w
+    accepted = next(
+        s for s in w["coordination"]["suggestions"] if s["id"] == suggestion["id"]
+    )
+    assert accepted["resolved_by"] == "Test PM"
+    assert accepted["origin"] == "automatic"
+    confirmed = next(
+        a for a in w["coordination"]["activity"] if a["title"].startswith("Confirmed:")
+    )
+    assert confirmed["actor_kind"] == "human" and confirmed["actor"] == "Test PM"
     c8 = w["comments"][1]
     assert c8["target_source_id"] == body["target_source_id"] and not c8["reviewed"]
     assert not next(
@@ -162,6 +181,9 @@ def test_accept_edit_skip_and_idempotency_require_current_order_evidence(client)
     assert (
         w["notices"][0]["status"] == "draft" and "red markup" in w["notices"][0]["body"]
     )
+    assert w["notices"][0]["origin"] == "automatic"
+    assert w["notices"][0]["reviewed_by"] == "Test PM"
+    assert w["notices"][0]["edited"] is True
     status = next(
         x
         for x in w["coordination"]["suggestions"]
@@ -170,6 +192,19 @@ def test_accept_edit_skip_and_idempotency_require_current_order_evidence(client)
     w = action(client, o, w, f"suggestions/{status['id']}", action="skip").json()
     assert w["coordination"]["metrics"]["accepted_edited"] >= 1
     assert w["coordination"]["metrics"]["skipped"] == 1
+
+
+def test_actor_kind_distinguishes_a_person_named_rivet_from_automation():
+    data = {"events": []}
+    machine = activity(data, "assignment", "Prepared task", "Explicit reference")
+    human = activity(
+        data, "assignment", "Updated task", "Reviewed assignment", actor="Rivet"
+    )
+    assert automatic_activity(machine)
+    assert not automatic_activity(human)
+    assert machine["actor_kind"] == "automatic" and human["actor_kind"] == "human"
+    assert [e["actor_kind"] for e in data["events"]] == ["human", "automatic"]
+    assert automatic_activity({"actor": "Rivet"})  # Legacy system records.
 
 
 def test_undo_is_safe_suppressed_and_preserves_original(client):

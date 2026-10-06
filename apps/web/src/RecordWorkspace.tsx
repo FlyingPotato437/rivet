@@ -24,21 +24,30 @@ import {
 import { api, when } from "./api";
 import { Busy, Empty, ErrorNote, Modal } from "./ui";
 import { OrderEvidence } from "./OrderEvidence";
-import { CommentConnections, RecordContext } from "./RecordConnections";
-import { RecordCoordination } from "./RecordCoordination";
+import { CommentConnections } from "./RecordConnections";
+import {
+  RecordCoordination,
+  AnchorIndex,
+  RecordReadiness,
+} from "./RecordCoordination";
+import {
+  Attribution,
+  CommentAttribution,
+  ActivityAttribution,
+} from "./RecordAttribution";
 import { RecordAgent } from "./RecordAgent";
 import "./record-agent.css";
 import type { RecordView, RecordComment, RecordChange } from "./record-types";
 import "./order-workspace.css";
 import "./record-workspace.css";
-const tabs = ["work", "comments", "changes", "documents", "sharing"] as const;
+const tabs = ["work", "comments", "documents", "changes", "sharing"] as const;
 type Tab = (typeof tabs)[number];
 const names = {
-  work: "Work queue",
-  comments: "Comment log",
-  changes: "Changes & history",
+  work: "Overview",
+  comments: "Comments",
+  changes: "Changes",
   documents: "Documents",
-  sharing: "Approved record",
+  sharing: "Sharing",
 };
 const values = (form: HTMLFormElement) =>
   Object.fromEntries(new FormData(form));
@@ -251,13 +260,6 @@ export function RecordWorkspace({
             </span>
           </div>
         </div>
-        {(tab === "sharing" || tab === "changes") && (
-          <RecordContext
-            w={w}
-            openSharing={() => navigate(`order/${id}?tab=sharing`)}
-            openChanges={() => navigate(`order/${id}?tab=changes`)}
-          />
-        )}
         <nav className="ow-tabs record-tabs" aria-label="Order record views">
           {tabs.map((t) => (
             <button
@@ -300,28 +302,6 @@ export function RecordWorkspace({
           {tab === "comments" && (
             <>
               <div className="record-toolbar">
-                <div
-                  className="record-filters"
-                  role="group"
-                  aria-label="Filter comments"
-                >
-                  {[
-                    ["all", "All"],
-                    ["review", "Needs review"],
-                    ["open", "Open"],
-                    ["responded", "Responded"],
-                    ["closed", "Closed"],
-                  ].map(([value, label]) => (
-                    <button
-                      key={value}
-                      className={filter === value ? "selected" : ""}
-                      aria-pressed={filter === value}
-                      onClick={() => setFilter(value)}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
                 <div className="record-tools">
                   <label className="record-search">
                     <MagnifyingGlass size={15} />
@@ -332,6 +312,17 @@ export function RecordWorkspace({
                       onChange={(e) => setSearch(e.target.value)}
                     />
                   </label>
+                  <select
+                    aria-label="Comment status"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                  >
+                    <option value="all">All comments</option>
+                    <option value="review">Needs review</option>
+                    <option value="open">Open</option>
+                    <option value="responded">Responded</option>
+                    <option value="closed">Closed</option>
+                  </select>
                   <select
                     aria-label="Filter revision"
                     value={revision}
@@ -397,6 +388,7 @@ export function RecordWorkspace({
                       <span className="record-comment-summary">
                         <strong>{c.text}</strong>
                         <span>
+                          <CommentAttribution comment={c} compact />
                           <span title={c.author || undefined}>
                             {c.author?.replace(/\s*<[^>]+>\s*$/, "") ||
                               "Author not stated"}
@@ -550,6 +542,13 @@ export function RecordWorkspace({
                   Add the submittal and review comments to start the record.
                 </Empty>
               )}
+              <AnchorIndex
+                w={w}
+                openSource={setSource}
+                openComment={(commentId) =>
+                  navigate(`order/${id}?tab=comments&comment=${commentId}`)
+                }
+              />
               <OrderInboxPanel id={w.order.id} />
             </section>
           )}
@@ -575,6 +574,10 @@ export function RecordWorkspace({
               save={save}
               notify={notify}
               refresh={() => void query.refetch()}
+              openSource={setSource}
+              openComment={(commentId) =>
+                navigate(`order/${id}?tab=comments&comment=${commentId}`)
+              }
             />
           )}
         </div>
@@ -730,6 +733,14 @@ function CommentEditor({
           <X size={18} />
         </button>
       </div>
+      {c.id && (
+        <div className="record-comment-provenance">
+          <CommentAttribution comment={c} />
+          {c.reviewed && (
+            <Attribution kind="human">Reviewed by team</Attribution>
+          )}
+        </div>
+      )}
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -1416,7 +1427,11 @@ function Changes({
                   <span>
                     <strong>{e.summary}</strong>
                     <small>
-                      {e.actor} · {when(e.at)}
+                      <ActivityAttribution
+                        actor={e.actor}
+                        kind={e.actor_kind}
+                      />{" "}
+                      · {when(e.at)}
                     </small>
                   </span>
                 </summary>
@@ -1573,6 +1588,8 @@ function Sharing({
   notify,
   refresh,
   saveError,
+  openSource,
+  openComment,
 }: {
   w: RecordView;
   saveError: string;
@@ -1580,6 +1597,8 @@ function Sharing({
   save: (p: string, b: unknown) => Promise<boolean>;
   notify: (s: string) => void;
   refresh: () => void;
+  openSource: (id: string) => void;
+  openComment: (id: string) => void;
 }) {
   const [modal, setModal] = useState<"approval" | "recipient" | null>(null),
     [shareUrl, setShareUrl] = useState(""),
@@ -1591,7 +1610,7 @@ function Sharing({
     <section>
       <div className="ow-section-heading">
         <div>
-          <h2>Approved record</h2>
+          <h2>Approval & sharing</h2>
           <p>
             A saved version of the comment and change log for customer and
             production review.
@@ -1621,7 +1640,8 @@ function Sharing({
           <div>
             <h3>{latest.label}</h3>
             <p>
-              {latest.actor} · {when(latest.at)} · Record v{latest.version}
+              <Attribution kind="human">Approved by {latest.actor}</Attribution>{" "}
+              · {when(latest.at)} · Record v{latest.version}
             </p>
             <p>{latest.reason}</p>
             <small>
@@ -1673,6 +1693,11 @@ function Sharing({
             " Links from this local workspace work on this computer. Remote access requires hosting."}
         </p>
       </details>
+      <RecordReadiness
+        w={w}
+        openSource={openSource}
+        openComment={openComment}
+      />
       {shareUrl && (
         <div className="record-share-url">
           <input aria-label="Read-only record link" value={shareUrl} readOnly />
@@ -1782,8 +1807,18 @@ function Sharing({
                 <span>
                   {n.title}
                   <small>{n.recipients.length} recipients · Notice draft</small>
+                  <Attribution kind={n.origin || "automatic"}>
+                    {n.origin === "ai" ? "AI draft" : "Automatic draft"}
+                    {n.reviewed_by ? " · Reviewed" : " · Review before sending"}
+                  </Attribution>
                 </span>
               </summary>
+              {n.reviewed_by && (
+                <p className="record-provenance-note">
+                  {n.edited ? "Edited and reviewed" : "Reviewed"} by{" "}
+                  {n.reviewed_by}
+                </p>
+              )}
               <p>{n.body}</p>
               <p>{n.recipients.map((r) => r.email).join(", ")}</p>
               <NoticeRecipients w={w} notice={n} busy={busy} save={save} />

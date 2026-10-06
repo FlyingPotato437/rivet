@@ -27,12 +27,24 @@ def stamp():
     return now().isoformat()
 
 
-def event(data, kind, summary, actor, before=None, after=None, reason="", item_id=""):
+def event(
+    data,
+    kind,
+    summary,
+    actor,
+    before=None,
+    after=None,
+    reason="",
+    item_id="",
+    *,
+    actor_kind="human",
+):
     item = {
         "id": uid(),
         "kind": kind,
         "summary": summary,
         "actor": actor,
+        "actor_kind": actor_kind,
         "at": stamp(),
         "before": before,
         "after": after,
@@ -67,6 +79,7 @@ def event(data, kind, summary, actor, before=None, after=None, reason="", item_i
                 ),
                 "recipients": recipients,
                 "status": "draft",
+                "origin": "automatic",
                 "at": item["at"],
             },
         )
@@ -272,6 +285,7 @@ def ensure(s, order):
             "Imported " + doc.name,
             "Document reader",
             after={"document_id": doc.id, "comments": len(candidates)},
+            actor_kind="automatic",
         )
         added = True
     # One-time migration of previously accepted responses; never replace PM edits.

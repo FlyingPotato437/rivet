@@ -8,6 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import type { RecordView } from "./record-types";
 import { when } from "./api";
+import { Attribution, ActivityAttribution } from "./RecordAttribution";
 
 export function CommentConnections({
   id,
@@ -87,16 +88,33 @@ export function CommentConnections({
           </button>
         )}
         {drawing ? (
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => openSource(drawing.id)}
-          >
-            <LinkSimple size={14} />
-            Linked drawing
-            {drawing.location.page ? ` · p. ${drawing.location.page}` : ""}
-            <ArrowUpRight size={12} />
-          </button>
+          <span className="record-linked-drawing">
+            <button
+              type="button"
+              className="text-button"
+              onClick={() => openSource(drawing.id)}
+            >
+              <LinkSimple size={14} />
+              Linked drawing
+              {drawing.location.page ? ` · p. ${drawing.location.page}` : ""}
+              <ArrowUpRight size={12} />
+            </button>
+            <Attribution
+              kind={
+                references.some(
+                  (link) => link.automatic && link.to_id === drawing.id,
+                )
+                  ? "automatic"
+                  : "human"
+              }
+            >
+              {references.some(
+                (link) => link.automatic && link.to_id === drawing.id,
+              )
+                ? "Auto-linked"
+                : "Linked by team"}
+            </Attribution>
+          </span>
         ) : (
           <span className="record-connection-unknown">
             Drawing location not linked
@@ -138,6 +156,7 @@ export function CommentConnections({
           {events.slice(0, 4).map((e) => (
             <div className="record-connection-event" key={e.id}>
               <strong>{e.summary}</strong>
+              <ActivityAttribution actor={e.actor} kind={e.actor_kind} />
               <span>{when(e.at)}</span>
               <p>{e.reason}</p>
             </div>
