@@ -369,7 +369,10 @@ export function RecordAgent({
                       ? ` · p. ${focusedSource.location.page}`
                       : ""}
                   </p>
-                  <small>Answers still use the full order record.</small>
+                  <small>
+                    Answers use retrieved order context. Check the cited sources
+                    for details and coverage.
+                  </small>
                 </div>
               )}
               {focused && !focusedDocument && (

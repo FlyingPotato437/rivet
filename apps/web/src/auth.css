@@ -53,6 +53,21 @@
 .auth-actions button {
   min-height: 44px;
 }
+.auth-recovery-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 24px;
+}
+.auth-recovery-links a {
+  color: #c3b2e5;
+  font-size: 14px;
+  text-underline-offset: 4px;
+}
+.auth-recovery-links a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+}
 .auth-footnote {
   font-size: 13px;
   color: #a29ead;

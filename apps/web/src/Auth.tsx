@@ -89,6 +89,10 @@ export function Authentication({ children }: { children: ReactNode }) {
         <button className="primary" onClick={() => location.reload()}>
           Try again
         </button>
+        <div className="auth-recovery-links">
+          <a href="#preview">Explore the product</a>
+          <a href="#pilot">Request a pilot</a>
+        </div>
       </AuthFrame>
     );
   if (!config)

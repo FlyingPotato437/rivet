@@ -189,6 +189,23 @@ and an actual forwarding test are still required after deploying the code.
 
 ## 6. Verify before inviting a customer
 
+First check the public deployment wiring without signing in or modifying data:
+
+```sh
+python3 scripts/production_preflight.py --frontend https://www.rivet-usa.com --api https://api.rivet-usa.com
+```
+
+Use the actual frontend and API origins if different. Add `--offline` (alias
+`--dry-run`) to print the request plan without making network requests. This
+script uses public GET requests only and does not read local credentials or
+print the authentication configuration. It exits unsuccessfully if the frontend,
+database health, production Clerk configuration, exact CORS origin, or anonymous
+access boundary fails. Redirecting the frontend to a different origin is flagged
+so the allowlist can match the final browser address.
+
+Passing this preflight is only a wiring check. Complete the authenticated workflow,
+worker, email, and recovery checks below on the deployed environment.
+
 Use your own account and a test organization with public or synthetic files:
 
 1. Sign in through the deployed frontend, create/select a team, and reload.
