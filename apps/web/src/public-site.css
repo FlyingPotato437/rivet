@@ -556,7 +556,7 @@ body {
 }
 .public-document-label {
   font: 9px var(--mono);
-  color: #707378;
+  color: #60646b;
 }
 .public-output-page h3 {
   font-size: 24px;
@@ -609,7 +609,7 @@ body {
 }
 .public-drafting-row > span {
   font: 10px var(--mono);
-  color: #7b7e85;
+  color: #62656c;
   padding-top: 3px;
 }
 .public-drafting-row strong {
@@ -733,12 +733,12 @@ body {
 }
 .public-digest-sender p {
   font-size: 10px;
-  color: #73757c;
+  color: #62656c;
 }
 .public-digest-sender > span:last-child {
   margin-left: auto;
   font-size: 10px;
-  color: #82858c;
+  color: #62656c;
 }
 .public-agent-avatar {
   width: 32px;
@@ -761,7 +761,7 @@ body {
 }
 .public-digest-subject {
   font-size: 11px;
-  color: #797b82;
+  color: #62656c;
   margin-top: 10px !important;
 }
 .public-digest-numbers {
@@ -783,7 +783,7 @@ body {
 }
 .public-digest-numbers span {
   font-size: 10px;
-  color: #73757b;
+  color: #62656c;
   margin-top: 6px;
 }
 .public-digest-alert {
@@ -808,7 +808,7 @@ body {
 .public-digest-alert p {
   font-size: 11px;
   line-height: 1.7;
-  color: #7a7b80;
+  color: #62656c;
   margin-top: 6px;
 }
 .public-digest-attachments {
@@ -816,7 +816,7 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 10px;
-  color: #73767e;
+  color: #62656c;
   margin-top: 24px;
 }
 .public-digest-link {
