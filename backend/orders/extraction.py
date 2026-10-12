@@ -507,13 +507,22 @@ def parse_pdf_annotations(path: str | Path) -> list[dict]:
     """
     import pdfplumber
 
+    from backend.ingestion.pdf_geometry import PDFViewport
+
     output = []
     with pdfplumber.open(path) as pdf:
         for page_number, page in enumerate(pdf.pages, 1):
+            try:
+                viewport = PDFViewport(page)
+            except (TypeError, ValueError, AttributeError):
+                viewport = None
             for index, annotation in enumerate(page.annots or [], 1):
                 data = annotation.get("data", {})
                 subtype = str(data.get("Subtype", "Annotation")).strip("/'")
-                if subtype == "Link":
+                # Form controls and popup display containers are not separate
+                # review comments. Their parent annotation, when present, carries
+                # the actual reviewer text and is processed on its own.
+                if subtype in {"Link", "Widget", "Popup"}:
                     continue
                 text = annotation.get("contents") or ""
                 if isinstance(text, bytes):
@@ -521,12 +530,16 @@ def parse_pdf_annotations(path: str | Path) -> list[dict]:
                 name = data.get("NM") or f"page-{page_number}-annotation-{index}"
                 if isinstance(name, bytes):
                     name = name.decode("utf-8", errors="replace")
-                bbox = [
-                    annotation.get("x0", 0) / page.width,
-                    annotation.get("top", 0) / page.height,
-                    annotation.get("x1", page.width) / page.width,
-                    annotation.get("bottom", page.height) / page.height,
-                ]
+                geometry_warning = ""
+                try:
+                    if viewport is None:
+                        raise ValueError("Unsupported PDF geometry")
+                    bbox = viewport.normalize(data["Rect"])
+                    if bbox[0] >= bbox[2] or bbox[1] >= bbox[3]:
+                        raise ValueError("Annotation lies outside the visible page")
+                except (TypeError, ValueError, KeyError):
+                    bbox = [0, 0, 1, 1]
+                    geometry_warning = "Annotation location could not be aligned to the visible page. Review the original; this highlight covers the full page."
                 output.append(
                     {
                         "id": str(name),
@@ -539,6 +552,7 @@ def parse_pdf_annotations(path: str | Path) -> list[dict]:
                             data.get("M") or data.get("CreationDate")
                         ),
                         "needs_review": not bool(str(text).strip()),
+                        "geometry_warning": geometry_warning,
                     }
                 )
     return output

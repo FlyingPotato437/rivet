@@ -164,12 +164,31 @@ cross-site cookies and redirected authenticated fetches are disabled.
 
 ## 5. Optional connections
 
-### Rivet questions
+### Rivet tasks and questions
 
 Set `OPENAI_API_KEY` and `OPENAI_MODEL` in the **server** environment, then
 recreate API and worker. Choose a model enabled for that key. Uploading and
 reviewing comments, responses, approvals, and exports work without these values.
-The assistant needs them to answer questions.
+The assistant needs them to answer questions. Use `OPENAI_MODEL=gpt-6-luna` for
+the question connection and `RIVET_AGENT_MODEL=gpt-6-luna` for durable tasks.
+Both use the existing `OPENAI_API_KEY`, Responses API, bounded context, and
+`store: false`; no second AI subscription or graph database is required.
+
+Upgrade the database to migration **0008** before starting the new API and worker.
+The migration adds persistent runs, proposals, and private question history.
+Back up the database and original documents before upgrading. Keep the worker
+running: a task queued in the browser cannot progress without it.
+
+Automatic work is **opt-in per order** under Rivet activity → Project instructions
+& limits. `RIVET_AGENT_AUTORUN=false` is a server-wide scheduler switch; manual
+tasks remain available. Existing orders are not automatically sent to the model
+when the upgraded worker starts. Review the per-run step and output limits before
+enabling automatic work. Results retain model usage and execution history.
+
+Agents can inspect, retrieve, compare extracted text, and prepare internal
+coordination proposals. Accepting a proposal checks its source fingerprint and
+record version, records the reviewer, and commits the internal change atomically.
+It does not approve engineering, resolve a technical comment, or send mail.
 
 ### Email forwarding and notices
 
@@ -211,9 +230,13 @@ Use your own account and a test organization with public or synthetic files:
 1. Sign in through the deployed frontend, create/select a team, and reload.
 2. Create an order and upload a marked-up PDF. Confirm queued processing
    completes and original text, author, date, and page are retained.
-3. Open a cited source PDF in the main workspace, return with **Back to record**,
-   save a reviewed response, and export both Excel and PDF. Open **Rivet** with
-   Cmd/Ctrl+J and confirm the conversation persists while switching order tabs.
+3. Open a cited PDF in **Review work**, switch between the source comment and
+   referenced drawing, save a reviewed response, and export both Excel and PDF.
+   Open **Rivet activity** with Cmd/Ctrl+J. Start a task; verify real worker steps,
+   sources, and a reviewable proposal. Reload and verify the run persists. Accept
+   an internal draft and verify its provenance in the record. Change a source and
+   confirm an old proposal cannot be accepted. Ask a question, reload, and confirm
+   only your own saved question history appears.
 4. Approve the reviewed record and open its share link in a signed-out browser.
    Confirm source access works and subsequent working edits do not alter it.
 5. Sign in with a separate team and confirm the first team's orders are absent.

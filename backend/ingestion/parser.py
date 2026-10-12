@@ -1,20 +1,23 @@
-import csv, io, hashlib, zipfile
-from pathlib import Path
-from openpyxl import load_workbook
+import csv
+import hashlib
+import io
+import zipfile
+
 import pdfplumber
+from openpyxl import load_workbook
+
+from backend.domain.schemas import LineInput, Operation
+from backend.domain.service import fail, lines, scoped
+from backend.ingestion.pdf_geometry import PDFViewport, oriented_words
+from backend.storage.db import BLOBS
 from backend.storage.models import (
-    Document,
-    Span,
-    Requirement,
-    Proposal,
-    Line,
     Catalog,
     Offer,
+    Proposal,
+    Requirement,
+    Span,
     uid,
 )
-from backend.storage.db import BLOBS
-from backend.domain.service import get, scoped, lines, validate_sources, fail
-from backend.domain.schemas import LineInput, Operation
 
 ALLOWED = {".pdf", ".csv", ".xlsx", ".txt", ".eml"}
 FIELDS = (
@@ -185,9 +188,32 @@ def parse(s, d):
             if len(pdf.pages) > 150:
                 raise ValueError("PDFs are limited to 150 pages.")
             for n, page in enumerate(pdf.pages, 1):
-                text = page.extract_text() or ""
-                if not text.strip():
-                    unreadable = bool(page.images or page.curves)
+                try:
+                    viewport = PDFViewport(page)
+                except (TypeError, ValueError, AttributeError):
+                    viewport = None
+                    coverage.append(
+                        {
+                            "label": f"Page {n} geometry",
+                            "state": "unsupported",
+                            "detail": "Page geometry could not be aligned reliably. Review the original page; highlights cover the full page.",
+                        }
+                    )
+                words = oriented_words(page)
+                if viewport:
+                    visible_words = []
+                    for word in words:
+                        area = viewport.normalize(
+                            [word["x0"], word["top"], word["x1"], word["bottom"]],
+                            "plumber",
+                        )
+                        if area[0] < area[2] and area[1] < area[3]:
+                            visible_words.append(word)
+                    words = visible_words
+                if not words:
+                    unreadable = bool(
+                        page.images or page.curves or page.rects or page.lines
+                    )
                     page_source = (
                         span(
                             "",
@@ -210,21 +236,30 @@ def parse(s, d):
                         }
                     )
                     continue
-                words = page.extract_words()
                 groups = {}
                 for word in words:
-                    groups.setdefault(round(word["top"] / 8), []).append(word)
+                    direction = word.get("direction", "ltr")
+                    line_axis = "top" if direction in ("ltr", "rtl") else "x0"
+                    groups.setdefault(
+                        (direction, round(word[line_axis] / 8)), []
+                    ).append(word)
                 for group in groups.values():
                     span(
                         " ".join(w["text"] for w in group),
                         {
                             "page": n,
-                            "bbox": [
-                                min(w["x0"] for w in group) / page.width,
-                                min(w["top"] for w in group) / page.height,
-                                max(w["x1"] for w in group) / page.width,
-                                max(w["bottom"] for w in group) / page.height,
-                            ],
+                            "bbox": viewport.normalize(
+                                [
+                                    min(w["x0"] for w in group),
+                                    min(w["top"] for w in group),
+                                    max(w["x1"] for w in group),
+                                    max(w["bottom"] for w in group),
+                                ],
+                                "plumber",
+                            )
+                            if viewport
+                            else [0, 0, 1, 1],
+                            "coordinate_system": "visible-page-v1",
                             "rotation": page.rotation,
                             "approximate": True,
                         },
@@ -245,7 +280,8 @@ def parse(s, d):
                     "annotation_type": annotation["kind"],
                     "author": annotation.get("author", ""),
                     "authored_at": annotation.get("authored_at", ""),
-                    "approximate": False,
+                    "approximate": bool(annotation.get("geometry_warning")),
+                    "coordinate_system": "visible-page-v1",
                 },
             )
             if annotation.get("needs_review"):
@@ -255,6 +291,15 @@ def parse(s, d):
                         "annotation_id": annotation["id"],
                         "state": "unsupported",
                         "detail": "A graphical annotation has no extractable text. Manual interpretation is required.",
+                    }
+                )
+            if annotation.get("geometry_warning"):
+                coverage.append(
+                    {
+                        "label": f"Page {annotation['page']} annotation geometry",
+                        "annotation_id": annotation["id"],
+                        "state": "unsupported",
+                        "detail": annotation["geometry_warning"],
                     }
                 )
     else:
@@ -344,8 +389,9 @@ def map_document(s, d, q, p, mapping, purpose):
             if not item:
                 issues.append(f"Model {data.get('model')} is absent from the catalog.")
                 continue
-            from backend.domain.pricing import dec, money
             from datetime import date
+
+            from backend.domain.pricing import dec, money
 
             cost = dec(data.get("cost"))
             if cost < 0 or cost != money(cost):

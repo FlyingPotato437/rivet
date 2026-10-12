@@ -145,6 +145,32 @@ def test_no_references_use_valid_empty_array_schema_not_empty_enum(monkeypatch):
         assert "enum" not in properties[field]["items"]
 
 
+def test_questions_receive_prepared_drafts_and_actual_delivery_without_recipients():
+    w = record()
+    w["notices"] = [
+        {
+            "id": "n",
+            "title": "Clarify sheet",
+            "body": "Which drawing?",
+            "status": "draft",
+            "origin": "ai",
+            "comment_id": "comment-1",
+            "source_ids": ["source-1"],
+            "recipients": [{"email": "private@example.com"}],
+        }
+    ]
+    w["notice_deliveries"] = {"n": "sent"}
+    context = assistant.context("Has it been sent?", w)
+    assert context["prepared_notices"][0]["status"] == "sent"
+    assert context["prepared_notices"][0]["origin"] == "ai"
+    assert "private@example.com" not in json.dumps(context)
+    w["notice_deliveries"] = {}
+    assert (
+        assistant.context("What is prepared?", w)["prepared_notices"][0]["status"]
+        == "draft"
+    )
+
+
 @pytest.mark.parametrize(
     "field,foreign_id",
     [

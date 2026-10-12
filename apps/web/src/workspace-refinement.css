@@ -13,7 +13,7 @@
 }
 .workspace-refined .back-link {
   color: var(--work-muted);
-  font-size: 12px;
+  font-size: 13px;
   margin-bottom: 17px;
 }
 .workspace-refined .title-line {
@@ -29,14 +29,14 @@
 .workspace-refined .title-line .micro-tag {
   color: var(--work-muted);
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0;
   background: transparent;
   border-color: #333337;
   padding: 4px 7px;
 }
 .workspace-refined .project-meta {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--work-muted);
   flex-wrap: wrap;
   gap: 8px;
@@ -49,7 +49,7 @@
   flex-shrink: 0;
 }
 .workspace-refined .workspace-heading-actions button {
-  font-size: 12px;
+  font-size: 13px;
   min-height: 38px;
   padding: 9px 13px;
   gap: 8px;
@@ -78,7 +78,7 @@
   border: none;
   font-family: inherit;
   color: var(--copy);
-  font-size: 11px;
+  font-size: 13px;
   min-width: 19px;
   text-align: center;
 }
@@ -88,11 +88,11 @@
 }
 .workspace-refined .version-pill {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--work-muted);
 }
 .workspace-refined .version-pill .status {
-  font-size: 11px;
+  font-size: 13px;
 }
 .workspace-refined .quote-summary {
   display: flex;
@@ -102,7 +102,7 @@
 }
 .workspace-refined .quote-summary .stat-label {
   display: block;
-  font-size: 12px;
+  font-size: 13px;
   font-family: inherit;
   font-weight: 400;
   letter-spacing: 0;
@@ -111,7 +111,7 @@
   margin-bottom: 9px;
 }
 .workspace-refined .quote-summary .stat-label small {
-  font-size: 10px;
+  font-size: 13px;
   margin-left: 5px;
   color: var(--subtle);
 }
@@ -130,7 +130,7 @@
 .workspace-refined .quote-total .warning-text {
   display: block;
   margin-top: 7px;
-  font-size: 11px;
+  font-size: 13px;
 }
 .workspace-refined .quote-margin strong {
   font-size: 23px;
@@ -155,7 +155,7 @@
   gap: 6px;
   padding: 0;
   margin-top: 7px;
-  font-size: 12px;
+  font-size: 13px;
   color: #c4ae8c;
 }
 .workspace-refined .review-check-toggle[aria-expanded="true"] svg {
@@ -167,7 +167,7 @@
   gap: 5px;
   margin-top: 7px;
   color: #96b2a2;
-  font-size: 12px;
+  font-size: 13px;
 }
 .workspace-refined .readiness-box {
   margin-bottom: 22px;
@@ -203,7 +203,7 @@
   font-size: 13px;
 }
 .workspace-refined .inline-change-banner > span {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 .workspace-refined .quote-layout {
@@ -227,7 +227,7 @@
   min-height: 34px;
   padding: 7px 9px;
   gap: 6px;
-  font-size: 12px;
+  font-size: 13px;
   border-radius: 6px;
   color: var(--copy);
 }
@@ -246,7 +246,7 @@
 }
 .workspace-refined .quote-toolbar .compact-search input {
   width: 160px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .workspace-refined .grid-scroll {
   border: 1px solid var(--work-line);
@@ -258,7 +258,7 @@
 }
 .workspace-refined .quote-grid th {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 450;
   letter-spacing: 0;
   color: var(--muted);
@@ -303,7 +303,7 @@
 }
 .workspace-refined .equipment-cell > span {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 550;
   color: var(--text);
   letter-spacing: 0;
@@ -320,7 +320,7 @@
 }
 .workspace-refined .equipment-cell small {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
   letter-spacing: 0;
   margin: 0;
@@ -336,7 +336,7 @@
 .workspace-refined .quantity-cell small {
   font-family: inherit;
   margin: 0;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .workspace-refined .money-cell,
@@ -357,7 +357,7 @@
   text-underline-offset: 4px;
 }
 .workspace-refined .review-cell {
-  font-size: 11px;
+  font-size: 13px;
   padding-left: 6px;
   gap: 6px;
   color: #9caea3;
@@ -372,11 +372,11 @@
   border-radius: 0 0 8px 8px;
 }
 .workspace-refined .grid-footer > span {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .workspace-refined .grid-footer > div {
-  font-size: 12px;
+  font-size: 13px;
   gap: 20px;
   color: var(--muted);
 }
@@ -388,13 +388,13 @@
   letter-spacing: 0;
 }
 .workspace-refined .grid-help {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
   padding: 13px 0;
   gap: 12px;
 }
 .workspace-refined .grid-help kbd {
-  font-size: 10px;
+  font-size: 13px;
   color: var(--muted);
   border-color: #363639;
 }
@@ -426,23 +426,23 @@
 }
 .workspace-refined .terms-section p {
   max-width: 70ch;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.75;
   color: var(--muted);
 }
 .workspace-refined .terms-section .text-button {
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
 }
 .workspace-refined .selection-bar {
   padding: 10px 13px;
   background: #242029;
   border-color: #3b3443;
-  font-size: 12px;
+  font-size: 13px;
   flex-wrap: wrap;
 }
 .workspace-refined .selection-bar button {
-  font-size: 12px;
+  font-size: 13px;
 }
 .workspace-refined .quote-no-results {
   text-align: center;
@@ -477,7 +477,7 @@
   border-color: #303034;
 }
 .workspace-refined .inspector-tabs button {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   gap: 7px;
   padding: 15px 0;
@@ -523,20 +523,20 @@
   color: var(--text);
 }
 .workspace-refined .line-evidence > code {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .workspace-refined .origin-row,
 .workspace-refined .evidence-label {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0;
   color: var(--muted);
 }
 .workspace-refined .origin-row .label {
   font-family: inherit;
   letter-spacing: 0;
-  font-size: 11px;
+  font-size: 13px;
 }
 .workspace-refined .source-card {
   border-color: #343439;
@@ -545,21 +545,21 @@
   border-radius: 6px;
 }
 .workspace-refined .source-card > div {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--copy);
 }
 .workspace-refined .source-card blockquote {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   line-height: 1.65;
 }
 .workspace-refined .source-location {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .workspace-refined .line-details {
-  font-size: 12px;
+  font-size: 13px;
 }
 .workspace-refined .line-details dt {
   color: var(--muted);
@@ -569,11 +569,11 @@
   color: var(--text);
 }
 .workspace-refined .line-actions button {
-  font-size: 12px;
+  font-size: 13px;
   min-height: 36px;
 }
 .workspace-refined .line-problem {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
 }
 .workspace-refined .section-heading {
@@ -592,7 +592,7 @@
   margin-top: 8px;
 }
 .workspace-refined .section-heading button {
-  font-size: 12px;
+  font-size: 13px;
 }
 .workspace-refined .source-list article {
   background: transparent;
@@ -604,7 +604,7 @@
   color: var(--text);
 }
 .workspace-refined .source-name p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 .workspace-refined .file-icon {
@@ -626,12 +626,12 @@
   font-weight: 450;
 }
 .workspace-refined .source-assistant-action p {
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 7px;
   color: var(--muted);
 }
 .workspace-refined .source-assistant-action button {
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
 }
 .workspace-refined .assistant-heading h3 {
@@ -641,7 +641,7 @@
   color: var(--text);
 }
 .workspace-refined .assistant-heading p {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
   color: var(--muted);
 }
@@ -654,7 +654,7 @@
 }
 .workspace-refined .run-card > div > .eyebrow {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   letter-spacing: 0;
   text-transform: none;
@@ -677,14 +677,14 @@
   list-style: none;
   cursor: pointer;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 .workspace-refined .run-activity > summary::-webkit-details-marker {
   display: none;
 }
 .workspace-refined .run-activity > summary span {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .workspace-refined .run-activity[open] > summary svg {
@@ -693,18 +693,18 @@
 .workspace-refined .run-activity ol {
   padding-left: 18px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
   margin-top: 12px;
 }
 .workspace-refined .assistant-suggestions > p {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0;
   color: var(--muted);
 }
 .workspace-refined .assistant-suggestions button {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--copy);
   line-height: 1.6;
   border-color: #313137;
@@ -719,14 +719,14 @@
 }
 .workspace-refined .assistant-composer > div > span,
 .workspace-refined .assistant-note {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .workspace-refined .run-questions h4 {
   font-size: 13px;
 }
 .workspace-refined .run-questions p {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.65;
 }
 .workspace-refined .change-card {
@@ -735,7 +735,7 @@
 }
 .workspace-refined .change-card .eyebrow {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.1px;
 }
 .workspace-refined .change-card header h3 {
@@ -825,7 +825,7 @@
     display: none;
   }
   .workspace-refined .review-count {
-    font-size: 12px;
+    font-size: 13px;
   }
   .workspace-refined .quote-review-status .review-count strong {
     font-size: 13px;
@@ -833,7 +833,7 @@
   .workspace-refined .review-check-toggle,
   .workspace-refined .review-ready {
     margin: 0 0 0 auto;
-    font-size: 12px;
+    font-size: 13px;
   }
   .workspace-refined .inline-change-banner {
     display: grid;
@@ -842,12 +842,12 @@
     text-align: left;
   }
   .workspace-refined .inline-change-banner > strong {
-    font-size: 12px;
+    font-size: 13px;
   }
   .workspace-refined .inline-change-banner > span {
     grid-column: 2;
     margin: 0;
-    font-size: 11px;
+    font-size: 13px;
   }
   .workspace-refined .inline-change-banner > svg:last-child {
     grid-column: 3;
@@ -934,19 +934,19 @@
   justify-content: center;
 }
 .workspace-refined .line-details > div {
-  font-size: 12px;
+  font-size: 13px;
 }
 .workspace-refined .line-details > div:not(:last-child) dd {
   font-family: inherit;
 }
 .workspace-refined .line-evidence-title .eyebrow {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0;
 }
 .workspace-refined .inspector .status {
-  font-size: 11px;
+  font-size: 13px;
 }
 .workspace-refined .grid-help > span {
   display: flex;
@@ -1023,7 +1023,7 @@
   text-underline-offset: 3px;
 }
 .workspace-refined .assistant-response code {
-  font-size: 11px;
+  font-size: 13px;
   background: #232327;
   padding: 2px 4px;
   border-radius: 3px;
@@ -1053,7 +1053,7 @@
   width: 100%;
   min-width: 440px;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
 }
 .workspace-refined .assistant-response th,
@@ -1091,7 +1091,7 @@
   color: #c8bdd6;
   font-family: inherit;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.2;
   text-decoration: none;
 }
@@ -1107,7 +1107,7 @@
 .workspace-refined .assistant-citations h5 {
   margin: 0 0 9px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
 }
 .workspace-refined .assistant-citations > button {
@@ -1118,7 +1118,7 @@
   text-align: left;
   padding: 7px 0;
   color: var(--copy);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
 }
 .workspace-refined .assistant-citations > button > span:first-child {
@@ -1138,7 +1138,7 @@
 }
 .workspace-refined .assistant-response .assistant-unavailable-source {
   color: #b8a78d;
-  font-size: 11px;
+  font-size: 13px;
 }
 .workspace-refined .assistant-image-description {
   color: var(--muted);
@@ -1147,7 +1147,7 @@
 
 .workspace-refined .run-context {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   margin: 8px 0 13px;
 }

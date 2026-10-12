@@ -8,7 +8,7 @@ from sqlalchemy import select
 
 from backend.domain.service import fail, get, scoped
 from backend.identity import auth_mode, current_actor
-from backend.orders.extraction import extract_order_document
+from backend.orders.extraction import COMMENT_RE, extract_order_document
 from backend.storage.models import (
     Document,
     NoticeDelivery,
@@ -347,23 +347,57 @@ def source_data(s, order):
             scoped(Span).join(Document).where(Document.project_id == order.project_id)
         )
     )
+    by_document = {}
+    for span in spans:
+        by_document.setdefault(span.document_id, []).append(span)
+
+    def document_view(d):
+        warnings = [
+            "Attachment not imported: "
+            + str(name).replace("\\", "/").rsplit("/", 1)[-1][:240]
+            + ". This file type needs separate review."
+            for name in d.meta.get("unparsed_attachments", [])
+        ]
+        coverage = list(d.coverage)
+        docspans = by_document.get(d.id, [])
+        if (
+            d.name.lower().endswith(".pdf")
+            and d.meta.get("order_role", d.kind) in {"markup", "markups"}
+            and d.state not in {"queued", "processing", "parsing", "failed"}
+            and any(span.text.strip() for span in docspans)
+            and not any(span.location.get("annotation_id") for span in docspans)
+            and not any(
+                COMMENT_RE.match(line)
+                for span in docspans
+                for line in span.text.splitlines()
+            )
+        ):
+            detail = (
+                "No native annotations or numbered comments were found in this marked-up PDF. "
+                "Flattened or unnumbered markup needs manual review; no comments were inferred."
+            )
+            warnings.append(detail)
+            # A coverage warning is not a fabricated reviewer comment. Keep the
+            # original parser coverage intact and expose the limitation in views.
+            coverage.append(
+                {"label": "Markup extraction", "state": "unsupported", "detail": detail}
+            )
+        return {
+            "id": d.id,
+            "name": d.name,
+            "kind": d.kind,
+            "state": d.state,
+            "role": d.meta.get("order_role", d.kind),
+            "revision_label": d.meta.get("revision_label", ""),
+            "coverage": coverage,
+            "warnings": warnings,
+            "email": d.meta.get("email"),
+            "public_source": d.meta.get("public_source"),
+            "created_at": d.created_at.isoformat(),
+        }
+
     return (
-        [
-            {
-                "id": d.id,
-                "name": d.name,
-                "kind": d.kind,
-                "state": d.state,
-                "role": d.meta.get("order_role", d.kind),
-                "revision_label": d.meta.get("revision_label", ""),
-                "coverage": d.coverage,
-                "warnings": [],
-                "email": d.meta.get("email"),
-                "public_source": d.meta.get("public_source"),
-                "created_at": d.created_at.isoformat(),
-            }
-            for d in docs
-        ],
+        [document_view(d) for d in docs],
         [
             {
                 "id": sp.id,
@@ -395,6 +429,10 @@ def view(s, order, record=None):
     }
     return {
         "coordination": projection(record.data, docs, sources, delivery_by_notice),
+        "notice_deliveries": {
+            notice_id: delivery["status"]
+            for notice_id, delivery in delivery_by_notice.items()
+        },
         "order": {
             "id": order.id,
             "project_id": p.id,

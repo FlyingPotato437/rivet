@@ -637,6 +637,29 @@ def add_document(s, p, name, kind, data, metadata=None):
         fail("Upload a nonempty file no larger than 20 MB.")
     if ext == ".pdf" and not data.startswith(b"%PDF"):
         fail("This file is not a valid PDF.")
+    # Serialize file identity with other uploads to this project. Retry keys
+    # protect one request; this also handles a user selecting the same file twice.
+    p = get(s, Project, p.id, True)
+    name = Path(name).name
+    metadata = metadata or {}
+    sha = hashlib.sha256(data).hexdigest()
+    parser_fields = {
+        "headers", "rows", "suggested_mapping", "parser_version", "email",
+        "confirmed_mapping", "purpose",
+    }
+    for existing in s.scalars(
+        scoped(Document).where(
+            Document.project_id == p.id,
+            Document.sha256 == sha,
+            Document.name == name,
+            Document.kind == kind,
+        )
+    ):
+        intake = {k: v for k, v in existing.meta.items() if k not in parser_fields}
+        # Revision labels and email parent IDs remain part of provenance.
+        # Reclassified sources must not silently absorb a different upload.
+        if intake == metadata:
+            return {**document_dict(existing), "duplicate": True}
     if ext == ".pdf":
         from io import BytesIO
         import pdfplumber
@@ -653,11 +676,11 @@ def add_document(s, p, name, kind, data, metadata=None):
     blob, sha = persist_blob(data, ext)
     d = Document(
         project_id=p.id,
-        name=Path(name).name,
+        name=name,
         kind=kind,
         blob=blob,
         sha256=sha,
-        meta=metadata or {},
+        meta=metadata,
     )
     s.add(d)
     s.flush()
@@ -1057,6 +1080,12 @@ app.include_router(orders_router)
 from backend.records.api import router as records_router
 
 app.include_router(records_router)
+
+from backend.records.conversations import router as conversations_router
+from backend.records.inbox import router as record_inbox_router
+
+app.include_router(conversations_router)
+app.include_router(record_inbox_router)
 
 from backend.email_api import router as email_router
 

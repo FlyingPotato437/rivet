@@ -132,7 +132,10 @@ def candidate_pages(comment, pages):
         )
         chosen = next(
             (s for s in page["sources"] if tags & anchors_in(s.get("text", ""))[0]),
-            page["sources"][0],
+            next(
+                (s for s in page["sources"] if sheets & anchors_in(s.get("text", ""))[1]),
+                page["sources"][0],
+            ),
         )
         label = ", ".join(sorted(page["sheets"])) or page["document"]["name"]
         revision_label = page["document"].get("revision_label")

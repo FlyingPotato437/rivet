@@ -5,33 +5,32 @@
   --surface2: #1b1c1e;
   --line: #292b2e;
   --copy: #c2c4c9;
-  --muted: #9b9da2;
-  --subtle: #74777e;
-  --text: #e9eaeb;
+  --muted: #afacb8;
+  --subtle: #9994a4;
+  --text: #f0edf4;
+  --violet: #cab7f6;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 .app-shell .app-main {
-  margin-left: 224px;
-  width: calc(100% - 224px);
-  background:
-    radial-gradient(ellipse 80% 38% at 72% -4%, #b7aecb0b, transparent 72%),
-    radial-gradient(ellipse 60% 45% at 100% 85%, #6e879904, transparent 80%),
-    #101112;
+  margin-left: 208px;
+  width: calc(100% - 208px);
+  background: #151518;
 }
 .app-shell .sidebar {
-  width: 224px;
-  background: #0c0d0e;
+  width: 208px;
+  background: #101113;
   border-color: #242628;
   padding: 26px 14px 14px;
 }
 .app-shell .brand {
   font-family: var(--font-sans);
   margin: 0 12px 27px;
-  font-size: 26px;
-  font-weight: 700;
+  font-size: 29px;
+  font-weight: 600;
+  letter-spacing: -1.4px;
   gap: 10px;
 }
 .app-shell .brand > svg {
@@ -46,10 +45,10 @@
   border-radius: 7px;
 }
 .app-shell .workspace-switch > div {
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .workspace-switch small {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .app-shell .workspace-icon {
@@ -61,7 +60,7 @@
   font-family: inherit;
   text-transform: none;
   letter-spacing: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--subtle);
   margin: 25px 10px 10px;
 }
@@ -69,16 +68,16 @@
   gap: 3px;
 }
 .app-shell .sidebar nav button {
-  min-height: 39px;
-  padding: 9px 10px;
-  font-size: 13px;
+  min-height: 42px;
+  padding: 10px 11px;
+  font-size: 14px;
   color: var(--muted);
   border: 1px solid transparent;
 }
 .app-shell .sidebar nav button.active {
   color: var(--text);
-  background: #202124;
-  border-color: #2b2d31;
+  background: #27232f;
+  border-color: transparent;
 }
 .app-shell .sidebar nav button.active:before {
   display: none;
@@ -91,12 +90,12 @@
 }
 .app-shell .nav-count {
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 .app-shell .recent-projects button {
   min-height: 35px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 .app-shell .recent-projects button.selected {
@@ -111,7 +110,7 @@
 }
 .app-shell .sidebar-bottom > button {
   min-height: 38px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   border-radius: 5px;
 }
@@ -129,10 +128,10 @@
 }
 .app-shell .profile > div {
   flex: 1;
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .profile small {
-  font-size: 10px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .app-shell .profile > span:first-child {
@@ -143,11 +142,11 @@
 .app-shell .topbar {
   height: 60px;
   padding: 0 32px;
-  background: #101112;
-  border-color: #27292b;
+  background: #151518;
+  border-color: #303037;
 }
 .app-shell .topbar > div {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--copy);
   min-width: 0;
 }
@@ -157,11 +156,11 @@
   text-overflow: ellipsis;
 }
 .app-shell .breadcrumb {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 .app-shell .connection {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -175,7 +174,7 @@
   background: #202124;
 }
 .app-shell .search-trigger kbd {
-  font-size: 10px;
+  font-size: 13px;
   border-color: #383a3d;
 }
 .app-shell .page {
@@ -191,14 +190,14 @@
   gap: 20px;
 }
 .app-shell .page-heading h1 {
-  font-family: "Sora", sans-serif;
+  font-family: "Schibsted Grotesk Variable", sans-serif;
   font-size: 32px;
   font-weight: 500;
   letter-spacing: -1.2px;
   line-height: 1.2;
 }
 .app-shell .workspace-refined .title-line h1 {
-  font-family: "Sora", sans-serif;
+  font-family: "Schibsted Grotesk Variable", sans-serif;
   font-size: clamp(27px, 2.4vw, 32px);
   font-weight: 500;
   letter-spacing: -1.2px;
@@ -212,8 +211,8 @@
 }
 .app-shell .primary,
 .app-shell .secondary {
-  font-size: 13px;
-  min-height: 37px;
+  font-size: 14px;
+  min-height: 39px;
   border-radius: 6px;
   padding: 9px 13px;
 }
@@ -239,7 +238,7 @@
 }
 .app-shell .quiet-button,
 .app-shell .text-button {
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .icon-button {
   min-width: 32px;
@@ -266,17 +265,17 @@
   letter-spacing: 0;
 }
 .app-shell .eyebrow {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 .app-shell .micro-tag {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   border-color: #34363a;
   padding: 4px 6px;
 }
 .app-shell .status {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.3;
   border-radius: 4px;
   padding: 4px 6px;
@@ -313,7 +312,7 @@
   flex-shrink: 0;
   margin-left: auto;
   color: #d5c9ea;
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .review-notice:hover {
   background: #222028;
@@ -331,7 +330,7 @@
   gap: 3px;
 }
 .app-shell .segmented button {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   padding: 8px 10px;
   min-height: 34px;
@@ -343,7 +342,7 @@
 .app-shell .segmented button span {
   font: inherit;
   font-variant-numeric: tabular-nums;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   margin-left: 7px;
 }
@@ -369,12 +368,12 @@
   width: 170px;
   min-height: 34px;
   background: transparent;
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .project-list-controls select {
   width: 159px;
   min-height: 36px;
-  font-size: 12px;
+  font-size: 13px;
   padding: 7px 9px;
   color: var(--copy);
 }
@@ -385,7 +384,7 @@
 }
 .app-shell .project-table-head {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0;
   color: var(--muted);
   padding: 13px 12px;
@@ -417,13 +416,13 @@
   letter-spacing: -0.15px;
 }
 .app-shell .project-name p {
-  font-size: 11px;
+  font-size: 13px;
   gap: 8px;
   color: var(--muted);
 }
 .app-shell .project-status small {
   display: block;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--muted);
   margin-top: 6px;
 }
@@ -435,7 +434,7 @@
   letter-spacing: 0;
 }
 .app-shell .due-date {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 .app-shell .row-arrow {
@@ -446,7 +445,7 @@
   color: #d6d9e0;
 }
 .app-shell .list-footer {
-  font-size: 11px;
+  font-size: 13px;
   padding-top: 17px;
   color: var(--subtle);
 }
@@ -455,7 +454,7 @@
   padding: 0;
   margin-top: 30px;
   color: var(--subtle);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   align-items: center;
   background: transparent;
@@ -501,7 +500,7 @@
   width: 100%;
 }
 .app-shell .catalog-toolbar > span {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -518,14 +517,14 @@
   padding: 13px 12px;
   border-block: 1px solid #303338;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 400;
 }
 .app-shell .catalog-table td {
   padding: 20px 12px;
   border-bottom: 1px solid #292c31;
   color: var(--copy);
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .catalog-table td:first-child {
   width: 34%;
@@ -543,10 +542,10 @@
   align-items: center;
   gap: 10px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 .app-shell .sample-label {
-  font-size: 10px;
+  font-size: 13px;
   padding: 2px 5px;
   border: 1px solid #373c44;
   border-radius: 3px;
@@ -557,7 +556,7 @@
   font-variant-numeric: tabular-nums;
 }
 .app-shell .catalog-cost small {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--subtle);
 }
 .app-shell .timeline-event {
@@ -572,13 +571,13 @@
   color: var(--text);
 }
 .app-shell .timeline-event p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   margin-top: 6px;
 }
 .app-shell .timeline-event time {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .app-shell .timeline-icon {
@@ -599,7 +598,7 @@
   gap: 24px;
 }
 .app-shell .settings-section small {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   margin-top: 7px;
 }
@@ -648,7 +647,7 @@
   font-size: 14px;
 }
 .app-shell .search-results small {
-  font-size: 12px;
+  font-size: 13px;
   color: #909aa9;
 }
 .app-shell .nav-backdrop {
@@ -735,7 +734,7 @@
     max-width: 260px;
   }
   .app-shell .page-heading > .primary {
-    font-size: 12px;
+    font-size: 13px;
     padding: 8px 10px;
   }
   .app-shell .review-notice {
@@ -744,7 +743,7 @@
     padding: 15px;
     gap: 10px;
     margin-bottom: 26px;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.6;
   }
   .app-shell .review-notice-action {
@@ -760,7 +759,7 @@
   }
   .app-shell .segmented button {
     padding: 8px 9px;
-    font-size: 12px;
+    font-size: 13px;
   }
   .app-shell .project-list-controls {
     width: 100%;
@@ -776,7 +775,7 @@
   }
   .app-shell .project-list-controls select {
     width: 135px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .app-shell .project-table-head {
     display: none;
@@ -802,7 +801,7 @@
   }
   .app-shell .project-name p {
     flex-wrap: wrap;
-    font-size: 11px;
+    font-size: 13px;
   }
   .app-shell .project-row > .project-status {
     display: flex;
@@ -815,7 +814,7 @@
   }
   .app-shell .project-status small {
     margin: 0;
-    font-size: 10px;
+    font-size: 13px;
   }
   .app-shell .project-row > .project-value {
     margin-left: 0;
@@ -900,7 +899,7 @@
   margin: 22px 0 18px;
 }
 .app-shell .sample-pack .sample-pack-note {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   border-top: 1px solid #30343b;
   padding-top: 16px;
@@ -913,7 +912,7 @@
   padding: 4px 0 0;
   margin-top: 4px;
   color: #ada1c3;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
 }
 .app-shell .catalog-offers-toggle:hover {
@@ -947,7 +946,7 @@
 .app-shell .catalog-offers-heading p,
 .app-shell .catalog-quantity-note {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.65;
   margin: 0;
 }
@@ -962,7 +961,7 @@
 }
 .app-shell .catalog-offers-table td {
   padding: 12px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .catalog-offers-table td:first-child {
   width: auto;

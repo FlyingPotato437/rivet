@@ -599,7 +599,7 @@
   }
 }
 
-/* Rivet type: Sora display, Onest reading, IBM Plex Mono identifiers. */
+/* Rivet type: Schibsted Grotesk for reading and display, Commit Mono for identifiers. */
 .rivet-site {
   --site-bg: #090a0c;
   --site-panel: #121315;

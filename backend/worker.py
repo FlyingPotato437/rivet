@@ -34,10 +34,16 @@ def claim():
                     from backend.orders.service import refresh_project_orders
 
                     refresh_project_orders(s, failed_document.project_id)
-                elif dead.kind == "agent":
-                    run = get(s, Run, dead.payload["run_id"])
-                    run.status = "failed"
-                    run.result = {"error": dead.error}
+                elif dead.kind in {"agent", "record_agent"}:
+                    from backend.storage.models import RecordAgentRun
+
+                    model = RecordAgentRun if dead.kind == "record_agent" else Run
+                    run = get(s, model, dead.payload["run_id"])
+                    if dead.kind != "record_agent" or run.state.get(
+                        "generation", 0
+                    ) == dead.payload.get("generation", 0):
+                        run.status = "failed"
+                        run.result = {"error": dead.error}
                 elif dead.kind in {"inbound_email", "send_notice"}:
                     from backend.storage.models import InboundEmail, NoticeDelivery
 
@@ -116,6 +122,10 @@ def process_scoped(task):
                     refresh_project_orders(s, d.project_id)
         elif kind == "agent":
             run_agent(payload["run_id"], leased)
+        elif kind == "record_agent":
+            from backend.records.agent_service import process_run
+
+            process_run(payload["run_id"], leased, payload.get("generation", 0))
         elif kind in {"inbound_email", "send_notice"}:
             from backend.email_jobs import receive, send
 
@@ -130,8 +140,11 @@ def process_scoped(task):
                 if j.lease == token:
                     j.status = "succeeded"
                     j.lease_until = None
-                    if kind == "agent":
-                        state = get(s, Run, payload["run_id"])
+                    if kind in {"agent", "record_agent"}:
+                        from backend.storage.models import RecordAgentRun
+
+                        model = RecordAgentRun if kind == "record_agent" else Run
+                        state = get(s, model, payload["run_id"])
                         if state.status in ("failed", "cancelled"):
                             j.status = state.status
                             j.error = state.result.get("error", "")
@@ -156,6 +169,18 @@ def process_scoped(task):
                 j.status = "failed"
                 j.error = str(exc)[:1000]
                 j.lease_until = None
+                if kind == "record_agent":
+                    from backend.storage.models import RecordAgentRun
+
+                    run = get(s, RecordAgentRun, payload["run_id"], True)
+                    if run.state.get("generation", 0) == payload.get(
+                        "generation", 0
+                    ) and run.status in {"queued", "running"}:
+                        run.status = "failed"
+                        run.result = {
+                            **run.result,
+                            "error": "Processing failed. Saved steps are retained; retry the run.",
+                        }
                 if kind == "parse":
                     d = get(s, Document, payload["document_id"])
                     d.state = "failed"
@@ -182,10 +207,16 @@ def main():
         if time.monotonic() >= next_coordination:
             try:
                 from backend.records.automation import scheduled_pass
+                from backend.records.agent_service import (
+                    scheduled_pass as schedule_agents,
+                )
 
                 scheduled_pass()
+                schedule_agents()
             except Exception as exc:
-                logging.warning("Scheduled coordination failed (%s)", type(exc).__name__)
+                logging.warning(
+                    "Scheduled coordination failed (%s)", type(exc).__name__
+                )
             next_coordination = time.monotonic() + 60
         task = claim()
         if task:

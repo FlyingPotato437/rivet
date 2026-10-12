@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode, type SVGProps } from "react";
 import {
   X,
   ArrowRight,
@@ -24,6 +24,60 @@ export function Mark({ small = false }: { small?: boolean }) {
         d="M5 5h14.5v6H11v6h8.5v10H5V5Zm14.5 6H27v6h-7.5V11Zm0 6H25l4 10h-7l-2.5-10Z"
         fill="currentColor"
       />
+    </svg>
+  );
+}
+export type RivetIconName =
+  | "drawing"
+  | "comment"
+  | "revision"
+  | "evidence"
+  | "agent"
+  | "equipment"
+  | "handoff"
+  | "review"
+  | "inbox";
+
+/** Domain marks share a 20-unit grid; conventional controls keep familiar icons. */
+export function RivetIcon({
+  name,
+  size = 20,
+  className = "",
+  ...props
+}: SVGProps<SVGSVGElement> & { name: RivetIconName; size?: number }) {
+  const paths: Record<RivetIconName, ReactNode> = {
+    drawing: <path d="M4 2.5h8l4 4v11H4zM12 2.5v4h4M7 11h6M7 14h3" />,
+    comment: <path d="M3 3.5h14v10H9l-4 3v-3H3zM6.5 7h7M6.5 10h4" />,
+    revision: (
+      <path d="M7 2.5h9v12H7zM4 5.5H2.5v12H12v-1.5M10 6h3M10 9h3M10 12h1" />
+    ),
+    evidence: <path d="M8 3H3v6h5M12 17h5v-6h-5M7 10l6-5M7 15l6-5" />,
+    agent: (
+      <>
+        <path d="M3 3h6v6H3zM11 11h6v6h-6zM9 6h5v5M6 9v5h5" />
+        <path d="M5 5h2v2H5z" fill="currentColor" stroke="none" />
+      </>
+    ),
+    equipment: <path d="M3 3h14v14H3zM8 3v14M12 6h2M11 11h4M11 14h4M5.5 6v2" />,
+    handoff: <path d="M10 3H3v14h7M10 10h8M14 6l4 4-4 4M6 6h2M6 10h1M6 14h2" />,
+    review: <path d="M13 2.5H4v15h12v-8M7 7l3 3 7-7M7 14h5" />,
+    inbox: <path d="M3 3h14v14H3zM3 11h4l1.5 2h3l1.5-2h4M7 6h6M7 8.5h4" />,
+  };
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="square"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={`rivet-icon ${className}`}
+      {...props}
+    >
+      {paths[name]}
     </svg>
   );
 }

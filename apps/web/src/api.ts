@@ -1,7 +1,8 @@
 import type { components } from "./api-schema";
 import { createApiRouting } from "./api-routing";
 export const { apiUrl, isApiUrl } = createApiRouting(
-  import.meta.env.VITE_API_URL || "", window.location.origin,
+  import.meta.env.VITE_API_URL || "",
+  window.location.origin,
 );
 export type Quote = components["schemas"]["QuoteView"];
 export type Line = components["schemas"]["LineView"];
@@ -41,6 +42,7 @@ export async function api<T>(
   path: string,
   body?: unknown,
   method?: string,
+  request?: { idempotencyKey?: string },
 ): Promise<T> {
   const form = body instanceof FormData;
   const res = await apiFetch("/api" + path, {
@@ -51,7 +53,7 @@ export async function api<T>(
         : {
             ...(!form ? { "Content-Type": "application/json" } : {}),
             "X-Rivet-Client": "workspace",
-            "Idempotency-Key": crypto.randomUUID(),
+            "Idempotency-Key": request?.idempotencyKey ?? crypto.randomUUID(),
           },
     body: body === undefined ? undefined : form ? body : JSON.stringify(body),
   });

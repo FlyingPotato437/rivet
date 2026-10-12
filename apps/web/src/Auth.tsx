@@ -124,7 +124,7 @@ export function Authentication({ children }: { children: ReactNode }) {
           colorMutedForeground: "#b0aebd",
           colorInput: "#24252b",
           colorInputForeground: "#f1f0f5",
-          fontFamily: "Onest, sans-serif",
+          fontFamily: "Schibsted Grotesk Variable, sans-serif",
           borderRadius: "10px",
         },
       }}

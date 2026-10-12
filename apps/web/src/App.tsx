@@ -24,7 +24,7 @@ import {
   SidebarSimple,
 } from "@phosphor-icons/react";
 import { api, usd, dateLabel, when, type Project, type Workspace } from "./api";
-import { Mark, Status, Modal, Empty, ErrorNote, Busy } from "./ui";
+import { Mark, Status, Modal, Empty, ErrorNote, Busy, RivetIcon } from "./ui";
 import { QuoteWorkspace } from "./Workspace";
 import { WorkQueue } from "./WorkQueue";
 import { NewOrder, OrderSearch } from "./OrderFeed";
@@ -32,6 +32,7 @@ import { RecordWorkspace as OrderWorkspace } from "./RecordWorkspace";
 import {
   RecordFeed as OrderFeed,
   useRecordOrders as useOrders,
+  useRecordInbox,
 } from "./RecordFeed";
 import { OrderGuide } from "./OrderGuide";
 import sampleScheduleUrl from "../../../examples/equipment-schedule.csv?url";
@@ -56,6 +57,7 @@ export default function App() {
   );
   const [newOrder, setNewOrder] = useState(false);
   const orders = useOrders();
+  const inbox = useRecordInbox();
   const [newProject, setNewProject] = useState(false);
   const [search, setSearch] = useState(false);
   const [toast, setToast] = useState("");
@@ -153,9 +155,13 @@ export default function App() {
     (o) => "order/" + o.id === route.split("?")[0],
   );
   const decisions =
-    orders.data?.orders.reduce((n, o) => n + o.counts.review, 0) ?? 0;
+    inbox.data?.items.length ??
+    orders.data?.orders.reduce((n, o) => n + o.counts.review, 0) ??
+    0;
   return (
-    <div className="app-shell">
+    <div
+      className={`app-shell${route.startsWith("order/") ? " order-workbench-shell" : ""}`}
+    >
       <aside
         id="workspace-navigation"
         className={"sidebar " + (mobileNav ? "mobile-open" : "")}
@@ -174,6 +180,14 @@ export default function App() {
         <div className="nav-label">Workspace</div>
         <nav>
           <button
+            className={route === "decisions" ? "active" : ""}
+            onClick={() => navigate("decisions")}
+          >
+            <RivetIcon name="inbox" size={19} />
+            Work inbox
+            {decisions > 0 && <span className="nav-count">{decisions}</span>}
+          </button>
+          <button
             className={
               route === "projects" ||
               route === "orders" ||
@@ -183,17 +197,9 @@ export default function App() {
             }
             onClick={() => navigate("projects")}
           >
-            <Folder size={18} />
+            <RivetIcon name="equipment" size={19} />
             Orders
             <span className="nav-count">{orders.data?.orders.length ?? 0}</span>
-          </button>
-          <button
-            className={route === "decisions" ? "active" : ""}
-            onClick={() => navigate("decisions")}
-          >
-            <ListChecks size={18} />
-            Needs review
-            {decisions > 0 && <span className="nav-count">{decisions}</span>}
           </button>
         </nav>
         <div className="nav-label recent-label">
@@ -299,7 +305,7 @@ export default function App() {
                 {
                   projects: "Orders",
                   orders: "Orders",
-                  decisions: "Needs review",
+                  decisions: "Work inbox",
                   bids: "Bid queue",
                   quotes: "Quotes",
                   catalog: "Equipment catalog",
@@ -307,7 +313,7 @@ export default function App() {
                   settings: "Settings",
                   guide: "Getting started",
                 }[route] ??
-                "Projects"}
+                "Orders"}
             </span>
           </div>
           <div className="topbar-right">
@@ -391,6 +397,8 @@ export default function App() {
           onCreated={(o) => {
             setNewOrder(false);
             qc.invalidateQueries({ queryKey: ["orders"] });
+            qc.invalidateQueries({ queryKey: ["records"] });
+            qc.invalidateQueries({ queryKey: ["record-inbox"] });
             qc.invalidateQueries({ queryKey: ["projects"] });
             navigate("order/" + o.id);
             notify(

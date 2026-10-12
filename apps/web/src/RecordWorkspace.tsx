@@ -34,19 +34,28 @@ import {
   Attribution,
   CommentAttribution,
   ActivityAttribution,
+  ActorName,
 } from "./RecordAttribution";
-import { RecordAgent } from "./RecordAgent";
+import { RecordWorkbench } from "./RecordWorkbench";
 import "./record-agent.css";
 import type { RecordView, RecordComment, RecordChange } from "./record-types";
 import "./order-workspace.css";
 import "./record-workspace.css";
-const tabs = ["work", "comments", "documents", "changes", "sharing"] as const;
+const tabs = [
+  "work",
+  "comments",
+  "documents",
+  "changes",
+  "sharing",
+  "coordination",
+] as const;
 type Tab = (typeof tabs)[number];
 const names = {
-  work: "Overview",
-  comments: "Comments",
+  work: "Review work",
+  coordination: "Readiness",
+  comments: "Comment log",
   changes: "Changes",
-  documents: "Documents",
+  documents: "Sources",
   sharing: "Sharing",
 };
 const values = (form: HTMLFormElement) =>
@@ -83,11 +92,18 @@ export function RecordWorkspace({
   const incoming = new URLSearchParams(location.hash.split("?")[1] ?? "").get(
     "tab",
   );
-  const tab: Tab = tabs.includes(incoming as Tab)
-    ? (incoming as Tab)
-    : incoming === "history"
-      ? "changes"
-      : "work";
+  const routeParams = new URLSearchParams(location.hash.split("?")[1] ?? "");
+  const tab: Tab =
+    incoming === "comments" &&
+    (routeParams.has("comment") || routeParams.get("agent") === "1")
+      ? "work"
+      : incoming === "work" && routeParams.has("task")
+        ? "coordination"
+        : tabs.includes(incoming as Tab)
+          ? (incoming as Tab)
+          : incoming === "history"
+            ? "changes"
+            : "work";
   const [selected, setSelected] = useState<string | null>(null),
     [source, setSource] = useState(""),
     [upload, setUpload] = useState(false),
@@ -97,17 +113,61 @@ export function RecordWorkspace({
     [search, setSearch] = useState(""),
     [revision, setRevision] = useState("all");
   const [agentOpen, setAgentOpen] = useState(false);
+  const [sourceRequest, setSourceRequest] = useState(0);
+  const [importedCount, setImportedCount] = useState(0);
+  const [comparison, setComparison] = useState({ before: "", after: "" });
+  const initializedOrder = useRef("");
+  const sourceNavigated = useRef(false);
   const linkedComment = new URLSearchParams(
     location.hash.split("?")[1] ?? "",
   ).get("comment");
   useEffect(() => {
-    if (tab === "comments" && linkedComment) {
+    if (linkedComment) {
       setSelected(linkedComment);
       setFilter("all");
       setSearch("");
       setRevision("all");
     }
-  }, [tab, linkedComment]);
+    if (routeParams.get("agent") === "1") setAgentOpen(true);
+  }, [tab, linkedComment, routeParams.get("agent")]);
+  useEffect(() => {
+    if (!w || initializedOrder.current === id) return;
+    initializedOrder.current = id;
+    sourceNavigated.current = false;
+    setComparison({ before: "", after: "" });
+    setImportedCount(0);
+    const first =
+      w.comments.find((item) => item.id === linkedComment) ??
+      w.comments.find((item) => !item.reviewed) ??
+      w.comments[0];
+    setSelected(first?.id ?? null);
+    setSource(
+      tab === "work"
+        ? first?.target_source_id ||
+            first?.source_ids[0] ||
+            first?.document_id ||
+            ""
+        : "",
+    );
+  }, [id, w, linkedComment]);
+  useEffect(() => {
+    if (!w || selected || linkedComment || sourceNavigated.current) return;
+    const first = w.comments.find((item) => !item.reviewed) ?? w.comments[0];
+    if (!first) return;
+    setSelected(first.id);
+    if (tab === "work")
+      setSource(
+        first.target_source_id || first.source_ids[0] || first.document_id,
+      );
+  }, [w?.comments, selected, linkedComment, tab]);
+  useEffect(() => {
+    if (tab !== "work" || !linkedComment || !w) return;
+    const item = w.comments.find((value) => value.id === linkedComment);
+    if (item)
+      setSource(
+        item.target_source_id || item.source_ids[0] || item.document_id,
+      );
+  }, [tab, linkedComment, w?.order.id]);
   useEffect(() => {
     if (!source) return;
     const frame = requestAnimationFrame(() =>
@@ -124,6 +184,8 @@ export function RecordWorkspace({
       const result = await api<RecordView>(`/orders/${id}/record${path}`, body);
       qc.setQueryData(["record", id], result);
       void qc.invalidateQueries({ queryKey: ["records"] });
+      void qc.invalidateQueries({ queryKey: ["record-agent", id] });
+      void qc.invalidateQueries({ queryKey: ["record-inbox"] });
       notify("Record saved");
       return true;
     } catch (e) {
@@ -148,10 +210,12 @@ export function RecordWorkspace({
     selected === "new"
       ? draftComment
       : w.comments.find((c) => c.id === selected);
-  const selectedSource = w.sources.find((s) => s.id === source);
-  const document = w.documents.find(
-    (d) => d.id === (selectedSource?.document_id || source),
-  );
+  const openEvidence = (sourceId: string) => {
+    sourceNavigated.current = true;
+    setSource(sourceId);
+    setSourceRequest((request) => request + 1);
+    if (tab !== "work") navigate(`order/${id}?tab=work`);
+  };
   const visible = w.comments
     .filter(
       (c) =>
@@ -176,17 +240,8 @@ export function RecordWorkspace({
     review: w.comments.filter((c) => !c.reviewed).length,
   };
   return (
-    <div
-      className={
-        "record-studio " + (agentOpen ? "agent-open" : "agent-collapsed")
-      }
-    >
-      <main
-        className={
-          "page record-workspace" + (document ? " viewing-source" : "")
-        }
-        aria-label="Order workspace"
-      >
+    <div className="record-studio record-workbench-studio">
+      <main className="page record-workspace" aria-label="Order workspace">
         <div className="record-order-header">
           <div className="record-breadcrumb">
             <button className="text-button" onClick={() => navigate("orders")}>
@@ -222,10 +277,13 @@ export function RecordWorkspace({
                   aria-expanded={agentOpen}
                   aria-controls="record-agent-panel"
                   title="Toggle Rivet · ⌘/Ctrl J"
-                  onClick={() => setAgentOpen(!agentOpen)}
+                  onClick={() => {
+                    setAgentOpen(true);
+                    navigate(`order/${id}?tab=work&agent=1`);
+                  }}
                 >
                   <SidebarSimple size={17} />
-                  Ask Rivet
+                  Rivet activity
                 </button>
               )}
             </div>
@@ -261,37 +319,155 @@ export function RecordWorkspace({
           </div>
         </div>
         <nav className="ow-tabs record-tabs" aria-label="Order record views">
-          {tabs.map((t) => (
-            <button
-              key={t}
-              className={tab === t ? "active" : ""}
-              aria-current={tab === t ? "page" : undefined}
-              onClick={() => {
-                setSource("");
-                setSelected(null);
-                navigate(`order/${id}?tab=${t}`);
-              }}
-            >
-              {names[t]}
-            </button>
-          ))}
+          {tabs
+            .filter((t) => t !== "coordination")
+            .map((t) => (
+              <button
+                key={t}
+                className={tab === t ? "active" : ""}
+                aria-current={tab === t ? "page" : undefined}
+                onClick={() => {
+                  if (t !== "work") setSource("");
+                  const focus =
+                    t === "work" &&
+                    w.comments.some((comment) => comment.id === selected)
+                      ? `&comment=${selected}`
+                      : "";
+                  navigate(`order/${id}?tab=${t}${focus}`);
+                }}
+              >
+                {names[t]}
+              </button>
+            ))}
         </nav>
-        <div
-          className={`record-center-views record-view-${tab}`}
-          hidden={!!document}
-        >
+        <div className={`record-center-views record-view-${tab}`}>
+          {importedCount > 0 && (
+            <div className="record-import-notice" role="status">
+              <CheckCircle size={17} />
+              <span>
+                {importedCount} {importedCount === 1 ? "document" : "documents"}{" "}
+                added.{" "}
+                {w.documents.some((document) => document.state === "queued")
+                  ? "Rivet is reading the contents."
+                  : "View the sources for processing details."}
+              </span>
+              <button
+                className="text-button"
+                onClick={() => navigate(`order/${id}?tab=documents`)}
+              >
+                View sources <ArrowRight size={14} />
+              </button>
+              <button
+                className="icon-button"
+                aria-label="Dismiss import confirmation"
+                onClick={() => setImportedCount(0)}
+              >
+                <X size={15} />
+              </button>
+            </div>
+          )}
           {error && <ErrorNote message={error} />}{" "}
           {query.isError && (
             <ErrorNote message="Could not refresh. Showing the last saved record." />
           )}
           {tab === "work" && (
+            <RecordWorkbench
+              key={`workbench:${id}`}
+              w={w}
+              selectedId={selected}
+              sourceId={source}
+              sourceRequest={sourceRequest}
+              openSource={openEvidence}
+              selectComment={(commentId) => {
+                setSelected(commentId);
+                navigate(`order/${id}?tab=work&comment=${commentId}`);
+              }}
+              agentOpen={agentOpen}
+              setAgentOpen={setAgentOpen}
+              addDocuments={() => setUpload(true)}
+              openComments={() => {
+                setSource("");
+                navigate(`order/${id}?tab=comments`);
+              }}
+              openChanges={(changeId) => {
+                setSource("");
+                navigate(
+                  `order/${id}?tab=changes${changeId ? `&change=${changeId}` : selected ? `&comment=${selected}` : ""}`,
+                );
+              }}
+              openReadiness={() => {
+                setSource("");
+                navigate(`order/${id}?tab=coordination`);
+              }}
+              save={save}
+              busy={busy}
+              error={error}
+              renderEditor={(close) =>
+                comment ? (
+                  <CommentEditor
+                    key={`work:${selected}`}
+                    comment={comment}
+                    w={w}
+                    busy={busy}
+                    hasNext={w.comments.some(
+                      (item) => !item.reviewed && item.id !== selected,
+                    )}
+                    close={close}
+                    openSource={openEvidence}
+                    openChanges={() => {
+                      setSource("");
+                      navigate(`order/${id}?tab=changes&comment=${selected}`);
+                    }}
+                    save={async (body, advance) => {
+                      if (
+                        await save(
+                          `/comments${selected === "new" ? "" : "/" + selected}`,
+                          body,
+                        )
+                      ) {
+                        const latest = qc.getQueryData<RecordView>([
+                          "record",
+                          id,
+                        ]);
+                        const next = advance
+                          ? latest?.comments.find(
+                              (item) => !item.reviewed && item.id !== selected,
+                            )
+                          : selected === "new"
+                            ? latest?.comments.find(
+                                (item) =>
+                                  !w.comments.some((old) => old.id === item.id),
+                              )
+                            : latest?.comments.find(
+                                (item) => item.id === selected,
+                              );
+                        if (next) {
+                          setSelected(next.id);
+                          if (advance || selected === "new")
+                            navigate(`order/${id}?tab=work&comment=${next.id}`);
+                          if (advance || selected === "new")
+                            setSource(
+                              next.target_source_id ||
+                                next.source_ids[0] ||
+                                next.document_id,
+                            );
+                        }
+                        close();
+                      }
+                    }}
+                  />
+                ) : null
+              }
+            />
+          )}
+          {tab === "coordination" && (
             <RecordCoordination
               key={`coordination:${id}`}
               w={w}
               busy={busy}
               error={error}
               save={save}
-              openSource={setSource}
+              openSource={openEvidence}
               openComment={(commentId) =>
                 navigate(`order/${id}?tab=comments&comment=${commentId}`)
               }
@@ -337,7 +513,11 @@ export function RecordWorkspace({
                   </select>
                   <button
                     className="secondary"
-                    onClick={() => setSelected("new")}
+                    onClick={() => {
+                      setSelected("new");
+                      setAgentOpen(false);
+                      navigate(`order/${id}?tab=work`);
+                    }}
                   >
                     <Plus size={15} />
                     Add comment
@@ -346,13 +526,12 @@ export function RecordWorkspace({
                     <button
                       className="primary"
                       onClick={() => {
-                        const next = visible.find((c) => !c.reviewed);
-                        if (next) setSelected(next.id);
-                        else {
-                          setFilter("review");
-                          setSearch("");
-                          setRevision("all");
-                          setSelected(w.comments.find((c) => !c.reviewed)!.id);
+                        const next =
+                          visible.find((c) => !c.reviewed) ??
+                          w.comments.find((c) => !c.reviewed);
+                        if (next) {
+                          setAgentOpen(false);
+                          navigate(`order/${id}?tab=work&comment=${next.id}`);
                         }
                       }}
                     >
@@ -361,9 +540,7 @@ export function RecordWorkspace({
                   )}
                 </div>
               </div>
-              <div
-                className={"record-log-layout " + (comment ? "has-detail" : "")}
-              >
+              <div className="record-log-layout">
                 <section className="record-log" aria-label="Comment log">
                   <div className="record-log-head">
                     <span>Reference</span>
@@ -377,7 +554,10 @@ export function RecordWorkspace({
                         "record-comment-row " +
                         (selected === c.id ? "selected" : "")
                       }
-                      onClick={() => setSelected(c.id)}
+                      onClick={() => {
+                        setAgentOpen(false);
+                        navigate(`order/${id}?tab=work&comment=${c.id}`);
+                      }}
                     >
                       <span className="record-comment-number">
                         {c.number}
@@ -457,37 +637,6 @@ export function RecordWorkspace({
                     </Empty>
                   )}
                 </section>
-                {comment && (
-                  <CommentEditor
-                    key={selected}
-                    comment={comment}
-                    w={w}
-                    busy={busy}
-                    hasNext={visible.some(
-                      (c) => !c.reviewed && c.id !== selected,
-                    )}
-                    close={() => setSelected(null)}
-                    openSource={setSource}
-                    openChanges={() =>
-                      navigate(`order/${id}?tab=changes&comment=${selected}`)
-                    }
-                    save={async (body, advance) => {
-                      if (
-                        await save(
-                          `/comments${selected === "new" ? "" : "/" + selected}`,
-                          body,
-                        )
-                      )
-                        setSelected(
-                          advance
-                            ? (visible.find(
-                                (c) => !c.reviewed && c.id !== selected,
-                              )?.id ?? null)
-                            : null,
-                        );
-                    }}
-                  />
-                )}
               </div>
               <footer className="record-log-footer">
                 <span>
@@ -511,7 +660,7 @@ export function RecordWorkspace({
               </div>
               <div className="record-document-list">
                 {w.documents.map((d) => (
-                  <button key={d.id} onClick={() => setSource(d.id)}>
+                  <button key={d.id} onClick={() => openEvidence(d.id)}>
                     <FileText size={23} />
                     <span>
                       <strong>{d.name}</strong>
@@ -521,6 +670,12 @@ export function RecordWorkspace({
                           : d.role.replaceAll("_", " ")}
                         {d.revision_label ? ` · Rev ${d.revision_label}` : ""}
                       </small>
+                      {d.warnings?.map((warning, index) => (
+                        <small className="record-source-warning" key={index}>
+                          <WarningCircle size={14} />
+                          {warning}
+                        </small>
+                      ))}
                     </span>
                     <span
                       className={
@@ -531,7 +686,9 @@ export function RecordWorkspace({
                         ? "Processing"
                         : d.state === "failed"
                           ? "Failed"
-                          : "View source"}
+                          : d.warnings?.length
+                            ? "Needs review"
+                            : "View source"}
                     </span>
                     <ArrowUpRight size={16} />
                   </button>
@@ -544,7 +701,7 @@ export function RecordWorkspace({
               )}
               <AnchorIndex
                 w={w}
-                openSource={setSource}
+                openSource={openEvidence}
                 openComment={(commentId) =>
                   navigate(`order/${id}?tab=comments&comment=${commentId}`)
                 }
@@ -558,12 +715,15 @@ export function RecordWorkspace({
               error={error}
               busy={busy}
               save={save}
-              openSource={setSource}
+              openSource={openEvidence}
               openComment={(commentId) =>
                 navigate(`order/${id}?tab=comments&comment=${commentId}`)
               }
               clearComment={() => navigate(`order/${id}?tab=changes`)}
               linkedComment={linkedComment}
+              linkedChange={routeParams.get("change")}
+              comparison={comparison}
+              setComparison={setComparison}
             />
           )}
           {tab === "sharing" && (
@@ -574,7 +734,7 @@ export function RecordWorkspace({
               save={save}
               notify={notify}
               refresh={() => void query.refetch()}
-              openSource={setSource}
+              openSource={openEvidence}
               openComment={(commentId) =>
                 navigate(`order/${id}?tab=comments&comment=${commentId}`)
               }
@@ -585,49 +745,18 @@ export function RecordWorkspace({
           <RecordUpload
             w={w}
             close={() => setUpload(false)}
-            done={() => {
+            done={(count) => {
               setUpload(false);
+              setImportedCount(count);
               void query.refetch();
               void qc.invalidateQueries({ queryKey: ["records"] });
-              notify("Documents queued for reading");
+              notify(
+                `${count} ${count === 1 ? "document" : "documents"} added`,
+              );
             }}
           />
         )}
-        {document && (
-          <OrderEvidence
-            key={source}
-            inline
-            document={document}
-            sources={w.sources.filter((s) => s.document_id === document.id)}
-            selectedId={selectedSource?.id}
-            close={() => setSource("")}
-          />
-        )}
       </main>
-      <RecordAgent
-        key={`agent:${id}`}
-        w={w}
-        open={agentOpen}
-        setOpen={setAgentOpen}
-        save={save}
-        saveError={error}
-        recordBusy={busy}
-        focusedCommentId={selected || linkedComment || ""}
-        focusedSourceId={source}
-        openSource={setSource}
-        openComment={(commentId) => {
-          setSource("");
-          navigate(`order/${id}?tab=comments&comment=${commentId}`);
-        }}
-        openChanges={() => {
-          setSource("");
-          navigate(`order/${id}?tab=changes`);
-        }}
-        openWork={() => {
-          setSource("");
-          navigate(`order/${id}?tab=work`);
-        }}
-      />
     </div>
   );
 }
@@ -982,7 +1111,7 @@ function RecordUpload({
 }: {
   w: RecordView;
   close: () => void;
-  done: () => void;
+  done: (count: number) => void;
 }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -1009,7 +1138,7 @@ function RecordUpload({
               } else
                 await api(`/projects/${w.order.project_id}/documents`, body);
             }
-            done();
+            done(data.getAll("files").length);
           } catch (err) {
             setError((err as Error).message);
           } finally {
@@ -1154,6 +1283,9 @@ function Changes({
   openComment,
   clearComment,
   linkedComment,
+  linkedChange,
+  comparison,
+  setComparison,
 }: {
   w: RecordView;
   error: string;
@@ -1163,10 +1295,24 @@ function Changes({
   openComment: (s: string) => void;
   clearComment: () => void;
   linkedComment: string | null;
+  linkedChange: string | null;
+  comparison: { before: string; after: string };
+  setComparison: (comparison: { before: string; after: string }) => void;
 }) {
-  const [edit, setEdit] = useState<Partial<RecordChange> | null>(null),
-    [before, setBefore] = useState(""),
-    [after, setAfter] = useState("");
+  const [edit, setEdit] = useState<Partial<RecordChange> | null>(null);
+  const { before, after } = comparison;
+  const linkedChangeExists = w.changes.some(
+    (change) => change.id === linkedChange,
+  );
+  useEffect(() => {
+    if (!linkedChangeExists || !linkedChange) return;
+    const frame = requestAnimationFrame(() => {
+      const element = document.getElementById(`record-change-${linkedChange}`);
+      element?.focus({ preventScroll: true });
+      element?.scrollIntoView({ block: "center" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [linkedChange, linkedChangeExists]);
   const [editVersion, setEditVersion] = useState(w.version);
   const compared = useQuery({
     queryKey: ["record-compare", w.order.id, before, after],
@@ -1220,12 +1366,20 @@ function Changes({
         </div>
       )}
       <div className="record-changes">
+        {linkedChange && !linkedChangeExists && (
+          <ErrorNote message="This cited change is no longer available in the current record." />
+        )}
         {w.changes
           .filter(
             (c) => !linkedComment || c.comment_ids.includes(linkedComment),
           )
           .map((c) => (
-            <article key={c.id}>
+            <article
+              key={c.id}
+              id={`record-change-${c.id}`}
+              tabIndex={-1}
+              className={c.id === linkedChange ? "is-linked-change" : undefined}
+            >
               <div>
                 <span className="eyebrow">
                   Rev {c.from_revision || "—"} → {c.to_revision || "—"}
@@ -1302,7 +1456,9 @@ function Changes({
               <select
                 aria-label="Previous document"
                 value={before}
-                onChange={(e) => setBefore(e.target.value)}
+                onChange={(e) =>
+                  setComparison({ ...comparison, before: e.target.value })
+                }
               >
                 <option value="">Select document</option>
                 {w.documents
@@ -1320,7 +1476,9 @@ function Changes({
               <select
                 aria-label="New document"
                 value={after}
-                onChange={(e) => setAfter(e.target.value)}
+                onChange={(e) =>
+                  setComparison({ ...comparison, after: e.target.value })
+                }
               >
                 <option value="">Select document</option>
                 {w.documents
@@ -1430,6 +1588,7 @@ function Changes({
                       <ActivityAttribution
                         actor={e.actor}
                         kind={e.actor_kind}
+                        proposalOrigin={e.proposal_origin}
                       />{" "}
                       · {when(e.at)}
                     </small>
@@ -1640,7 +1799,9 @@ function Sharing({
           <div>
             <h3>{latest.label}</h3>
             <p>
-              <Attribution kind="human">Approved by {latest.actor}</Attribution>{" "}
+              <Attribution kind="human">
+                Approved by <ActorName actor={latest.actor} />
+              </Attribution>{" "}
               · {when(latest.at)} · Record v{latest.version}
             </p>
             <p>{latest.reason}</p>
@@ -1816,7 +1977,7 @@ function Sharing({
               {n.reviewed_by && (
                 <p className="record-provenance-note">
                   {n.edited ? "Edited and reviewed" : "Reviewed"} by{" "}
-                  {n.reviewed_by}
+                  <ActorName actor={n.reviewed_by} />
                 </p>
               )}
               <p>{n.body}</p>
@@ -1936,7 +2097,18 @@ export function SharedRecord({ token }: { token: string }) {
         <span>Read-only record</span>
       </header>
       {query.isError ? (
-        <ErrorNote message={(query.error as Error).message} />
+        <section className="record-public-unavailable">
+          <WarningCircle size={28} />
+          <h1>This record link is unavailable</h1>
+          <p>{(query.error as Error).message}</p>
+          <p>
+            If the link was revoked or expired, ask the team that shared it for
+            a new one.
+          </p>
+          <button className="secondary" onClick={() => void query.refetch()}>
+            Try again
+          </button>
+        </section>
       ) : !w ? (
         <Busy text="Opening approved record…" />
       ) : (
@@ -1948,7 +2120,8 @@ export function SharedRecord({ token }: { token: string }) {
             <h1>{w.order.title}</h1>
             <h2>{w.approval.label}</h2>
             <p>
-              Approved by {w.approval.actor} · {when(w.approval.at)}
+              Approved by <ActorName actor={w.approval.actor} /> ·{" "}
+              {when(w.approval.at)}
             </p>
             <p>{w.approval.reason}</p>
             <small>
@@ -1983,7 +2156,18 @@ export function SharedRecord({ token }: { token: string }) {
                     className="text-button"
                     onClick={() => setSource(s)}
                   >
-                    Original source <ArrowUpRight size={13} />
+                    {w.documents
+                      .find(
+                        (document) =>
+                          document.id ===
+                          w.sources.find((source) => source.id === s)
+                            ?.document_id,
+                      )
+                      ?.name.toLowerCase()
+                      .endsWith(".eml")
+                      ? "Shared excerpts"
+                      : "Original source"}{" "}
+                    <ArrowUpRight size={13} />
                   </button>
                 ))}
                 {c.target_source_id && (
@@ -2025,6 +2209,7 @@ export function SharedRecord({ token }: { token: string }) {
               sources={w.sources.filter((s) => s.document_id === doc.id)}
               selectedId={sp?.id}
               contentUrl={`/api/shared/${token}/documents/${doc.id}`}
+              sharedExcerpts={doc.name.toLowerCase().endsWith(".eml")}
               close={() => setSource("")}
             />
           )}

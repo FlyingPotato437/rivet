@@ -93,6 +93,7 @@ export type RecordView = {
     summary: string;
     actor: string;
     actor_kind?: "ai" | "automatic" | "human" | "unknown";
+    proposal_origin?: "ai" | "rules";
     at: string;
     reason: string;
     before: unknown;
@@ -158,6 +159,8 @@ export type CoordinationTask = {
   created_at: string;
   updated_at: string;
   updated_by?: string;
+  origin?: "ai" | "automatic" | "human";
+  managed?: boolean;
 };
 export type CoordinationCheck = {
   id: string;

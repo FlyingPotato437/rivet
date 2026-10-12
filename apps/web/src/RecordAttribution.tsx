@@ -1,5 +1,23 @@
 import { ArrowsClockwise, Sparkle, User } from "@phosphor-icons/react";
 import type { RecordComment } from "./record-types";
+import { useAccount } from "./Auth";
+
+export function ActorName({ actor }: { actor?: string }) {
+  const account = useAccount();
+  const identifier = actor?.trim() || "";
+  const technicalId = /^(?:user_|org_|[0-9a-f]{8}-[0-9a-f-]{27,})/i.test(
+    identifier,
+  );
+  const label =
+    identifier && identifier === account.userId
+      ? account.name || "Team member"
+      : technicalId || !identifier
+        ? "Team member"
+        : identifier;
+  return (
+    <span title={identifier !== label ? identifier : undefined}>{label}</span>
+  );
+}
 
 export type ActorKind = "ai" | "automatic" | "human" | "unknown";
 
@@ -56,10 +74,23 @@ export function CommentAttribution({
 export function ActivityAttribution({
   actor,
   kind,
+  proposalOrigin,
 }: {
   actor: string;
   kind?: ActorKind;
+  proposalOrigin?: "ai" | "rules";
 }) {
+  if (proposalOrigin)
+    return (
+      <>
+        <Attribution kind={proposalOrigin === "ai" ? "ai" : "automatic"}>
+          {proposalOrigin === "ai" ? "AI prepared" : "Rule-based preparation"}
+        </Attribution>
+        <Attribution kind="human">
+          Accepted by <ActorName actor={actor} />
+        </Attribution>
+      </>
+    );
   // Older records predate explicit actor kinds. These are the two reserved
   // system actors used by the existing import and coordination engines.
   const source =
@@ -71,13 +102,17 @@ export function ActivityAttribution({
         : "unknown");
   return (
     <Attribution kind={source}>
-      {source === "ai"
-        ? "AI generated"
-        : source === "automatic"
-          ? "Automatic · Rivet"
-          : source === "human"
-            ? `By ${actor}`
-            : "Author not recorded"}
+      {source === "ai" ? (
+        "AI generated"
+      ) : source === "automatic" ? (
+        "Automatic · Rivet"
+      ) : source === "human" ? (
+        <>
+          By <ActorName actor={actor} />
+        </>
+      ) : (
+        "Author not recorded"
+      )}
     </Attribution>
   );
 }

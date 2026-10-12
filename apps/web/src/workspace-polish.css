@@ -4,7 +4,7 @@
   border: 1px solid #5b4935;
   border-radius: 6px;
   background: #292219;
-  font-size: 12px;
+  font-size: 13px;
   color: #d6bc94;
 }
 .record-review-note summary {
@@ -35,15 +35,14 @@
   --desk-accent: #c6b0e5;
 }
 .app-shell .app-main {
-  background:
-    radial-gradient(ellipse at 75% 0, #28222e55, transparent 55%), #111114;
+  background: #151518;
 }
 .app-shell .sidebar {
-  background: #0d0d10;
+  background: #101113;
   border-color: #26252c;
 }
 .app-shell .topbar {
-  background: #111114;
+  background: #151518;
   border-color: #29272f;
 }
 .app-shell .page {
@@ -78,7 +77,7 @@
   background: linear-gradient(115deg, #24222b50, transparent 65%);
 }
 .app-shell .record-breadcrumb {
-  font-size: 12px;
+  font-size: 13px;
   gap: 12px;
 }
 .app-shell .record-studio .record-heading {
@@ -114,7 +113,7 @@
   padding: 0 0 24px;
   gap: 12px 22px;
   flex-wrap: wrap;
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .record-statusline > button {
   min-height: 28px;
@@ -129,7 +128,7 @@
   background: #c39d6520;
 }
 .app-shell .record-statusline .record-updated {
-  font-size: 11px;
+  font-size: 13px;
   color: #aaa4b3;
 }
 .app-shell .record-studio .record-tabs {
@@ -243,7 +242,7 @@
 }
 .app-shell .record-log-head {
   padding-block: 13px;
-  font-size: 11px;
+  font-size: 13px;
   color: #b3afbd;
   background: #222128;
 }
@@ -265,7 +264,7 @@
   color: #d8c7ec;
 }
 .app-shell .record-comment-number small {
-  font-size: 11px;
+  font-size: 13px;
   margin-top: 5px;
   color: var(--desk-muted);
   max-width: 100%;
@@ -284,7 +283,7 @@
   margin-top: 10px;
   gap: 5px 8px;
   line-height: 1.6;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--desk-muted);
 }
 .app-shell .record-comment-summary > span > span {
@@ -300,14 +299,14 @@
   padding-top: 1px;
 }
 .app-shell .record-comment-state > small {
-  font-size: 11px;
+  font-size: 13px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
   line-height: 1.5;
 }
 .app-shell .record-status {
-  font-size: 11px;
+  font-size: 13px;
   padding: 4px 8px;
 }
 .app-shell .record-log-footer {
@@ -448,7 +447,7 @@
 }
 .app-shell .coordination-focused .coordination-footnote {
   margin-top: 22px;
-  font-size: 11px;
+  font-size: 13px;
 }
 /* Comparison, original documents and distribution are separate working groups. */
 .app-shell .record-comparison {
@@ -487,7 +486,7 @@
   line-height: 1.8;
 }
 .app-shell .record-diff small {
-  font-size: 11px;
+  font-size: 13px;
   color: #b9a9ca;
 }
 .app-shell .record-changes > article {
@@ -530,7 +529,7 @@
 .app-shell .record-history-section > summary > span:last-of-type {
   margin-left: auto;
   color: var(--desk-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .record-timeline {
   border-left: 1px solid #48404f;
@@ -549,7 +548,7 @@
   font-size: 13px;
 }
 .app-shell .record-timeline summary small {
-  font-size: 11px;
+  font-size: 13px;
 }
 .app-shell .record-document-list {
   border: 1px solid var(--desk-line);
@@ -573,7 +572,7 @@
   line-height: 1.6;
 }
 .app-shell .record-document-list small {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.7;
 }
 .app-shell .record-approval {
@@ -621,7 +620,7 @@
 }
 .app-shell .record-recipient small,
 .app-shell .record-notice small {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.7;
   margin-top: 6px;
 }
@@ -845,7 +844,7 @@
   overflow-x: auto;
   padding: 12px;
   background: #211a28;
-  font-size: 12px;
+  font-size: 13px;
 }
 .record-agent-prose blockquote {
   border-left: 2px solid #816792;
@@ -857,7 +856,7 @@
 }
 .app-shell .record-agent-citation-group > summary {
   color: #c2acd4;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   padding-block: 5px;
 }
@@ -930,7 +929,7 @@
   }
   .app-shell .record-overview {
     gap: 12px 20px;
-    font-size: 12px;
+    font-size: 13px;
   }
   .app-shell .record-order-row {
     padding: 20px 12px;
@@ -1004,7 +1003,7 @@
     gap: 16px;
   }
   .app-shell .record-studio .record-tabs button {
-    font-size: 12px;
+    font-size: 13px;
   }
   .app-shell .record-studio .record-context {
     padding: 0 18px 18px;
@@ -1027,7 +1026,7 @@
     gap: 2px;
   }
   .app-shell .record-filters button {
-    font-size: 12px;
+    font-size: 13px;
     padding-inline: 9px;
   }
   .app-shell .coordination-focused .coordination-intro {
@@ -1154,7 +1153,7 @@
 }
 .app-shell .record-file-picker input[type="file"] {
   width: 100%;
-  font-size: 12px;
+  font-size: 13px;
   background: transparent !important;
   border: 0;
   padding: 0;
@@ -1191,7 +1190,7 @@
 .app-shell .record-comment-picker legend > span {
   float: right;
   color: var(--desk-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .record-picker-search {
   display: flex;
@@ -1254,7 +1253,7 @@
 .app-shell .record-picker-options strong {
   color: #e5d9ef;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .record-picker-options > label > span > span {
   overflow-wrap: anywhere;
@@ -1280,7 +1279,7 @@
 .app-shell .record-optional-fields > summary > span {
   margin-left: 8px;
   color: var(--desk-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 .app-shell .record-optional-fields > .form-row {
   margin-top: 20px;
@@ -1347,7 +1346,7 @@
 }
 .app-shell .coordination-section-heading h3 > span {
   margin-left: 8px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   color: var(--desk-muted);
 }
@@ -1403,7 +1402,7 @@
 }
 .app-shell .record-provenance-note {
   color: #bac7c0;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
 }
 .app-shell .record-linked-drawing {
@@ -1419,11 +1418,11 @@
   margin-bottom: 16px;
 }
 .app-shell .record-agent-answer-origin > span:last-child {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--desk-muted);
 }
 .app-shell .record-agent-event-meta .record-attribution {
-  font-size: 11px;
+  font-size: 13px;
 }
 .app-shell .record-connection-event > .record-attribution {
   margin: 8px 0;
@@ -1448,7 +1447,7 @@
 }
 .app-shell .record-readiness-panel > summary > span {
   margin-left: auto;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--desk-muted);
 }
 .app-shell .record-readiness-panel[open] > summary > svg:last-child {

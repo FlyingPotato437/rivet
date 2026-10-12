@@ -1,12 +1,12 @@
 :root {
-  --font-sans: "Onest", sans-serif;
+  --font-sans: "Schibsted Grotesk Variable", sans-serif;
   --copy: #c2c4c9;
   font-family: var(--font-sans);
   color: var(--text);
   background: #08080a;
   font-synthesis: none;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 15px;
   --bg: #08080a;
   --surface: #101013;
   --surface2: #151519;
@@ -17,7 +17,7 @@
   --violet: #b5a5e9;
   --green: #90bfa2;
   --amber: #cbb287;
-  --mono: "IBM Plex Mono", monospace;
+  --mono: "Commit Mono", monospace;
   color-scheme: dark;
 }
 * {

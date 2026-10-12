@@ -2,7 +2,7 @@
 
 Rivet builds a comment and change record for custom equipment orders. The PM reviews extracted comments, links the correct drawing location, records the team's response, and preserves who requested or approved each change. Customer and production teams can receive the same reviewed record.
 
-The default workspace starts with a **Work queue** for evidence-linked suggestions, assignments, activity and readiness. **Comment log**, **Changes & history**, **Documents**, and **Approved record** preserve the detailed record. It supports any custom equipment category; the retained engineering checker remains scoped to its electrical attributes and is outside the primary flow. No engineering fix suggestions or automatic sending are part of this version.
+The **Work inbox** brings comments, prepared AI work, and team assignments across orders into one actionable list. Each order opens a drawing-first **Review work** view: the source stays beside a **Record / Rivet work** inspector. **Comment log**, **Sources**, **Changes**, and **Sharing** preserve the detailed record. Durable agents investigate references and prepare cited internal changes for human review. No engineering fix suggestions or automatic sending are part of this version.
 
 [Current comment-record architecture and boundaries](docs/comment-record-architecture.md).
 
@@ -46,18 +46,18 @@ production sign-in/email checks remain deployment steps.
 
 ## The order workflow
 
-Open `/#orders` for the order feed. `/#decisions` filters orders with comments needing review. Each order opens its **Work queue**; the underlying comments, changes, documents and approved record remain one tab away.
+Open `/#orders` for the order feed or `/#decisions` for the **Work inbox**. An inbox item opens its comment, task, or prepared change directly. Each order starts in **Review work**, with the source and selected comment together.
 
 1. Create an order in any equipment category. Add marked-up PDFs, drawings, or saved EML emails with attachments. Specify the revision you know; unknown values remain unconfirmed.
 2. Review the queue's proposed source links and clarification drafts. Exact, unambiguous references can be linked internally with an explanation and guarded undo; unclear cases remain for review. Native PDF annotations retain their author, source date, page, and region. The source page and the referenced drawing are separate fields. Scanned areas require transcription.
 3. Correct the extracted text, link the actual drawing location, record a response and its author, and set open/responded/closed explicitly. Each save retains the original text, actor, reason, and before/after values.
 4. Compare two source documents, then record confirmed changes with before/after values, linked comments, requester, approver, and date. Text comparison does not inspect drawing geometry.
-5. Open the Rivet sidebar with **Rivet** or **Cmd/Ctrl+J** to ask questions while reviewing the order. Answers cite supplied sources and records. Conversation and Activity stay available as you switch order tabs. Source links open the document in the main workspace; **Back to record** returns to your work. Activity shows recorded actions, and **Check record** refreshes coordination. Questions themselves never modify the record or send messages.
+5. Open **Rivet work** or use **Cmd/Ctrl+J**. **Tasks** run a saved investigation, read sources, request specific missing information, and prepare internal changes. Inspect and accept or dismiss those changes; new evidence invalidates old proposals. **Questions** provides cited answers without editing the record. **Activity** shows recorded work. Tasks and private question history persist on the server, while source links keep review in the same workbench.
 6. Once each comment is reviewed, approve a frozen record. Create a read-only local link or export Excel/PDF. Future edits remain in the working version.
 7. Add customer, manufacturer, and production recipients. Relevant updates create notice drafts. Download a draft or explicitly review and send it through Resend after configuring a verified sender.
 8. Set role owners and a customer due date. Review internal assignments and readiness checks, and optionally enable weekly status drafts. Completing a task does not approve engineering work; accepting a draft does not send it.
 
-The prior quote tools remain under **Quote tools**. The engineering engine, obligation ledger, release checks, and synthetic Larkspur fixtures are retained for later stages; see [the earlier engine architecture](docs/order-architecture.md). They are not the current PM workflow.
+Earlier quote routes, the engineering engine, obligation ledger, release checks, and synthetic Larkspur fixtures remain in the codebase for later stages; see [the earlier engine architecture](docs/order-architecture.md). They are outside the primary PM navigation.
 
 ## Test with real documents
 
@@ -76,18 +76,23 @@ Preparation verifies original SHA-256 hashes and preserves selected original pag
 
 - `backend/records/service.py`: versioned comments, change records, audit events, frozen approvals, notices, and token-scoped shares.
 - `backend/records/automation.py`: exact anchor matching, ambiguity handling, typed links, reversible internal actions, role tasks, readiness and scheduled drafts.
-- `backend/records/assistant.py`: read-only questions with validated source/comment/change references and no mutation tools.
+- `backend/records/agent_service.py`: durable, bounded model-tool runs and atomic evidence-linked proposals.
+- `backend/records/graph.py`: typed relationships projected from actual order records and source anchors.
+- `backend/records/inbox.py`: tenant-scoped actionable work across orders.
+- `backend/records/assistant.py` and `conversations.py`: read-only cited questions and private persisted conversation history.
 - `backend/records/api.py`: application endpoints and saved-email attachment intake.
 - `backend/records/exports.py`: Excel comment/change logs and PDF response matrices.
 - `backend/ingestion/parser.py`: durable parsing of immutable originals, source areas, annotations and email metadata.
-- `apps/web/src/RecordFeed.tsx`, `RecordWorkspace.tsx`, and `OrderEvidence.tsx`: the current workspace and PDF source review.
+- `apps/web/src/RecordFeed.tsx`, `RecordWorkspace.tsx`, `RecordWorkbench.tsx`, `RecordAgent.tsx`, and `OrderEvidence.tsx`: the work inbox, drawing-first review, task results, and PDF source viewer.
 - `apps/web/src/RecordCoordination.tsx`: suggestions, assignments, activity, source navigation and coordination settings.
 
 For a repeatable connected-workflow walkthrough, use [the fictional connected review](examples/connected-review/README.md). It uses the normal ingestion pipeline, including ambiguous and missing references, with a separate revision to upload later.
 
 ## Model connection and integration boundary
 
-The existing server-side connection uses `OPENAI_API_KEY` and `OPENAI_MODEL` in `.env`. Restart the API and worker after changing them. Keys never belong in frontend code. Comment extraction, manual review, source inspection, text comparisons, and exports work without a model key. Questions in the Rivet sidebar use the configured model and send bounded order context with `store: false`. No additional key is required when this connection is already configured.
+The server-side connection uses `OPENAI_API_KEY`, `OPENAI_MODEL=gpt-6-luna` for questions, and `RIVET_AGENT_MODEL=gpt-6-luna` for durable tasks. Restart the API and worker after changing them. Keys never belong in frontend code. Comment extraction, manual review, source inspection, text comparisons, and exports work without a model key. Without a key, tasks use explicitly labelled deterministic reference rules. Questions and model tasks send bounded order context with `store: false`; no additional key is required.
+
+The main workspace is a drawing review workbench with a collapsible comment queue and one Record/Rivet inspector. Runs, steps, evidence-linked proposals, per-order instructions, and private question history persist in PostgreSQL. The Work inbox collects actionable records across orders. Automatic preparation is opt-in per order, and `RIVET_AGENT_AUTORUN=false` disables the scheduler globally. Agents prepare internal work; people review changes, record engineering responses, approve records, and send notices. Apply migrations through `0008` before starting this version.
 
 The previous engineering workflow remains in the code and API for later stages. The current record workflow adds EML import, editable comments, source-linked text comparisons, frozen approvals, local read-only links, recipient lists, notice drafts, and Excel/PDF logs. Mailbox synchronization beyond Resend, Outlook drafts, scan/vision interpretation, CAD attribute reads/edits, ERP writes, pricing-rule integration, reviewer profiles, and learned checks are extension stages. They are not shown as connected. Clerk sign-in, organization isolation, authenticated downloads, Resend intake, and explicit notice sending are implemented. Hosting, a production Clerk instance, and receiving/sending domain configuration remain deployment steps. See [accounts and email setup](docs/accounts-email-setup.md).
 

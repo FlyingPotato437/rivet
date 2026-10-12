@@ -1,48 +1,54 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  ArrowRight,
-  Check,
-  FilePdf,
-  LinkSimple,
-  Pause,
-  Play,
-  WarningCircle,
-} from "@phosphor-icons/react";
+import { ArrowRight, Pause, Play, Check } from "@phosphor-icons/react";
+import { Mark, RivetIcon, type RivetIconName } from "./ui";
+import "./workbench-preview.css";
 
-const stages = [
+const stages: {
+  name: string;
+  title: string;
+  detail: string;
+  status: string;
+  icon: RivetIconName;
+}[] = [
   {
-    name: "Receive",
-    title: "A customer returns a marked-up drawing.",
-    detail: "The original PDF stays attached to the order.",
-    status: "Customer markup",
-    icon: FilePdf,
+    name: "Import",
+    title: "The original stays attached.",
+    detail:
+      "The returned PDF, annotation wording, author and source page are preserved.",
+    status: "Imported annotation",
+    icon: "drawing",
   },
   {
-    name: "Capture",
-    title: "The comment becomes a traceable record.",
-    detail: "Original wording, author, page and revision stay together.",
-    status: "Comment captured",
-    icon: LinkSimple,
+    name: "Prepare",
+    title: "Rivet prepares a drawing link.",
+    detail:
+      "The comment names E-10. Rivet finds that sheet on page 10 and prepares a proposed link.",
+    status: "AI proposed · review needed",
+    icon: "agent",
   },
   {
     name: "Review",
-    title: "An unclear drawing reference needs a person.",
-    detail: "The markup is on page 2. It refers to drawing E-10.",
-    status: "Confirm location",
-    icon: WarningCircle,
+    title: "Review the work beside the evidence.",
+    detail:
+      "Open the annotation and the proposed drawing. The team confirms the reference and records its response.",
+    status: "Awaiting human review",
+    icon: "review",
   },
   {
-    name: "Respond",
-    title: "The team records its response.",
-    detail: "A response stays connected to the comment and its source.",
-    status: "Response recorded",
-    icon: Check,
+    name: "Handoff",
+    title: "A reviewed record, ready to share.",
+    detail:
+      "The source, response and confirmed reference remain together. Review the recipients before sending an update.",
+    status: "Human-reviewed example",
+    icon: "handoff",
   },
 ];
 
 export function HeroReview() {
   const [stage, setStage] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [source, setSource] = useState(false);
+  const [activity, setActivity] = useState(false);
   const [visible, setVisible] = useState(false);
   const [reduced, setReduced] = useState(
     () => matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -66,184 +72,258 @@ export function HeroReview() {
     if (paused || reduced || !visible) return;
     const timer = window.setInterval(() => {
       if (!document.hidden) setStage((value) => (value + 1) % stages.length);
-    }, 5500);
+    }, 6500);
     return () => clearInterval(timer);
   }, [paused, reduced, visible]);
   const current = stages[stage];
-  const StageIcon = current.icon;
+  const chooseStage = (index: number) => {
+    setStage(index);
+    setPaused(true);
+  };
   return (
     <div
       ref={root}
-      className={`hero-review hero-review-stage-${stage}`}
-      aria-label="Interactive example of Rivet's comment workflow"
+      className={`workbench-preview phase-${stage}`}
+      aria-label="Interactive example of the Rivet review workbench"
     >
-      <div className="hero-review-top">
-        <span>
-          <i /> Order 2418 · Switchboard
+      <div className="wp-header">
+        <div className="wp-identity">
+          <Mark small />
+          <span>
+            rivet<span>.</span>
+          </span>
+        </div>
+        <span className="wp-project">
+          Westbridge expansion <span> / </span> Review
         </span>
-        <span>Illustrative example</span>
+        <span className="wp-example">Illustrative example</span>
       </div>
-      <div className="hero-drawing">
-        <div className="hero-drawing-label">
-          <FilePdf size={16} />
-          <span>
-            Customer submittal<span>Returned with comments · Rev B</span>
-          </span>
-          <b>02</b>
-        </div>
-        <svg
-          className="hero-blueprint"
-          viewBox="0 0 640 330"
-          role="img"
-          aria-label="Switchboard drawing with a comment linked to the cable entry area"
-        >
-          <defs>
-            <pattern
-              id="rivet-grid"
-              width="24"
-              height="24"
-              patternUnits="userSpaceOnUse"
+      <div className="wp-main">
+        <section className="wp-document" aria-label="Sample source document">
+          <div className="wp-file">
+            <RivetIcon name="drawing" size={18} />
+            <span>Returned submittal · Rev C.pdf</span>
+            <small>p. {source ? "02" : "10"} / 16</small>
+          </div>
+          <div className="wp-document-tabs">
+            <button
+              aria-pressed={!source}
+              onClick={() => {
+                setSource(false);
+                setPaused(true);
+              }}
             >
-              <path
-                d="M24 0H0V24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="0.35"
-              />
-            </pattern>
-          </defs>
-          <rect
-            width="640"
-            height="330"
-            fill="url(#rivet-grid)"
-            opacity=".25"
-          />
-          <g
-            className="hero-board"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.2"
-          >
-            <path d="M126 78H505V272H126Z M136 87H495V260H136Z M252 87V260 M374 87V260 M126 279H505 M137 284V272 M494 284V272" />
-            {[148, 270, 392].map((x) => (
-              <g key={x}>
-                <rect x={x} y="105" width="80" height="108" rx="2" />
-                <rect x={x + 20} y="121" width="40" height="24" rx="2" />
-                <path
-                  d={`M${x + 40} 150v38m-12-12 12 12 12-12 M${x + 14} 226h52 M${x + 14} 233h52 M${x + 14} 240h52`}
-                />
-                <circle cx={x + 69} cy="159" r="2.5" />
-              </g>
-            ))}
-            <path
-              d="M116 78H98M116 272H98M103 78V272M98 84L108 74M98 278L108 268 M126 63V48M505 63V48M126 54H505M132 49L120 59M511 49L499 59"
-              opacity=".5"
-            />
-            <path
-              className="hero-cable"
-              d="M433 275V299H550V210"
-              strokeWidth="2"
-            />
-          </g>
-          <g
-            className="hero-reference"
-            fill="currentColor"
-            fontSize="10"
-            fontFamily="monospace"
-          >
-            <text x="299" y="46">
-              2400 mm
-            </text>
-            <text x="175" y="99">
-              SWB-01
-            </text>
-            <text x="298" y="99">
-              SWB-02
-            </text>
-            <text x="420" y="99">
-              SWB-03
-            </text>
-            <text x="269" y="319">
-              FRONT ELEVATION · E-10
-            </text>
-          </g>
-          <g className="hero-markup">
-            <rect
-              x="405"
-              y="245"
-              width="63"
-              height="42"
-              rx="4"
-              fill="currentColor"
-              fillOpacity=".08"
-              stroke="currentColor"
-              strokeDasharray="4 3"
-            />
-            <circle cx="469" cy="246" r="13" fill="currentColor" />
-            <text
-              x="469"
-              y="250"
-              textAnchor="middle"
-              fill="#19131f"
-              fontSize="11"
-              fontWeight="600"
+              Drawing E-10
+            </button>
+            <button
+              aria-pressed={source}
+              onClick={() => {
+                setSource(true);
+                setPaused(true);
+              }}
             >
-              07
-            </text>
-            <path
-              d="M482 246Q535 235 550 190"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-            />
-          </g>
-        </svg>
-        <div className="hero-annotation">
-          <span>
-            Comment 07 <span>Priya M. · p. 2</span>
-          </span>
-          <p>Confirm the cable entry location on drawing E-10.</p>
-        </div>
-        <div className="hero-connector" aria-hidden="true">
-          <i />
-          <span />
-          <i />
-        </div>
-      </div>
-      <div className="hero-record">
-        <div className="hero-record-status">
-          <StageIcon size={16} />
-          <span>{current.status}</span>
-          <span>Rev B</span>
-        </div>
-        <div className="hero-record-body" key={stage}>
-          <strong>{current.title}</strong>
-          <p>{current.detail}</p>
-          <div className="hero-record-relation">
+              Source annotation · p. 2
+            </button>
+          </div>
+          <div className="wp-canvas">
+            <div className="wp-paper">
+              <div className="wp-paper-top">
+                <span>Westbridge expansion</span>
+                <span>REV C</span>
+              </div>
+              <h3>
+                {source ? "Submittal review comments" : "General arrangement"}
+              </h3>
+              <p className="wp-paper-sub">
+                {source
+                  ? "Returned by Priya Mehta · October 6"
+                  : "Low-voltage switchgear · SWGR-01"}
+              </p>
+              {source ? (
+                <div className="wp-source-letter">
+                  <div className="wp-source-annotation">
+                    <span>ANNOTATION 07</span>
+                    <p>
+                      Please confirm the cable entry location shown on drawing
+                      E-10.
+                    </p>
+                  </div>
+                  <div className="wp-source-lines" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </div>
+                </div>
+              ) : (
+                <svg
+                  className="wp-blueprint"
+                  viewBox="0 0 580 320"
+                  role="img"
+                  aria-label="Illustrative three-section switchgear drawing with the cable-entry area highlighted; not an engineering document"
+                >
+                  <g fill="none" stroke="currentColor" strokeWidth="1.4">
+                    <path d="M80 67h422v192H80zM90 77h402v170H90zM224 77v170M358 77v170M80 267h422M98 273v-26M484 273v-26" />
+                    {[108, 242, 376].map((x) => (
+                      <g key={x}>
+                        <rect x={x} y="94" width="94" height="108" rx="2" />
+                        <rect x={x + 24} y="108" width="46" height="27" />
+                        <path
+                          d={`M${x + 47} 145v39m-12-12 12 12 12-12M${x + 16} 214h62M${x + 16} 222h62M${x + 16} 230h62`}
+                        />
+                        <circle cx={x + 81} cy="152" r="3" />
+                      </g>
+                    ))}
+                    <path
+                      d="M80 53V35M502 53V35M80 42h422M86 36l-12 12M508 36l-12 12"
+                      opacity=".55"
+                    />
+                  </g>
+                  <rect
+                    className="wp-drawing-mark"
+                    x="363"
+                    y="231"
+                    width="100"
+                    height="43"
+                    rx="2"
+                  />
+                  <path className="wp-drawing-leader" d="M463 251h61v-49" />
+                  <text
+                    className="wp-sheet-label"
+                    x="288"
+                    y="307"
+                    textAnchor="middle"
+                  >
+                    FRONT ELEVATION · E-10
+                  </text>
+                </svg>
+              )}
+              <div className="wp-paper-bottom">
+                <span>
+                  {source
+                    ? "Original annotation retained"
+                    : "Illustrative drawing · not for construction"}
+                </span>
+                <span>PAGE {source ? "02" : "10"}</span>
+              </div>
+            </div>
+          </div>
+          <div className="wp-evidence-trail">
+            <RivetIcon name="evidence" size={17} />
             <span>Comment 07</span>
             <ArrowRight size={13} />
-            <span>
-              {stage === 0
-                ? "Original PDF"
-                : stage === 1
-                  ? "Source · page 2"
-                  : stage === 2
-                    ? "Drawing · E-10"
-                    : "Recorded response"}
-            </span>
+            <span>Source p. 2</span>
+            <ArrowRight size={13} />
+            <strong>E-10 · p. 10</strong>
           </div>
-        </div>
+        </section>
+        <aside className="wp-inspector" aria-label="Sample record inspector">
+          <div className="wp-inspector-tabs">
+            <button
+              aria-pressed={!activity}
+              onClick={() => {
+                setActivity(false);
+                setPaused(true);
+              }}
+            >
+              Record
+            </button>
+            <button
+              aria-pressed={activity}
+              onClick={() => {
+                setActivity(true);
+                setPaused(true);
+              }}
+            >
+              <RivetIcon name="agent" size={16} />
+              Rivet activity
+            </button>
+          </div>
+          {activity ? (
+            <div className="wp-activity">
+              <span className="wp-origin">Illustrative run · sample data</span>
+              <h4>Prepare returned comments</h4>
+              <ol>
+                {[
+                  "Read returned document",
+                  "Extract annotation records",
+                  "Find drawing references",
+                  "Prepare a reviewable link",
+                ].map((label, index) => (
+                  <li
+                    key={label}
+                    className={index <= stage ? "complete" : "pending"}
+                  >
+                    {index <= stage ? (
+                      <Check size={16} />
+                    ) : (
+                      <span className="wp-step-dot" />
+                    )}
+                    <span>{label}</span>
+                  </li>
+                ))}
+              </ol>
+              <p>
+                No messages sent. Engineering decisions remain with the team.
+              </p>
+            </div>
+          ) : (
+            <div className="wp-record">
+              <div className="wp-record-number">
+                <span>COMMENT 07</span>
+                <span>{stage === 3 ? "Reviewed" : "Needs review"}</span>
+              </div>
+              <h4>
+                Please confirm the cable entry location shown on drawing E-10.
+              </h4>
+              <div className="wp-author">
+                <span>PM</span>Priya Mehta · Oct 6
+              </div>
+              <div className="wp-origin">
+                <RivetIcon name="drawing" size={15} />
+                Imported from PDF annotation
+              </div>
+              <div className="wp-field">
+                <span>Referenced drawing</span>
+                <button
+                  onClick={() => {
+                    setSource(false);
+                    setPaused(true);
+                  }}
+                >
+                  <RivetIcon name="evidence" size={18} />
+                  <span>
+                    E-10 · page 10
+                    <small>
+                      {stage === 3
+                        ? "Reviewed by the team · example"
+                        : "AI-proposed match · example"}
+                    </small>
+                  </span>
+                  <ArrowRight size={17} />
+                </button>
+              </div>
+              <div
+                className={`wp-stage-note ${stage === 3 ? "reviewed" : ""}`}
+                key={stage}
+              >
+                <span>
+                  <RivetIcon name={current.icon} size={17} />
+                  {current.status}
+                </span>
+                <strong>{current.title}</strong>
+                <p>{current.detail}</p>
+              </div>
+            </div>
+          )}
+        </aside>
       </div>
-      <div className="hero-playback">
+      <div className="wp-playback">
         <div role="group" aria-label="Example stages">
           {stages.map((item, index) => (
             <button
               key={item.name}
               aria-pressed={stage === index}
-              onClick={() => {
-                setStage(index);
-                setPaused(true);
-              }}
+              onClick={() => chooseStage(index)}
             >
               <span>0{index + 1}</span>
               {item.name}
@@ -251,12 +331,12 @@ export function HeroReview() {
           ))}
         </div>
         <button
-          className="hero-pause"
+          className="wp-pause"
           aria-label={paused || reduced ? "Play example" : "Pause example"}
           disabled={reduced}
           onClick={() => setPaused(!paused)}
         >
-          {paused || reduced ? <Play size={14} /> : <Pause size={14} />}
+          {paused || reduced ? <Play size={15} /> : <Pause size={15} />}
         </button>
       </div>
     </div>

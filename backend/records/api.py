@@ -181,6 +181,36 @@ def shared_document(token: str, document_id: str):
 
         with identity_scope(Identity(row.organization_id, "Shared record viewer")):
             d = get(s, Document, document_id)
+        if (
+            d.name.lower().endswith(".eml")
+            or d.blob.lower().endswith(".eml")
+            or d.meta.get("email")
+        ):
+            # A reviewed email body does not authorize disclosure of MIME headers
+            # or bundled attachments. Never read the live original for this view.
+            excerpts = [
+                source["text"]
+                for source in row.snapshot.get("sources", [])
+                if source.get("document_id") == document_id
+                and isinstance(source.get("text"), str)
+                and source["text"].strip()
+            ]
+            if not excerpts:
+                fail(
+                    "No approved email excerpts are included in this shared record.",
+                    404,
+                )
+            return Response(
+                "Shared email excerpts\nFrom the approved record snapshot.\n\n"
+                + "\n\n---\n\n".join(excerpts),
+                media_type="text/plain",
+                headers={
+                    "Content-Disposition": 'inline; filename="shared-email-excerpts.txt"',
+                    "X-Content-Type-Options": "nosniff",
+                    "Content-Security-Policy": "default-src 'none'; sandbox",
+                    "Cache-Control": "no-store",
+                },
+            )
         return FileResponse(
             db.BLOBS / d.blob, filename=d.name, content_disposition_type="inline"
         )
@@ -295,13 +325,10 @@ async def email_import(
 
 
 @router.post("/orders/{id}/record/ask")
-def ask(id: str, body: Ask):
-    from .assistant import ask as answer
+def ask(id: str, body: Ask, idempotency_key: str | None = Header(default=None)):
+    from .conversations import ask_with_history
 
-    with Session.begin() as s:
-        w = svc.view(s, lock_order(s, id))
-    # No database lock or mutation capability is held during the provider call.
-    return answer(body.question, w, [m.model_dump() for m in body.history])
+    return ask_with_history(id, body, idempotency_key)
 
 
 def coordinate(id, body, key, kind, item=""):
@@ -345,3 +372,8 @@ def coordination_settings(
     id: str, body: CoordinationSettingsWrite, idempotency_key: str = Header()
 ):
     return coordinate(id, body, idempotency_key, "settings")
+
+
+from .agent_api import router as agent_router
+
+router.include_router(agent_router)

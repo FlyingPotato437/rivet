@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowCounterClockwise,
   ArrowRight,
@@ -20,7 +20,7 @@ import {
 } from "@phosphor-icons/react";
 import { useAccount } from "./Auth";
 import { when } from "./api";
-import { Attribution } from "./RecordAttribution";
+import { Attribution, ActorName } from "./RecordAttribution";
 import { Empty, ErrorNote, Modal } from "./ui";
 import type {
   CoordinationCheck,
@@ -64,6 +64,20 @@ export function RecordCoordination({
   const [showCompleted, setShowCompleted] = useState(false);
   const [settings, setSettings] = useState(false);
   const c = w.coordination;
+  const linkedTaskId = new URLSearchParams(
+    location.hash.split("?")[1] || "",
+  ).get("task");
+  const linkedTask = c?.tasks.find((task) => task.id === linkedTaskId);
+  useEffect(() => {
+    if (!linkedTask) return;
+    if (linkedTask.status === "done") setShowCompleted(true);
+    const frame = requestAnimationFrame(() => {
+      const element = document.getElementById(`record-task-${linkedTask.id}`);
+      element?.focus({ preventScroll: true });
+      element?.scrollIntoView({ block: "center", behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [linkedTaskId, linkedTask?.id, linkedTask?.status]);
   const write: Write = (path, reason, fields = {}, version = w.version) =>
     save(`/coordination${path}`, {
       expected_version: version,
@@ -74,7 +88,7 @@ export function RecordCoordination({
   if (!c)
     return (
       <Empty
-        title="Prepare the order overview"
+        title="Prepare team coordination"
         icon={<ListChecks size={27} />}
         action={
           <button
@@ -96,11 +110,11 @@ export function RecordCoordination({
   return (
     <section
       className="coordination coordination-focused"
-      aria-label="Order overview"
+      aria-label="Team coordination"
     >
       <div className="coordination-intro">
         <div>
-          <h2>Order overview</h2>
+          <h2>Team coordination</h2>
           <p>
             Confirm source links, review follow-ups, and assign the next action.
           </p>
@@ -123,17 +137,20 @@ export function RecordCoordination({
           Owners & due date
         </button>
       </div>
+      {linkedTaskId && !linkedTask && (
+        <ErrorNote message="This assignment is no longer in the record. Current team tasks are listed below." />
+      )}
       <section
         className="coordination-work-section"
-        aria-label="Rivet suggestions"
+        aria-label="Suggested actions"
       >
         <div className="coordination-section-heading">
           <div>
             <h3>
-              Suggested by Rivet <span>{pending.length}</span>
+              Suggested actions <span>{pending.length}</span>
             </h3>
             <p>
-              Prepared automatically from this order. Review before applying.
+              Review each suggested change and its evidence before applying it.
             </p>
           </div>
           <label className="coordination-history-toggle">
@@ -207,6 +224,7 @@ export function RecordCoordination({
             <Task
               key={task.id}
               task={task}
+              selected={task.id === linkedTaskId}
               w={w}
               busy={busy}
               write={write}
@@ -312,7 +330,7 @@ function Suggestion({
           <span className="coordination-row-title">
             <strong>{s.title}</strong>
             <Attribution kind={s.origin || "automatic"}>
-              {s.origin === "ai" ? "AI suggestion" : "Rivet suggestion"}
+              {s.origin === "ai" ? "AI prepared" : "Automatic rule"}
               {s.status === "pending" ? " · Not applied" : ""}
             </Attribution>
             <span className="coordination-row-preview">
@@ -347,14 +365,14 @@ function Suggestion({
           {s.status === "accepted" && (
             <p className="record-provenance-note">
               {s.edited ? "Edited and accepted" : "Accepted"}
-              {s.resolved_by
-                ? ` by ${s.resolved_by}`
-                : " by a team member"} · {when(s.resolved_at)}
+              {" by "}
+              <ActorName actor={s.resolved_by} /> · {when(s.resolved_at)}
             </p>
           )}
           {s.status === "skipped" && s.resolved_by && (
             <p className="record-provenance-note">
-              Skipped by {s.resolved_by} · {when(s.resolved_at)}
+              Skipped by <ActorName actor={s.resolved_by} /> ·{" "}
+              {when(s.resolved_at)}
             </p>
           )}
           {selectedComment && (
@@ -379,7 +397,7 @@ function Suggestion({
           {!link && s.draft && !edit && (
             <details className="coordination-draft">
               <summary>
-                {s.origin === "ai" ? "AI draft" : "Rivet draft"}{" "}
+                {s.origin === "ai" ? "AI draft" : "Rule-based draft"}{" "}
                 <span>Not sent</span>
               </summary>
               <p>{s.draft}</p>
@@ -512,6 +530,7 @@ function Suggestion({
 
 function Task({
   task,
+  selected,
   w,
   busy,
   write,
@@ -519,6 +538,7 @@ function Task({
   openSource,
 }: {
   task: CoordinationTask;
+  selected: boolean;
   w: RecordView;
   busy: boolean;
   write: Write;
@@ -527,8 +547,14 @@ function Task({
 }) {
   const [editing, setEditing] = useState(false);
   const [version, setVersion] = useState(w.version);
+  const origin = task.origin || (task.managed ? "automatic" : "human");
   return (
-    <article className="coordination-task">
+    <article
+      id={`record-task-${task.id}`}
+      className={"coordination-task" + (selected ? " is-linked-task" : "")}
+      tabIndex={-1}
+      aria-label={task.title}
+    >
       <div className="coordination-task-top">
         <span className="coordination-task-role">
           <Users size={14} />
@@ -542,9 +568,17 @@ function Task({
       </div>
       <h3>{task.title}</h3>
       <div className="record-provenance-line">
-        <Attribution kind="automatic">Created by Rivet</Attribution>
+        <Attribution kind={origin}>
+          {origin === "ai"
+            ? "AI prepared"
+            : origin === "automatic"
+              ? "Automatic rule"
+              : "Added by team"}
+        </Attribution>
         {task.updated_by && (
-          <Attribution kind="human">Updated by {task.updated_by}</Attribution>
+          <Attribution kind="human">
+            Updated by <ActorName actor={task.updated_by} />
+          </Attribution>
         )}
       </div>
       <p>{task.reason}</p>
@@ -754,7 +788,7 @@ export function RecordReadiness({
       </summary>
       <div className="coordination-readiness-view">
         <p>
-          <Attribution kind="automatic">Checked by Rivet</Attribution> Based on
+          <Attribution kind="automatic">Automatic rules</Attribution> Based on
           recorded information. Your team confirms engineering acceptance.
         </p>
         <div>
@@ -868,7 +902,7 @@ export function AnchorIndex({
         Connected references<span>{anchors.length}</span>
       </summary>
       <p>
-        <Attribution kind="automatic">Indexed by Rivet</Attribution> Exact
+        <Attribution kind="automatic">Automatic indexing</Attribution> Exact
         identifiers found in this order. Shared references connect sources; they
         do not establish approval or an implemented design change.
       </p>

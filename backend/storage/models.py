@@ -364,3 +364,46 @@ class NoticeDelivery(Row, Base):
     error: Mapped[str] = mapped_column(Text, default="")
     actor: Mapped[str] = mapped_column(String(100), default=current_actor)
     __table_args__ = (UniqueConstraint("order_id", "notice_id"),)
+
+
+class RecordAgentRun(Row, Base):
+    """Durable, order-scoped coordination work; never a technical approval."""
+
+    __tablename__ = "record_agent_runs"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    goal: Mapped[str] = mapped_column(Text)
+    origin: Mapped[str] = mapped_column(String(20), default="user")
+    mode: Mapped[str] = mapped_column(String(20), default="rules")
+    status: Mapped[str] = mapped_column(String(30), default="queued", index=True)
+    base_version: Mapped[int] = mapped_column(Integer)
+    input_hash: Mapped[str] = mapped_column(String(64))
+    trigger_key: Mapped[str] = mapped_column(String(180), unique=True)
+    model: Mapped[str] = mapped_column(String(100), default="")
+    actor: Mapped[str] = mapped_column(String(100))
+    state: Mapped[dict] = mapped_column(JSONB, default=dict)
+    steps: Mapped[list] = mapped_column(JSONB, default=list)
+    events: Mapped[list] = mapped_column(JSONB, default=list)
+    result: Mapped[dict] = mapped_column(JSONB, default=dict)
+    usage: Mapped[dict] = mapped_column(JSONB, default=dict)
+    budget: Mapped[dict] = mapped_column(JSONB, default=dict)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class RecordAgentProposal(Row, Base):
+    __tablename__ = "record_agent_proposals"
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    run_id: Mapped[str] = mapped_column(ForeignKey("record_agent_runs.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(40))
+    title: Mapped[str] = mapped_column(String(240))
+    summary: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(30), default="pending", index=True)
+    origin: Mapped[str] = mapped_column(String(20))
+    base_version: Mapped[int] = mapped_column(Integer)
+    input_hash: Mapped[str] = mapped_column(String(64))
+    fingerprint: Mapped[str] = mapped_column(String(64))
+    operations: Mapped[list] = mapped_column(JSONB)
+    before: Mapped[dict] = mapped_column(JSONB, default=dict)
+    after: Mapped[dict] = mapped_column(JSONB, default=dict)
+    evidence_ids: Mapped[list] = mapped_column(JSONB, default=list)
+    resolution: Mapped[dict] = mapped_column(JSONB, default=dict)
+    __table_args__ = (UniqueConstraint("run_id", "fingerprint"),)

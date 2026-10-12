@@ -1,4 +1,8 @@
 from alembic import context
+
+from backend.records.conversations import (
+    RecordConversationMessage,  # noqa: F401 - register table metadata
+)
 from backend.storage.db import engine
 from backend.storage.models import Base
 

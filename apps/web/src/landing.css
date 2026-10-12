@@ -1,9 +1,9 @@
 /* Rivet marketing site: one dark palette; 7px controls, 14px panels.
    Layer order: content 0, product halo -1 within isolated parent, sticky nav 10. */
 .rivet-site {
-  --site-sans: "Onest", sans-serif;
-  --site-display: "Sora", sans-serif;
-  --site-mono: "IBM Plex Mono", monospace;
+  --site-sans: "Schibsted Grotesk Variable", sans-serif;
+  --site-display: "Schibsted Grotesk Variable", sans-serif;
+  --site-mono: "Commit Mono", monospace;
   --site-bg: #0a0a0b;
   --site-panel: #131313;
   --site-border: #2b2b2b;
