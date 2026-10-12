@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "@phosphor-icons/react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -608,61 +609,42 @@ export function RivetAssembly() {
   }, []);
   return (
     <section
-      id="workflow"
-      className="rivet-assembly"
+      id="connected-record"
+      className="rivet-assembly public-wrap"
       ref={section}
       aria-labelledby="rivet-assembly-heading"
     >
       <div className="rivet-assembly-heading">
+        <p className="public-eyebrow">The connected order record</p>
         <h2 id="rivet-assembly-heading">
-          From returned comments
+          One order.
           <br />
-          to a complete record.
+          <span>Every revision connected.</span>
         </h2>
         <p>
-          Collect the comments, confirm their drawing locations, and keep the
-          responses and approvals attached to every revision.
+          A comment stays connected to its drawing, response, and approval. When
+          the next revision arrives, your team can see the history behind it.
         </p>
+        <a className="public-text-link" href="#workflow">
+          Explore the workflow <ArrowUpRight size={17} />
+        </a>
       </div>
-      <div className="rivet-assembly-stage">
-        <canvas
-          ref={canvas}
-          className="rivet-assembly-canvas"
-          aria-hidden="true"
-        />
-      </div>
-      <div className="rivet-assembly-caption">
-        <span>Sources</span>
-        <i aria-hidden="true" />
-        <span>Comments</span>
-        <i aria-hidden="true" />
-        <span>Revisions</span>
-      </div>
-      <ol className="rivet-assembly-steps">
-        {[
-          ["Import", "Add the submittal, marked-up PDFs, and saved emails."],
-          [
-            "Review",
-            "Confirm each comment, author, date, and drawing location.",
-          ],
-          [
-            "Record",
-            "Keep responses and confirmed changes linked to their comments.",
-          ],
-          [
-            "Share",
-            "Approve a record and prepare notices for customer and production teams.",
-          ],
-        ].map(([title, copy], index) => (
-          <li key={title}>
-            <span aria-hidden="true">0{index + 1}</span>
-            <div>
-              <strong>{title}</strong>
-              <p>{copy}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+      <figure className="rivet-assembly-visual">
+        <div className="rivet-assembly-stage">
+          <canvas
+            ref={canvas}
+            className="rivet-assembly-canvas"
+            aria-hidden="true"
+          />
+        </div>
+        <figcaption className="rivet-assembly-caption">
+          <span>Source documents</span>
+          <i aria-hidden="true" />
+          <span>Comments & responses</span>
+          <i aria-hidden="true" />
+          <span>Approval history</span>
+        </figcaption>
+      </figure>
     </section>
   );
 }

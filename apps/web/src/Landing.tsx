@@ -1,17 +1,17 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
   Check,
   X,
-  Pause,
-  Play,
   IconContext,
 } from "@phosphor-icons/react";
 import { Mark } from "./ui";
 import { RivetField } from "./LandingMotion";
 import { usePublicMotion } from "./usePublicMotion";
+import { useWorkflowScroll } from "./useWorkflowScroll";
+import { RivetAssembly } from "./RivetAssembly";
 
 export function PublicHeader({ booking = false }: { booking?: boolean }) {
   return (
@@ -301,53 +301,27 @@ function DrawingVisual({
 }
 function WorkflowDemo() {
   const [step, setStep] = useState(0);
-  const [playing, setPlaying] = useState(
-    () =>
-      !matchMedia("(prefers-reduced-motion: reduce), (max-width: 800px)")
-        .matches,
-  );
   const [selected, setSelected] = useState<number | null>(null);
   const [output, setOutput] = useState(0);
   const [preview, setPreview] = useState(0);
   const view = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const preference = matchMedia(
-      "(prefers-reduced-motion: reduce), (max-width: 800px)",
-    );
-    const update = () => {
-      if (preference.matches) setPlaying(false);
-    };
-    preference.addEventListener("change", update);
-    return () => preference.removeEventListener("change", update);
-  }, []);
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.35 },
-    );
-    if (view.current) observer.observe(view.current);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    if (
-      !playing ||
-      !visible ||
-      matchMedia("(prefers-reduced-motion: reduce)").matches
-    )
-      return;
-    const timer = setInterval(() => {
-      if (document.hidden) return;
+  const { scrollDriven, goToStep: change } = useWorkflowScroll(
+    view,
+    (index) => {
+      const focusIsInScene = view.current
+        ?.querySelector(".public-demo-canvas")
+        ?.contains(document.activeElement);
+      setStep(index);
       setSelected(null);
-      setStep((s) => (s + 1) % steps.length);
-    }, 6500);
-    return () => clearInterval(timer);
-  }, [playing, visible]);
-  const change = (index: number) => {
-    setStep(index);
-    setPlaying(false);
-    setSelected(null);
-  };
+      if (focusIsInScene) {
+        requestAnimationFrame(() =>
+          document
+            .getElementById(`workflow-step-${index}`)
+            ?.focus({ preventScroll: true }),
+        );
+      }
+    },
+  );
   const closeSource = () => {
     const index = selected;
     setSelected(null);
@@ -356,15 +330,7 @@ function WorkflowDemo() {
     );
   };
   return (
-    <div
-      className="public-demo"
-      ref={view}
-      data-playing={playing}
-      onFocusCapture={(event) => {
-        if (!(event.target as HTMLElement).closest(".public-demo-play"))
-          setPlaying(false);
-      }}
-    >
+    <div className="public-demo" ref={view}>
       <div className="public-demo-rail">
         <p className="public-eyebrow">The daily workflow</p>
         <div
@@ -409,15 +375,17 @@ function WorkflowDemo() {
           ))}
         </div>
         <div className="public-demo-control">
-          <span>Illustrative workflow</span>
-          <button
-            className="public-demo-play"
-            aria-label={playing ? "Pause demonstration" : "Play demonstration"}
-            onClick={() => setPlaying(!playing)}
-          >
-            {playing ? <Pause size={14} /> : <Play size={14} />}
-          </button>
+          <span>
+            <small>Illustrative order</small>
+            {scrollDriven
+              ? "Scroll through the workflow"
+              : "Select a stage to explore"}
+          </span>
+          {scrollDriven && <ArrowDown size={16} />}
         </div>
+        <a className="public-demo-skip" href="#inbox">
+          Continue below <ArrowDown size={12} />
+        </a>
       </div>
       <div
         className="public-demo-canvas"
@@ -493,12 +461,10 @@ function WorkflowDemo() {
                       className={preview === i ? "is-previewed" : ""}
                       onMouseEnter={() => {
                         setPreview(i);
-                        setPlaying(false);
                       }}
                       onFocus={() => setPreview(i)}
                       onClick={() => {
                         setSelected(i);
-                        setPlaying(false);
                       }}
                     >
                       <span className="public-comment-number">{c.id}</span>
@@ -563,13 +529,11 @@ function WorkflowDemo() {
                               ? 2
                               : (i + (event.key === "ArrowRight" ? 1 : 2)) % 3;
                         setOutput(next);
-                        setPlaying(false);
                         document.getElementById(`output-step-${next}`)?.focus();
                       }}
                       aria-selected={output === i}
                       onClick={() => {
                         setOutput(i);
-                        setPlaying(false);
                       }}
                     >
                       {name}
@@ -754,10 +718,6 @@ export function Landing() {
                 aria-label="Rivet’s animated pixel mark"
               >
                 <RivetField />
-                <div className="public-field-coordinates" aria-hidden="true">
-                  <span>INPUT → CONTEXT → REVIEW</span>
-                  <span>R / 01</span>
-                </div>
               </div>
             </div>
           </section>
@@ -778,11 +738,9 @@ export function Landing() {
                 Let Rivet prepare the work between them.
               </p>
             </div>
-            <div data-public-reveal>
-              <WorkflowDemo />
-            </div>
+            <WorkflowDemo />
           </section>
-          <section className="public-inbox-section">
+          <section id="inbox" className="public-inbox-section">
             <div className="public-inbox-layout public-wrap">
               <div className="public-inbox-copy" data-public-reveal>
                 <p className="public-eyebrow">Built around the PM</p>
@@ -877,6 +835,7 @@ export function Landing() {
               </div>
             </div>
           </section>
+          <RivetAssembly />
           <section className="public-start public-wrap" data-public-reveal>
             <div>
               <p className="public-eyebrow">A focused first step</p>

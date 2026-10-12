@@ -1502,17 +1502,7 @@ body {
   height: 100%;
   pointer-events: none;
 }
-.public-field-coordinates {
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  bottom: 5px;
-  left: 40px;
-  right: 8px;
-  font: 9px var(--mono);
-  letter-spacing: 0.02em;
-  color: #77707f;
-}
+
 .public-workflow {
   padding-top: 65px;
 }
@@ -1536,10 +1526,6 @@ body {
   .public-hero-bottom > p {
     font-size: 14px;
   }
-  .public-field-coordinates {
-    left: 35px;
-    font-size: 8px;
-  }
 }
 @media (max-width: 800px) {
   .public-hero-grid {
@@ -1555,9 +1541,7 @@ body {
   .public-hero-field {
     min-height: 320px;
   }
-  .public-field-coordinates {
-    display: none;
-  }
+
   .public-workflow {
     padding-top: 35px;
   }
@@ -2148,17 +2132,6 @@ body {
 .public-step-list > button.is-active::after {
   transform: scaleX(1);
 }
-.public-demo[data-playing="true"] .public-step-list > button.is-active::after {
-  animation: public-step-progress 6.5s linear;
-}
-@keyframes public-step-progress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
 @media (max-width: 600px) {
   .public-process-node > span:last-child {
     display: block;
@@ -2180,5 +2153,49 @@ body {
   }
   .public-step-list > button.is-active {
     color: var(--p-accent);
+  }
+}
+
+/* The panel stays in place for three deliberate scroll stops. */
+.public-demo[data-scroll-driven="true"] {
+  height: 640px;
+  background: var(--p-bg);
+}
+.public-demo[data-scroll-driven="true"] .public-demo-canvas {
+  min-height: 0;
+}
+.public-demo[data-scroll-driven="true"]
+  .public-step-list
+  > button.is-active::after {
+  transform: scaleX(var(--stage-progress, 0));
+}
+.public-demo-control {
+  gap: 12px;
+  color: #b1abbc;
+}
+.public-demo-control small {
+  display: block;
+  font: inherit;
+  color: var(--p-muted);
+  margin-bottom: 6px;
+}
+.public-demo-skip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--p-muted) !important;
+  width: fit-content;
+  padding-top: 10px;
+}
+.public-demo-skip:hover {
+  color: var(--p-text) !important;
+}
+.public-evidence-preview {
+  overscroll-behavior: contain;
+}
+@media (max-width: 800px) {
+  .public-demo-skip {
+    display: none;
   }
 }
