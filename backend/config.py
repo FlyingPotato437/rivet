@@ -10,6 +10,16 @@ def production():
     return os.getenv("RIVET_ENV", "development").lower() == "production"
 
 
+def workspace_enabled():
+    """Public launch is marketing-only. Private deployments must explicitly open access."""
+    return (
+        os.getenv(
+            "RIVET_WORKSPACE_ENABLED", "false" if production() else "true"
+        ).lower()
+        == "true"
+    )
+
+
 def normalize_database_url(value):
     # Hosted Postgres services commonly supply either of these aliases. The
     # installed driver is psycopg 3, not SQLAlchemy's default psycopg2 driver.

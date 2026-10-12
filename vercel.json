@@ -8,13 +8,33 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
         },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/pilot",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pilot/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(app|orders|order|projects|workspace|sign-in|sign-up|shared)(.*)",
+      "destination": "/index.html"
     }
   ]
 }

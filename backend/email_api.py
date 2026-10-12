@@ -6,17 +6,26 @@ import secrets
 from copy import deepcopy
 from email.utils import getaddresses
 from uuid import UUID
+
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select, text
 from svix.webhooks import Webhook, WebhookVerificationError
+
 from backend import mail
-from backend.domain.service import get, scoped, fail
+from backend.domain.service import fail, get, scoped
 from backend.identity import Identity, current_actor, identity_scope
 from backend.orders.service import lock_order
 from backend.records import service as records
 from backend.storage.db import Session
-from backend.storage.models import Order, OrderInbox, InboundEmail, NoticeDelivery, Job
+from backend.storage.models import (
+    InboundEmail,
+    Job,
+    NoticeDelivery,
+    Order,
+    OrderInbox,
+    TeamInbox,
+)
 
 router = APIRouter(prefix="/api", tags=["Email"])
 
@@ -39,13 +48,18 @@ def queue_inbound(s, inbox, email_id):
     prior = s.scalar(select(InboundEmail).where(InboundEmail.provider_id == email_id))
     if prior:
         return False
-    order = get(s, Order, inbox.order_id)
-    email = InboundEmail(order_id=order.id, provider_id=email_id)
+    team_route = isinstance(inbox, TeamInbox)
+    order = None if team_route else get(s, Order, inbox.order_id)
+    email = InboundEmail(
+        order_id=order.id if order else None,
+        team_inbox_id=inbox.id if team_route else None,
+        provider_id=email_id,
+    )
     s.add(email)
     s.flush()
     s.add(
         Job(
-            project_id=order.project_id,
+            project_id=order.project_id if order else None,
             kind="inbound_email",
             payload={"email_id": email.id},
             key="email:" + email_id,
@@ -71,6 +85,134 @@ def check_email():
         }
     except HTTPException as exc:
         return {**mail.status(), "receiving_access": False, "message": exc.detail}
+
+
+@router.get("/integrations/team-inbox")
+def team_inbox_status():
+    state = mail.status()
+    with Session() as s:
+        inbox = s.scalar(scoped(TeamInbox))
+        emails = (
+            list(
+                s.scalars(
+                    scoped(InboundEmail)
+                    .where(InboundEmail.team_inbox_id == inbox.id)
+                    .order_by(InboundEmail.created_at.desc())
+                    .limit(30)
+                )
+            )
+            if inbox
+            else []
+        )
+        configured = bool(state["configured"] and state["receiving_domain"])
+        return {
+            **state,
+            "status": "configured"
+            if configured and inbox and inbox.enabled
+            else "setup_needed",
+            "automatic_delivery_configured": bool(
+                configured
+                and inbox
+                and inbox.enabled
+                and state["webhook_configured"]
+                and not state["local_only"]
+            ),
+            "address": inbox.address if inbox else "",
+            "enabled": bool(inbox and inbox.enabled),
+            "detail": "Forward returned drawings to this team address. Exact job and revision matches are imported; uncertain matches wait for your confirmation."
+            if inbox and inbox.enabled
+            else "A team administrator can create a forwarding address after Resend receiving access and the receiving domain are configured.",
+            "emails": [
+                {
+                    "id": email.id,
+                    "status": email.status,
+                    "intake_id": email.intake_id,
+                    "order_id": email.order_id,
+                    "document_id": email.document_id,
+                    "error": email.error,
+                    "created_at": email.created_at.isoformat(),
+                }
+                for email in emails
+            ],
+        }
+
+
+@router.post("/integrations/team-inbox")
+def create_team_inbox():
+    domain = os.getenv("RESEND_RECEIVING_DOMAIN", "").lower().strip()
+    if not re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?\.[a-z]{2,}", domain):
+        fail(
+            "Configure a Resend receiving domain before creating a team forwarding address.",
+            503,
+        )
+    # The API key must be able to retrieve received messages, not only send.
+    mail.request("GET", "/emails/receiving?limit=1")
+    with Session.begin() as s:
+        s.execute(text("SELECT pg_advisory_xact_lock(777006)"))
+        inbox = s.scalar(scoped(TeamInbox).with_for_update())
+        if not inbox:
+            inbox = TeamInbox(address="orders-" + secrets.token_hex(12) + "@" + domain)
+            s.add(inbox)
+        elif not inbox.address.endswith("@" + domain):
+            fail(
+                "The existing team address uses another receiving domain. Preserve that domain or migrate its pending email before replacing it.",
+                409,
+            )
+        inbox.enabled = True
+        s.flush()
+    return team_inbox_status()
+
+
+@router.post("/integrations/team-inbox/disable")
+def disable_team_inbox():
+    with Session.begin() as s:
+        inbox = s.scalar(scoped(TeamInbox).with_for_update())
+        if inbox:
+            inbox.enabled = False
+    return team_inbox_status()
+
+
+@router.post("/integrations/team-inbox/check")
+def check_team_inbox():
+    with Session() as s:
+        inbox = s.scalar(scoped(TeamInbox).where(TeamInbox.enabled == True))
+        if not inbox:
+            fail("Create the team forwarding address first.")
+    page = mail.request("GET", "/emails/receiving?limit=100")
+    count = 0
+    with Session.begin() as s:
+        # Recheck enabled state inside the write transaction.
+        inbox = get(s, TeamInbox, inbox.id, True)
+        if not inbox.enabled:
+            fail("Team forwarding has been disabled.", 409)
+        for email in page.get("data", []):
+            if inbox.address in addresses(email):
+                count += int(queue_inbound(s, inbox, email["id"]))
+    return {
+        "queued": count,
+        "has_more": bool(page.get("has_more")),
+        "message": f"Queued {count} new emails from the latest 100 received messages.",
+    }
+
+
+@router.post("/integrations/team-inbox/emails/{id}/retry")
+def retry_team_email(id: str):
+    with Session.begin() as s:
+        email = get(s, InboundEmail, id, True)
+        if not email.team_inbox_id:
+            fail("Team inbox email not found.", 404)
+        inbox = get(s, TeamInbox, email.team_inbox_id)
+        if not inbox.enabled:
+            fail("Enable team forwarding before retrying this email.", 409)
+        job = s.scalar(
+            scoped(Job).where(Job.key == "email:" + email.provider_id).with_for_update()
+        )
+        if email.status != "failed" or not job or job.status != "failed":
+            fail("Only a failed email can be retried. Refresh the inbox status.", 409)
+        email.status, email.error = "queued", ""
+        job.status, job.error, job.attempts = "queued", "", 0
+        job.lease, job.lease_until = None, None
+        return {"id": email.id, "status": "queued"}
 
 
 @router.get("/orders/{id}/inbox")
@@ -171,6 +313,13 @@ async def webhook(request: Request):
             s.scalars(
                 select(OrderInbox).where(
                     OrderInbox.address.in_(recipients), OrderInbox.enabled == True
+                )
+            )
+        )
+        routes.extend(
+            s.scalars(
+                select(TeamInbox).where(
+                    TeamInbox.address.in_(recipients), TeamInbox.enabled == True
                 )
             )
         )

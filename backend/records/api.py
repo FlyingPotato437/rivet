@@ -24,6 +24,7 @@ from .schemas import (
     SubscriberWrite,
     SuggestionWrite,
     TaskWrite,
+    WorkflowWrite,
     Write,
 )
 
@@ -99,6 +100,19 @@ def edit_comment(
     id: str, item: str, body: CommentWrite, idempotency_key: str = Header()
 ):
     return mutate(id, body, idempotency_key, "comment", item)
+
+
+@router.post("/orders/{id}/record/comments/{item}/workflow")
+def comment_workflow(
+    id: str, item: str, body: WorkflowWrite, idempotency_key: str = Header()
+):
+    return mutate(id, body, idempotency_key, "workflow", item)
+
+
+@router.get("/orders/{id}/record/revision-review")
+def revision_review(id: str):
+    with Session.begin() as s:
+        return svc.view(s, lock_order(s, id))["revision_review"]
 
 
 @router.post("/orders/{id}/record/changes")
@@ -259,19 +273,31 @@ def compare(id: str, before: str, after: str):
 
 
 @router.get("/orders/{id}/record/export")
-def export(id: str, format: Literal["xlsx", "pdf"] = "xlsx"):
-    from .exports import pdf, workbook
+def export(
+    id: str, format: Literal["xlsx", "pdf", "response_pdf", "drafting_xlsx"] = "xlsx"
+):
+    from .exports import drafting_workbook, pdf, response_letter, workbook
 
     with Session.begin() as s:
         w = svc.view(s, lock_order(s, id))
-    content = workbook(w) if format == "xlsx" else pdf(w)
+    content = {
+        "xlsx": workbook,
+        "pdf": pdf,
+        "response_pdf": response_letter,
+        "drafting_xlsx": drafting_workbook,
+    }[format](w)
+    extension = "xlsx" if format in {"xlsx", "drafting_xlsx"} else "pdf"
+    name = {
+        "response_pdf": "response-letter",
+        "drafting_xlsx": "changes-for-drafting",
+    }.get(format, "comment-log")
     return Response(
         content,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        if format == "xlsx"
+        if extension == "xlsx"
         else "application/pdf",
         headers={
-            "Content-Disposition": f'attachment; filename="rivet-comment-log.{format}"'
+            "Content-Disposition": f'attachment; filename="rivet-{name}.{extension}"'
         },
     )
 

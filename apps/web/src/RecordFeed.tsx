@@ -13,6 +13,7 @@ import "./order-feed.css";
 import "./record-workspace.css";
 import "./work-inbox.css";
 import { useAccount } from "./Auth";
+import { RecordIntake } from "./RecordIntake";
 
 export type RecordInboxItem = {
   id: string;
@@ -91,6 +92,7 @@ function WorkInbox({
   onNew: () => void;
 }) {
   const query = useRecordInbox();
+  const ordersQuery = useRecordOrders();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const items = query.data?.items ?? [];
@@ -101,22 +103,38 @@ function WorkInbox({
         .toLowerCase()
         .includes(search.toLowerCase()),
   );
+  const groups = [
+    ...new Map(
+      visible.map((item) => [
+        item.order_id,
+        {
+          id: item.order_id,
+          title: item.order_title,
+          number: item.order_number,
+        },
+      ]),
+    ).values(),
+  ];
   return (
     <main className="page record-feed work-inbox">
       <div className="order-feed-heading">
         <div>
-          <span className="eyebrow">Across your orders</span>
-          <h1>Work inbox</h1>
+          <span className="eyebrow">Returned drawings & open decisions</span>
+          <h1>Inbox</h1>
           <p>
-            Review prepared work, resolve open questions, and continue the next
-            step.
+            Review what changed, confirm the response, and move the order
+            forward.
           </p>
         </div>
         <button className="secondary" onClick={onNew}>
           <Plus size={17} />
-          New order
+          Create order manually
         </button>
       </div>
+      <RecordIntake
+        navigate={navigate}
+        orders={ordersQuery.data?.orders ?? []}
+      />
       <section className="work-inbox-list" aria-label="Work across orders">
         <div className="order-feed-toolbar">
           <div
@@ -167,50 +185,96 @@ function WorkInbox({
             <Busy text="Loading work…" />
           </div>
         ) : visible.length ? (
-          <>
-            <div className="work-inbox-columns" aria-hidden="true">
-              <span>Work item</span>
-              <span>Order</span>
-              <span>Owner</span>
-              <span>Updated</span>
-            </div>
-            <div className="work-inbox-rows">
-              {visible.map((item) => (
-                <button
-                  key={`${item.kind}:${item.id}`}
-                  className="work-inbox-row"
-                  onClick={() => navigate(inboxDestination(item))}
-                >
-                  <span className={`inbox-kind ${item.kind}`}>
-                    <RivetIcon name={workIcon[item.kind]} />
-                  </span>
-                  <span className="inbox-item">
-                    <span className="inbox-item-meta">
-                      <span className={`inbox-status ${item.status}`}>
-                        {statusLabel[item.status]}
+          <div className="inbox-order-groups">
+            {groups.map((group) => {
+              const work = visible.filter((item) => item.order_id === group.id);
+              const prepared = work.filter((item) => item.status === "ready");
+              const review = work.filter(
+                (item) => item.status === "needs_review",
+              );
+              return (
+                <article className="inbox-order-group" key={group.id}>
+                  <header>
+                    <RivetIcon name="drawing" size={23} />
+                    <div>
+                      <small>{group.number}</small>
+                      <button
+                        className="inbox-order-title"
+                        onClick={() => navigate(`order/${group.id}`)}
+                      >
+                        {group.title}
+                      </button>
+                      <p>
+                        {review.length > 0 && (
+                          <span>{review.length} need review</span>
+                        )}
+                        {prepared.length > 0 && (
+                          <span className="inbox-prepared-count">
+                            {prepared.length} prepared{" "}
+                            {prepared.length === 1 ? "result" : "results"}
+                          </span>
+                        )}
+                        {!review.length && !prepared.length && (
+                          <span>
+                            {work.length} outstanding{" "}
+                            {work.length === 1 ? "item" : "items"}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <button
+                      className="secondary"
+                      onClick={() => navigate(`order/${group.id}`)}
+                    >
+                      Review order
+                      <ArrowRight size={16} />
+                    </button>
+                  </header>
+                  {prepared.slice(0, 2).map((item) => (
+                    <button
+                      className="inbox-result-row"
+                      key={item.id}
+                      onClick={() => navigate(inboxDestination(item))}
+                    >
+                      <RivetIcon name="agent" size={18} />
+                      <span>
+                        <small>
+                          {originLabel[item.origin]} · Ready for review
+                        </small>
+                        <strong>{item.title}</strong>
                       </span>
-                      <span className={`inbox-origin ${item.origin}`}>
-                        {originLabel[item.origin] ?? "Recorded"}
-                      </span>
-                    </span>
-                    <strong>{item.title}</strong>
-                    {item.detail && (
-                      <span className="inbox-detail">{item.detail}</span>
-                    )}
-                  </span>
-                  <span className="inbox-order">
-                    <small>{item.order_number}</small>
-                    <span>{item.order_title}</span>
-                  </span>
-                  <span className="inbox-owner">
-                    {item.owner || "Unassigned"}
-                  </span>
-                  <span className="inbox-updated">{when(item.updated_at)}</span>
-                  <ArrowRight size={17} className="inbox-arrow" />
-                </button>
-              ))}
-            </div>
-          </>
+                      <ArrowRight size={16} />
+                    </button>
+                  ))}
+                  <details className="inbox-work-details">
+                    <summary>
+                      View {work.length}{" "}
+                      {work.length === 1 ? "work item" : "work items"}
+                    </summary>
+                    <div>
+                      {work.map((item) => (
+                        <button
+                          key={`${item.kind}:${item.id}`}
+                          className="inbox-detail-row"
+                          onClick={() => navigate(inboxDestination(item))}
+                        >
+                          <RivetIcon name={workIcon[item.kind]} size={18} />
+                          <span>
+                            <strong>{item.title}</strong>
+                            <small>{item.detail}</small>
+                          </span>
+                          <span className={`inbox-origin ${item.origin}`}>
+                            {originLabel[item.origin]}
+                          </span>
+                          <ArrowRight size={15} />
+                        </button>
+                      ))}
+                    </div>
+                  </details>
+                </article>
+              );
+            })}
+          </div>
         ) : (
           <Empty
             icon={<RivetIcon name="inbox" size={30} />}
@@ -274,13 +338,17 @@ export function RecordFeed({
         <div>
           <span className="eyebrow">Your workspace</span>
           <h1>Orders</h1>
-          <p>The drawings, comments, and decisions behind each custom order.</p>
+          <p>
+            Each job has one comment log, with the source drawings and response
+            history.
+          </p>
         </div>
-        <button className="primary" onClick={onNew}>
+        <button className="secondary" onClick={onNew}>
           <Plus size={17} />
-          New order
+          Create order manually
         </button>
       </div>
+      <RecordIntake navigate={navigate} orders={orders} />
       {account.demo && (
         <section className="record-demo-guide">
           <RivetIcon name="equipment" size={26} />
@@ -295,7 +363,7 @@ export function RecordFeed({
             disabled={!connectedDemo && !drawingDemo}
             onClick={() => {
               const example = connectedDemo || drawingDemo;
-              if (example) navigate(`order/${example.id}?tab=work`);
+              if (example) navigate(`order/${example.id}`);
             }}
           >
             Open sample <ArrowRight size={16} />
@@ -314,7 +382,7 @@ export function RecordFeed({
         </span>
         <button className="text-button" onClick={() => navigate("decisions")}>
           <RivetIcon name="inbox" size={16} />
-          Open work inbox <ArrowRight size={14} />
+          Open inbox <ArrowRight size={14} />
         </button>
       </div>
       <section className="order-feed-list">

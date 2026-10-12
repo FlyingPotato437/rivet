@@ -22,10 +22,13 @@ HEADINGS = [
     "Response author",
     "Review",
     "Linked email",
+    "Workflow",
 ]
 
 
 def rows(w, compact=False):
+    from .revision_review import workflow_status
+
     docs = {d["id"]: d for d in w["documents"]}
     refs = {id: f"D{i}" for i, id in enumerate(docs, 1)}
     sources = {sp["id"]: sp for sp in w["sources"]}
@@ -76,6 +79,7 @@ def rows(w, compact=False):
             c["responder"],
             c["confidence"],
             docs.get(c["linked_email_id"], {}).get("name", ""),
+            workflow_status(c).replace("_", " ").capitalize(),
         ]
 
 
@@ -88,9 +92,9 @@ def workbook(w):
     for row in rows(w):
         sheet.append([safe_cell(v) if isinstance(v, str) else v for v in row])
     sheet.freeze_panes = "F3"
-    sheet.auto_filter.ref = f"A2:N{sheet.max_row}"
+    sheet.auto_filter.ref = f"A2:O{sheet.max_row}"
     for i, width in enumerate(
-        [12, 15, 32, 14, 40, 65, 65, 25, 28, 15, 65, 25, 20, 30], 1
+        [12, 15, 32, 14, 40, 65, 65, 25, 28, 15, 65, 25, 20, 30, 24], 1
     ):
         sheet.column_dimensions[sheet.cell(2, i).column_letter].width = width
     changes = book.create_sheet("Change record")
@@ -125,6 +129,57 @@ def workbook(w):
                 ]
             ]
         )
+    from .revision_review import review_summary
+
+    checks = book.create_sheet("Revision checks")
+    checks.append(
+        [
+            "Comment",
+            "Revision",
+            "Check",
+            "Evidence-based reason",
+            "Source IDs",
+            "Human review required",
+        ]
+    )
+    for flag in review_summary(w)["flags"]:
+        checks.append(
+            [
+                safe_cell(v)
+                for v in [
+                    byid.get(flag["comment_id"], ""),
+                    flag["revision"],
+                    flag["title"],
+                    flag["detail"],
+                    ", ".join(flag["source_ids"]),
+                    "Yes",
+                ]
+            ]
+        )
+    approvals = book.create_sheet("Approval record")
+    approvals.append(
+        ["Label", "Recorded by", "Recorded at", "Record version", "Reason"]
+    )
+    for sh, widths in (
+        (changes, [36, 55, 55, 18, 18, 24, 26, 26, 30]),
+        (checks, [16, 18, 28, 80, 50, 25]),
+        (approvals, [40, 30, 32, 22, 70]),
+    ):
+        sh.freeze_panes = "A2"
+        for index, width in enumerate(widths, 1):
+            sh.column_dimensions[sh.cell(1, index).column_letter].width = width
+    for approval in w.get("approvals", []):
+        approvals.append(
+            [
+                safe_cell(str(approval.get(key, "")))
+                for key in ("label", "actor", "at", "version", "reason")
+            ]
+        )
+    approvals.append(
+        [
+            "A record approval does not certify design compliance or authorize production."
+        ]
+    )
     for sh in book:
         for row in sh:
             for cell in row:
@@ -135,6 +190,103 @@ def workbook(w):
     output = BytesIO()
     book.save(output)
     return output.getvalue()
+
+
+def drafting_workbook(w):
+    """Export only work that a person explicitly sent to drafting."""
+    from .revision_review import workflow_status
+
+    book = Workbook()
+    sheet = book.active
+    sheet.title = "Changes for drafting"
+    sheet.append([safe_cell(w["order"]["number"]), safe_cell(w["order"]["title"])])
+    sheet.append(
+        [
+            "Comment",
+            "Revision",
+            "Requested change",
+            "Recorded response",
+            "Source file",
+            "Source page",
+            "Author",
+            "Last updated",
+        ]
+    )
+    docs = {d["id"]: d for d in w["documents"]}
+    for c in w["comments"]:
+        if workflow_status(c) != "sent_to_drafting":
+            continue
+        sheet.append(
+            [
+                safe_cell(str(v or ""))
+                for v in [
+                    c["number"],
+                    c["revision"],
+                    c["text"],
+                    c["response"],
+                    docs.get(c["document_id"], {}).get("name", "Manual entry"),
+                    c.get("source_page"),
+                    c.get("author"),
+                    c.get("updated_at"),
+                ]
+            ]
+        )
+    sheet.freeze_panes = "C3"
+    sheet.auto_filter.ref = f"A2:H{sheet.max_row}"
+    for index, width in enumerate([14, 16, 70, 70, 40, 15, 28, 30], 1):
+        sheet.column_dimensions[sheet.cell(2, index).column_letter].width = width
+    for row in sheet:
+        for cell in row:
+            cell.alignment = Alignment(vertical="top", wrap_text=True)
+            if cell.row == 2:
+                cell.font = Font(color="FFFFFF", bold=True)
+                cell.fill = PatternFill("solid", fgColor="34323F")
+    output = BytesIO()
+    book.save(output)
+    return output.getvalue()
+
+
+def response_letter_html(w):
+    """No generated or unreviewed response becomes a customer commitment."""
+    e = lambda value: escape(str(value))
+    docs = {d["id"]: d for d in w["documents"]}
+    included = [
+        c
+        for c in w["comments"]
+        if c.get("reviewed") and c.get("response") and c.get("responder")
+    ]
+    unresolved = len(w["comments"]) - len(included)
+    body = "".join(
+        f"<section><h2>Comment {e(c['number'])} · Revision {e(c['revision'])}</h2>"
+        f'<p class="source">{e(docs.get(c["document_id"], {}).get("name", "Manual entry"))} · Source page {e(c.get("source_page") or "not recorded")}</p>'
+        f"<p><b>Customer comment</b><br>{e(c['text'])}</p>"
+        f"<p><b>Recorded response</b><br>{e(c['response'])}</p>"
+        f'<p class="source">Response recorded by {e(c["responder"])} · Status: {e(c["status"])}</p></section>'
+        for c in included
+    )
+    return f"""<html><head><title>Draft comment response letter</title><style>@page{{size:A4;margin:20mm}}body{{font:12px/1.55 Arial;color:#25232b}}h1{{font-size:26px}}h2{{font-size:15px}}section{{border-top:1px solid #ddd;padding-top:12px;margin-top:24px;break-inside:avoid}}p{{white-space:pre-wrap;overflow-wrap:anywhere}}.source{{color:#625d6b;font-size:10px}}.draft{{font-weight:bold;letter-spacing:1px}}</style></head><body><p class="draft">DRAFT · REVIEW BEFORE SENDING</p><h1>Submittal comment responses</h1><p>{e(w["order"]["number"])} · {e(w["order"]["title"])}<br>Customer: {e(w["order"]["customer"])}</p><p>{len(included)} reviewed responses included. {unresolved} comments do not yet have a reviewed response and are omitted from this letter. Check the complete comment log before issuing.</p>{body}<p class="source">Prepared from the saved record. Downloading does not send this letter, establish customer approval, or authorize production.</p></body></html>"""
+
+
+def response_letter(w):
+    return render_pdf(response_letter_html(w))
+
+
+def render_pdf(html, landscape=False):
+    from pathlib import Path
+
+    from playwright.sync_api import sync_playwright
+
+    with sync_playwright() as pw:
+        chrome = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+        browser = pw.chromium.launch(
+            **({"executable_path": str(chrome)} if chrome.exists() else {})
+        )
+        try:
+            page = browser.new_page()
+            page.set_content(html)
+            return page.pdf(format="A4", landscape=landscape, print_background=True)
+        finally:
+            browser.close()
 
 
 def pdf(w):

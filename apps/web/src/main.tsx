@@ -6,9 +6,6 @@ import "@fontsource-variable/schibsted-grotesk/wght.css";
 import "@fontsource/commit-mono/latin-400.css";
 import App from "./Root";
 import "./fonts.css";
-import "./styles.css";
-import "./app-refinement.css";
-import "./workspace-polish.css";
 const client = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: true } },
 });

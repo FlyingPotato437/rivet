@@ -1,60 +1,93 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { Landing } from "./Landing";
-import { Authentication, WorkspaceAccess } from "./Auth";
+import { Landing, PublicHeader, PublicFooter } from "./Landing";
+import { ArrowUpRight } from "@phosphor-icons/react";
+import "./public-site.css";
 
-const SharedRecord = lazy(() =>
-  import("./RecordWorkspace").then((m) => ({ default: m.SharedRecord })),
-);
-const WorkspaceApp = lazy(() => import("./App"));
-const isWorkspace = () =>
-  /^#(projects$|orders$|decisions$|bids$|order\/|quotes$|project\/|catalog$|activity$|settings$|guide$)/.test(
+// Workspace code and authentication are deliberately absent from the public build.
+// Private development remains available for demos and acceptance testing.
+const PrivateRoot = import.meta.env.DEV
+  ? lazy(() => import("./PrivateRoot"))
+  : null;
+const PilotPage = lazy(() => import("./PilotPage"));
+const workspaceRoute = () =>
+  /^#(projects$|orders$|decisions$|bids$|order\/|quotes$|project\/|catalog$|activity$|settings$|guide$|shared\/)/.test(
     location.hash,
   );
 
 export default function Root() {
-  const [, setHash] = useState(location.hash);
-  const [workspace, setWorkspace] = useState(isWorkspace);
+  const [url, setUrl] = useState(location.pathname + location.hash);
   useEffect(() => {
-    const change = () => {
-      setWorkspace(isWorkspace());
-      setHash(location.hash);
-    };
+    const change = () => setUrl(location.pathname + location.hash);
     window.addEventListener("hashchange", change);
-    return () => window.removeEventListener("hashchange", change);
+    window.addEventListener("popstate", change);
+    return () => {
+      window.removeEventListener("hashchange", change);
+      window.removeEventListener("popstate", change);
+    };
   }, []);
+  const pilot =
+    location.pathname.replace(/\/$/, "") === "/pilot" ||
+    location.hash === "#pilot";
+  const privateRoute =
+    workspaceRoute() ||
+    /^\/(app|orders|order|projects|workspace|sign-in|sign-up|shared)(\/|$)/.test(
+      location.pathname,
+    );
   useEffect(() => {
-    document.title = workspace
-      ? "Rivet | Workspace"
-      : "Rivet | Keep every order in sync.";
-    if (workspace || !location.hash || location.hash === "#home")
-      window.scrollTo(0, 0);
-    else document.getElementById(location.hash.slice(1))?.scrollIntoView();
-  }, [workspace]);
-  if (location.hash.startsWith("#shared/"))
+    document.title = pilot
+      ? "Request a pilot · Rivet"
+      : privateRoute && PrivateRoot
+        ? "Rivet | Workspace"
+        : "Rivet | Returned drawings. Ready-to-review work.";
+  }, [url, pilot, privateRoute]);
+  if (privateRoute && PrivateRoot)
     return (
       <Suspense
-        fallback={<div className="site-loading">Opening approved record…</div>}
+        fallback={
+          <div className="public-loading" role="status">
+            Opening your workspace…
+          </div>
+        }
       >
-        <Authentication>
-          <SharedRecord token={location.hash.slice(8)} />
-        </Authentication>
+        <PrivateRoot />
       </Suspense>
     );
-  return workspace ? (
-    <Suspense
-      fallback={
-        <div className="site-loading" role="status">
-          Opening your workspace…
-        </div>
-      }
-    >
-      <Authentication>
-        <WorkspaceAccess>
-          <WorkspaceApp />
-        </WorkspaceAccess>
-      </Authentication>
-    </Suspense>
-  ) : (
-    <Landing />
-  );
+  if (pilot)
+    return (
+      <Suspense
+        fallback={
+          <div className="public-loading" role="status">
+            Opening the booking calendar…
+          </div>
+        }
+      >
+        <PilotPage />
+      </Suspense>
+    );
+  if (privateRoute)
+    return (
+      <div className="rivet-public">
+        <PublicHeader />
+        <main className="public-closed public-wrap">
+          <p className="public-eyebrow">Private pilot</p>
+          <h1>
+            Let’s start with
+            <br />
+            your workflow.
+          </h1>
+          <p>
+            Rivet is onboarding pilot teams directly. Book a conversation to see
+            the product and discuss your returned-drawing process.
+          </p>
+          <a className="public-button" href="/pilot">
+            Request a pilot <ArrowUpRight />
+          </a>
+          <a className="public-text-link" href="/">
+            Explore Rivet
+          </a>
+        </main>
+        <PublicFooter />
+      </div>
+    );
+  return <Landing />;
 }

@@ -167,7 +167,36 @@ with TestClient(app, base_url="https://api.example.com") as client:
     completed = subprocess.run(
         [sys.executable, "-c", script],
         cwd=Path(__file__).resolve().parents[1],
-        env={**os.environ, **production_settings},
+        env={**os.environ, **production_settings, "RIVET_WORKSPACE_ENABLED": "true"},
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+
+
+def test_production_workspace_is_closed_by_default(production_settings):
+    script = r"""
+from fastapi.testclient import TestClient
+from backend.api.main import app
+with TestClient(app, base_url="https://api.example.com") as client:
+    for path in ["/api/auth/config", "/api/records", "/api/records/inbox", "/api/shared/example", "/api/orders/example/inbox", "/api/records/intake/example/source"]:
+        response = client.get(path, headers={"Authorization": "Bearer fake"})
+        assert response.status_code == 403, (path, response.status_code)
+        assert response.json()["detail"].startswith("Workspace access is not open")
+        assert response.headers["cache-control"] == "no-store"
+    for path in ["/api/demo/session", "/api/records/intake", "/api/webhooks/resend"]:
+        response = client.post(path, headers={"X-Rivet-Client": "workspace"}, json={})
+        assert response.status_code == 403, (path, response.status_code)
+    assert client.get("/api/pilot-requests").status_code == 405
+"""
+    env = {**os.environ, **production_settings}
+    env.pop("RIVET_WORKSPACE_ENABLED", None)
+    completed = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=Path(__file__).resolve().parents[1],
+        env=env,
         capture_output=True,
         text=True,
         timeout=30,

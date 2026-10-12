@@ -200,7 +200,8 @@ class Export(Row, Base):
 
 class Job(Row, Base):
     __tablename__ = "jobs"
-    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id"), index=True)
+    # Incoming team email exists before its order/project can be identified.
+    project_id: Mapped[str | None] = mapped_column(ForeignKey("projects.id"), index=True)
     kind: Mapped[str] = mapped_column(String(30))
     payload: Mapped[dict] = mapped_column(JSONB)
     status: Mapped[str] = mapped_column(String(30), default="queued")
@@ -345,9 +346,30 @@ class OrderInbox(Row, Base):
     enabled: Mapped[bool] = mapped_column(Boolean, default=True)
 
 
+class RecordIntake(Row, Base):
+    """A private incoming original that may not yet belong to an order."""
+
+    __tablename__ = "record_intakes"
+    name: Mapped[str] = mapped_column(String(240))
+    blob: Mapped[str] = mapped_column(String(90))
+    sha256: Mapped[str] = mapped_column(String(64), index=True)
+    status: Mapped[str] = mapped_column(String(30), default="needs_confirmation")
+    order_id: Mapped[str | None] = mapped_column(ForeignKey("orders.id"), index=True)
+    data: Mapped[dict] = mapped_column(JSONB, default=dict)
+
+
+class TeamInbox(Row, Base):
+    __tablename__ = "team_inboxes"
+    address: Mapped[str] = mapped_column(String(254), unique=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    __table_args__ = (UniqueConstraint("organization_id"),)
+
+
 class InboundEmail(Row, Base):
     __tablename__ = "inbound_emails"
-    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    order_id: Mapped[str | None] = mapped_column(ForeignKey("orders.id"), index=True)
+    team_inbox_id: Mapped[str | None] = mapped_column(ForeignKey("team_inboxes.id"), index=True)
+    intake_id: Mapped[str | None] = mapped_column(ForeignKey("record_intakes.id"), index=True)
     provider_id: Mapped[str] = mapped_column(String(100), unique=True)
     status: Mapped[str] = mapped_column(String(30), default="queued")
     document_id: Mapped[str | None] = mapped_column(ForeignKey("documents.id"))

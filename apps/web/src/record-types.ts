@@ -13,6 +13,12 @@ export type RecordComment = {
   target_source_id: string;
   linked_email_id: string;
   status: "open" | "responded" | "closed";
+  workflow_status?:
+    | "needs_review"
+    | "needs_response"
+    | "sent_to_drafting"
+    | "awaiting_customer"
+    | "resolved";
   response: string;
   responder: string;
   reviewed: boolean;
@@ -59,6 +65,7 @@ export type RecordApproval = {
   version: number;
 };
 export type RecordView = {
+  revision_review?: RevisionReview;
   coordination?: RecordCoordinationView;
   connections: {
     comments: Record<
@@ -120,6 +127,28 @@ export type RecordView = {
     created_at: string;
     expires_at: string;
   }[];
+};
+export type RevisionFlagKind =
+  "new" | "repeated" | "unresolved" | "late_change" | "scope_change";
+export type RevisionFlag = {
+  id: string;
+  kind: RevisionFlagKind;
+  title: string;
+  detail: string;
+  comment_id: string;
+  prior_comment_id?: string;
+  source_ids: string[];
+  revision?: string;
+  prior_revision?: string;
+  evidence?: unknown;
+  requires_review: boolean;
+  origin: "automatic";
+};
+export type RevisionReview = {
+  flags: RevisionFlag[];
+  counts: Partial<Record<RevisionFlagKind, number>>;
+  latest_revision: string;
+  limitations?: string[];
 };
 export type CoordinationRole = "pm" | "drafting" | "production" | "commercial";
 export type CoordinationSuggestion = {

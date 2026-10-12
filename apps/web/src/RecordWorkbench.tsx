@@ -19,6 +19,7 @@ import {
 } from "./RecordAgent";
 import type { RecordView, RecordComment } from "./record-types";
 import { DRAWING_REFERENCE_GOAL } from "./record-agent-intents";
+import { commentWorkflow, workflowLabels } from "./RevisionReview";
 
 type Props = {
   w: RecordView;
@@ -36,6 +37,7 @@ type Props = {
   save: (path: string, body: unknown) => Promise<boolean>;
   busy: boolean;
   error: string;
+  editRequested?: boolean;
   renderEditor: (close: () => void) => ReactNode;
 };
 
@@ -55,6 +57,7 @@ export function RecordWorkbench({
   save,
   busy,
   error,
+  editRequested = false,
   renderEditor,
 }: Props) {
   const [queueOpen, setQueueOpen] = useState(false);
@@ -112,8 +115,8 @@ export function RecordWorkbench({
         .includes(query.toLowerCase()),
   );
   useEffect(() => {
-    setEditing(selectedId === "new");
-  }, [selectedId]);
+    setEditing(selectedId === "new" || editRequested);
+  }, [selectedId, editRequested]);
   const select = (item: RecordComment) => {
     selectComment(item.id);
     openSource(item.target_source_id || item.source_ids[0] || item.document_id);
@@ -378,7 +381,7 @@ export function RecordWorkbench({
               onClick={() => setAgentOpen(false)}
             >
               <RivetIcon name="comment" size={16} />
-              Record
+              Comment & response
             </button>
             <button aria-pressed={agentOpen} onClick={() => setAgentOpen(true)}>
               <RivetIcon name="agent" size={16} />
@@ -469,6 +472,45 @@ export function RecordWorkbench({
                     : ""}
                 </p>
                 <CommentAttribution comment={comment} />
+                {w.revision_review?.flags.some(
+                  (flag) =>
+                    flag.comment_id === comment.id && flag.kind !== "new",
+                ) && (
+                  <section
+                    className="workbench-revision-flags"
+                    aria-label="Revision checks for this comment"
+                  >
+                    <h3>Revision checks</h3>
+                    {w.revision_review.flags
+                      .filter(
+                        (flag) =>
+                          flag.comment_id === comment.id && flag.kind !== "new",
+                      )
+                      .map((flag) => (
+                        <div key={flag.id}>
+                          <strong>{flag.title}</strong>
+                          <p>{flag.detail}</p>
+                          <small>
+                            Automatic record check · needs confirmation
+                          </small>
+                          {flag.prior_comment_id && (
+                            <button
+                              className="text-button"
+                              onClick={() => {
+                                const prior = w.comments.find(
+                                  (item) => item.id === flag.prior_comment_id,
+                                );
+                                if (prior) select(prior);
+                              }}
+                            >
+                              Open prior comment
+                              <ArrowUpRight size={13} />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                  </section>
+                )}
                 <section className="workbench-context-section">
                   <h3>Source annotation</h3>
                   <button
@@ -544,7 +586,7 @@ export function RecordWorkbench({
                   <div className="workbench-section-title">
                     <h3>Manufacturer response</h3>
                     <span className={"record-status " + comment.status}>
-                      {comment.status}
+                      {workflowLabels[commentWorkflow(comment)]}
                     </span>
                   </div>
                   {comment.response ? (

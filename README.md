@@ -2,7 +2,9 @@
 
 Rivet builds a comment and change record for custom equipment orders. The PM reviews extracted comments, links the correct drawing location, records the team's response, and preserves who requested or approved each change. Customer and production teams can receive the same reviewed record.
 
-The **Work inbox** brings comments, prepared AI work, and team assignments across orders into one actionable list. Each order opens a drawing-first **Review work** view: the source stays beside a **Record / Rivet work** inspector. **Comment log**, **Sources**, **Changes**, and **Sharing** preserve the detailed record. Durable agents investigate references and prepare cited internal changes for human review. No engineering fix suggestions or automatic sending are part of this version.
+The **Inbox** begins with a returned PDF or forwarded/saved email. Rivet matches explicit job and revision identifiers, asks for confirmation when uncertain, and opens a spreadsheet-style **Comment log** with evidence-linked revision checks. Click a comment to review the source and response together. Export a response letter, Excel log, drafting list, or email brief. Existing durable agents investigate references and prepare cited internal changes for human review. Engineering and commercial decisions remain with people.
+
+The public production website is **marketing-only**. `/pilot` embeds the founder’s Cal.com calendar. Private app code and authentication are excluded from the public build, and production API workspace access is closed by default. See [public pilot release](docs/public-pilot-release.md) and [inbox-first adoption](docs/inbox-first-adoption.md).
 
 [Current comment-record architecture and boundaries](docs/comment-record-architecture.md).
 
@@ -32,23 +34,17 @@ Open **http://127.0.0.1:5178**. API documentation is at **http://127.0.0.1:8787/
 
 ## Deploy
 
-Deploy the repository root (`./`) to Vercel as **Vite**, with `VITE_API_URL` set to the HTTPS origin
-of your hosted API. Run FastAPI, the durable worker, and PostgreSQL using
-`compose.production.yml` on a server. The API and worker share a persistent
-document volume; Caddy provides HTTPS. The image includes Chromium for PDF
-exports. Production requires a production Clerk instance, exact allowed
-frontend origins, and Organizations; development demo access stays disabled.
+Deploy the repository root (`./`) to Vercel as **Vite** with `npm run build` and Node 24. This builds the public product site and embedded pilot calendar without an API dependency or sign-in entry point.
 
-See [deployment instructions](docs/deployment.md) for the environment template,
-Vercel settings, migration/startup commands, backups, and verification. The code
-and configuration are included; server provisioning, DNS, credentials, and
-production sign-in/email checks remain deployment steps.
+For a future private pilot deployment, FastAPI, the durable worker, PostgreSQL, persistent document storage, and production Clerk must be configured separately. Production APIs remain closed unless deliberately enabled. The current public frontend cannot open the app by changing a URL or environment variable.
+
+See [public release boundaries](docs/public-pilot-release.md) and [infrastructure deployment instructions](docs/deployment.md).
 
 ## The order workflow
 
-Open `/#orders` for the order feed or `/#decisions` for the **Work inbox**. An inbox item opens its comment, task, or prepared change directly. Each order starts in **Review work**, with the source and selected comment together.
+In local development, open `/#decisions` for the **Inbox** or `/#orders` for the order directory. Each order starts with its comment log, actual revision flags, and export actions. A comment opens its source and editable response in one step.
 
-1. Create an order in any equipment category. Add marked-up PDFs, drawings, or saved EML emails with attachments. Specify the revision you know; unknown values remain unconfirmed.
+1. Drop in a returned PDF, saved EML email, or text comment log. Explicit job/revision identifiers match an existing order or create a new one. Uncertain or conflicting identifiers ask for confirmation. With verified Resend receiving configured, a team forwarding address feeds the same intake; no order setup is required first.
 2. Review the queue's proposed source links and clarification drafts. Exact, unambiguous references can be linked internally with an explanation and guarded undo; unclear cases remain for review. Native PDF annotations retain their author, source date, page, and region. The source page and the referenced drawing are separate fields. Scanned areas require transcription.
 3. Correct the extracted text, link the actual drawing location, record a response and its author, and set open/responded/closed explicitly. Each save retains the original text, actor, reason, and before/after values.
 4. Compare two source documents, then record confirmed changes with before/after values, linked comments, requester, approver, and date. Text comparison does not inspect drawing geometry.
@@ -81,9 +77,12 @@ Preparation verifies original SHA-256 hashes and preserves selected original pag
 - `backend/records/inbox.py`: tenant-scoped actionable work across orders.
 - `backend/records/assistant.py` and `conversations.py`: read-only cited questions and private persisted conversation history.
 - `backend/records/api.py`: application endpoints and saved-email attachment intake.
-- `backend/records/exports.py`: Excel comment/change logs and PDF response matrices.
+- `backend/records/intake.py`: tenant-scoped intake, conservative matching, explicit confirmation, and duplicate protection.
+- `backend/records/revision_review.py`: record-based repeated/open/after-approval/commercial-language checks with source evidence.
+- `backend/records/delivery.py`: reviewed email brief drafts and connection readiness.
+- `backend/records/exports.py`: Excel comment logs, drafting lists, response letters, and approval worksheets.
 - `backend/ingestion/parser.py`: durable parsing of immutable originals, source areas, annotations and email metadata.
-- `apps/web/src/RecordFeed.tsx`, `RecordWorkspace.tsx`, `RecordWorkbench.tsx`, `RecordAgent.tsx`, and `OrderEvidence.tsx`: the work inbox, drawing-first review, task results, and PDF source viewer.
+- `apps/web/src/RecordFeed.tsx`, `RecordWorkspace.tsx`, `RecordWorkbench.tsx`, `RecordAgent.tsx`, and `OrderEvidence.tsx`: the inbox, spreadsheet-style comment log, direct source review, task results, and PDF viewer.
 - `apps/web/src/RecordCoordination.tsx`: suggestions, assignments, activity, source navigation and coordination settings.
 
 For a repeatable connected-workflow walkthrough, use [the fictional connected review](examples/connected-review/README.md). It uses the normal ingestion pipeline, including ambiguous and missing references, with a separate revision to upload later.

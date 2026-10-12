@@ -11,6 +11,19 @@ class Write(StrictModel):
     reason: str = Field(min_length=3, max_length=2000)
 
 
+WorkflowStatus = Literal[
+    "needs_review",
+    "needs_response",
+    "sent_to_drafting",
+    "awaiting_customer",
+    "resolved",
+]
+
+
+class WorkflowWrite(Write):
+    workflow_status: WorkflowStatus
+
+
 class CommentWrite(Write):
     text: str = Field(min_length=1, max_length=16000)
     number: str = Field(min_length=1, max_length=40)
@@ -23,6 +36,7 @@ class CommentWrite(Write):
     target_source_id: str = ""
     linked_email_id: str = ""
     reviewed: bool = False
+    workflow_status: WorkflowStatus | None = None
 
 
 class ChangeWrite(Write):

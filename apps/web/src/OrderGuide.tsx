@@ -1,4 +1,5 @@
 import { ArrowRight, DownloadSimple, FilePdf } from "@phosphor-icons/react";
+import { AdoptionReadiness } from "./Integrations";
 const files = import.meta.glob("../../../examples/order-replay/*.pdf", {
   eager: true,
   query: "?url",
@@ -6,28 +7,28 @@ const files = import.meta.glob("../../../examples/order-replay/*.pdf", {
 }) as Record<string, string>;
 const steps = [
   [
-    "Import the submittal and comments",
-    "Create an order for any custom equipment category. Add drawing files, review markups, and saved EML emails. Choose the document role and revision. Supported email attachments are imported with their parent message.",
+    "Drop in the returned drawing",
+    "Start with a marked-up PDF or saved EML email. Include the job number and revision when you know them. Rivet keeps the original, extracts available comments, and asks you to confirm uncertain matches.",
   ],
   [
-    "Check the comment log",
-    "Each row retains its original text, author and date when stated, source page, response, and review status. Open a row to correct fields. Link the drawing area it actually refers to, even when the markup is on a different page. Missing or uncertain details remain flagged.",
+    "Review the comments that need attention",
+    "The comment log keeps the original wording and a link to its source page. Review repeated or previously open comments, changes after an approved record, and possible scope changes. These are review cues. Rivet does not decide engineering compliance or commercial entitlement.",
   ],
   [
-    "Record responses and changes",
-    "Write the manufacturer’s response and name its author. Set Open, Responded, or Closed explicitly. Compare text from two revisions and record confirmed changes, with related comments and the person who requested or approved them. Rivet does not suggest engineering fixes.",
+    "Confirm the response and next step",
+    "Use the original drawing beside each comment. Correct uncertain authors or page references, record the response and its author, and assign drafting work. AI-prepared work stays marked for review until a person accepts it.",
   ],
   [
-    "Approve a version of the record",
-    "After reviewing every row, save an approved record. It can still contain open comments. A read-only link shows that exact version; later working edits do not alter it. Links expire after 30 days and can be revoked.",
+    "Send the files your team already uses",
+    "Download the Excel comment log, response PDF, or an email review brief. Choose recipients and send from your own email app. An approved record preserves who reviewed it and when; approval of the record is separate from engineering approval of the equipment.",
   ],
   [
-    "Prepare communication",
-    "Add customer, manufacturer, and production recipients. Record changes create email drafts for those recipients. Download and send from your email app, with the Excel comment log or PDF response matrix. Nothing is sent automatically.",
+    "Bring the next revision back",
+    "Add the returned revision to the same order. Rivet compares the extracted comments with the earlier revision and surfaces items needing another look. A comment disappearing from the PDF does not prove the drawing was corrected; confirm that from the source.",
   ],
 ];
 export function OrderGuide({
-  onNew,
+  navigate,
 }: {
   onNew: () => void;
   navigate: (to: string) => void;
@@ -36,15 +37,15 @@ export function OrderGuide({
     <main className="page guide-page order-replay-guide">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">Comment and change records</span>
-          <h1>Workflow guide</h1>
+          <span className="eyebrow">Get started</span>
+          <h1>From returned drawing to response</h1>
           <p>
-            Build, review, and share the communication record for a custom
-            order.
+            Start with one revision. Review the exceptions, then export the
+            response.
           </p>
         </div>
-        <button className="primary" onClick={onNew}>
-          New order <ArrowRight size={16} />
+        <button className="primary" onClick={() => navigate("decisions")}>
+          Add returned drawing <ArrowRight size={16} />
         </button>
       </div>
       <div className="guide-steps">
@@ -66,6 +67,9 @@ export function OrderGuide({
             and revision comparisons. Your own orders do not depend on this
             package.
           </p>
+          <button className="text-button" onClick={() => navigate("orders")}>
+            Open your order list <ArrowRight size={15} />
+          </button>
         </div>
         <div className="order-guide-files">
           {Object.entries(files)
@@ -81,18 +85,7 @@ export function OrderGuide({
             ))}
         </div>
       </article>
-      <section className="order-guide-note">
-        <h2>Current integration status</h2>
-        <p>
-          Document uploads, EML imports, source links, editable logs, text
-          comparisons, approved snapshots, local read-only links, and exports
-          are available. Sign-in and team membership use Clerk. Email setup and
-          receiving access are shown in Workspace settings. Automatic forwarding
-          requires a deployed receiving endpoint; visual drawing interpretation
-          is not connected. Engineering checks and proposal tools are retained
-          for later stages, outside the main record workflow.
-        </p>
-      </section>
+      <AdoptionReadiness compact />
     </main>
   );
 }

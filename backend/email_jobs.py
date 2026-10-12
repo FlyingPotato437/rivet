@@ -1,25 +1,53 @@
 """Durable Resend work, scoped to the job's organization by the worker."""
 
 from datetime import timedelta
+
 from backend import mail
 from backend.domain.service import fail, get, scoped
 from backend.email_api import addresses
 from backend.orders.service import lock_order
 from backend.records.email_intake import import_email
 from backend.storage.db import Session
-from backend.storage.models import InboundEmail, OrderInbox, NoticeDelivery, now
+from backend.storage.models import (
+    InboundEmail,
+    NoticeDelivery,
+    OrderInbox,
+    TeamInbox,
+    now,
+)
 
 
 def receive(email_id):
     with Session() as s:
         email = get(s, InboundEmail, email_id)
-        if email.status == "imported":
+        if email.status in {"imported", "needs_confirmation"}:
             return
         provider_id = email.provider_id
     metadata, data = mail.raw_email(provider_id)
     with Session.begin() as s:
         email = get(s, InboundEmail, email_id, True)
-        if email.status == "imported":
+        if email.status in {"imported", "needs_confirmation"}:
+            return
+        if email.team_inbox_id:
+            inbox = get(s, TeamInbox, email.team_inbox_id)
+            if not inbox.enabled or inbox.address not in addresses(metadata):
+                fail(
+                    "The received email does not match this team’s forwarding address."
+                )
+            from backend.records.intake import receive as receive_intake
+
+            result = receive_intake(
+                s, "forwarded-" + provider_id + ".eml", data, forwarded=True
+            )
+            email.intake_id = result["intake_id"]
+            email.order_id = result.get("order_id")
+            email.document_id = result.get("document_id")
+            email.status = (
+                "needs_confirmation"
+                if result["status"] == "needs_confirmation"
+                else "imported"
+            )
+            email.error = ""
             return
         order = lock_order(s, email.order_id)
         inbox = s.scalar(

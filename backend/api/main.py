@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request, UploadFile, File, Form, Header, HTTPExcept
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-from backend.config import allowed_origins, allowed_hosts, validate_configuration, production
+from backend.config import allowed_origins, allowed_hosts, validate_configuration, production, workspace_enabled
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from backend.storage.db import Session, BLOBS, ROOT
@@ -62,6 +62,8 @@ async def workspace_boundary(request, call_next):
     mode = auth_mode()
     local_only = os.getenv("RIVET_LOCAL_ONLY", "true") == "true"
     try:
+        if not workspace_enabled() and request.url.path not in {"/api/health", "/api/pilot-requests"}:
+            raise HTTPException(403, "Workspace access is not open. Request a pilot at /pilot.")
         if mode not in {"local", "clerk"} or (not local_only and mode != "clerk"):
             raise HTTPException(
                 503, "Shared access requires configured authentication."
@@ -1080,6 +1082,11 @@ app.include_router(orders_router)
 from backend.records.api import router as records_router
 
 app.include_router(records_router)
+
+from backend.records.intake import router as intake_router
+from backend.records.delivery import router as delivery_router
+app.include_router(intake_router)
+app.include_router(delivery_router)
 
 from backend.records.conversations import router as conversations_router
 from backend.records.inbox import router as record_inbox_router

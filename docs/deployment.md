@@ -1,3 +1,5 @@
+> **Public pilot release (October 2026):** `npm run build` now creates a marketing-only site with an embedded Cal.com calendar at `/pilot`. Workspace/authentication code is excluded. Production APIs are closed by default. The infrastructure guidance below applies to a future private pilot deployment; follow [public-pilot-release.md](public-pilot-release.md) for the current launch.
+
 # Deploy Rivet
 
 Rivet has a Vite frontend, a FastAPI service, a durable worker, PostgreSQL, and

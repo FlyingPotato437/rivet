@@ -53,7 +53,7 @@ export default function App() {
   const account = useAccount();
   const qc = useQueryClient();
   const [route, setRoute] = useState(
-    () => location.hash.slice(1) || "projects",
+    () => location.hash.slice(1) || "decisions",
   );
   const [newOrder, setNewOrder] = useState(false);
   const orders = useOrders();
@@ -83,7 +83,7 @@ export default function App() {
   }, []);
   const notify = useCallback((message: string) => setToast(message), []);
   useEffect(() => {
-    const f = () => setRoute(location.hash.slice(1) || "projects");
+    const f = () => setRoute(location.hash.slice(1) || "decisions");
     window.addEventListener("hashchange", f);
     return () => window.removeEventListener("hashchange", f);
   }, []);
@@ -184,7 +184,7 @@ export default function App() {
             onClick={() => navigate("decisions")}
           >
             <RivetIcon name="inbox" size={19} />
-            Work inbox
+            Inbox
             {decisions > 0 && <span className="nav-count">{decisions}</span>}
           </button>
           <button
@@ -305,7 +305,7 @@ export default function App() {
                 {
                   projects: "Orders",
                   orders: "Orders",
-                  decisions: "Work inbox",
+                  decisions: "Inbox",
                   bids: "Bid queue",
                   quotes: "Quotes",
                   catalog: "Equipment catalog",

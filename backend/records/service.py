@@ -427,7 +427,7 @@ def view(s, order, record=None):
             scoped(NoticeDelivery).where(NoticeDelivery.order_id == order.id)
         )
     }
-    return {
+    result = {
         "coordination": projection(record.data, docs, sources, delivery_by_notice),
         "notice_deliveries": {
             notice_id: delivery["status"]
@@ -470,6 +470,12 @@ def view(s, order, record=None):
             "hosted_sharing": not email["local_only"],
         },
     }
+    from .revision_review import review_summary, workflow_status
+
+    for comment in result["comments"]:
+        comment["workflow_status"] = workflow_status(comment)
+    result["revision_review"] = review_summary(result)
+    return result
 
 
 def change_record(s, order, record, body, kind, item_id=""):
@@ -499,6 +505,10 @@ def change_record(s, order, record, body, kind, item_id=""):
         if body.status == "closed" and not body.reviewed:
             fail("Review the comment and its location before closing it.", 422)
         before = deepcopy(item)
+        if body.workflow_status is None:
+            values.pop("workflow_status", None)
+            if item and body.status != item.get("status"):
+                item.pop("workflow_status", None)
         if item is None:
             item = {
                 "id": uid(),
@@ -516,10 +526,29 @@ def change_record(s, order, record, body, kind, item_id=""):
             updated_at=stamp(),
             confidence="PM reviewed" if body.reviewed else "Needs review",
         )
+        if body.workflow_status:
+            set_workflow(item, body.workflow_status)
         event(
             data,
             kind,
             f"{'Updated' if before else 'Added'} comment {body.number}",
+            body.actor,
+            before,
+            deepcopy(item),
+            body.reason,
+            item["id"],
+        )
+    elif kind == "workflow":
+        item = next((c for c in data["comments"] if c["id"] == item_id), None)
+        if not item:
+            fail("Comment not found.", 404)
+        before = deepcopy(item)
+        set_workflow(item, body.workflow_status)
+        item["updated_at"] = stamp()
+        event(
+            data,
+            "comment",
+            "Updated workflow for comment " + item["number"],
             body.actor,
             before,
             deepcopy(item),
@@ -647,6 +676,26 @@ def change_record(s, order, record, body, kind, item_id=""):
     order.updated_at = now()
     s.flush()
     return view(s, order, record)
+
+
+def set_workflow(comment, status):
+    if status != "needs_review" and not comment.get("reviewed"):
+        fail("Review the comment and its source before moving it forward.", 422)
+    if status in {"awaiting_customer", "resolved"} and (
+        not comment.get("response") or not comment.get("responder")
+    ):
+        fail("Save a response and its author before recording this status.", 422)
+    comment["workflow_status"] = status
+    comment["status"] = (
+        "closed"
+        if status == "resolved"
+        else "responded"
+        if status == "awaiting_customer"
+        else "open"
+    )
+    if status == "needs_review":
+        comment["reviewed"] = False
+        comment["confidence"] = "Needs review"
 
 
 def share(s, order, record, body):
