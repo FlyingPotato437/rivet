@@ -1,26 +1,17 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
   Check,
-  FilePdf,
-  FileXls,
-  Paperclip,
-  ArrowBendDownRight,
-  EnvelopeSimple,
   X,
   Pause,
   Play,
-  Warning,
-  CheckCircle,
+  IconContext,
 } from "@phosphor-icons/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Mark } from "./ui";
 import { RivetField } from "./LandingMotion";
-
-gsap.registerPlugin(ScrollTrigger);
+import { usePublicMotion } from "./usePublicMotion";
 
 export function PublicHeader({ booking = false }: { booking?: boolean }) {
   return (
@@ -108,73 +99,228 @@ const sampleComments = [
     previous: "New request · commercial review required.",
   },
 ];
-function DrawingVisual({ annotated = true }: { annotated?: boolean }) {
+function FileStamp({ format }: { format: "PDF" | "XLS" | "EML" }) {
+  return (
+    <span
+      className={`public-file-stamp format-${format.toLowerCase()}`}
+      aria-hidden="true"
+    >
+      <span>{format}</span>
+    </span>
+  );
+}
+
+function ProcessTrack() {
+  return (
+    <div
+      className="public-process-track public-wrap"
+      aria-label="From returned documents to reviewed outputs"
+    >
+      <svg
+        className="public-process-connector"
+        viewBox="0 0 1000 4"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path d="M0 2H1000" stroke="currentColor" strokeOpacity=".18" />
+        <path
+          className="public-process-line"
+          d="M0 2H1000"
+          stroke="currentColor"
+          pathLength="1000"
+          strokeDasharray="1000"
+        />
+      </svg>
+      <div className="public-process-node">
+        <span className="public-process-index">01</span>
+        <span>
+          Returned drawings<span>Start with your PDF or email</span>
+        </span>
+      </div>
+      <div className="public-process-node">
+        <span className="public-process-index">02</span>
+        <span>
+          Linked comments<span>Every flag leads to its source</span>
+        </span>
+      </div>
+      <div className="public-process-node">
+        <span className="public-process-index">03</span>
+        <span>
+          Reviewed outputs<span>Your team approves the handoff</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function DrawingVisual({
+  focus = 0,
+  compact = false,
+}: {
+  focus?: number;
+  compact?: boolean;
+}) {
+  const gridId = useId();
   return (
     <svg
-      className="public-drawing"
-      viewBox="0 0 500 285"
+      className={`public-drawing drawing-focus-${focus}`}
+      viewBox={compact ? "28 28 450 220" : "0 0 500 300"}
       role="img"
-      aria-label="Illustrative switchgear drawing with a marked cable entry"
+      aria-label={`Illustrative switchgear drawing: ${["cable entry location", "enclosure depth change", "additional spare feeder"][focus]}`}
     >
       <defs>
         <pattern
-          id="drawing-grid"
-          width="20"
-          height="20"
+          id={gridId}
+          width="12"
+          height="12"
           patternUnits="userSpaceOnUse"
         >
           <path
-            d="M20 0H0V20"
+            d="M12 0H0V12"
             fill="none"
             stroke="currentColor"
-            strokeWidth=".2"
-            opacity=".3"
+            strokeWidth=".25"
+            opacity=".22"
           />
         </pattern>
       </defs>
-      <rect width="500" height="285" fill="url(#drawing-grid)" />
-      <g stroke="currentColor" fill="none" strokeWidth="1.2">
-        <path d="M68 51H412V238H68zM68 218H412M153 51V218M240 51V218M325 51V218M81 75h58v50H81zM166 75h60v50h-60zM253 75h59v50h-59zM338 75h60v50h-60zM93 144h35v54H93zM178 144h35v54h-35zM265 144h35v54h-35zM350 144h35v54h-35zM87 100h44M172 100h48M260 100h45M344 100h47M69 30h343M68 25v10M412 25v10M438 51v188M432 51h12M432 238h12" />
-        <path d="M90 232h28m57 0h28m58 0h28m57 0h28" strokeWidth="2" />
+      <rect width="500" height="300" fill={`url(#${gridId})`} />
+      <g stroke="currentColor" fill="none" strokeWidth="1.1">
+        <path d="M38 38H424V238H38zM38 218H424M134 38V218M231 38V218M327 38V218" />
+        {[53, 150, 246, 343].map((x) => (
+          <g key={x}>
+            <rect
+              x={x}
+              y="58"
+              width="65"
+              height="57"
+              rx="1"
+              fill="currentColor"
+              fillOpacity=".025"
+            />
+            <path
+              d={`M${x + 8} 98h49m-49-8h49M${x + 13} 132h40v65h-40zM${x + 17} 149h32m-32 10h32m-32 10h32M${x + 54} 151v15`}
+            />
+            <circle cx={x + 32} cy="75" r="6" />
+            <path d={`M${x + 32} 69v12m-6-6h12M${x + 8} 228h49`} />
+          </g>
+        ))}
+        <path
+          d="M38 20H424M38 16v8M424 16v8M450 38v200M446 38h8M446 238h8"
+          opacity=".6"
+        />
+        <rect x="16" y="258" width="468" height="29" />
+        <path d="M327 258v29M400 258v29" />
       </g>
       <g fill="currentColor" fontSize="8" fontFamily="monospace">
-        <text x="206" y="23">
+        <text x="184" y="15">
           GENERAL ARRANGEMENT
         </text>
-        <text x="77" y="266">
-          E-10 / LV SWITCHGEAR
+        <text x="26" y="276">
+          LV SWITCHGEAR / RETURNED SUBMITTAL
         </text>
-        <text x="347" y="266">
+        <text x="338" y="276">
+          E-{focus === 0 ? "10" : focus === 1 ? "04" : "06"}
+        </text>
+        <text x="414" y="276">
           REV C
         </text>
+        <text x="459" y="135" transform="rotate(90 459 135)">
+          FRONT ELEVATION
+        </text>
       </g>
-      {annotated && (
-        <g
-          className="public-drawing-mark"
-          fill="none"
-          stroke="#cbb0f0"
-          strokeWidth="2"
-        >
-          <path d="M82 203q-10-9 0-15q-6-11 7-12q4-12 15-5q10-8 16 1q13-3 15 9q11 4 3 15q4 12-10 12q-5 11-17 4q-13 8-16-4q-10 3-13-5Z" />
-          <path d="M140 189l30-38h86" />
-          <circle cx="270" cy="151" r="12" />
-          <text x="265" y="155" fontSize="11" fill="#cbb0f0" stroke="none">
-            07
-          </text>
-        </g>
-      )}
+      <g
+        className="public-drawing-mark"
+        fill="none"
+        stroke="var(--drawing-ink)"
+        strokeWidth="2"
+      >
+        {focus === 0 ? (
+          <>
+            <path d="M52 208q-10-9 0-15q-6-11 7-12q4-12 15-5q10-8 16 1q13-3 15 9q11 4 3 15q4 12-10 12q-5 11-17 4q-13 8-16-4q-10 3-13-5Z" />
+            <path d="M112 191l29-44h56" />
+            <circle cx="212" cy="147" r="13" />
+            <text
+              x="205"
+              y="151"
+              fontSize="10"
+              fill="var(--drawing-ink)"
+              stroke="none"
+            >
+              07
+            </text>
+          </>
+        ) : focus === 1 ? (
+          <>
+            <path d="M429 40h40v200h-40M467 137h-38" strokeDasharray="4 3" />
+            <circle cx="414" cy="137" r="13" />
+            <text
+              x="407"
+              y="141"
+              fontSize="10"
+              fill="var(--drawing-ink)"
+              stroke="none"
+            >
+              08
+            </text>
+          </>
+        ) : (
+          <>
+            <rect
+              x="255"
+              y="127"
+              width="49"
+              height="76"
+              strokeDasharray="4 3"
+            />
+            <path d="M282 127V109h-50" />
+            <circle cx="217" cy="109" r="13" />
+            <text
+              x="210"
+              y="113"
+              fontSize="10"
+              fill="var(--drawing-ink)"
+              stroke="none"
+            >
+              09
+            </text>
+          </>
+        )}
+      </g>
+      <rect
+        className="public-drawing-scan"
+        x="18"
+        y="35"
+        width="450"
+        height="3"
+        fill="var(--drawing-ink)"
+        opacity=".28"
+      />
     </svg>
   );
 }
 function WorkflowDemo() {
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(
-    () => !matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () =>
+      !matchMedia("(prefers-reduced-motion: reduce), (max-width: 800px)")
+        .matches,
   );
   const [selected, setSelected] = useState<number | null>(null);
   const [output, setOutput] = useState(0);
+  const [preview, setPreview] = useState(0);
   const view = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const preference = matchMedia(
+      "(prefers-reduced-motion: reduce), (max-width: 800px)",
+    );
+    const update = () => {
+      if (preference.matches) setPlaying(false);
+    };
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
@@ -210,7 +356,15 @@ function WorkflowDemo() {
     );
   };
   return (
-    <div className="public-demo" ref={view}>
+    <div
+      className="public-demo"
+      ref={view}
+      data-playing={playing}
+      onFocusCapture={(event) => {
+        if (!(event.target as HTMLElement).closest(".public-demo-play"))
+          setPlaying(false);
+      }}
+    >
       <div className="public-demo-rail">
         <p className="public-eyebrow">The daily workflow</p>
         <div
@@ -257,6 +411,7 @@ function WorkflowDemo() {
         <div className="public-demo-control">
           <span>Illustrative workflow</span>
           <button
+            className="public-demo-play"
             aria-label={playing ? "Pause demonstration" : "Play demonstration"}
             onClick={() => setPlaying(!playing)}
           >
@@ -283,7 +438,7 @@ function WorkflowDemo() {
             Job 24-118 <span className="public-revision-label">Rev C</span>
           </span>
         </div>
-        <div className="public-demo-scene" key={step}>
+        <div className="public-demo-scene" key={step} inert={selected !== null}>
           {step === 0 && (
             <div className="public-mail-scene">
               <div className="public-mail-heading">
@@ -303,14 +458,14 @@ function WorkflowDemo() {
               </p>
               <div className="public-pdf-attachment">
                 <div>
-                  <FilePdf size={19} />
+                  <FileStamp format="PDF" />
                   <span>24-118_Rev-C_returned.pdf</span>
                   <span>12 pages</span>
                 </div>
                 <DrawingVisual />
               </div>
               <div className="public-forward-line">
-                <ArrowBendDownRight size={21} />
+                <span className="public-forward-trace" aria-hidden="true" />
                 <span>Forward to your Rivet intake address</span>
                 <Check size={16} />
               </div>
@@ -320,42 +475,65 @@ function WorkflowDemo() {
             <div className="public-review-scene">
               <div className="public-review-title">
                 <div>
-                  <p className="public-eyebrow">Revision review</p>
                   <h3>
-                    Three decisions.
-                    <br /> The evidence beside them.
+                    Review comments.
+                    <br /> Keep the source in view.
                   </h3>
                 </div>
                 <span className="public-ai-label">
                   <Mark small /> Prepared by Rivet
                 </span>
               </div>
-              <div className="public-comment-rows">
-                {sampleComments.map((c, i) => (
-                  <button
-                    key={c.id}
-                    id={`demo-comment-${i}`}
-                    onClick={() => {
-                      setSelected(i);
-                      setPlaying(false);
-                    }}
-                  >
-                    <span className="public-comment-number">{c.id}</span>
-                    <span>
-                      <strong>{c.text}</strong>
-                      <span className="public-comment-meta">
-                        Drawing {c.sheet}{" "}
-                        <span className={`public-flag ${c.tone}`}>
-                          {c.flag}
+              <div className="public-review-layout">
+                <div className="public-comment-rows">
+                  {sampleComments.map((c, i) => (
+                    <button
+                      key={c.id}
+                      id={`demo-comment-${i}`}
+                      className={preview === i ? "is-previewed" : ""}
+                      onMouseEnter={() => {
+                        setPreview(i);
+                        setPlaying(false);
+                      }}
+                      onFocus={() => setPreview(i)}
+                      onClick={() => {
+                        setSelected(i);
+                        setPlaying(false);
+                      }}
+                    >
+                      <span className="public-comment-number">{c.id}</span>
+                      <span>
+                        <strong>{c.text}</strong>
+                        <span className="public-comment-meta">
+                          Drawing {c.sheet}{" "}
+                          <span className={`public-flag ${c.tone}`}>
+                            {c.flag}
+                          </span>
                         </span>
                       </span>
+                      <ArrowUpRight size={17} />
+                    </button>
+                  ))}
+                </div>
+                <aside
+                  className="public-linked-source"
+                  aria-label="Drawing source preview"
+                >
+                  <div className="public-linked-source-label">
+                    <span>Markup p. {[2, 4, 6][preview]}</span>
+                    <span>Refers to {sampleComments[preview].sheet}</span>
+                  </div>
+                  <DrawingVisual key={preview} focus={preview} compact />
+                  <div className="public-linked-source-note">
+                    <span className="public-reference-mark">
+                      {sampleComments[preview].id}
                     </span>
-                    <ArrowUpRight size={17} />
-                  </button>
-                ))}
+                    <p>{sampleComments[preview].previous}</p>
+                  </div>
+                </aside>
               </div>
               <p className="public-demo-hint">
-                Select a comment to inspect its source and flag.
+                Select a comment for its source and review context.
               </p>
             </div>
           )}
@@ -371,6 +549,23 @@ function WorkflowDemo() {
                     <button
                       key={name}
                       role="tab"
+                      id={`output-step-${i}`}
+                      aria-controls="output-panel"
+                      tabIndex={output === i ? 0 : -1}
+                      onKeyDown={(event) => {
+                        const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+                        if (!keys.includes(event.key)) return;
+                        event.preventDefault();
+                        const next =
+                          event.key === "Home"
+                            ? 0
+                            : event.key === "End"
+                              ? 2
+                              : (i + (event.key === "ArrowRight" ? 1 : 2)) % 3;
+                        setOutput(next);
+                        setPlaying(false);
+                        document.getElementById(`output-step-${next}`)?.focus();
+                      }}
                       aria-selected={output === i}
                       onClick={() => {
                         setOutput(i);
@@ -382,7 +577,13 @@ function WorkflowDemo() {
                   ),
                 )}
               </div>
-              <div className="public-output-page">
+              <div
+                className="public-output-page"
+                role="tabpanel"
+                id="output-panel"
+                aria-labelledby={`output-step-${output}`}
+                key={output}
+              >
                 {output === 0 ? (
                   <>
                     <span className="public-document-label">
@@ -403,8 +604,8 @@ function WorkflowDemo() {
                       against the previously approved revision.
                     </p>
                     <div className="public-review-required">
-                      <CheckCircle size={17} /> Your review is required before
-                      sending.
+                      <span className="public-review-dot" aria-hidden="true" />{" "}
+                      Your review is required before sending.
                     </div>
                   </>
                 ) : output === 1 ? (
@@ -412,7 +613,7 @@ function WorkflowDemo() {
                     <span className="public-document-label">
                       EXCEL / COMMENT LOG
                     </span>
-                    <h3>The record travels with you.</h3>
+                    <h3>Comment resolution log</h3>
                     <table>
                       <thead>
                         <tr>
@@ -441,7 +642,7 @@ function WorkflowDemo() {
                     <span className="public-document-label">
                       ENGINEERING / DRAFTING LIST
                     </span>
-                    <h3>A clear next handoff.</h3>
+                    <h3>Drafting handoff</h3>
                     <div className="public-drafting-row">
                       <span>01</span>
                       <div>
@@ -498,7 +699,7 @@ function WorkflowDemo() {
             <h3>{sampleComments[selected].text}</h3>
             <p>{sampleComments[selected].detail}</p>
             <div className="public-source-excerpt">
-              <FilePdf size={20} />
+              <FileStamp format="PDF" />
               <div>
                 <strong>{sampleComments[selected].source}</strong>
                 <p>{sampleComments[selected].previous}</p>
@@ -517,324 +718,230 @@ function WorkflowDemo() {
 
 export function Landing() {
   const root = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const ctx = gsap.context(() => {
-      gsap.from(".public-hero-copy > *", {
-        y: 22,
-        opacity: 0,
-        duration: 0.9,
-        stagger: 0.12,
-        ease: "power2.out",
-      });
-      gsap.fromTo(
-        ".public-hero-image img",
-        { scale: 1.05 },
-        {
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".public-hero-image",
-            start: "top 85%",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      );
-      gsap.fromTo(
-        ".public-digest",
-        { y: 40, rotate: 1.5 },
-        {
-          y: -25,
-          rotate: -1.5,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".public-inbox-section",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        },
-      );
-      gsap.fromTo(
-        ".public-flow-route",
-        { strokeDashoffset: 1000 },
-        {
-          strokeDashoffset: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".public-flow-graphic",
-            start: "top 90%",
-            end: "bottom 30%",
-            scrub: 1,
-          },
-        },
-      );
-      gsap.utils.toArray<HTMLElement>("[data-public-reveal]").forEach((el) =>
-        gsap.from(el, {
-          y: 30,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 92%", once: true },
-        }),
-      );
-    }, root);
-    return () => ctx.revert();
-  }, []);
+  usePublicMotion(root);
   return (
-    <div className="rivet-public" ref={root}>
-      <a className="public-skip" href="#main">
-        Skip to content
-      </a>
-      <PublicHeader />
-      <main id="main">
-        <section className="public-hero public-wrap">
-          <div className="public-hero-grid">
-            <div className="public-hero-copy">
-              <p className="public-eyebrow">
-                <span className="public-live-dot" /> For custom equipment teams
-              </p>
-              <h1>
-                Returned drawings.
-                <br />
-                <span>Ready for review.</span>
-              </h1>
-              <div className="public-hero-bottom">
-                <p>
-                  Rivet prepares the comment log, flags revision risks, and
-                  organizes the next handoff. Your team makes the decisions.
+    <IconContext.Provider value={{ weight: "regular", "aria-hidden": true }}>
+      <div className="rivet-public" ref={root}>
+        <a className="public-skip" href="#main">
+          Skip to content
+        </a>
+        <PublicHeader />
+        <main id="main">
+          <section className="public-hero public-wrap">
+            <div className="public-hero-grid">
+              <div className="public-hero-copy">
+                <p className="public-eyebrow">
+                  <span className="public-live-dot" /> For custom equipment
+                  teams
                 </p>
-                <a className="public-text-link" href="#workflow">
-                  See how it works <ArrowDown size={19} />
+                <h1>
+                  Returned drawings.
+                  <br />
+                  <span>Ready for review.</span>
+                </h1>
+                <div className="public-hero-bottom">
+                  <p>
+                    Rivet prepares the comment log, flags revision risks, and
+                    organizes the next handoff. Your team makes the decisions.
+                  </p>
+                  <a className="public-text-link" href="#workflow">
+                    See how it works <ArrowDown size={19} />
+                  </a>
+                </div>
+              </div>
+              <div
+                className="public-hero-field"
+                aria-label="Rivet’s animated pixel mark"
+              >
+                <RivetField />
+                <div className="public-field-coordinates" aria-hidden="true">
+                  <span>INPUT → CONTEXT → REVIEW</span>
+                  <span>R / 01</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <ProcessTrack />
+          <section id="workflow" className="public-workflow public-wrap">
+            <div className="public-section-heading" data-public-reveal>
+              <p className="public-eyebrow">
+                From the inbox to the next revision
+              </p>
+              <h2>
+                A returned drawing.
+                <br />
+                <span>A clear way forward.</span>
+              </h2>
+              <p>
+                Keep the email. Keep the spreadsheet.
+                <br />
+                Let Rivet prepare the work between them.
+              </p>
+            </div>
+            <div data-public-reveal>
+              <WorkflowDemo />
+            </div>
+          </section>
+          <section className="public-inbox-section">
+            <div className="public-inbox-layout public-wrap">
+              <div className="public-inbox-copy" data-public-reveal>
+                <p className="public-eyebrow">Built around the PM</p>
+                <h2>
+                  The important details.
+                  <br />
+                  <span>Where you already work.</span>
+                </h2>
+                <p>
+                  Get a concise revision brief, with the comments that need a
+                  decision and links to the full record. Open the workspace when
+                  you need the drawing, the history, or the handoff.
+                </p>
+                <div className="public-capability-line">
+                  <FileStamp format="EML" />
+                  <span>Forward an email or upload a PDF</span>
+                </div>
+                <div className="public-capability-line">
+                  <FileStamp format="XLS" />
+                  <span>Export the spreadsheet your team already uses</span>
+                </div>
+                <p className="public-integration-note">
+                  Forwarding is configured during pilot setup. Outlook,
+                  SharePoint, and ERP connections are planned; they are not
+                  required to start.
+                </p>
+              </div>
+              <div className="public-digest">
+                <div className="public-digest-sender">
+                  <span className="public-agent-avatar">
+                    <Mark />
+                  </span>
+                  <div>
+                    <strong>Rivet</strong>
+                    <p>Revision brief · example</p>
+                  </div>
+                  <span>10:04</span>
+                </div>
+                <h3>Rev C is ready for review.</h3>
+                <p className="public-digest-subject">
+                  24-118 / Switchgear submittal
+                </p>
+                <div className="public-digest-numbers">
+                  <div>
+                    <strong>14</strong>
+                    <span>comments</span>
+                  </div>
+                  <div>
+                    <strong>3</strong>
+                    <span>need a decision</span>
+                  </div>
+                </div>
+                <div className="public-digest-alert">
+                  <span
+                    className="public-reference-mark amber"
+                    aria-hidden="true"
+                  >
+                    08
+                  </span>
+                  <div>
+                    <strong>Enclosure depth changed after approval</strong>
+                    <p>
+                      Review against the recorded Rev B approval before
+                      confirming the request.
+                    </p>
+                  </div>
+                </div>
+                <div className="public-digest-alert lavender">
+                  <span className="public-reference-mark" aria-hidden="true">
+                    09
+                  </span>
+                  <div>
+                    <strong>Spare feeder needs a scope review</strong>
+                    <p>
+                      The PM needs to confirm whether this affects the original
+                      order.
+                    </p>
+                  </div>
+                </div>
+                <div className="public-digest-attachments">
+                  <span>
+                    <FileStamp format="XLS" /> Comment log
+                  </span>
+                  <span>
+                    <FileStamp format="PDF" /> Response draft
+                  </span>
+                  <span>Drafting list</span>
+                </div>
+                <a href="#workflow" className="public-digest-link">
+                  Explore the review flow <ArrowRight size={17} />
                 </a>
               </div>
             </div>
-            <div
-              className="public-hero-field"
-              aria-label="Rivet’s animated pixel mark"
-            >
-              <RivetField />
-              <div className="public-field-coordinates" aria-hidden="true">
-                <span>INPUT → CONTEXT → REVIEW</span>
-                <span>R / 01</span>
-              </div>
-            </div>
-          </div>
-          <figure className="public-hero-image">
-            <img
-              src="/media/switchgear-assembly.jpg"
-              alt="Illustration of precision-built switchgear cabinets in a manufacturing assembly hall"
-              width="1672"
-              height="940"
-              fetchPriority="high"
-            />
-            <div className="public-image-caption">
-              <span>Built for the work behind custom equipment.</span>
-              <span>Illustrative imagery</span>
-            </div>
-            <div className="public-image-cross" aria-hidden="true">
-              +
-            </div>
-          </figure>
-        </section>
-        <div className="public-flow-graphic public-wrap" aria-hidden="true">
-          <svg viewBox="0 0 1200 150" fill="none">
-            <path
-              d="M0 75H240Q270 75 285 45L300 20H450L480 75H690L720 125H870L900 75H1200"
-              stroke="#31303b"
-            />
-            <path
-              className="public-flow-route"
-              d="M0 75H240Q270 75 285 45L300 20H450L480 75H690L720 125H870L900 75H1200"
-              pathLength="1000"
-              stroke="#c7abe8"
-              strokeWidth="1.4"
-              strokeDasharray="1000"
-            />
-            <g stroke="#96939f" strokeWidth="1.3">
-              <path d="M174 52h20l8 8v33h-28zM194 52v8h8M181 70h14m-14 7h14m-14 7h9" />
-              <path d="M570 54h60v42h-60zM570 55l30 22 30-22" />
-              <path d="M991 64l9 10 19-22" />
-              <rect x="980" y="42" width="48" height="48" rx="24" />
-            </g>
-            <g fill="#85818f" fontSize="10" fontFamily="monospace">
-              <text x="164" y="120">
-                RETURNED
-              </text>
-              <text x="570" y="123">
-                PREPARED
-              </text>
-              <text x="976" y="120">
-                REVIEWED
-              </text>
-            </g>
-          </svg>
-        </div>
-        <section id="workflow" className="public-workflow public-wrap">
-          <div className="public-section-heading" data-public-reveal>
-            <p className="public-eyebrow">
-              From the inbox to the next revision
-            </p>
-            <h2>
-              A returned drawing.
-              <br />
-              <span>A clear way forward.</span>
-            </h2>
-            <p>
-              Keep the email. Keep the spreadsheet.
-              <br />
-              Let Rivet prepare the work between them.
-            </p>
-          </div>
-          <div data-public-reveal>
-            <WorkflowDemo />
-          </div>
-        </section>
-        <section className="public-inbox-section">
-          <div className="public-inbox-layout public-wrap">
-            <div className="public-inbox-copy" data-public-reveal>
-              <p className="public-eyebrow">Built around the PM</p>
+          </section>
+          <section className="public-start public-wrap" data-public-reveal>
+            <div>
+              <p className="public-eyebrow">A focused first step</p>
               <h2>
-                The important details.
+                Start with one order.
                 <br />
-                <span>Where you already work.</span>
+                <span>See what it saves.</span>
               </h2>
+            </div>
+            <div className="public-start-details">
               <p>
-                Get a concise revision brief, with the comments that need a
-                decision and links to the full record. Open the workspace when
-                you need the drawing, the history, or the handoff.
+                Bring a returned drawing and the revision before it. We’ll map
+                your process together and test Rivet against the record your
+                team already keeps.
               </p>
-              <div className="public-capability-line">
-                <EnvelopeSimple size={20} />
-                <span>Forward an email or upload a PDF</span>
-              </div>
-              <div className="public-capability-line">
-                <FileXls size={20} />
-                <span>Export the spreadsheet your team already uses</span>
-              </div>
-              <p className="public-integration-note">
-                Forwarding is configured during pilot setup. Outlook,
-                SharePoint, and ERP connections are planned; they are not
-                required to start.
-              </p>
+              <ol>
+                <li>
+                  <span>01</span>
+                  <div>
+                    <strong>Walk through your workflow</strong>
+                    <p>Show us where comments and changes get lost.</p>
+                  </div>
+                </li>
+                <li>
+                  <span>02</span>
+                  <div>
+                    <strong>Try it on a real revision</strong>
+                    <p>Use a redacted order or start with sample documents.</p>
+                  </div>
+                </li>
+                <li>
+                  <span>03</span>
+                  <div>
+                    <strong>Review the result with your team</strong>
+                    <p>Check the evidence, the outputs, and the time saved.</p>
+                  </div>
+                </li>
+              </ol>
             </div>
-            <div className="public-digest" data-public-reveal>
-              <div className="public-digest-sender">
-                <span className="public-agent-avatar">
-                  <Mark />
-                </span>
-                <div>
-                  <strong>Rivet</strong>
-                  <p>Revision brief · example</p>
-                </div>
-                <span>10:04</span>
-              </div>
-              <h3>Rev C is ready for review.</h3>
-              <p className="public-digest-subject">
-                24-118 / Switchgear submittal
-              </p>
-              <div className="public-digest-numbers">
-                <div>
-                  <strong>14</strong>
-                  <span>comments</span>
-                </div>
-                <div>
-                  <strong>3</strong>
-                  <span>need a decision</span>
-                </div>
-              </div>
-              <div className="public-digest-alert">
-                <Warning size={18} />
-                <div>
-                  <strong>Enclosure depth changed after approval</strong>
-                  <p>
-                    Review against the recorded Rev B approval before confirming
-                    the request.
-                  </p>
-                </div>
-              </div>
-              <div className="public-digest-alert lavender">
-                <ArrowUpRight size={18} />
-                <div>
-                  <strong>Spare feeder needs a scope review</strong>
-                  <p>
-                    The PM needs to confirm whether this affects the original
-                    order.
-                  </p>
-                </div>
-              </div>
-              <div className="public-digest-attachments">
-                <Paperclip size={17} /> Comment log · Response draft · Drafting
-                list
-              </div>
-              <a href="#workflow" className="public-digest-link">
-                Explore the review flow <ArrowRight size={17} />
-              </a>
-            </div>
-          </div>
-        </section>
-        <section className="public-start public-wrap" data-public-reveal>
-          <div>
-            <p className="public-eyebrow">A focused first step</p>
+          </section>
+          <section
+            className="public-cta-section public-wrap"
+            data-public-reveal
+          >
+            <p className="public-eyebrow">Private pilots now forming</p>
             <h2>
-              Start with one order.
+              Make the next
               <br />
-              <span>See what it saves.</span>
+              revision easier.
             </h2>
-          </div>
-          <div className="public-start-details">
+            <a className="public-button" href="/pilot">
+              Request a pilot <ArrowUpRight size={20} />
+            </a>
             <p>
-              Bring a returned drawing and the revision before it. We’ll map
-              your process together and test Rivet against the record your team
-              already keeps.
+              A 30-minute conversation with the founder.
+              <br />
+              No migration or confidential documents required.
             </p>
-            <ol>
-              <li>
-                <span>01</span>
-                <div>
-                  <strong>Walk through your workflow</strong>
-                  <p>Show us where comments and changes get lost.</p>
-                </div>
-              </li>
-              <li>
-                <span>02</span>
-                <div>
-                  <strong>Try it on a real revision</strong>
-                  <p>Use a redacted order or start with sample documents.</p>
-                </div>
-              </li>
-              <li>
-                <span>03</span>
-                <div>
-                  <strong>Review the result with your team</strong>
-                  <p>Check the evidence, the outputs, and the time saved.</p>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </section>
-        <section className="public-cta-section public-wrap" data-public-reveal>
-          <p className="public-eyebrow">Private pilots now forming</p>
-          <h2>
-            Make the next
-            <br />
-            revision easier.
-          </h2>
-          <a className="public-button" href="/pilot">
-            Request a pilot <ArrowUpRight size={20} />
-          </a>
-          <p>
-            A 30-minute conversation with the founder.
-            <br />
-            No migration or confidential documents required.
-          </p>
-          <div className="public-cta-mark" aria-hidden="true">
-            <Mark />
-          </div>
-        </section>
-      </main>
-      <PublicFooter />
-    </div>
+            <div className="public-cta-mark" aria-hidden="true">
+              <Mark />
+            </div>
+          </section>
+        </main>
+        <PublicFooter />
+      </div>
+    </IconContext.Provider>
   );
 }
