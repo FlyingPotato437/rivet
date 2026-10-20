@@ -4648,7 +4648,8 @@
                 "xlsx",
                 "pdf",
                 "response_pdf",
-                "drafting_xlsx"
+                "drafting_xlsx",
+                "docx"
               ],
               "type": "string",
               "default": "xlsx",

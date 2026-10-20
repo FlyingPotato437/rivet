@@ -549,6 +549,9 @@ def view(s, order, record=None):
     )
     for comment in result["comments"]:
         comment["workflow_status"] = workflow_status(comment)
+    from .comment_impact import annotate
+
+    result["comment_impact"] = annotate(s, order, result["comments"])
     result["revision_review"] = review_summary(result)
     return result
 

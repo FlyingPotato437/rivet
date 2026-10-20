@@ -20,6 +20,7 @@ import { responseNoteWrite, visibleProjectComments } from "./project-records";
 import type { ProjectFlow } from "./project-flow";
 import type { RecordComment, RecordView } from "./record-types";
 import "./project-records.css";
+import { CommentImpactDetail, CommentTypeChip } from "./CommentImpact";
 
 const flags: Record<string, string> = {
   scope_change: "Possible scope change",
@@ -244,6 +245,7 @@ export function ProjectRecords({
                     </span>
                     <span>
                       <strong>{c.text}</strong>
+                      <CommentTypeChip impact={c.impact} />
                       <small>
                         {c.status === "closed"
                           ? "Resolved"
@@ -440,6 +442,7 @@ function CommentReading({
       <div className="project-comment-reading">
         <span className="project-reading-label">Customer comment</span>
         <h2>{c.text}</h2>
+        <CommentImpactDetail impact={c.impact} />
         {["org:admin", "org:member"].includes(account.role) && (
           <TranscriptionCorrection
             key={`${w.order.id}:${c.id}`}
@@ -489,8 +492,7 @@ function CommentReading({
               />
             </label>
             <p className="project-records-note">
-              Saves to this order. It does not send a reply or approve a
-              change.
+              Saves to this order. It does not send a reply or approve a change.
             </p>
             {error && <ErrorNote message={error} />}
             <div className="project-response-actions">

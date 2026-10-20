@@ -282,8 +282,10 @@ def compare(id: str, before: str, after: str):
 
 @router.get("/orders/{id}/record/export")
 def export(
-    id: str, format: Literal["xlsx", "pdf", "response_pdf", "drafting_xlsx"] = "xlsx"
+    id: str,
+    format: Literal["xlsx", "pdf", "response_pdf", "drafting_xlsx", "docx"] = "xlsx",
 ):
+    from .docx_export import matrix_docx
     from .exports import drafting_workbook, pdf, response_letter, workbook
 
     with Session.begin() as s:
@@ -293,17 +295,28 @@ def export(
         "pdf": pdf,
         "response_pdf": response_letter,
         "drafting_xlsx": drafting_workbook,
+        "docx": matrix_docx,
     }[format](w)
-    extension = "xlsx" if format in {"xlsx", "drafting_xlsx"} else "pdf"
+    extension = (
+        "xlsx"
+        if format in {"xlsx", "drafting_xlsx"}
+        else "docx"
+        if format == "docx"
+        else "pdf"
+    )
     name = {
         "response_pdf": "response-letter",
         "drafting_xlsx": "changes-for-drafting",
+        "docx": "comment-matrix",
     }.get(format, "comment-log")
+    media = {
+        "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "pdf": "application/pdf",
+    }[extension]
     return Response(
         content,
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        if extension == "xlsx"
-        else "application/pdf",
+        media_type=media,
         headers={
             "Content-Disposition": f'attachment; filename="rivet-{name}.{extension}"'
         },

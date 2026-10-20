@@ -41,6 +41,7 @@ import {
 import "./today-story.css";
 import { orderOutcome, replyPreview } from "./workspace-outcomes";
 import "./workspace-refinement.css";
+import { ChangeOrderPanel } from "./CommentImpact";
 import {
   NeedsYouPanel,
   CorrectedFiles,
@@ -360,6 +361,14 @@ export function OrderStory({
             seeWhy={(item) => setDrawer({ kind: "decision", item })}
             openReview={() => setDrawer({ kind: "equipment" })}
             openComments={() => navigate(`order/${id}?view=tools&tab=comments`)}
+          />
+          <ChangeOrderPanel
+            summary={record.data?.comment_impact}
+            openComment={(commentId) =>
+              navigate(
+                `order/${id}?view=tools&tab=comments&comment=${commentId}`,
+              )
+            }
           />
           <RevisionCheck
             order={p}

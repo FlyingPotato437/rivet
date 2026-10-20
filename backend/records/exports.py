@@ -24,7 +24,37 @@ HEADINGS = [
     "Linked email",
     "Workflow",
     "Log ID",
+    "Type",
+    "Engineer decision",
+    "Cost impact",
 ]
+KIND_LABELS = {
+    "change": "Requested change",
+    "question": "Question",
+    "scope": "Added scope",
+    "no_action": "No action",
+    "review": "Needs reading",
+}
+
+
+def impact_cells(c):
+    """Type, engineer flag and cost impact for one comment (automatic labels)."""
+    impact = c.get("impact") or {}
+    cost = impact.get("cost") or {}
+    if impact.get("kind") != "scope":
+        money_text = ""
+    elif cost.get("status") == "estimated":
+        money_text = (
+            f"About {cost['currency']} {cost['estimate']} ({cost['quantity']} x {cost['tag']});"
+            f" billable {cost['billable']}; confirm before quoting"
+        )
+    else:
+        money_text = "Adds scope; needs pricing"
+    return [
+        KIND_LABELS.get(impact.get("kind"), ""),
+        "Yes" if impact.get("engineer") else "",
+        money_text,
+    ]
 
 
 def rows(w, compact=False):
@@ -82,6 +112,7 @@ def rows(w, compact=False):
             docs.get(c["linked_email_id"], {}).get("name", ""),
             workflow_status(c).replace("_", " ").capitalize(),
             c.get("log_reference", c["number"]),
+            *impact_cells(c),
         ]
 
 
@@ -94,9 +125,11 @@ def workbook(w):
     for row in rows(w):
         sheet.append([safe_cell(v) if isinstance(v, str) else v for v in row])
     sheet.freeze_panes = "F3"
-    sheet.auto_filter.ref = f"A2:P{sheet.max_row}"
+    sheet.auto_filter.ref = (
+        f"A2:{sheet.cell(2, len(HEADINGS)).column_letter}{sheet.max_row}"
+    )
     for i, width in enumerate(
-        [12, 15, 32, 14, 40, 65, 65, 25, 28, 15, 65, 25, 20, 30, 24, 14], 1
+        [12, 15, 32, 14, 40, 65, 65, 25, 28, 15, 65, 25, 20, 30, 24, 14, 18, 16, 48], 1
     ):
         sheet.column_dimensions[sheet.cell(2, i).column_letter].width = width
     changes = book.create_sheet("Change record")
@@ -301,7 +334,7 @@ def pdf(w):
         f"<p><b>D{i}</b> {e(d['name'])}</p>" for i, d in enumerate(w["documents"], 1)
     )
     body = "".join(
-        f"<tr><td>{e(r[0])}</td><td>{e(r[2])} · Page {e(r[3])}<br>Revision: {e(r[1])}<br>Target: {e(r[4])}</td><td>{e(r[5])}<p>{e(r[7])} · {e(r[8])}</p></td><td>{e(r[9])}<br>{e(r[12])}</td><td>{e(r[10])}<p>{e(r[11])}</p></td></tr>"
+        f"<tr><td>{e(r[0])}</td><td>{e(r[2])} · Page {e(r[3])}<br>Revision: {e(r[1])}<br>Target: {e(r[4])}</td><td>{e(r[5])}<p>{e(r[7])} · {e(r[8])}</p></td><td>{e(r[9])}<br>{e(r[12])}<p>{e(r[16])}{" · Engineer decision" if r[17] else ""}</p><p>{e(r[18])}</p></td><td>{e(r[10])}<p>{e(r[11])}</p></td></tr>"
         for r in rows(w, compact=True)
     )
     html = f"""<html><head><title>{e(w["order"]["title"])} - comment log</title><style>@page{{size:A4 landscape;margin:16mm}}body{{font:11px/1.45 Arial;color:#25232b}}h1{{font-size:24px}}table{{border-collapse:collapse;width:100%;table-layout:fixed}}td,th{{border-bottom:1px solid #ddd;padding:8px;vertical-align:top;text-align:left;overflow-wrap:anywhere;white-space:pre-wrap}}th{{background:#eee}}tr{{break-inside:avoid}}p{{color:#5c5864}}</style></head><body><h1>{e(w["order"]["title"])}</h1><p>{e(w["order"]["number"])} · Comment response matrix · {e(w["order"]["customer"])}</p><table><colgroup><col style="width:7%"><col style="width:19%"><col style="width:32%"><col style="width:12%"><col style="width:30%"></colgroup><thead><tr><th>No.</th><th>Source and location</th><th>Comment / author / date</th><th>Status</th><th>Response / author</th></tr></thead><tbody>{body}</tbody></table><h3>Source files</h3>{source_key}<p>Recorded responses and review status. This record does not certify equipment compliance or authorize production.</p></body></html>"""

@@ -1,5 +1,40 @@
 import type { OrderDocument, OrderSource } from "./order-types";
+export type CommentImpactKind =
+  "change" | "question" | "scope" | "no_action" | "review";
+export type CommentCost =
+  | { status: "needs_pricing" }
+  | {
+      status: "estimated";
+      tag: string;
+      quantity: string;
+      unit_price: string;
+      estimate: string;
+      currency: string;
+      basis: string;
+      source_id: string;
+      source: string;
+      billable: "per accepted scope" | "unconfirmed";
+    };
+export type CommentImpact = {
+  kind: CommentImpactKind;
+  engineer: boolean;
+  reasons: string[];
+  tags: string[];
+  method: "automatic";
+  cost?: CommentCost;
+};
+export type CommentImpactSummary = {
+  counts: Record<CommentImpactKind, number>;
+  engineer: string[];
+  scope: { id: string; number: string; text: string; cost: CommentCost }[];
+  estimated_total: string | null;
+  currency: string | null;
+  needs_pricing: number;
+  method: "automatic";
+  note: string;
+};
 export type RecordComment = {
+  impact?: CommentImpact;
   id: string;
   number: string;
   log_reference?: string;
@@ -68,6 +103,7 @@ export type RecordApproval = {
   version: number;
 };
 export type RecordView = {
+  comment_impact?: CommentImpactSummary;
   email_context?: RecordComment[];
   revision_review?: RevisionReview;
   coordination?: RecordCoordinationView;

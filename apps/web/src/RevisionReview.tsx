@@ -70,6 +70,7 @@ export function ReviewOutputs({
   const outputs = [
     { format: "response_pdf", name: "Response letter", extension: "pdf" },
     { format: "xlsx", name: "Excel comment log", extension: "xlsx" },
+    { format: "docx", name: "Word comment matrix", extension: "docx" },
     { format: "pdf", name: "PDF comment log", extension: "pdf" },
     { format: "drafting_xlsx", name: "Drafting list", extension: "xlsx" },
   ];
@@ -460,7 +461,11 @@ export function RevisionReview({
                             <ArrowUpRight size={12} />
                           </button>
                         </div>
-                        <TranscriptionCorrection key={`${w.order.id}:${comment.id}`} w={w} comment={comment} />
+                        <TranscriptionCorrection
+                          key={`${w.order.id}:${comment.id}`}
+                          w={w}
+                          comment={comment}
+                        />
                         {comment.response && (
                           <details className="revision-recorded-response">
                             <summary>Recorded response</summary>

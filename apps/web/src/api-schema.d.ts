@@ -8360,7 +8360,7 @@ export interface operations {
     export_api_orders__id__record_export_get: {
         parameters: {
             query?: {
-                format?: "xlsx" | "pdf" | "response_pdf" | "drafting_xlsx";
+                format?: "xlsx" | "pdf" | "response_pdf" | "drafting_xlsx" | "docx";
             };
             header?: never;
             path: {
