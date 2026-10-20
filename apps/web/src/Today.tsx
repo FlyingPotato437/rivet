@@ -139,7 +139,10 @@ export function Today({
   const open = (item: Drawer) => setDrawer(item);
   const account = useAccount();
   const [view, setView] = useState<TodayView>("all");
-  const first = account.name.includes("@") ? "" : account.name.split(" ")[0];
+  const first =
+    account.mode !== "clerk" || account.name.includes("@")
+      ? ""
+      : account.name.split(" ")[0];
   const hour = new Date().getHours();
   const greeting = `${hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"}${first ? `, ${first}` : ""}.`;
   const customerOf = (id: string) =>
