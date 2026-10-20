@@ -2,7 +2,8 @@
    Geist Mono for identifiers and Sora only for headlines. Loaded last; every rule is
    scoped to .app-shell.rv6 so the public site and the Outlook add-in are untouched. */
 .app-shell.rv6,
-.rv6 .modal-backdrop {
+html.rv6 .work-drawer-backdrop,
+html.rv6 .modal-backdrop {
   --rv-bg: #111315;
   --rv-side: #0f1113;
   --rv-card: #16191c;
@@ -45,11 +46,12 @@
   --desk-line: var(--rv-line2);
   --work-accent: var(--rv-need);
   font-family: var(--rv-sans);
-  font-feature-settings: "ss01" 0;
   letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+}
+.app-shell.rv6 {
   background: var(--rv-bg);
   color: var(--rv-text);
-  -webkit-font-smoothing: antialiased;
 }
 
 /* Faint film grain over the whole workspace. */
@@ -1420,4 +1422,575 @@
   .rv6 .revision-check :is(.revision-tag, .revision-where) {
     display: none;
   }
+}
+
+/* Motion: quick, quiet, and off for people who prefer less movement. */
+html.rv6 {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  scrollbar-color: #2a2e33 transparent;
+}
+html.rv6 ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html.rv6 ::-webkit-scrollbar-thumb {
+  background: #2a2e33;
+  border: 3px solid transparent;
+  border-radius: 10px;
+  background-clip: padding-box;
+}
+html.rv6 ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app-shell.rv6
+  :is(button, a, .work-row, .customer-chip, .revision-check li > button) {
+  transition:
+    background-color 140ms var(--rivet-ease),
+    border-color 140ms var(--rivet-ease),
+    color 140ms var(--rivet-ease),
+    box-shadow 140ms var(--rivet-ease),
+    transform 140ms var(--rivet-ease),
+    filter 140ms var(--rivet-ease);
+}
+.app-shell.rv6 :is(.primary, .secondary):active:not(:disabled),
+.rv6 .rivet-output :is(a, button):active {
+  transform: translateY(1px) scale(0.985);
+}
+@keyframes rv6-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rv6-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.rv6 .today-hero,
+.rv6 .order-story-heading,
+.rv6 .title-block,
+.rv6 .needs-you-panel,
+.rv6 .revision-check {
+  animation: rv6-rise 420ms var(--rivet-ease) both;
+}
+.rv6 .title-block {
+  animation-delay: 60ms;
+}
+.rv6 .needs-you-panel {
+  animation-delay: 100ms;
+}
+.rv6 .revision-check {
+  animation-delay: 140ms;
+}
+.rv6 .work-group {
+  animation: rv6-fade 360ms var(--rivet-ease) both;
+}
+.rv6 .work-group:nth-child(3) {
+  animation-delay: 60ms;
+}
+.rv6 .work-group:nth-child(4) {
+  animation-delay: 120ms;
+}
+.rv6 .work-group:nth-child(5) {
+  animation-delay: 180ms;
+}
+.rv6 .today-activity li {
+  animation: rv6-rise 380ms var(--rivet-ease) both;
+}
+.rv6 .today-activity li:nth-child(2) {
+  animation-delay: 40ms;
+}
+.rv6 .today-activity li:nth-child(3) {
+  animation-delay: 80ms;
+}
+.rv6 .today-activity li:nth-child(4) {
+  animation-delay: 120ms;
+}
+.rv6 .today-activity li:nth-child(n + 5) {
+  animation-delay: 160ms;
+}
+.rv6 .work-row:hover .blueprint-thumb {
+  border-color: rgba(195, 182, 223, 0.35);
+}
+.rv6 .work-row:hover .work-row-title {
+  transform: translateX(2px);
+}
+.rv6 .work-list-head {
+  position: sticky;
+  top: 48px;
+  z-index: 3;
+  background: rgba(17, 19, 21, 0.88);
+  backdrop-filter: blur(12px);
+}
+@keyframes rv6-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(159, 194, 176, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(159, 194, 176, 0);
+  }
+}
+.rv6 .today-outlook.is-connected > span {
+  animation: rv6-pulse 2.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.rv6 {
+    scroll-behavior: auto;
+  }
+  html.rv6 *,
+  html.rv6 *::before,
+  html.rv6 *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Today hero */
+.rv6 .today-hero {
+  position: relative;
+  padding: 40px 24px 22px;
+  align-items: flex-end;
+}
+.rv6 .today-hero::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  top: 26px;
+  width: 280px;
+  height: 120px;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image: radial-gradient(
+    rgba(195, 182, 223, 0.22) 1px,
+    transparent 1px
+  );
+  background-size: 12px 12px;
+  mask-image: radial-gradient(closest-side, #000, transparent);
+}
+.app-shell.rv6 .today-hero h1 {
+  font-size: clamp(28px, 2.6vw, 36px);
+  line-height: 1.14;
+  letter-spacing: -0.05em;
+}
+.rv6 .today-hero h1 > span {
+  background: linear-gradient(90deg, #cfc6e4 0%, #b7c2e8 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.rv6 .today-brief {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 14px 0 0;
+  color: var(--rv-text2);
+  font-size: 13.5px;
+}
+.rv6 .today-hero-actions {
+  position: relative;
+  z-index: 1;
+  flex-wrap: nowrap;
+}
+@media (max-width: 1100px) {
+  .rv6 .today-hero-actions {
+    flex-wrap: wrap;
+  }
+  .rv6 .today-hero .work-check-status {
+    display: none;
+  }
+}
+
+/* Needs your decision */
+.rv6 .needs-you-panel {
+  position: relative;
+  padding: 18px 20px 18px 22px;
+  border: 1px solid rgba(195, 182, 223, 0.28);
+  border-radius: 12px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(195, 182, 223, 0.07),
+      rgba(195, 182, 223, 0.015) 70%
+    ),
+    var(--rv-card);
+  box-shadow:
+    inset 2px 0 0 var(--rv-need),
+    0 12px 40px -24px rgba(195, 182, 223, 0.35);
+}
+.rv6 .needs-you-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: 500 10.5px var(--rv-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rv-need);
+}
+.app-shell.rv6 .needs-you-panel h2 {
+  margin: 8px 0 0;
+  font: 500 20px/1.3 var(--rv-display);
+  letter-spacing: -0.035em;
+  color: var(--rv-text);
+}
+.rv6 .needs-you-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--rv-line);
+}
+.rv6 .needs-you-list li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rv-line);
+}
+.rv6 .needs-you-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.rv6 .needs-you-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+.rv6 .needs-you-item strong {
+  font: 500 14px var(--rv-sans);
+  color: var(--rv-text);
+}
+.rv6 .needs-you-item span {
+  color: var(--rv-text2);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.rv6 .needs-you-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rv6 .needs-you-result {
+  color: var(--rv-done);
+  font-size: 13px;
+}
+.rv6 .needs-you-points {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--rv-text2);
+  font-size: 13.5px;
+}
+.rv6 .needs-you-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Forms: modern selects and inputs everywhere in the workspace and drawers */
+html.rv6 .app-shell select,
+html.rv6 .work-drawer select,
+html.rv6
+  .app-shell
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+html.rv6
+  .work-drawer
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+html.rv6 .app-shell textarea,
+html.rv6 .work-drawer textarea {
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid var(--rv-line2);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.025);
+  color: var(--rv-text);
+  font: 450 13.5px var(--rv-sans);
+  box-shadow: none;
+  transition:
+    border-color 140ms var(--rivet-ease),
+    background-color 140ms var(--rivet-ease),
+    box-shadow 140ms var(--rivet-ease);
+}
+html.rv6 .app-shell select,
+html.rv6 .work-drawer select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none' stroke='%2380858c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M4.5 6.5 8 10l3.5-3.5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-size: 12px;
+  cursor: pointer;
+}
+html.rv6 .app-shell select option,
+html.rv6 .work-drawer select option {
+  background: #1a1d21;
+  color: var(--rv-text);
+}
+html.rv6
+  :is(.app-shell, .work-drawer)
+  :is(select, input, textarea):hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+html.rv6 :is(.app-shell, .work-drawer) :is(select, input, textarea):focus {
+  outline: 0;
+  border-color: rgba(195, 182, 223, 0.6);
+  box-shadow: 0 0 0 3px rgba(195, 182, 223, 0.14);
+}
+html.rv6 :is(.app-shell, .work-drawer) input[type="file"] {
+  font: 450 12.5px var(--rv-sans);
+  color: var(--rv-text2);
+}
+html.rv6
+  :is(.app-shell, .work-drawer)
+  input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--rv-line2);
+  border-radius: 7px;
+  background: var(--rv-card);
+  color: var(--rv-text);
+  font: 500 12.5px var(--rv-sans);
+  cursor: pointer;
+}
+html.rv6 :is(.app-shell, .work-drawer) label {
+  font-family: var(--rv-sans);
+}
+
+/* Drawer */
+html.rv6 .work-drawer-backdrop {
+  background: rgba(8, 9, 11, 0.55);
+  backdrop-filter: blur(6px);
+  animation: rv6-fade 200ms var(--rivet-ease) both;
+}
+@keyframes rv6-slide {
+  from {
+    transform: translateX(28px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+html.rv6 .work-drawer {
+  width: min(820px, calc(100vw - 32px));
+  background: #131619;
+  border-left: 1px solid var(--rv-line2);
+  box-shadow: -30px 0 90px rgba(0, 0, 0, 0.45);
+  font-family: var(--rv-sans);
+  color: var(--rv-text);
+  animation: rv6-slide 260ms var(--rivet-ease) both;
+}
+html.rv6 .work-drawer-heading {
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--rv-line);
+  background:
+    radial-gradient(
+      420px 140px at 80% -40px,
+      rgba(195, 182, 223, 0.1),
+      transparent 70%
+    ),
+    transparent;
+}
+html.rv6 .work-drawer-heading span {
+  font: 500 10.5px var(--rv-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rv-text3);
+}
+html.rv6 .work-drawer-heading h2 {
+  margin-top: 6px;
+  font: 500 24px/1.2 var(--rv-display);
+  letter-spacing: -0.045em;
+}
+html.rv6 .work-drawer-content {
+  padding: 22px 28px 48px;
+  scroll-behavior: smooth;
+}
+html.rv6 .work-drawer :is(h3, h4) {
+  font-family: var(--rv-sans);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+html.rv6 .work-drawer .story-icon-button {
+  border-radius: 8px;
+  color: var(--rv-text2);
+}
+html.rv6 .work-drawer .story-icon-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--rv-text);
+}
+html.rv6 .work-drawer .secondary {
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 7px;
+  border: 1px solid var(--rv-line2);
+  background: var(--rv-card);
+  color: var(--rv-text);
+  font: 500 13px var(--rv-sans);
+}
+html.rv6 .work-drawer .text-button {
+  color: var(--rv-text2);
+  font-family: var(--rv-sans);
+}
+
+/* Drawing and BOM check (drawer) */
+html.rv6 .equipment-review {
+  font-family: var(--rv-sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--rv-text2);
+}
+html.rv6 .equipment-review :is(h3, h4, strong) {
+  color: var(--rv-text);
+}
+html.rv6 .equipment-review :is(.primary, .secondary) {
+  min-height: 32px;
+  font-size: 13px;
+}
+html.rv6
+  .equipment-review
+  :is(
+    .equipment-package,
+    .equipment-upload,
+    .correction-plan,
+    .correction-proof,
+    .correction-company-checks,
+    .equipment-existing,
+    .equipment-outcome,
+    .equipment-corrections
+  ) {
+  border: 1px solid var(--rv-line2);
+  border-radius: 10px;
+  background: rgba(22, 25, 28, 0.7);
+  box-shadow: none;
+}
+html.rv6 .equipment-summary {
+  max-width: none;
+  gap: 0;
+  padding: 0;
+  margin: 18px 0;
+  border: 1px solid var(--rv-line2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+html.rv6 .equipment-summary > div {
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-right: 1px solid var(--rv-line);
+}
+html.rv6 .equipment-summary > div:last-child {
+  border-right: 0;
+}
+html.rv6 .equipment-summary strong {
+  font: 500 28px/1.1 var(--rv-display);
+  letter-spacing: -0.045em;
+  color: var(--rv-text);
+}
+html.rv6 .equipment-summary .is-verified strong {
+  color: var(--rv-done);
+}
+html.rv6 .equipment-summary .is-remaining strong {
+  color: var(--rv-miss);
+}
+html.rv6 .equipment-summary span {
+  font: 500 10.5px var(--rv-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rv-text3);
+}
+html.rv6 .equipment-table-scroll {
+  border: 1px solid var(--rv-line2);
+  border-radius: 10px;
+}
+html.rv6 .equipment-table thead {
+  background: rgba(255, 255, 255, 0.025);
+}
+html.rv6 .equipment-table thead th {
+  font: 500 10.5px var(--rv-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rv-text3);
+  border-bottom: 1px solid var(--rv-line);
+}
+html.rv6 .equipment-table :is(td, th) {
+  border-color: var(--rv-line);
+}
+html.rv6 .equipment-table td {
+  font-size: 13px;
+  color: var(--rv-text);
+}
+html.rv6 .equipment-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+html.rv6 .equipment-status {
+  font: 500 12px var(--rv-sans);
+}
+html.rv6 .equipment-row-toggle,
+html.rv6 .equipment-unchanged-toggle {
+  font-family: var(--rv-sans);
+  color: var(--rv-text2);
+}
+html.rv6 .equipment-review :is(code, .mono) {
+  font-family: var(--rv-mono);
+}
+html.rv6 .equipment-review details > summary {
+  cursor: pointer;
+  color: var(--rv-text2);
+  font-weight: 500;
+}
+html.rv6 .equipment-review details > summary:hover {
+  color: var(--rv-text);
+}
+
+/* Disclosure rows */
+html.rv6 :is(.app-shell, .work-drawer) details > summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+html.rv6
+  :is(.app-shell, .work-drawer)
+  details
+  > summary::-webkit-details-marker {
+  display: none;
+}
+html.rv6 :is(.app-shell, .work-drawer) details > summary::before {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2380858c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M6 4l4 4-4 4'/></svg>")
+    center / 12px no-repeat;
+  transition: transform 160ms var(--rivet-ease);
+}
+html.rv6 :is(.app-shell, .work-drawer) details[open] > summary::before {
+  transform: rotate(90deg);
+}
+.app-shell.rv6 .engineering-heading > span:first-child,
+.app-shell.rv6 .engineering-heading p:first-child {
+  font-family: var(--rv-mono);
 }

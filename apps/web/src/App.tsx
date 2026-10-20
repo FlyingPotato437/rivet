@@ -106,6 +106,11 @@ export default function App() {
     window.addEventListener("hashchange", f);
     return () => window.removeEventListener("hashchange", f);
   }, []);
+  // Drawers and menus render in a portal outside the shell; theme them too.
+  useEffect(() => {
+    document.documentElement.classList.add("rv6");
+    return () => document.documentElement.classList.remove("rv6");
+  }, []);
   // Top-level navigation starts at the page heading. In-order deep links keep
   // their own source/comment positioning.
   useEffect(() => {

@@ -19,6 +19,8 @@ import {
   type CorrectedBundle,
 } from "./equipment-correction-types";
 import { useEquipmentCorrections } from "./EquipmentCorrections";
+import { decisionLabel, useDecision } from "./WorkDetails";
+import { pmSentence, type DecisionItem } from "./work-presentation";
 import {
   CustomerChip,
   Monogram,
@@ -181,10 +183,18 @@ export function RevisionCheck({
           Rev {comparison.baseline_revision} → Rev {comparison.target_revision}
         </span>
         <span className="revision-check-space" />
-        <span className="revision-chip">
-          <StatusIcon kind="done" size={13} />
-          <span className="mono">{counts.verified}</span> made
-        </span>
+        {counts.verified > 0 && (
+          <span className="revision-chip">
+            <StatusIcon kind="done" size={13} />
+            <span className="mono">{counts.verified}</span> made
+          </span>
+        )}
+        {!counts.verified && !counts.remaining && counts.unchanged > 0 && (
+          <span className="revision-chip">
+            <StatusIcon kind="waiting" size={13} />
+            <span className="mono">{counts.unchanged}</span> unchanged
+          </span>
+        )}
         {counts.remaining > 0 && (
           <span className="revision-chip">
             <StatusIcon kind="missing" size={13} />
@@ -205,6 +215,13 @@ export function RevisionCheck({
         <p className="revision-check-note">
           The documents changed since this check. Open the review to re-check
           the latest revision.
+        </p>
+      )}
+      {!rows.length && (
+        <p className="revision-check-note">
+          No field changed between Rev {comparison.baseline_revision} and Rev{" "}
+          {comparison.target_revision}. {counts.unchanged} checked fields are
+          unchanged.
         </p>
       )}
       <ol>
@@ -241,7 +258,7 @@ export function RevisionCheck({
           );
         })}
       </ol>
-      {(hidden > 0 || all) && (
+      {rows.length > 0 && (hidden > 0 || all) && (
         <button className="revision-more" onClick={() => setAll(!all)}>
           {all
             ? "Show changes only"
@@ -303,3 +320,98 @@ export function OrderStatusLine({ order }: { order: ProjectFlow }) {
 }
 
 export { CustomerChip };
+
+function DecisionLine({
+  item,
+  seeWhy,
+}: {
+  item: DecisionItem;
+  seeWhy: () => void;
+}) {
+  const { busy, error, result, decide } = useDecision(item);
+  return (
+    <li className={result ? "is-decided" : ""}>
+      <StatusIcon kind={result ? "done" : "need"} />
+      <button className="needs-you-item" onClick={seeWhy}>
+        <strong>{item.title}</strong>
+        <span>{error || item.reason}</span>
+      </button>
+      {result ? (
+        <span className="needs-you-result" role="status">
+          {result}
+        </span>
+      ) : (
+        <span className="needs-you-actions">
+          <button className="text-button" onClick={seeWhy}>
+            See why
+          </button>
+          <button
+            className="primary"
+            disabled={busy}
+            onClick={() => void decide("approve")}
+          >
+            {busy ? "Saving…" : decisionLabel(item)}
+          </button>
+        </span>
+      )}
+    </li>
+  );
+}
+
+/** The one thing Rivet is waiting on, stated plainly at the top of the order. */
+export function NeedsYouPanel({
+  order,
+  decisions,
+  seeWhy,
+  openReview,
+  openComments,
+}: {
+  order: ProjectFlow;
+  decisions: DecisionItem[];
+  seeWhy: (item: DecisionItem) => void;
+  openReview: () => void;
+  openComments: () => void;
+}) {
+  if (!decisions.length && order.status !== "needs_you") return null;
+  const headline = decisions.length
+    ? `${decisions.length} ${decisions.length === 1 ? "decision needs" : "decisions need"} your approval`
+    : pmSentence(order.explanation, "Rivet needs your input to continue.");
+  return (
+    <section className="needs-you-panel" aria-label="Needs your decision">
+      <span className="needs-you-cap">
+        <StatusIcon kind="need" size={13} />
+        Needs your decision
+      </span>
+      <h2>{headline}</h2>
+      {decisions.length ? (
+        <ol className="needs-you-list">
+          {decisions.map((item) => (
+            <DecisionLine
+              key={item.id}
+              item={item}
+              seeWhy={() => seeWhy(item)}
+            />
+          ))}
+        </ol>
+      ) : (
+        <>
+          {!!order.open_points.length && (
+            <ul className="needs-you-points">
+              {order.open_points.map((point, i) => (
+                <li key={i}>{point}</li>
+              ))}
+            </ul>
+          )}
+          <div className="needs-you-footer">
+            <button className="primary" onClick={openReview}>
+              Open the drawing and BOM check
+            </button>
+            <button className="secondary" onClick={openComments}>
+              Drawing and comments
+            </button>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}

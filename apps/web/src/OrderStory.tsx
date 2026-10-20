@@ -21,7 +21,6 @@ import type { LifecycleView } from "./lifecycle-work";
 import type { ActionExecutionView } from "./action-execution";
 import { WorkDrawer } from "./WorkDrawer";
 import {
-  DecisionCard,
   DecisionDetails,
   SourceDetails,
   StoryDetails,
@@ -43,6 +42,7 @@ import "./today-story.css";
 import { orderOutcome, replyPreview } from "./workspace-outcomes";
 import "./workspace-refinement.css";
 import {
+  NeedsYouPanel,
   CorrectedFiles,
   OrderStatusLine,
   RevisionCheck,
@@ -354,72 +354,81 @@ export function OrderStory({
       <TitleBlock order={p} revision={revision} />
       <div className="order-workspace-grid">
         <div className="order-workspace-main">
+          <NeedsYouPanel
+            order={p}
+            decisions={decisions}
+            seeWhy={(item) => setDrawer({ kind: "decision", item })}
+            openReview={() => setDrawer({ kind: "equipment" })}
+            openComments={() => navigate(`order/${id}?view=tools&tab=comments`)}
+          />
           <RevisionCheck
             order={p}
             openReview={() => setDrawer({ kind: "equipment" })}
           />
-          <section
-            className={`order-outcome is-${outcome.tone}`}
-            aria-label="Current order outcome"
-          >
-            <div className="order-outcome-symbol">
-              <RivetIcon
-                name={
-                  outcome.tone === "ready"
-                    ? "handoff"
-                    : outcome.tone === "working"
-                      ? "agent"
-                      : "review"
-                }
-                size={25}
-              />
-            </div>
-            <div className="order-outcome-copy">
-              <span className={`work-state is-${outcome.tone}`}>
-                <span />
-                {outcome.label}
-              </span>
-              {["ready", "prepared"].includes(outcome.tone) && (
-                <span className="rivet-chip">Prepared by Rivet</span>
-              )}
-              <h2>{outcome.title}</h2>
-              <p>{pmSentence(p.explanation, outcome.detail)}</p>
-              {preview && ["ready", "prepared"].includes(p.status) && (
-                <blockquote>{preview}</blockquote>
-              )}
-              {["ready", "prepared"].includes(p.status) && (
-                <CorrectedFiles order={p} />
-              )}
-            </div>
-            <div className="order-outcome-actions">
-              {outcome.tone === "ready" ? (
-                <span className="rivet-output">
-                  <ReplyAction order={p} />
+          {outcome.tone !== "attention" && !decisions.length && (
+            <section
+              className={`order-outcome is-${outcome.tone}`}
+              aria-label="Current order outcome"
+            >
+              <div className="order-outcome-symbol">
+                <RivetIcon
+                  name={
+                    outcome.tone === "ready"
+                      ? "handoff"
+                      : outcome.tone === "working"
+                        ? "agent"
+                        : "review"
+                  }
+                  size={25}
+                />
+              </div>
+              <div className="order-outcome-copy">
+                <span className={`work-state is-${outcome.tone}`}>
+                  <span />
+                  {outcome.label}
                 </span>
-              ) : latestReply && outcome.tone === "prepared" ? (
-                <button
-                  className="primary"
-                  onClick={() =>
-                    setDrawer({ kind: "event", event: latestReply })
-                  }
-                >
-                  Read response
-                </button>
-              ) : null}
-              {latestReply && outcome.tone === "ready" && (
-                <button
-                  className="text-button"
-                  onClick={() =>
-                    setDrawer({ kind: "event", event: latestReply })
-                  }
-                >
-                  {p.equipment_correction
-                    ? "View corrected files"
-                    : "Read response here"}
-                </button>
-              )}
-            </div>
-          </section>
+                {["ready", "prepared"].includes(outcome.tone) && (
+                  <span className="rivet-chip">Prepared by Rivet</span>
+                )}
+                <h2>{outcome.title}</h2>
+                <p>{pmSentence(p.explanation, outcome.detail)}</p>
+                {preview && ["ready", "prepared"].includes(p.status) && (
+                  <blockquote>{preview}</blockquote>
+                )}
+                {["ready", "prepared"].includes(p.status) && (
+                  <CorrectedFiles order={p} />
+                )}
+              </div>
+              <div className="order-outcome-actions">
+                {outcome.tone === "ready" ? (
+                  <span className="rivet-output">
+                    <ReplyAction order={p} />
+                  </span>
+                ) : latestReply && outcome.tone === "prepared" ? (
+                  <button
+                    className="primary"
+                    onClick={() =>
+                      setDrawer({ kind: "event", event: latestReply })
+                    }
+                  >
+                    Read response
+                  </button>
+                ) : null}
+                {latestReply && outcome.tone === "ready" && (
+                  <button
+                    className="text-button"
+                    onClick={() =>
+                      setDrawer({ kind: "event", event: latestReply })
+                    }
+                  >
+                    {p.equipment_correction
+                      ? "View corrected files"
+                      : "Read response here"}
+                  </button>
+                )}
+              </div>
+            </section>
+          )}
           {(!p.equipment_correction ||
             p.equipment_correction.current === false) &&
             !equipment.data?.comparison?.checks.length && (
@@ -517,34 +526,11 @@ export function OrderStory({
                         )}
                       </>
                     )}
-                    {e.state === "current" && !!decisions.length && (
-                      <div className="story-decisions">
-                        {decisions.map((item) => (
-                          <DecisionCard
-                            key={item.id}
-                            item={item}
-                            seeWhy={() => setDrawer({ kind: "decision", item })}
-                          />
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </li>
               ))}
             </ol>
           )}
-          {!story.some((e) => e.state === "current") &&
-            decisions.length > 0 && (
-              <section className="story-decisions" aria-label="Your decisions">
-                {decisions.map((item) => (
-                  <DecisionCard
-                    key={item.id}
-                    item={item}
-                    seeWhy={() => setDrawer({ kind: "decision", item })}
-                  />
-                ))}
-              </section>
-            )}
         </div>
         <aside className="order-context-rail" aria-label="Order context">
           <section className="order-properties">

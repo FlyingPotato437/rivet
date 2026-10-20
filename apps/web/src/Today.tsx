@@ -177,6 +177,15 @@ export function Today({
                       : "You’re all caught up."}
             </span>
           </h1>
+          {!loading && (
+            <p className="today-brief">
+              <RivetAvatar />
+              {feed.length
+                ? `Rivet finished ${feed.length} ${feed.length === 1 ? "piece" : "pieces"} of work in the last 24 hours`
+                : "Rivet is ready for new order mail"}
+              {working.length ? ` · ${working.length} in progress` : ""}
+            </p>
+          )}
         </div>
         <div className="today-hero-actions">
           <span

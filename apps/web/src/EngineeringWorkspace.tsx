@@ -606,6 +606,11 @@ export function EngineeringWorkspace({
         message={query.error?.message || "The order could not be opened."}
       />
     );
+  const canApply = !!(
+    currentPackage &&
+    d.review_comments?.length &&
+    d.requirements
+  );
   return (
     <section className="engineering-order">
       <nav className="engineering-stages" aria-label="Order stages">
@@ -629,244 +634,263 @@ export function EngineeringWorkspace({
       )}
       {stage === "review" ? (
         <>
-          <div className="engineering-stage">
-            <section className="engineering-block">
-              <h2>Apply a reviewed comment to the model</h2>
-              <p>
-                Choose the exact comment evidence, requirement and replacement
-                value. This records a model version and prepares new files for
-                review.
-              </p>
-              {currentPackage && d.review_comments?.length && d.requirements ? (
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    void act("review-change", {
-                      package_id: currentPackage.id,
-                      comment_id: reviewComment,
-                      evidence_id: reviewEvidence,
-                      requirement_id: reviewRequirement,
-                      value: reviewValue,
-                      reason: reviewReason,
-                    }).then((result) => {
-                      if (result) {
-                        setReviewComment("");
-                        setReviewEvidence("");
-                        setReviewRequirement("");
-                        setReviewValue("");
-                        setReviewReason("");
-                      }
-                    });
-                  }}
-                >
-                  <div className="engineering-form-grid">
-                    <label>
-                      Review comment
-                      <select
-                        value={reviewComment}
-                        required
-                        onChange={(event) => {
-                          setReviewComment(event.target.value);
-                          setReviewEvidence("");
-                        }}
-                      >
-                        <option value="">
-                          Choose the comment being addressed
-                        </option>
-                        {d.review_comments.map((comment) => (
-                          <option key={comment.id} value={comment.id}>
-                            {comment.revision ? `${comment.revision} · ` : ""}
-                            {comment.text.slice(0, 180)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      Exact comment evidence
-                      <select
-                        required
-                        value={reviewEvidence}
-                        onChange={(event) =>
-                          setReviewEvidence(event.target.value)
-                        }
-                      >
-                        <option value="">Choose source evidence</option>
-                        {chosenComment?.source_refs.map((ref) => (
-                          <option key={ref.id} value={ref.id}>
-                            {d.documents.find(
-                              (document) => document.id === ref.document_id,
-                            )?.name || "Comment source"}{" "}
-                            · p. {ref.page ?? "?"}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      Requirement to revise
-                      <select
-                        required
-                        value={reviewRequirement}
-                        onChange={(event) =>
-                          setReviewRequirement(event.target.value)
-                        }
-                      >
-                        <option value="">
-                          Choose the requirement this comment changes
-                        </option>
-                        {d.requirements.items
-                          .filter((item) =>
-                            engineeringReviewRequirementSupported(
-                              item,
-                              d.selected_design,
-                            ),
-                          )
-                          .map((item) => (
-                            <option key={item.id} value={item.id}>
-                              {item.subject_id} · {label(item.key)} ·{" "}
-                              {display(item.value)}
-                            </option>
-                          ))}
-                      </select>
-                    </label>
-                    <label>
-                      Reviewed replacement value
-                      <input
-                        required
-                        value={reviewValue}
-                        onChange={(event) => setReviewValue(event.target.value)}
-                      />
-                    </label>
-                  </div>
-                  {chosenComment && <p>{chosenComment.text}</p>}
-                  <p>
-                    This action supports system scalars and exact device frame,
-                    trip, poles, trip type, nameplate and part text. Resolve
-                    reference, excluded or ambiguous equipment requirements in
-                    Requirements before revising the model.
-                  </p>
-                  {chosenComment?.source_refs
-                    .filter((ref) => ref.id === reviewEvidence)
-                    .map((ref) => (
-                      <button
-                        type="button"
-                        key={ref.id}
-                        onClick={() =>
-                          void openFile(
-                            `/documents/${ref.document_id}/content`,
-                            undefined,
-                            ref.page,
-                          ).catch((failure: Error) => setError(failure.message))
-                        }
-                      >
-                        Open selected comment evidence
-                      </button>
-                    ))}
-                  <label className="engineering-review-note">
-                    Engineering change reason
-                    <input
-                      required
-                      minLength={8}
-                      value={reviewReason}
-                      onChange={(event) => setReviewReason(event.target.value)}
-                      placeholder="Explain the checked comment-to-requirement change"
-                    />
-                  </label>
-                  <div className="engineering-actions">
-                    <button
-                      type="submit"
-                      disabled={
-                        !!busy ||
-                        !!editedDesign ||
-                        !reviewComment ||
-                        !reviewEvidence ||
-                        !reviewRequirement ||
-                        !reviewValue.trim() ||
-                        reviewReason.trim().length < 8
-                      }
-                    >
-                      {busy === "review-change"
-                        ? "Updating model and preparing files…"
-                        : "Apply comment and prepare revised package"}
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <p>
-                  {!currentPackage
-                    ? "Generate the current model and start revision review to apply a comment."
-                    : "No cited review comments are available for this package yet."}
-                </p>
-              )}
-            </section>
-            {!!d.review_deliveries?.length && (
-              <section className="engineering-block">
-                <h2>Revised review packages</h2>
-                {d.review_deliveries
-                  .slice()
-                  .reverse()
-                  .map((delivery) => {
-                    const pack = d.packages.find(
-                      (item) => item.id === delivery.package_id,
-                    );
-                    const outlook = d.outlook_deliveries?.[delivery.id];
-                    const link = safeOutlookUrl(outlook?.web_link);
-                    const current =
-                      delivery.model_version === d.model_version &&
-                      currentPackage?.id === delivery.package_id;
-                    return (
-                      <article
-                        className="engineering-cut-sheet"
-                        key={delivery.id}
-                      >
-                        <h3>
-                          Model {delivery.model_version} ·{" "}
-                          {current ? "Current prepared files" : "Earlier model"}
-                        </h3>
-                        <p>
-                          {when(delivery.created_at)} · {label(delivery.status)}
-                          {outlook
-                            ? ` · Outlook: ${label(outlook.status)}`
-                            : ""}
-                        </p>
-                        {pack && (
-                          <ArtifactList
-                            artifacts={pack.artifacts}
-                            onError={setError}
-                          />
-                        )}
-                        {outlook?.error && (
-                          <ErrorNote message={outlook.error} />
-                        )}
-                        <div className="engineering-actions">
-                          {link && (
-                            <a href={link} target="_blank" rel="noreferrer">
-                              Open in Outlook
-                            </a>
-                          )}
-                          <button
-                            disabled={
-                              !!busy ||
-                              !!editedDesign ||
-                              !current ||
-                              delivery.status !== "prepared" ||
-                              !engineeringOutlookCanRetry(outlook?.status)
-                            }
-                            onClick={() => void saveReviewOutlook(delivery.id)}
-                          >
-                            {busy === `review-outlook:${delivery.id}`
-                              ? "Saving unsent draft…"
-                              : outlook
-                                ? "Retry unsent Outlook draft"
-                                : "Save unsent Outlook draft"}
-                          </button>
-                        </div>
-                      </article>
-                    );
-                  })}
-              </section>
-            )}
-          </div>
           {review}
+          {(canApply || !!d.review_deliveries?.length) && (
+            <div className="engineering-stage">
+              {canApply && (
+                <section className="engineering-block">
+                  <h2>Apply a reviewed comment to the model</h2>
+                  <p>
+                    Choose the exact comment evidence, requirement and
+                    replacement value. This records a model version and prepares
+                    new files for review.
+                  </p>
+                  {currentPackage &&
+                  d.review_comments?.length &&
+                  d.requirements ? (
+                    <form
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        void act("review-change", {
+                          package_id: currentPackage.id,
+                          comment_id: reviewComment,
+                          evidence_id: reviewEvidence,
+                          requirement_id: reviewRequirement,
+                          value: reviewValue,
+                          reason: reviewReason,
+                        }).then((result) => {
+                          if (result) {
+                            setReviewComment("");
+                            setReviewEvidence("");
+                            setReviewRequirement("");
+                            setReviewValue("");
+                            setReviewReason("");
+                          }
+                        });
+                      }}
+                    >
+                      <div className="engineering-form-grid">
+                        <label>
+                          Review comment
+                          <select
+                            value={reviewComment}
+                            required
+                            onChange={(event) => {
+                              setReviewComment(event.target.value);
+                              setReviewEvidence("");
+                            }}
+                          >
+                            <option value="">
+                              Choose the comment being addressed
+                            </option>
+                            {d.review_comments.map((comment) => (
+                              <option key={comment.id} value={comment.id}>
+                                {comment.revision
+                                  ? `${comment.revision} · `
+                                  : ""}
+                                {comment.text.slice(0, 180)}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          Exact comment evidence
+                          <select
+                            required
+                            value={reviewEvidence}
+                            onChange={(event) =>
+                              setReviewEvidence(event.target.value)
+                            }
+                          >
+                            <option value="">Choose source evidence</option>
+                            {chosenComment?.source_refs.map((ref) => (
+                              <option key={ref.id} value={ref.id}>
+                                {d.documents.find(
+                                  (document) => document.id === ref.document_id,
+                                )?.name || "Comment source"}{" "}
+                                · p. {ref.page ?? "?"}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          Requirement to revise
+                          <select
+                            required
+                            value={reviewRequirement}
+                            onChange={(event) =>
+                              setReviewRequirement(event.target.value)
+                            }
+                          >
+                            <option value="">
+                              Choose the requirement this comment changes
+                            </option>
+                            {d.requirements.items
+                              .filter((item) =>
+                                engineeringReviewRequirementSupported(
+                                  item,
+                                  d.selected_design,
+                                ),
+                              )
+                              .map((item) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.subject_id} · {label(item.key)} ·{" "}
+                                  {display(item.value)}
+                                </option>
+                              ))}
+                          </select>
+                        </label>
+                        <label>
+                          Reviewed replacement value
+                          <input
+                            required
+                            value={reviewValue}
+                            onChange={(event) =>
+                              setReviewValue(event.target.value)
+                            }
+                          />
+                        </label>
+                      </div>
+                      {chosenComment && <p>{chosenComment.text}</p>}
+                      <p>
+                        This action supports system scalars and exact device
+                        frame, trip, poles, trip type, nameplate and part text.
+                        Resolve reference, excluded or ambiguous equipment
+                        requirements in Requirements before revising the model.
+                      </p>
+                      {chosenComment?.source_refs
+                        .filter((ref) => ref.id === reviewEvidence)
+                        .map((ref) => (
+                          <button
+                            type="button"
+                            key={ref.id}
+                            onClick={() =>
+                              void openFile(
+                                `/documents/${ref.document_id}/content`,
+                                undefined,
+                                ref.page,
+                              ).catch((failure: Error) =>
+                                setError(failure.message),
+                              )
+                            }
+                          >
+                            Open selected comment evidence
+                          </button>
+                        ))}
+                      <label className="engineering-review-note">
+                        Engineering change reason
+                        <input
+                          required
+                          minLength={8}
+                          value={reviewReason}
+                          onChange={(event) =>
+                            setReviewReason(event.target.value)
+                          }
+                          placeholder="Explain the checked comment-to-requirement change"
+                        />
+                      </label>
+                      <div className="engineering-actions">
+                        <button
+                          type="submit"
+                          disabled={
+                            !!busy ||
+                            !!editedDesign ||
+                            !reviewComment ||
+                            !reviewEvidence ||
+                            !reviewRequirement ||
+                            !reviewValue.trim() ||
+                            reviewReason.trim().length < 8
+                          }
+                        >
+                          {busy === "review-change"
+                            ? "Updating model and preparing files…"
+                            : "Apply comment and prepare revised package"}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <p>
+                      {!currentPackage
+                        ? "Generate the current model and start revision review to apply a comment."
+                        : "No cited review comments are available for this package yet."}
+                    </p>
+                  )}
+                </section>
+              )}
+              {!!d.review_deliveries?.length && (
+                <section className="engineering-block">
+                  <h2>Revised review packages</h2>
+                  {d.review_deliveries
+                    .slice()
+                    .reverse()
+                    .map((delivery) => {
+                      const pack = d.packages.find(
+                        (item) => item.id === delivery.package_id,
+                      );
+                      const outlook = d.outlook_deliveries?.[delivery.id];
+                      const link = safeOutlookUrl(outlook?.web_link);
+                      const current =
+                        delivery.model_version === d.model_version &&
+                        currentPackage?.id === delivery.package_id;
+                      return (
+                        <article
+                          className="engineering-cut-sheet"
+                          key={delivery.id}
+                        >
+                          <h3>
+                            Model {delivery.model_version} ·{" "}
+                            {current
+                              ? "Current prepared files"
+                              : "Earlier model"}
+                          </h3>
+                          <p>
+                            {when(delivery.created_at)} ·{" "}
+                            {label(delivery.status)}
+                            {outlook
+                              ? ` · Outlook: ${label(outlook.status)}`
+                              : ""}
+                          </p>
+                          {pack && (
+                            <ArtifactList
+                              artifacts={pack.artifacts}
+                              onError={setError}
+                            />
+                          )}
+                          {outlook?.error && (
+                            <ErrorNote message={outlook.error} />
+                          )}
+                          <div className="engineering-actions">
+                            {link && (
+                              <a href={link} target="_blank" rel="noreferrer">
+                                Open in Outlook
+                              </a>
+                            )}
+                            <button
+                              disabled={
+                                !!busy ||
+                                !!editedDesign ||
+                                !current ||
+                                delivery.status !== "prepared" ||
+                                !engineeringOutlookCanRetry(outlook?.status)
+                              }
+                              onClick={() =>
+                                void saveReviewOutlook(delivery.id)
+                              }
+                            >
+                              {busy === `review-outlook:${delivery.id}`
+                                ? "Saving unsent draft…"
+                                : outlook
+                                  ? "Retry unsent Outlook draft"
+                                  : "Save unsent Outlook draft"}
+                            </button>
+                          </div>
+                        </article>
+                      );
+                    })}
+                </section>
+              )}
+            </div>
+          )}
         </>
       ) : (
         <main className="page engineering-stage">
