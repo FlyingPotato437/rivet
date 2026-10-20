@@ -9,6 +9,7 @@ Rivet starts with a returned drawing and produces a reviewable comment log and t
 3. Intake uses supplied job identifiers and asks the PM to confirm unresolved matches. A missing job number must not silently attach a drawing to an unrelated order.
 4. Rivet extracts the comments it can read and preserves the original document, annotation/source location, and any stated author or timestamp. Unreadable or ambiguous content requires review.
 5. The comment log highlights revision review cues: new/repeated comments, previously open items, material recorded after an approved record, and explicit possible scope-change wording. These are not findings of engineering noncompliance, proven missed drafting work, or contractual change-order entitlement.
+   New orders also enable draft preparation automatically. Once parsing finishes, the durable worker reviews changed evidence and prepares source-linked questions or internal follow-ups. Work appears under **Rivet’s work**. Identical evidence is deduplicated; drafts remain pending human review. Existing orders keep their prior automation setting and can opt in from the work panel. The worker must be running, and AI preparation requires the configured server-side model key; without it, work is explicitly labelled rule-based.
 6. The PM checks the source, accepts or edits prepared work, records responses and hands off drafting work.
 7. The PM downloads the comment spreadsheet, response PDF, drafting list, or email review brief. They select recipients and send from their own email application. Existing Rivet send-notice functionality still requires a separate explicit human send action.
 8. The next returned revision is added to the same order. A comment being absent from a later PDF does not prove the underlying drawing was corrected.
@@ -18,6 +19,7 @@ The “under five minutes” onboarding and “80% in the inbox” statements ar
 ## Implemented delivery surface
 
 - `GET /api/orders/{id}/record/digest` builds a current review brief from the tenant-scoped record and revision-review projection.
+- The brief includes completed, pending agent drafts that still match the current record version and source fingerprint, with a direct link to review the saved work. Stale or incomplete work is omitted; downloading a brief never accepts or sends those drafts.
 - `GET /api/orders/{id}/record/digest.eml?expected_version=...` downloads the reviewed version as a multipart plain-text/HTML draft. A changed record returns a conflict so the PM can review the refreshed brief first.
 - The message has no `To`, `Cc`, `Bcc`, or `From` header. Downloading creates no delivery, approval, or new record version. It does not call Resend.
 - Counts separate comments from flags: one comment may have more than one review flag. Current-revision comment counts do not sum all historical revisions.

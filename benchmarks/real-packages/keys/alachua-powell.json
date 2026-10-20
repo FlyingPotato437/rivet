@@ -1,0 +1,536 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "alachua-powell",
+  "review": {
+    "reviewer": "Codex assistant visual inspection",
+    "reviewed_at": "2026-10-18T22:19:29.102271+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Preliminary reference labels transcribed from rendered originals independently of Rivet output; requires manufacturer/engineer second review.",
+    "notes": "All 71 pages reviewed via rendered contact sheets and enlarged marked pages; 13 technical reviewer notes and 3 administrative notes. Independently visual checked native annotation contents. Device inventory not yet labelled."
+  },
+  "source_hashes": {
+    "alachua-powell": "38a65a88e53f6d07f061cfc2f7da8d3a9c36a54656682b3d8436ebc951a821d3"
+  },
+  "labels": {
+    "comments": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "alachua-powell",
+          "page": 1
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 2
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 3
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 4
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 5
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 6
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 7
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 8
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 9
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 10
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 11
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 12
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 13
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 14
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 15
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 16
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 17
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 18
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 19
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 20
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 21
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 22
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 23
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 24
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 25
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 26
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 27
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 28
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 29
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 30
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 31
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 32
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 33
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 34
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 35
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 36
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 37
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 38
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 39
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 40
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 41
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 42
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 43
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 44
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 45
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 46
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 47
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 48
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 49
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 50
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 51
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 52
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 53
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 54
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 55
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 56
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 57
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 58
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 59
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 60
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 61
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 62
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 63
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 64
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 65
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 66
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 67
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 68
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 69
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 70
+        },
+        {
+          "source_id": "alachua-powell",
+          "page": 71
+        }
+      ],
+      "items": [
+        {
+          "id": "alachua-powell-p2-1",
+          "source_id": "alachua-powell",
+          "page": 2,
+          "text": "Rec by Jacobs CA 8/4/20 EE-12",
+          "kind": "native_annotation",
+          "actionable": false,
+          "bbox": [
+            0.1429179749660218,
+            0.4160837568351439,
+            0.7371026383532802,
+            0.44133626846514773
+          ]
+        },
+        {
+          "id": "alachua-powell-p3-2",
+          "source_id": "alachua-powell",
+          "page": 3,
+          "text": "8/18/2020",
+          "kind": "native_annotation",
+          "actionable": false,
+          "bbox": [
+            0.20965515449667357,
+            0.45712972314175215,
+            0.32851671066116206,
+            0.4787500284175527
+          ]
+        },
+        {
+          "id": "alachua-powell-p3-3",
+          "source_id": "alachua-powell",
+          "page": 3,
+          "text": "Kenji Jameel",
+          "kind": "native_annotation",
+          "actionable": false,
+          "bbox": [
+            0.3467175216305715,
+            0.45723399147743143,
+            0.531320995726344,
+            0.47743600078143456
+          ]
+        },
+        {
+          "id": "alachua-powell-p31-4",
+          "source_id": "alachua-powell",
+          "page": 31,
+          "text": "Confirm 1087B",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.09102107652651718,
+            0.07535028939295296,
+            0.20294918733484604,
+            0.22643973610617898
+          ]
+        },
+        {
+          "id": "alachua-powell-p31-5",
+          "source_id": "alachua-powell",
+          "page": 31,
+          "text": "LOR 1086M?",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.1022848864785986,
+            0.5265131478357796,
+            0.21421297858743107,
+            0.6622053204160748
+          ]
+        },
+        {
+          "id": "alachua-powell-p38-6",
+          "source_id": "alachua-powell",
+          "page": 38,
+          "text": "1086M LOR trip",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.21950441248276653,
+            0.12915301082110164,
+            0.3314325170579299,
+            0.26481366398358586
+          ]
+        },
+        {
+          "id": "alachua-powell-p38-7",
+          "source_id": "alachua-powell",
+          "page": 38,
+          "text": "See E-085",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.5291380040785846,
+            0.06677361690636838,
+            0.6159796621285233,
+            0.10148219869594381
+          ]
+        },
+        {
+          "id": "alachua-powell-p43-8",
+          "source_id": "alachua-powell",
+          "page": 43,
+          "text": "Why 86T?",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.030801461413015728,
+            0.38689091229679606,
+            0.21734125473920038,
+            0.41845656886245264
+          ]
+        },
+        {
+          "id": "alachua-powell-p43-9",
+          "source_id": "alachua-powell",
+          "page": 43,
+          "text": "why 86T?",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.6044699974309385,
+            0.11211503154099589,
+            0.716628180609809,
+            0.23725667625966698
+          ]
+        },
+        {
+          "id": "alachua-powell-p45-10",
+          "source_id": "alachua-powell",
+          "page": 45,
+          "text": "1086M status",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.2175636540830525,
+            0.11974327010337753,
+            0.3294917586582159,
+            0.2656468092793166
+          ]
+        },
+        {
+          "id": "alachua-powell-p45-11",
+          "source_id": "alachua-powell",
+          "page": 45,
+          "text": "comments apply to bkrs 12, 13 & 14",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.4285398495742698,
+            0.13732779146444918,
+            0.6397978838752297,
+            0.18871669576625633
+          ]
+        },
+        {
+          "id": "alachua-powell-p46-12",
+          "source_id": "alachua-powell",
+          "page": 46,
+          "text": "1086M trip",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.6270159553079044,
+            0.10720185559205335,
+            0.7389440598830678,
+            0.23420229825106534
+          ]
+        },
+        {
+          "id": "alachua-powell-p46-13",
+          "source_id": "alachua-powell",
+          "page": 46,
+          "text": "comments apply to bkrs 12, 13 & 14",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.5364356446110345,
+            0.3661875098642677,
+            0.7476937287773182,
+            0.4175763756337792
+          ]
+        },
+        {
+          "id": "alachua-powell-p57-14",
+          "source_id": "alachua-powell",
+          "page": 57,
+          "text": "spare slot for 87T (87T to be located on external relay rack)",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.4368361928104575,
+            0.5002416745580808,
+            0.6332448323567709,
+            0.6106833255652225
+          ]
+        },
+        {
+          "id": "alachua-powell-p65-15",
+          "source_id": "alachua-powell",
+          "page": 65,
+          "text": "why 36\" panel over 19\" rack? do (2) 36\" panels fit into the PCR plan?",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.05139577466677996,
+            0.07515493065419823,
+            0.23863055659275428,
+            0.14971715753728693
+          ]
+        },
+        {
+          "id": "alachua-powell-p65-16",
+          "source_id": "alachua-powell",
+          "page": 65,
+          "text": "Please confirm that this fits within the PCR plan. If so, no issues.",
+          "kind": "native_annotation",
+          "actionable": true,
+          "bbox": [
+            0.01751986048579995,
+            0.16096373278685291,
+            0.1761486951042624,
+            0.2384890161379419
+          ]
+        }
+      ]
+    },
+    "devices": null,
+    "bom_rows": null,
+    "issues": null,
+    "revision_checks": null
+  }
+}

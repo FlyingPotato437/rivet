@@ -1,0 +1,23 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npm ci --include=dev --prefix ../..",
+  "buildCommand": "npm run build:outlook",
+  "outputDirectory": "dist-outlook",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://outlook.office.com https://outlook.office365.com https://outlook.cloud.microsoft https://outlook.live.com https://*.office.com https://*.office365.com https://*.microsoft365.com https://*.cloud.microsoft;"
+        }
+      ]
+    }
+  ]
+}

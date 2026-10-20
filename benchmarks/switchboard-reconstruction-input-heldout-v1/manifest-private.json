@@ -1,0 +1,31 @@
+{
+  "schema_version": "rivet.reconstruction-manifest.v1",
+  "packages": [
+    {
+      "id": "gonzales-customer-drawing-input-unseen",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "sources": [
+        {
+          "id": "gonzales-consultant-addendum-drawings",
+          "name": "City consultant addendum electrical drawings",
+          "path": "../../.data/real-document-corpus/reconstruction-heldout-candidates/gonzales-iwtf-addendum-3.pdf",
+          "role": "customer_one_line",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "url": "https://gonzalesca.gov/sites/default/files/2025-02/Addendum%203%20-%20Gonzales%20IWTF%202025-02-13.pdf",
+          "pages": [
+            56,
+            63
+          ]
+        }
+      ],
+      "answer_key": "key-private.json",
+      "approved_reconstruction_eligible": false,
+      "limits": [
+        "Two selected consultant pages only.",
+        "No manufacturer-approved output exists.",
+        "Key is assistant-reviewed, not engineer-verified."
+      ]
+    }
+  ]
+}

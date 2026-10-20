@@ -5,6 +5,7 @@ import zipfile
 
 import pdfplumber
 from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
 
 from backend.domain.schemas import LineInput, Operation
 from backend.domain.service import fail, lines, scoped
@@ -58,6 +59,93 @@ def persist_blob(data, suffix):
     return key, hashlib.sha256(data).hexdigest()
 
 
+def _parse_pdf_page(page, n, span, coverage):
+    try:
+        viewport = PDFViewport(page)
+    except (TypeError, ValueError, AttributeError):
+        viewport = None
+        coverage.append(
+            {
+                "label": f"Page {n} geometry",
+                "state": "unsupported",
+                "detail": "Page geometry could not be aligned reliably. Review the original page; highlights cover the full page.",
+            }
+        )
+    words = oriented_words(page)
+    if viewport:
+        visible_words = []
+        for word in words:
+            area = viewport.normalize(
+                [word["x0"], word["top"], word["x1"], word["bottom"]],
+                "plumber",
+            )
+            if area[0] < area[2] and area[1] < area[3]:
+                visible_words.append(word)
+        words = visible_words
+    if not words:
+        unreadable = bool(page.images or page.curves or page.rects or page.lines)
+        page_source = (
+            span(
+                "",
+                {
+                    "page": n,
+                    "bbox": [0, 0, 1, 1],
+                    "approximate": True,
+                    "unreadable": True,
+                },
+            )
+            if unreadable
+            else None
+        )
+        coverage.append(
+            {
+                "label": f"Page {n}",
+                "state": "scanned" if unreadable else "empty",
+                "source_id": page_source.id if page_source else None,
+                "detail": "No extractable text. Transcription or visual review required.",
+            }
+        )
+        return
+    groups = {}
+    for word in words:
+        direction = word.get("direction", "ltr")
+        line_axis = "top" if direction in ("ltr", "rtl") else "x0"
+        groups.setdefault((direction, round(word[line_axis] / 8)), []).append(word)
+    for group in groups.values():
+        span(
+            " ".join(w["text"] for w in group),
+            {
+                "page": n,
+                "bbox": viewport.normalize(
+                    [
+                        min(w["x0"] for w in group),
+                        min(w["top"] for w in group),
+                        max(w["x1"] for w in group),
+                        max(w["bottom"] for w in group),
+                    ],
+                    "plumber",
+                )
+                if viewport
+                else [0, 0, 1, 1],
+                "coordinate_system": "visible-page-v1",
+                "rotation": page.rotation,
+                "approximate": True,
+            },
+        )
+    coverage.append(
+        {
+            "label": f"Page {n}",
+            "state": "processed",
+            "words": len(words),
+            "text_only": bool(page.images),
+            "uninterpreted_image_count": len(page.images),
+            "detail": "Selectable text was read; embedded drawing images remain unverified until visual interpretation completes."
+            if page.images
+            else "",
+        }
+    )
+
+
 def parse(s, d):
     path = BLOBS / d.blob
     ext = path.suffix.lower()
@@ -65,8 +153,11 @@ def parse(s, d):
     coverage = []
     headers = []
     rows = []
+    pdf_original_hash = None
 
     def span(text, location):
+        if ext == ".pdf":
+            location = {**location, "original_sha256": pdf_original_hash}
         sp = Span(id=uid(), document_id=d.id, text=text, location=location)
         s.add(sp)
         spans.append(sp)
@@ -165,7 +256,7 @@ def parse(s, d):
                     {
                         "sheet": sheet.title,
                         "row": n,
-                        "cells": f"A{n}:{row[-1].column_letter}{n}",
+                        "cells": f"A{n}:{get_column_letter(len(row))}{n}",
                         "formulas": formula_values,
                     },
                 )
@@ -184,89 +275,63 @@ def parse(s, d):
         formulas.close()
         cached.close()
     elif ext == ".pdf":
-        with pdfplumber.open(path) as pdf:
-            if len(pdf.pages) > 150:
-                raise ValueError("PDFs are limited to 150 pages.")
-            for n, page in enumerate(pdf.pages, 1):
-                try:
-                    viewport = PDFViewport(page)
-                except (TypeError, ValueError, AttributeError):
-                    viewport = None
-                    coverage.append(
-                        {
-                            "label": f"Page {n} geometry",
-                            "state": "unsupported",
-                            "detail": "Page geometry could not be aligned reliably. Review the original page; highlights cover the full page.",
-                        }
-                    )
-                words = oriented_words(page)
-                if viewport:
-                    visible_words = []
-                    for word in words:
-                        area = viewport.normalize(
-                            [word["x0"], word["top"], word["x1"], word["bottom"]],
-                            "plumber",
-                        )
-                        if area[0] < area[2] and area[1] < area[3]:
-                            visible_words.append(word)
-                    words = visible_words
-                if not words:
-                    unreadable = bool(
-                        page.images or page.curves or page.rects or page.lines
-                    )
-                    page_source = (
-                        span(
-                            "",
-                            {
-                                "page": n,
-                                "bbox": [0, 0, 1, 1],
-                                "approximate": True,
-                                "unreadable": True,
-                            },
-                        )
-                        if unreadable
-                        else None
-                    )
-                    coverage.append(
-                        {
-                            "label": f"Page {n}",
-                            "state": "scanned" if unreadable else "empty",
-                            "source_id": page_source.id if page_source else None,
-                            "detail": "No extractable text. Transcription or visual review required.",
-                        }
-                    )
-                    continue
-                groups = {}
-                for word in words:
-                    direction = word.get("direction", "ltr")
-                    line_axis = "top" if direction in ("ltr", "rtl") else "x0"
-                    groups.setdefault(
-                        (direction, round(word[line_axis] / 8)), []
-                    ).append(word)
-                for group in groups.values():
-                    span(
-                        " ".join(w["text"] for w in group),
-                        {
-                            "page": n,
-                            "bbox": viewport.normalize(
-                                [
-                                    min(w["x0"] for w in group),
-                                    min(w["top"] for w in group),
-                                    max(w["x1"] for w in group),
-                                    max(w["bottom"] for w in group),
-                                ],
-                                "plumber",
-                            )
-                            if viewport
-                            else [0, 0, 1, 1],
-                            "coordinate_system": "visible-page-v1",
-                            "rotation": page.rotation,
-                            "approximate": True,
-                        },
-                    )
+        import pymupdf
+
+        from backend.equipment.pdf_batches import (
+            PDF_MAX_PAGES,
+            batch_plan,
+            document_batches,
+            original_checksum,
+        )
+
+        pdf_original_hash = original_checksum(path, getattr(d, "sha256", None))
+        with pymupdf.open(path) as original:
+            d.meta = {
+                **d.meta,
+                "pdf_original_sha256": pdf_original_hash,
+                "pdf_original_page_count": len(original),
+                "processing_batches": [
+                    {**b.public(), "original_sha256": pdf_original_hash}
+                    for b in batch_plan(len(original))
+                ],
+            }
+            if original.needs_pass:
+                raise ValueError("Encrypted PDFs require an authorized readable copy.")
+            if len(original) > PDF_MAX_PAGES:
                 coverage.append(
-                    {"label": f"Page {n}", "state": "processed", "words": len(words)}
+                    {
+                        "label": "Remaining original pages",
+                        "state": "unsupported",
+                        "first_page": PDF_MAX_PAGES + 1,
+                        "last_page": len(original),
+                        "detail": "The original exceeds the bounded 500-page extraction; remaining pages are explicitly unprocessed.",
+                    }
                 )
+            for batch, chunk in document_batches(original):
+                with pdfplumber.open(io.BytesIO(chunk.tobytes())) as pdf:
+                    for n, page in enumerate(pdf.pages, batch.first_page):
+                        try:
+                            _parse_pdf_page(page, n, span, coverage)
+                        except Exception:  # noqa: BLE001 - a malformed page must not drop the other source pages.
+                            sp = span(
+                                "",
+                                {
+                                    "page": n,
+                                    "bbox": [0, 0, 1, 1],
+                                    "unreadable": True,
+                                    "approximate": True,
+                                },
+                            )
+                            coverage.append(
+                                {
+                                    "label": f"Page {n}",
+                                    "state": "unsupported",
+                                    "source_id": sp.id,
+                                    "detail": "This original page failed bounded parsing. Other pages remain available.",
+                                }
+                            )
+                        finally:
+                            page.close()
         # PDF annotation objects carry review comments separately from page text.
         from backend.orders.extraction import parse_pdf_annotations
 
@@ -324,6 +389,10 @@ def parse(s, d):
     }
     d.state = "needs_mapping" if rows else "ready"
     s.flush()
+    if ext == ".pdf":
+        from backend.ingestion.vision import schedule
+
+        schedule(s, d)
 
 
 def map_document(s, d, q, p, mapping, purpose):

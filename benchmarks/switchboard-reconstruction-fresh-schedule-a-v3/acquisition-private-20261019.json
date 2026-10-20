@@ -1,0 +1,31 @@
+{
+  "schema_version": "rivet.sealed-source-acquisition.v1",
+  "created_at": "2026-10-19T23:18:53.419020+00:00",
+  "source_path": ".data/real-document-corpus/sealed-fresh-schedules-20261019/source-d-candidate-original.pdf",
+  "source_url": "https://fo4b.dswd.gov.ph/wp-content/uploads/2023/10/INVITATION-TO-BID-FOR-THE-ELECTRICAL-UPGRADE-OF-53-YEAR-OLD-DSWD-MIMAROPA-ADMIN-BUILDING-UNDER-PROJECT-ID-NO.-DSWD4B-2023-027.pdf",
+  "source_sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+  "source_bytes": 2795232,
+  "source_physical_pages": 110,
+  "selected_physical_pages": [
+    81
+  ],
+  "authority": "Official Philippine Department of Social Welfare and Development field-office government procurement publication; proposed/bid reference only.",
+  "prior_corpus_PDF_hashes_checked": 90,
+  "duplicate_prior_PDF_hashes": [],
+  "prior_manifest_exact_URL_hits": [],
+  "excluded_prior_sources": [
+    "Ann Arbor",
+    "Gonzales",
+    "TCTC",
+    "Kansas",
+    "AVTA",
+    "all pre-existing corpus PDF hashes"
+  ],
+  "source_only_labeler": "/root/evaluation_resume",
+  "provider_calls": 0,
+  "parser_calls": 0,
+  "predictions_opened": false,
+  "independent_QA_pending": true,
+  "draft_key_sha256": "c0b93743479347fc1aa599f7c41d9deb0cd1f3cbeed1af3bfbccc11a1609e887",
+  "draft_manifest_sha256": "8fa97403ee881b1d361ab22194cd16c3acba2c7ebf2de2cec220d03585e59ed7"
+}

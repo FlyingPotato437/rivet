@@ -1,0 +1,316 @@
+{
+  "schema_version": "rivet.cad-report-key.v1",
+  "source_id": "autodesk-au2019-harness",
+  "source_sha256": "4b2c5db5c721c99a0156ea9a73ef8d38ed69b320f305827e0dd0ba1efe3f92db",
+  "dataset_kind": "vendor_sample",
+  "review": {
+    "method": "manual transcription of explicit published XML records",
+    "reviewer": "Codex validation agent",
+    "engineering_reviewed": false,
+    "reviewed_at": "2026-10-18T23:00:44.488683+00:00"
+  },
+  "components": [
+    {
+      "tag": "A17",
+      "part_number": "224-2590-T"
+    },
+    {
+      "tag": "A18",
+      "part_number": "224-2590-T"
+    },
+    {
+      "tag": "A19",
+      "part_number": "224-2590-T"
+    },
+    {
+      "tag": "A20",
+      "part_number": "224-2590-T"
+    },
+    {
+      "tag": "A21",
+      "part_number": "222-2602-T"
+    },
+    {
+      "tag": "A22",
+      "part_number": "222-2602-T"
+    },
+    {
+      "tag": "CS1",
+      "part_number": "597738-BE-10F1H1MVW1"
+    },
+    {
+      "tag": "SEL1",
+      "part_number": "0351S66HA4554X1"
+    },
+    {
+      "tag": "TD-5",
+      "part_number": "129A514G01"
+    },
+    {
+      "tag": "TD-5:1",
+      "part_number": "129A514G01"
+    },
+    {
+      "tag": "TD-5:2",
+      "part_number": "129A514G01"
+    },
+    {
+      "tag": "TD-7",
+      "part_number": "129A514G01"
+    },
+    {
+      "tag": "XFMR1",
+      "part_number": "CS00013001"
+    }
+  ],
+  "connections": [
+    {
+      "wire_number": "1F",
+      "from": {
+        "device_tag": "XFMR1",
+        "pin": "1-10"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "1-11"
+      }
+    },
+    {
+      "wire_number": "1F:1",
+      "from": {
+        "device_tag": "XFMR1",
+        "pin": "1-08"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "1-09"
+      }
+    },
+    {
+      "wire_number": "A1",
+      "from": {
+        "device_tag": "A18",
+        "pin": "1-02"
+      },
+      "to": {
+        "device_tag": "TD-5:2",
+        "pin": "10"
+      }
+    },
+    {
+      "wire_number": "A2",
+      "from": {
+        "device_tag": "TD-5:2",
+        "pin": "9"
+      },
+      "to": {
+        "device_tag": "SEL1",
+        "pin": "Z01"
+      }
+    },
+    {
+      "wire_number": "A",
+      "from": {
+        "device_tag": "CS1",
+        "pin": "8-04"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "H"
+      }
+    },
+    {
+      "wire_number": "B",
+      "from": {
+        "device_tag": "CS1",
+        "pin": "8-05"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "H"
+      }
+    },
+    {
+      "wire_number": "C",
+      "from": {
+        "device_tag": "CS1",
+        "pin": "8-06"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "H"
+      }
+    },
+    {
+      "wire_number": "B1",
+      "from": {
+        "device_tag": "A19",
+        "pin": "1-02"
+      },
+      "to": {
+        "device_tag": "TD-5:1",
+        "pin": "14"
+      }
+    },
+    {
+      "wire_number": "B2",
+      "from": {
+        "device_tag": "TD-5:1",
+        "pin": "13"
+      },
+      "to": {
+        "device_tag": "SEL1",
+        "pin": "Z03"
+      }
+    },
+    {
+      "wire_number": "C1",
+      "from": {
+        "device_tag": "A20",
+        "pin": "1-02"
+      },
+      "to": {
+        "device_tag": "TD-5",
+        "pin": "18"
+      }
+    },
+    {
+      "wire_number": "C2",
+      "from": {
+        "device_tag": "TD-5",
+        "pin": "17"
+      },
+      "to": {
+        "device_tag": "SEL1",
+        "pin": "Z05"
+      }
+    },
+    {
+      "wire_number": "G1",
+      "from": {
+        "device_tag": "A21",
+        "pin": "1-02"
+      },
+      "to": {
+        "device_tag": "TD-7",
+        "pin": "10"
+      }
+    },
+    {
+      "wire_number": "G2",
+      "from": {
+        "device_tag": "TD-7",
+        "pin": "9"
+      },
+      "to": {
+        "device_tag": "SEL1",
+        "pin": "Z07"
+      }
+    },
+    {
+      "wire_number": "N",
+      "from": {
+        "device_tag": "SEL1",
+        "pin": "Z08"
+      },
+      "to": {
+        "device_tag": "A22",
+        "pin": "1-02"
+      }
+    },
+    {
+      "wire_number": "1F:1",
+      "from": {
+        "device_tag": "A17",
+        "pin": "4-01"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "1-08"
+      }
+    },
+    {
+      "wire_number": "1F:2",
+      "from": {
+        "device_tag": null,
+        "pin": "4-01"
+      },
+      "to": {
+        "device_tag": "A20",
+        "pin": "4-01"
+      }
+    },
+    {
+      "wire_number": "1F:3",
+      "from": {
+        "device_tag": null,
+        "pin": "4-01"
+      },
+      "to": {
+        "device_tag": "A19",
+        "pin": "4-01"
+      }
+    },
+    {
+      "wire_number": "1F:4",
+      "from": {
+        "device_tag": null,
+        "pin": "4-01"
+      },
+      "to": {
+        "device_tag": "A18",
+        "pin": "4-01"
+      }
+    },
+    {
+      "wire_number": "1F:5",
+      "from": {
+        "device_tag": "XFMR1",
+        "pin": "1-09"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "1-10"
+      }
+    },
+    {
+      "wire_number": "1K:1",
+      "from": {
+        "device_tag": "A21",
+        "pin": "4-01"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "1-12"
+      }
+    },
+    {
+      "wire_number": "1K:2",
+      "from": {
+        "device_tag": null,
+        "pin": "4-01"
+      },
+      "to": {
+        "device_tag": "A22",
+        "pin": "4-01"
+      }
+    },
+    {
+      "wire_number": "1K:3",
+      "from": {
+        "device_tag": "XFMR1",
+        "pin": "1-12"
+      },
+      "to": {
+        "device_tag": "XFMR1",
+        "pin": "1-13"
+      }
+    }
+  ],
+  "expected_unknown_endpoint_rows": 4,
+  "limitations": [
+    "No geometry or engineering correctness labels.",
+    "Four missing endpoints and repeated transformer H pin labels are source limitations, not guessed fixes.",
+    "Training sample importer fidelity must not be pooled with public manufacturer PDF accuracy."
+  ]
+}

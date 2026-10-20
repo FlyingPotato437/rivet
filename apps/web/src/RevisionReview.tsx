@@ -7,11 +7,14 @@ import {
   MagnifyingGlass,
   Plus,
   WarningCircle,
+  CaretDown,
 } from "@phosphor-icons/react";
 import { api, apiFetch } from "./api";
 import { ErrorNote, RivetIcon } from "./ui";
 import { CommentAttribution } from "./RecordAttribution";
 import { ReviewBrief } from "./Integrations";
+import { OrderPreparedReply } from "./OrderPreparedReply";
+import { TranscriptionCorrection } from "./TranscriptionCorrection";
 import type {
   RecordComment,
   RecordView,
@@ -56,15 +59,18 @@ export function commentWorkflow(comment: RecordComment) {
 export function ReviewOutputs({
   id,
   number = "",
+  includeBrief = true,
 }: {
   id: string;
   number?: string;
+  includeBrief?: boolean;
 }) {
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const outputs = [
     { format: "response_pdf", name: "Response letter", extension: "pdf" },
     { format: "xlsx", name: "Excel comment log", extension: "xlsx" },
+    { format: "pdf", name: "PDF comment log", extension: "pdf" },
     { format: "drafting_xlsx", name: "Drafting list", extension: "xlsx" },
   ];
   async function download(format: string, extension: string) {
@@ -125,7 +131,7 @@ export function ReviewOutputs({
             {busy === output.format ? "Preparing…" : output.name}
           </button>
         ))}
-        <ReviewBrief id={id} compact />
+        {includeBrief && <ReviewBrief id={id} compact />}
       </div>
       {error && <ErrorNote message={error} />}
     </section>
@@ -151,7 +157,7 @@ export function RevisionReview({
 }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
-  const [revision, setRevision] = useState("all");
+  const [revision, setRevision] = useState("latest");
   const agent = useQuery({
     queryKey: ["record-agent", w.order.id],
     queryFn: () => api<RecordAgentView>(`/orders/${w.order.id}/record/agent`),
@@ -160,7 +166,7 @@ export function RevisionReview({
   const flags = w.revision_review?.flags ?? [];
   const ready = (agent.data?.proposals ?? []).filter(
     (proposal) =>
-      proposal.status === "pending" &&
+      ["pending", "prepared"].includes(proposal.status) &&
       proposal.base_version === w.version &&
       !agent.data?.runs.some(
         (run) =>
@@ -171,6 +177,10 @@ export function RevisionReview({
   const working = agent.data?.runs.some((run) =>
     ["queued", "running"].includes(run.status),
   );
+  const readyDrafts = ready.reduce(
+    (total, proposal) => total + proposal.operations.length,
+    0,
+  );
   const latest =
     w.revision_review?.latest_revision ||
     w.comments.filter((comment) => comment.revision).at(-1)?.revision ||
@@ -179,28 +189,31 @@ export function RevisionReview({
   const latestComments = latest
     ? w.comments.filter((comment) => comment.revision === latest)
     : w.comments;
-  const pending = latestComments.filter(
-    (comment) =>
-      !["awaiting_customer", "resolved"].includes(commentWorkflow(comment)),
-  ).length;
+  const revisions = [
+    ...new Set(w.comments.map((comment) => comment.revision)),
+  ].filter(Boolean);
   const earlierOpen = latest
     ? w.comments.filter(
         (comment) =>
-          comment.revision !== latest && commentWorkflow(comment) !== "resolved",
+          comment.revision !== latest &&
+          commentWorkflow(comment) !== "resolved",
       ).length
     : 0;
-  const riskCount = new Set(
-    flags.filter((flag) => flag.kind !== "new").map((flag) => flag.comment_id),
-  ).size;
+  const selectedRevision = revision === "latest" ? latest : revision;
   const visible = w.comments.filter((comment) => {
     const commentFlags = flags.filter((flag) => flag.comment_id === comment.id);
     return (
       (filter === "all" ||
+        (filter === "earlier_open" &&
+          comment.revision !== latest &&
+          commentWorkflow(comment) !== "resolved") ||
         (filter === "needs_response" &&
           commentWorkflow(comment) === "needs_response") ||
         (filter === "needs_review" && !comment.reviewed) ||
         commentFlags.some((flag) => flag.kind === filter)) &&
-      (revision === "all" || comment.revision === revision) &&
+      (selectedRevision === "all" ||
+        !selectedRevision ||
+        comment.revision === selectedRevision) &&
       `${comment.text} ${comment.number} ${comment.author} ${comment.response}`
         .toLowerCase()
         .includes(search.toLowerCase())
@@ -208,54 +221,57 @@ export function RevisionReview({
   });
   return (
     <div className="revision-review">
+      <OrderPreparedReply orderId={w.order.id} />
       <section className="revision-brief" aria-label="Revision review summary">
         <div className="revision-brief-copy">
           <span className="revision-kicker">
             <RivetIcon name="inbox" size={17} />
             {latest ? `Revision ${latest}` : "Returned drawings"}
+            {w.comments.length > 0 && ` · ${latestComments.length} comments`}
           </span>
           <h2>
             {w.comments.length
-              ? `${latestComments.length} ${latestComments.length === 1 ? "comment" : "comments"}${latest ? " in this return" : ""}. ${pending} ${pending === 1 ? "needs" : "need"} action.`
+              ? "Comment log"
               : "Add a returned drawing to start."}
           </h2>
-          <p>
-            {earlierOpen > 0 &&
-              `${earlierOpen} earlier ${earlierOpen === 1 ? "comment remains" : "comments remain"} open. `}
-            {w.comments.length
-              ? riskCount
-                ? `${riskCount} ${riskCount === 1 ? "comment carries" : "comments carry"} revision flags. Open a flag to compare its original evidence.`
-                : "Review the imported comments, record your responses, and download the handoff."
-              : "Drop in the PDF or saved email. Rivet keeps each comment connected to its original source."}
-          </p>
+          {!w.comments.length && (
+            <p>
+              Drop in the PDF or saved email. Rivet keeps each comment connected
+              to its original source.
+            </p>
+          )}
         </div>
-        <div className="revision-agent-state">
+        {!w.comments.length && (
+          <button className="secondary" onClick={addDocuments}>
+            Add returned drawing <Plus size={17} />
+          </button>
+        )}
+      </section>
+      {(working || ready.length > 0) && (
+        <div className="revision-prepared-work">
           <RivetIcon name="agent" size={26} />
           <div>
             <strong>
               {working
                 ? "Rivet is working"
                 : ready.length
-                  ? `${ready.length} prepared ${ready.length === 1 ? "result" : "results"}`
-                  : "Rivet assistant"}
+                  ? "Rivet has prepared the supporting work"
+                  : "Rivet work"}
             </strong>
             <span>
               {working
                 ? "Task progress and evidence are available."
                 : ready.length
-                  ? "Review the evidence before applying a result."
+                  ? `${readyDrafts} source-linked ${readyDrafts === 1 ? "result" : "results"} saved with this order.`
                   : "Check references or prepare a clarification."}
             </span>
           </div>
-          <button
-            className="text-button"
-            onClick={() => openAgent(ready[0]?.id)}
-          >
-            {ready.length ? "Review work" : "Open Rivet"}
+          <button className="secondary" onClick={() => openAgent(ready[0]?.id)}>
+            {ready.length ? "See what’s done" : "View progress"}
             <ArrowRight size={16} />
           </button>
         </div>
-      </section>
+      )}
       {flags.some((flag) => flag.kind !== "new") && (
         <section className="revision-risk-strip" aria-label="Revision flags">
           {flagOrder
@@ -268,7 +284,10 @@ export function RevisionReview({
                 key={kind}
                 className={filter === kind ? "selected" : ""}
                 aria-pressed={filter === kind}
-                onClick={() => setFilter(filter === kind ? "all" : kind)}
+                onClick={() => {
+                  setFilter(filter === kind ? "all" : kind);
+                  setRevision(filter === kind ? "latest" : "all");
+                }}
               >
                 <span className={`revision-risk-mark ${kind}`} />
                 <strong>
@@ -284,30 +303,42 @@ export function RevisionReview({
                 <ArrowRight size={14} />
               </button>
             ))}
-          <small>Automatic record checks · confirm with the source</small>
+          <small>Automatic checks · review the evidence</small>
         </section>
       )}
       <section className="revision-log" aria-label="Comment log">
         <div className="revision-log-toolbar">
-          <div
-            className="revision-log-filters"
-            role="group"
-            aria-label="Filter comments"
-          >
-            {[
-              ["all", "All comments"],
-              ["needs_response", "Needs response"],
-              ["needs_review", "Needs review"],
-            ].map(([value, label]) => (
-              <button
-                key={value}
-                aria-pressed={filter === value}
-                onClick={() => setFilter(value)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          {revisions.length > 1 && (
+            <div
+              className="revision-log-filters"
+              role="group"
+              aria-label="Filter comments"
+            >
+              {[
+                ["latest", "Latest return"],
+                [
+                  "earlier_open",
+                  `Earlier open${earlierOpen ? ` · ${earlierOpen}` : ""}`,
+                ],
+                ["all", "All comments"],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  aria-pressed={
+                    value === "earlier_open"
+                      ? filter === value
+                      : filter === "all" && revision === value
+                  }
+                  onClick={() => {
+                    setFilter(value === "earlier_open" ? value : "all");
+                    setRevision(value === "earlier_open" ? "all" : value);
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="revision-log-tools">
             <label className="revision-log-search">
               <MagnifyingGlass size={17} />
@@ -318,26 +349,41 @@ export function RevisionReview({
                 onChange={(event) => setSearch(event.target.value)}
               />
             </label>
-            <select
-              aria-label="Revision"
-              value={revision}
-              onChange={(event) => setRevision(event.target.value)}
-            >
-              <option value="all">All revisions</option>
-              {[...new Set(w.comments.map((comment) => comment.revision))]
-                .filter(Boolean)
-                .map((value) => (
-                  <option key={value} value={value}>
-                    Rev {value}
+            {revisions.length > 1 && (
+              <div className="revision-select">
+                <select
+                  aria-label="Revision"
+                  value={revision}
+                  onChange={(event) => {
+                    setRevision(event.target.value);
+                    setFilter("all");
+                  }}
+                >
+                  <option value="latest">
+                    Latest{latest ? ` · ${latest}` : " return"}
                   </option>
-                ))}
-            </select>
+                  <option value="all">All revisions</option>
+                  {revisions.map((value) => (
+                    <option key={value} value={value}>
+                      Rev {value}
+                    </option>
+                  ))}
+                </select>
+                <CaretDown size={15} aria-hidden="true" />
+              </div>
+            )}
           </div>
         </div>
         {flagOrder.includes(filter as RevisionFlagKind) && (
           <div className="revision-active-filter">
             Showing {flagLabels[filter as RevisionFlagKind].toLowerCase()}
-            <button className="text-button" onClick={() => setFilter("all")}>
+            <button
+              className="text-button"
+              onClick={() => {
+                setFilter("all");
+                setRevision("latest");
+              }}
+            >
               Clear filter
             </button>
           </div>
@@ -347,31 +393,38 @@ export function RevisionReview({
             <table className="revision-table">
               <thead>
                 <tr>
-                  <th>Ref.</th>
+                  <th>Log ID</th>
                   <th>Customer comment</th>
-                  <th>Revision check</th>
+                  <th>Attention</th>
                   <th>Status</th>
-                  <th>
-                    <span className="sr-only">Open</span>
-                  </th>
                 </tr>
               </thead>
               <tbody>
                 {visible.map((comment) => {
                   const commentFlags = flags
-                    .filter((flag) => flag.comment_id === comment.id)
+                    .filter(
+                      (flag) =>
+                        flag.comment_id === comment.id && flag.kind !== "new",
+                    )
                     .sort(
                       (a, b) =>
                         flagOrder.indexOf(a.kind) - flagOrder.indexOf(b.kind),
                     );
                   const workflow = commentWorkflow(comment);
+                  const captured =
+                    workflow === "needs_review" &&
+                    !comment.reviewed &&
+                    !["manual", "unreadable area"].includes(comment.origin);
                   return (
                     <tr key={comment.id}>
                       <td>
                         <span className="revision-ref">
-                          {comment.number || "—"}
+                          {comment.log_reference || comment.number || "—"}
                         </span>
                         <small>Rev {comment.revision || "—"}</small>
+                        <small title="The number recorded in the original source">
+                          Original {comment.number || "—"}
+                        </small>
                       </td>
                       <td>
                         <button
@@ -381,6 +434,13 @@ export function RevisionReview({
                           {comment.text}
                         </button>
                         <div className="revision-comment-meta">
+                          <button
+                            className="revision-row-review"
+                            aria-label={`Open comment ${comment.log_reference || comment.number}`}
+                            onClick={() => openComment(comment.id)}
+                          >
+                            Open <ArrowRight size={15} />
+                          </button>
                           <CommentAttribution comment={comment} compact />
                           <span>{comment.author || "Author not recorded"}</span>
                           <button
@@ -400,11 +460,12 @@ export function RevisionReview({
                             <ArrowUpRight size={12} />
                           </button>
                         </div>
+                        <TranscriptionCorrection key={`${w.order.id}:${comment.id}`} w={w} comment={comment} />
                         {comment.response && (
-                          <p className="revision-recorded-response">
-                            <span>Recorded response</span>
-                            {comment.response}
-                          </p>
+                          <details className="revision-recorded-response">
+                            <summary>Recorded response</summary>
+                            <p>{comment.response}</p>
+                          </details>
                         )}
                       </td>
                       <td>
@@ -421,33 +482,25 @@ export function RevisionReview({
                                 {flagLabels[flag.kind]}
                               </button>
                             ))}
-                            <button
-                              className="revision-evidence-link"
-                              onClick={() => openComment(comment.id)}
-                            >
-                              View evidence <ArrowUpRight size={12} />
-                            </button>
                           </div>
                         ) : (
                           <span className="revision-no-flag">
-                            {w.revision_review ? "No flag" : "Not compared"}
+                            {w.revision_review ? "—" : "Not compared"}
                           </span>
                         )}
                       </td>
                       <td>
-                        <span className={`revision-workflow ${workflow}`}>
-                          <i />
-                          {workflowLabels[workflow]}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          className="icon-button"
-                          aria-label={`Review comment ${comment.number}`}
-                          onClick={() => openComment(comment.id)}
+                        <span
+                          className={`revision-workflow ${captured ? "recorded" : workflow}`}
+                          title={
+                            captured
+                              ? "Captured from the source. This does not mark the comment as human-reviewed."
+                              : undefined
+                          }
                         >
-                          <ArrowRight size={18} />
-                        </button>
+                          <i />
+                          {captured ? "Recorded" : workflowLabels[workflow]}
+                        </span>
                       </td>
                     </tr>
                   );
@@ -501,8 +554,20 @@ export function RevisionReview({
             </button>
           </div>
         </footer>
+        {!!w.email_context?.length && (
+          <p className="revision-context-note">
+            {w.email_context.length} email cover{" "}
+            {w.email_context.length === 1 ? "note is" : "notes are"} kept with
+            the source files, outside the comment log.
+          </p>
+        )}
       </section>
-      <ReviewOutputs id={w.order.id} number={w.order.number} />
+      <details className="record-file-details">
+        <summary>
+          Download response letter, comment log, or drafting list
+        </summary>
+        <ReviewOutputs id={w.order.id} number={w.order.number} />
+      </details>
       <p className="revision-boundary">
         <WarningCircle size={15} />
         Flags identify records to review. They do not verify that a drawing is

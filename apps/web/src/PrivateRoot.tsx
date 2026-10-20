@@ -8,15 +8,16 @@ const SharedRecord = lazy(() =>
   import("./RecordWorkspace").then((m) => ({ default: m.SharedRecord })),
 );
 export default function PrivateRoot() {
+  const returnTo = location.pathname + location.search + location.hash;
   return (
     <Suspense
       fallback={<div className="site-loading">Opening your workspace…</div>}
     >
-      <Authentication>
+      <Authentication returnTo={returnTo}>
         {location.hash.startsWith("#shared/") ? (
           <SharedRecord token={location.hash.slice(8)} />
         ) : (
-          <WorkspaceAccess>
+          <WorkspaceAccess returnTo={returnTo}>
             <WorkspaceApp />
           </WorkspaceAccess>
         )}

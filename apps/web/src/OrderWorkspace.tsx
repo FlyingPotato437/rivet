@@ -1233,7 +1233,7 @@ function Ledger({ ledger, links }: { ledger: Obligation[]; links: Links }) {
     <section className="ow-ledger">
       <div className="ow-section-heading">
         <div>
-          <h2>Obligations</h2>
+          <h2>Promises to the customer</h2>
           <p>Effective requirements, reconciled from the source documents.</p>
         </div>
         <span className="ow-precedence">
@@ -1349,9 +1349,7 @@ function Sources({
       <div className="ow-section-heading">
         <div>
           <h2>Source documents</h2>
-          <p>
-            View originals, source coverage, and document revisions.
-          </p>
+          <p>View originals, source coverage, and document revisions.</p>
         </div>
         <button className="secondary" onClick={onUpload}>
           <UploadSimple size={15} />
@@ -1724,7 +1722,7 @@ function Release({
       </div>
       {w.release.blockers.length > 0 && (
         <div className="ow-blockers">
-          <h3>Release blockers</h3>
+          <h3>What’s left before release</h3>
           {w.release.blockers.map((reason, index) => (
             <div key={index}>
               <WarningCircle size={16} />
@@ -1735,7 +1733,7 @@ function Release({
       )}
       <div className="ow-section-heading">
         <div>
-          <h2>Downstream verification</h2>
+          <h2>Final check</h2>
           <p>
             Verify that the BOM, supplier purchase order and nameplates reflect
             the approved configuration.
@@ -2008,8 +2006,9 @@ function Upload({
           try {
             for (const file of files) {
               if (uploaded.includes(file.name)) continue;
-              if (file.size > 20 * 1024 * 1024)
-                throw new Error(`${file.name} exceeds the 20 MB limit.`);
+              const limitMb = /\.pdf$/i.test(file.name) ? 200 : 20;
+              if (file.size > limitMb * 1024 * 1024)
+                throw new Error(`${file.name} exceeds the ${limitMb} MB limit.`);
               const form = new FormData();
               form.append("file", file);
               form.append("kind", role);

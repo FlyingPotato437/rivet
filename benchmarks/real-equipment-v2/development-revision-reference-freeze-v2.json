@@ -1,0 +1,10 @@
+{
+  "frozen_at": "2026-10-18T23:06:44.340119+00:00",
+  "key": "keys/kansas-control-revision-development-v2.json",
+  "key_sha256": "588445fb550fdab6a65ccfc5aa801ffcdcc56914d3489ecb8e8637ad17b63820",
+  "manifest": "development-revision-packages-v2.json",
+  "manifest_sha256": "629d7a53dc214cc822cd3d6bd44eaba856e942121bbd5000eb5b3534fcf32b8b",
+  "original_partial_key_untouched": true,
+  "prediction_outputs_read": false,
+  "unseen_keys_changed": false
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "rivet.real-packages.v1",
+  "packages": [
+    {
+      "id": "kansas-control-revision-development-v2",
+      "kind": "real_public",
+      "split": "development",
+      "package_type": "dated_quote_to_approval_one_line",
+      "scope": "Four grouped body differences; metadata excluded; keyv2 independent source audit corrects earlier drawing identity assertion.",
+      "sources": [
+        {
+          "id": "kansas-c1-may15",
+          "name": "Control-Center-1-one-line-May15-page-194.pdf",
+          "path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Control-Center-1-one-line-May15-page-194.pdf",
+          "sha256": "113c0b0fd819530695b42c5e14ff07a21717c5048068b87c4d08171d6e387c45",
+          "role": "drawing",
+          "side": "baseline",
+          "revision": "Dated issue May15,2012; revision dash",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              194
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        },
+        {
+          "id": "kansas-c1-may30",
+          "name": "Control-Center-1-one-line-May30-page-252.pdf",
+          "path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Control-Center-1-one-line-May30-page-252.pdf",
+          "sha256": "b973a8c75aa75d826269574811bebee6f82e01c120c5d55a72779f330e9fcf94",
+          "role": "drawing",
+          "side": "target",
+          "revision": "Dated issue May30,2012; revision dash",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              252
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        }
+      ],
+      "revision_pairs": [
+        {
+          "baseline_source_id": "kansas-c1-may15",
+          "target_source_id": "kansas-c1-may30",
+          "matching_basis": "Same Control Center No1 SWB, ONE LINE, sheet1of2, dated issue and circuit layout; explicit drawing-number renumbering",
+          "baseline_drawing_number": "O29528680-01",
+          "target_drawing_number": "O29528680-009-01",
+          "date_evidence": [
+            "May15,2012",
+            "May30,2012"
+          ],
+          "revision_label_evidence": "Dash in both titleblocks"
+        }
+      ],
+      "answer_key": "keys/kansas-control-revision-development-v2.json"
+    }
+  ]
+}

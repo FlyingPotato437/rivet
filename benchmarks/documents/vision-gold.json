@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "review_method": "Assistant visual inspection; preliminary reference labels, not independent engineering review",
+  "cases": [
+    {
+      "id": "avta-handwriting-79",
+      "url": "https://www.avta.com/downloads/meetings/bod/2018/042418-agenda.pdf",
+      "physical_page": 79,
+      "minimum_readable_notes": 2,
+      "required_phrases": ["RIGHT SIDE", "NOT THE LEFT", "SEISMIC REQUIREMENTS", "CALIF."],
+      "ambiguous_region_expected": true,
+      "observed_readable_notes": 2,
+      "observed_ambiguous_region": true,
+      "engineering_answer_accuracy": null
+    },
+    {
+      "id": "paraje-unmarked-scan-3",
+      "source_catalog_id": "paraje",
+      "physical_page": 3,
+      "review_comments_expected": 0,
+      "review_comments_observed": 0
+    }
+  ]
+}

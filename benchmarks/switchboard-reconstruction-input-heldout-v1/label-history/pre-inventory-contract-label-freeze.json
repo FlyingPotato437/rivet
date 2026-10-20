@@ -1,0 +1,26 @@
+{
+  "schema_version": "rivet.pre-prediction-label-freeze.v1",
+  "created_at": "2026-10-19T07:27:39.696590+00:00",
+  "source_sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+  "source_pdf_original_pages": [
+    56,
+    63
+  ],
+  "key_sha256": "df8bdb809ba67dd802f8e19c5f796a1e771d88c73dacfbecc6f08b0f1556e4fb",
+  "manifest_sha256": "eeda5819f7ac5e2b8f5cac15c28b9eed12a073a7d65bae22b2b9e8fcf670f61e",
+  "labelled_scalar_requirements": 40,
+  "bounded_breaker_inventory": 15,
+  "printed_device_values": 33,
+  "predictions_opened": false,
+  "implementers_have_source_content": false,
+  "approved_reconstruction_eligible": false,
+  "label_status": "assistant_source_reviewed_not_engineer_verified",
+  "split_exclusion": [
+    "All TCTC, Kansas, Ellington and other previously opened source projects excluded from this heldout package."
+  ],
+  "source_only_review_passes": 2,
+  "pre_prediction_label_correction": {
+    "reason": "Use the existing public requirement contract subject order for the SPD option. No source values, labels or identity truth changed; no model prediction exists.",
+    "original_freeze_preserved": "label-history/initial-label-freeze.json"
+  }
+}

@@ -176,6 +176,46 @@ def test_digest_without_link_config_never_invents_a_public_url():
     assert "rivet-usa.com" not in result["text"]
 
 
+def test_brief_includes_only_current_pending_prepared_work_and_escapes_titles():
+    w = record()
+    current = {"id": "p1", "run_id": "run-a", "order_id": "order-a", "status": "pending",
+               "base_version": 4, "origin": "ai", "operations": [{"title": "Request <E-10> & revision"}]}
+    proposals = [current, {**current, "id": "old", "base_version": 3},
+                 {**current, "id": "accepted", "status": "accepted"},
+                 {**current, "id": "foreign", "order_id": "another-order"}]
+    result = digest(w, "https://workspace.example.com", proposals)
+    assert result["prepared_count"] == 1
+    assert [p["id"] for p in result["prepared_work"]] == ["p1"]
+    assert "Request &lt;E-10&gt; &amp; revision" in result["html"]
+    assert "AI prepared" in result["text"]
+    assert "agent=1&run=run-a" in result["prepared_work"][0]["url"]
+    assert result["sent"] is False
+
+
+def test_brief_reports_completed_background_work_and_drops_it_when_evidence_changes(client, monkeypatch):
+    from backend.records import agent_service as agent
+    from backend.worker import claim, process
+    from test_records import edit_body, post
+
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    order = create(client)
+    w = upload(client, order, "review.txt", b"Comment 1: Confirm the drawing reference.")
+    assert agent.scheduled_pass() == 1
+    assert client.get(f"/api/orders/{order['id']}/record/digest").json()["prepared_count"] == 0
+    # Intake can enqueue other durable work too; this assertion concerns the
+    # coordination lane, not whichever independent job was queued first.
+    process(claim(kinds=("record_agent",)))
+    result = client.get(f"/api/orders/{order['id']}/record/digest").json()
+    assert result["prepared_count"] > 0
+    assert result["prepared_work"][0]["origin"] == "rules"
+    assert view(client, order) == w
+    comment = w["comments"][0]
+    changed = post(client, f"/orders/{order['id']}/record/comments/{comment['id']}",
+                   edit_body(w, comment, author="Confirmed reviewer"))
+    assert changed.status_code == 200
+    assert client.get(f"/api/orders/{order['id']}/record/digest").json()["prepared_count"] == 0
+
+
 def test_digest_revision_counts_include_manual_comments_but_not_prior_rows():
     w = record()
     for comment in w["comments"]:

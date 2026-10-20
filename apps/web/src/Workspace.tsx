@@ -1461,7 +1461,7 @@ function Sources({
         <button className="upload-zone" onClick={onUpload}>
           <UploadSimple size={35} />
           <h3>Upload your first document</h3>
-          <p>PDF, CSV, XLSX, or text · up to 20 MB per file</p>
+          <p>PDF up to 200 MB / 500 pages; CSV, XLSX or text up to 20 MB</p>
           <span className="secondary">
             Choose a document
             <Plus size={16} />
@@ -2298,8 +2298,9 @@ function Upload({
           setBusy(true);
           setError("");
           try {
-            if (file.size > 20 * 1024 * 1024)
-              throw new Error("Choose a file smaller than 20 MB.");
+            const limitMb = /\.pdf$/i.test(file.name) ? 200 : 20;
+            if (file.size > limitMb * 1024 * 1024)
+              throw new Error(`Choose a file no larger than ${limitMb} MB.`);
             const f = new FormData();
             f.append("file", file);
             f.append("kind", kind);

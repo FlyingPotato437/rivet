@@ -1,0 +1,2438 @@
+{
+  "schema_version": "rivet.reconstruction-answer-key.v1",
+  "package_id": "official-secondary-table-extraction-unseen-v3",
+  "kind": "real_public",
+  "split": "unseen_test",
+  "created_at": "2026-10-19T23:19:11.601531+00:00",
+  "label_status": "assistant_source_reviewed_draft_not_engineer_verified",
+  "label_method": "Manual transcription of original vector PDF physical page 2, with a complete page render followed by enlarged target-table render. No backend extractor/parser/evaluator, prediction, or provider/model call. Independent source-only cross-QA still required before scoring.",
+  "scope": {
+    "requirements": "33 explicit numeric overcurrent facts (frame_a, trip_a, pole_count) on 11 scheduled equipped/spare circuit rows. Trip is not continuous/rated current. No per-breaker interrupting value asserted from panel-header AIC.",
+    "device_inventory": "All 16 literal circuit positions of one bounded panel schedule. Five Space + Bus rows retain blank frame/trip as unknown and have no asserted installed breaker ratings.",
+    "identity": "Original circuit numerals preserved in source_identifier, qualified by literal table identifier in metadata. Compound answer-key IDs are table/row coordinates, never invented device tags.",
+    "complete_engineering_key": false,
+    "complete_schedule_position_inventory": true,
+    "pages_with_labels": [
+      2
+    ],
+    "target_table_bbox_pdf_points": [
+      235,
+      900,
+      1096,
+      1308
+    ],
+    "target_table_identifier": "HP-SB1",
+    "other_tables_on_selected_page": "Unscored. Repeated circuit numerals elsewhere on the same page create strict current scorer identity ambiguity; expected ratings must never choose an identity. Any ambiguous result remains ambiguous.",
+    "unscored_empty_preparation_poles": "Five prepared-space rows explicitly print poles but are excluded from installed-device numeric denominators."
+  },
+  "requirements": [
+    {
+      "id": "HP-SB1:CKT:1.pole_count",
+      "subject_id": "HP-SB1:CKT:1",
+      "source_identifier": "1",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            984,
+            1096,
+            1002
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 1; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 1, SERVES Transformer - T3; POLE 3, FRAME (AMP) 100, TRIP (AMP) 70"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:1.frame_a",
+      "subject_id": "HP-SB1:CKT:1",
+      "source_identifier": "1",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            984,
+            1096,
+            1002
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 1; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 1, SERVES Transformer - T3; POLE 3, FRAME (AMP) 100, TRIP (AMP) 70"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:1.trip_a",
+      "subject_id": "HP-SB1:CKT:1",
+      "source_identifier": "1",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 70,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            984,
+            1096,
+            1002
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 1; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 1, SERVES Transformer - T3; POLE 3, FRAME (AMP) 100, TRIP (AMP) 70"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:2.pole_count",
+      "subject_id": "HP-SB1:CKT:2",
+      "source_identifier": "2",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1002,
+            1096,
+            1020
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 2; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 2, SERVES (2) EUH-B (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:2.frame_a",
+      "subject_id": "HP-SB1:CKT:2",
+      "source_identifier": "2",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1002,
+            1096,
+            1020
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 2; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 2, SERVES (2) EUH-B (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:2.trip_a",
+      "subject_id": "HP-SB1:CKT:2",
+      "source_identifier": "2",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1002,
+            1096,
+            1020
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 2; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 2, SERVES (2) EUH-B (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:3.pole_count",
+      "subject_id": "HP-SB1:CKT:3",
+      "source_identifier": "3",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1020,
+            1096,
+            1038
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 3; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 3, SERVES (2) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:3.frame_a",
+      "subject_id": "HP-SB1:CKT:3",
+      "source_identifier": "3",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1020,
+            1096,
+            1038
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 3; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 3, SERVES (2) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:3.trip_a",
+      "subject_id": "HP-SB1:CKT:3",
+      "source_identifier": "3",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1020,
+            1096,
+            1038
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 3; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 3, SERVES (2) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:4.pole_count",
+      "subject_id": "HP-SB1:CKT:4",
+      "source_identifier": "4",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1038,
+            1096,
+            1056
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 4; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 4, SERVES (3) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:4.frame_a",
+      "subject_id": "HP-SB1:CKT:4",
+      "source_identifier": "4",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1038,
+            1096,
+            1056
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 4; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 4, SERVES (3) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:4.trip_a",
+      "subject_id": "HP-SB1:CKT:4",
+      "source_identifier": "4",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1038,
+            1096,
+            1056
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 4; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 4, SERVES (3) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:5.pole_count",
+      "subject_id": "HP-SB1:CKT:5",
+      "source_identifier": "5",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1056,
+            1096,
+            1074
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 5; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 5, SERVES LTG - VSP Garage + Exterior; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:5.frame_a",
+      "subject_id": "HP-SB1:CKT:5",
+      "source_identifier": "5",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1056,
+            1096,
+            1074
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 5; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 5, SERVES LTG - VSP Garage + Exterior; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:5.trip_a",
+      "subject_id": "HP-SB1:CKT:5",
+      "source_identifier": "5",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1056,
+            1096,
+            1074
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 5; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 5, SERVES LTG - VSP Garage + Exterior; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:6.pole_count",
+      "subject_id": "HP-SB1:CKT:6",
+      "source_identifier": "6",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1074,
+            1096,
+            1092
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 6; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 6, SERVES LTG - VSP Area; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:6.frame_a",
+      "subject_id": "HP-SB1:CKT:6",
+      "source_identifier": "6",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1074,
+            1096,
+            1092
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 6; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 6, SERVES LTG - VSP Area; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:6.trip_a",
+      "subject_id": "HP-SB1:CKT:6",
+      "source_identifier": "6",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1074,
+            1096,
+            1092
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 6; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 6, SERVES LTG - VSP Area; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:7.pole_count",
+      "subject_id": "HP-SB1:CKT:7",
+      "source_identifier": "7",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1092,
+            1096,
+            1110
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 7; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 7, SERVES LTG- Exit Sign; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:7.frame_a",
+      "subject_id": "HP-SB1:CKT:7",
+      "source_identifier": "7",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1092,
+            1096,
+            1110
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 7; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 7, SERVES LTG- Exit Sign; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:7.trip_a",
+      "subject_id": "HP-SB1:CKT:7",
+      "source_identifier": "7",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1092,
+            1096,
+            1110
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 7; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 7, SERVES LTG- Exit Sign; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:8.pole_count",
+      "subject_id": "HP-SB1:CKT:8",
+      "source_identifier": "8",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1110,
+            1096,
+            1128
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 8; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 8, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:8.frame_a",
+      "subject_id": "HP-SB1:CKT:8",
+      "source_identifier": "8",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1110,
+            1096,
+            1128
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 8; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 8, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:8.trip_a",
+      "subject_id": "HP-SB1:CKT:8",
+      "source_identifier": "8",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1110,
+            1096,
+            1128
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 8; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 8, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:9.pole_count",
+      "subject_id": "HP-SB1:CKT:9",
+      "source_identifier": "9",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1128,
+            1096,
+            1146
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 9; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 9, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:9.frame_a",
+      "subject_id": "HP-SB1:CKT:9",
+      "source_identifier": "9",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1128,
+            1096,
+            1146
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 9; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 9, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:9.trip_a",
+      "subject_id": "HP-SB1:CKT:9",
+      "source_identifier": "9",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1128,
+            1096,
+            1146
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 9; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 9, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:10.pole_count",
+      "subject_id": "HP-SB1:CKT:10",
+      "source_identifier": "10",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1146,
+            1096,
+            1164
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 10; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 10, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:10.frame_a",
+      "subject_id": "HP-SB1:CKT:10",
+      "source_identifier": "10",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1146,
+            1096,
+            1164
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 10; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 10, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:10.trip_a",
+      "subject_id": "HP-SB1:CKT:10",
+      "source_identifier": "10",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1146,
+            1096,
+            1164
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 10; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 10, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:11.pole_count",
+      "subject_id": "HP-SB1:CKT:11",
+      "source_identifier": "11",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1164,
+            1096,
+            1182
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 11; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 11, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:11.frame_a",
+      "subject_id": "HP-SB1:CKT:11",
+      "source_identifier": "11",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1164,
+            1096,
+            1182
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 11; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 11, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:11.trip_a",
+      "subject_id": "HP-SB1:CKT:11",
+      "source_identifier": "11",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1164,
+            1096,
+            1182
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 11; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 11, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    }
+  ],
+  "customer_requirement_facts": [
+    {
+      "id": "HP-SB1:CKT:1.pole_count",
+      "subject_id": "HP-SB1:CKT:1",
+      "source_identifier": "1",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            984,
+            1096,
+            1002
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 1; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 1, SERVES Transformer - T3; POLE 3, FRAME (AMP) 100, TRIP (AMP) 70"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:1.frame_a",
+      "subject_id": "HP-SB1:CKT:1",
+      "source_identifier": "1",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            984,
+            1096,
+            1002
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 1; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 1, SERVES Transformer - T3; POLE 3, FRAME (AMP) 100, TRIP (AMP) 70"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:1.trip_a",
+      "subject_id": "HP-SB1:CKT:1",
+      "source_identifier": "1",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 70,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            984,
+            1096,
+            1002
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 1; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 1, SERVES Transformer - T3; POLE 3, FRAME (AMP) 100, TRIP (AMP) 70"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:2.pole_count",
+      "subject_id": "HP-SB1:CKT:2",
+      "source_identifier": "2",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1002,
+            1096,
+            1020
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 2; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 2, SERVES (2) EUH-B (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:2.frame_a",
+      "subject_id": "HP-SB1:CKT:2",
+      "source_identifier": "2",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1002,
+            1096,
+            1020
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 2; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 2, SERVES (2) EUH-B (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:2.trip_a",
+      "subject_id": "HP-SB1:CKT:2",
+      "source_identifier": "2",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1002,
+            1096,
+            1020
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 2; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 2, SERVES (2) EUH-B (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:3.pole_count",
+      "subject_id": "HP-SB1:CKT:3",
+      "source_identifier": "3",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1020,
+            1096,
+            1038
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 3; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 3, SERVES (2) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:3.frame_a",
+      "subject_id": "HP-SB1:CKT:3",
+      "source_identifier": "3",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1020,
+            1096,
+            1038
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 3; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 3, SERVES (2) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:3.trip_a",
+      "subject_id": "HP-SB1:CKT:3",
+      "source_identifier": "3",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1020,
+            1096,
+            1038
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 3; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 3, SERVES (2) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:4.pole_count",
+      "subject_id": "HP-SB1:CKT:4",
+      "source_identifier": "4",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1038,
+            1096,
+            1056
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 4; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 4, SERVES (3) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:4.frame_a",
+      "subject_id": "HP-SB1:CKT:4",
+      "source_identifier": "4",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1038,
+            1096,
+            1056
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 4; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 4, SERVES (3) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:4.trip_a",
+      "subject_id": "HP-SB1:CKT:4",
+      "source_identifier": "4",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1038,
+            1096,
+            1056
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 4; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 4, SERVES (3) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:5.pole_count",
+      "subject_id": "HP-SB1:CKT:5",
+      "source_identifier": "5",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1056,
+            1096,
+            1074
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 5; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 5, SERVES LTG - VSP Garage + Exterior; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:5.frame_a",
+      "subject_id": "HP-SB1:CKT:5",
+      "source_identifier": "5",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1056,
+            1096,
+            1074
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 5; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 5, SERVES LTG - VSP Garage + Exterior; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:5.trip_a",
+      "subject_id": "HP-SB1:CKT:5",
+      "source_identifier": "5",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1056,
+            1096,
+            1074
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 5; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 5, SERVES LTG - VSP Garage + Exterior; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:6.pole_count",
+      "subject_id": "HP-SB1:CKT:6",
+      "source_identifier": "6",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1074,
+            1096,
+            1092
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 6; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 6, SERVES LTG - VSP Area; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:6.frame_a",
+      "subject_id": "HP-SB1:CKT:6",
+      "source_identifier": "6",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1074,
+            1096,
+            1092
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 6; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 6, SERVES LTG - VSP Area; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:6.trip_a",
+      "subject_id": "HP-SB1:CKT:6",
+      "source_identifier": "6",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1074,
+            1096,
+            1092
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 6; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 6, SERVES LTG - VSP Area; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:7.pole_count",
+      "subject_id": "HP-SB1:CKT:7",
+      "source_identifier": "7",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1092,
+            1096,
+            1110
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 7; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 7, SERVES LTG- Exit Sign; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:7.frame_a",
+      "subject_id": "HP-SB1:CKT:7",
+      "source_identifier": "7",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1092,
+            1096,
+            1110
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 7; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 7, SERVES LTG- Exit Sign; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:7.trip_a",
+      "subject_id": "HP-SB1:CKT:7",
+      "source_identifier": "7",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1092,
+            1096,
+            1110
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 7; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 7, SERVES LTG- Exit Sign; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:8.pole_count",
+      "subject_id": "HP-SB1:CKT:8",
+      "source_identifier": "8",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1110,
+            1096,
+            1128
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 8; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 8, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:8.frame_a",
+      "subject_id": "HP-SB1:CKT:8",
+      "source_identifier": "8",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1110,
+            1096,
+            1128
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 8; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 8, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:8.trip_a",
+      "subject_id": "HP-SB1:CKT:8",
+      "source_identifier": "8",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1110,
+            1096,
+            1128
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 8; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 8, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:9.pole_count",
+      "subject_id": "HP-SB1:CKT:9",
+      "source_identifier": "9",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1128,
+            1096,
+            1146
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 9; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 9, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:9.frame_a",
+      "subject_id": "HP-SB1:CKT:9",
+      "source_identifier": "9",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1128,
+            1096,
+            1146
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 9; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 9, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:9.trip_a",
+      "subject_id": "HP-SB1:CKT:9",
+      "source_identifier": "9",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1128,
+            1096,
+            1146
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 9; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 9, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:10.pole_count",
+      "subject_id": "HP-SB1:CKT:10",
+      "source_identifier": "10",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1146,
+            1096,
+            1164
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 10; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 10, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:10.frame_a",
+      "subject_id": "HP-SB1:CKT:10",
+      "source_identifier": "10",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1146,
+            1096,
+            1164
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 10; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 10, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:10.trip_a",
+      "subject_id": "HP-SB1:CKT:10",
+      "source_identifier": "10",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1146,
+            1096,
+            1164
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 10; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 10, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:11.pole_count",
+      "subject_id": "HP-SB1:CKT:11",
+      "source_identifier": "11",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "pole_count",
+      "value": 1,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1164,
+            1096,
+            1182
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 11; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 11, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:11.frame_a",
+      "subject_id": "HP-SB1:CKT:11",
+      "source_identifier": "11",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1164,
+            1096,
+            1182
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 11; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 11, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:11.trip_a",
+      "subject_id": "HP-SB1:CKT:11",
+      "source_identifier": "11",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1164,
+            1096,
+            1182
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 11; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 11, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ]
+    }
+  ],
+  "customer_device_inventory": [
+    {
+      "id": "HP-SB1:CKT:1",
+      "source_identifier": "1",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 3,
+        "frame_a": 100,
+        "trip_a": 70
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            984,
+            1096,
+            1002
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 1; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 1, SERVES Transformer - T3; POLE 3, FRAME (AMP) 100, TRIP (AMP) 70"
+        }
+      ],
+      "source_position_class": "scheduled_equipped",
+      "remarks": "Transformer - T3",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:2",
+      "source_identifier": "2",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 3,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1002,
+            1096,
+            1020
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 2; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 2, SERVES (2) EUH-B (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped",
+      "remarks": "(2) EUH-B (VSP Area)",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:3",
+      "source_identifier": "3",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 3,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1020,
+            1096,
+            1038
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 3; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 3, SERVES (2) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped",
+      "remarks": "(2) EUH-A (VSP Area)",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:4",
+      "source_identifier": "4",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 3,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1038,
+            1096,
+            1056
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 4; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 4, SERVES (3) EUH-A (VSP Area); POLE 3, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped",
+      "remarks": "(3) EUH-A (VSP Area)",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:5",
+      "source_identifier": "5",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 1,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1056,
+            1096,
+            1074
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 5; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 5, SERVES LTG - VSP Garage + Exterior; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped",
+      "remarks": "LTG - VSP Garage + Exterior",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:6",
+      "source_identifier": "6",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 1,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1074,
+            1096,
+            1092
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 6; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 6, SERVES LTG - VSP Area; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped",
+      "remarks": "LTG - VSP Area",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:7",
+      "source_identifier": "7",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 1,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1092,
+            1096,
+            1110
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 7; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 7, SERVES LTG- Exit Sign; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped",
+      "remarks": "LTG- Exit Sign",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:8",
+      "source_identifier": "8",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 1,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1110,
+            1096,
+            1128
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 8; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 8, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped_spare",
+      "remarks": "Spare",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:9",
+      "source_identifier": "9",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 1,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1128,
+            1096,
+            1146
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 9; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 9, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped_spare",
+      "remarks": "Spare",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:10",
+      "source_identifier": "10",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 1,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1146,
+            1096,
+            1164
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 10; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 10, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped_spare",
+      "remarks": "Spare",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:11",
+      "source_identifier": "11",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {
+        "pole_count": 1,
+        "frame_a": 100,
+        "trip_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1164,
+            1096,
+            1182
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 11; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 11, SERVES Spare; POLE 1, FRAME (AMP) 100, TRIP (AMP) 20"
+        }
+      ],
+      "source_position_class": "scheduled_equipped_spare",
+      "remarks": "Spare",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity."
+    },
+    {
+      "id": "HP-SB1:CKT:12",
+      "source_identifier": "12",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1182,
+            1096,
+            1200
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 12; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 12, SERVES Space + Bus; POLE 3; FRAME (AMP) blank; TRIP (AMP) blank"
+        }
+      ],
+      "source_position_class": "empty_prepared_space",
+      "remarks": "Space + Bus",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity.",
+      "unscored_preparation_features": {
+        "pole_count": 3
+      },
+      "expected_installed_equipment": false,
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "rated_current_a",
+        "interrupting_ka"
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:13",
+      "source_identifier": "13",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1200,
+            1096,
+            1218
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 13; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 13, SERVES Space + Bus; POLE 3; FRAME (AMP) blank; TRIP (AMP) blank"
+        }
+      ],
+      "source_position_class": "empty_prepared_space",
+      "remarks": "Space + Bus",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity.",
+      "unscored_preparation_features": {
+        "pole_count": 3
+      },
+      "expected_installed_equipment": false,
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "rated_current_a",
+        "interrupting_ka"
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:14",
+      "source_identifier": "14",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1218,
+            1096,
+            1236
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 14; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 14, SERVES Space + Bus; POLE 3; FRAME (AMP) blank; TRIP (AMP) blank"
+        }
+      ],
+      "source_position_class": "empty_prepared_space",
+      "remarks": "Space + Bus",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity.",
+      "unscored_preparation_features": {
+        "pole_count": 3
+      },
+      "expected_installed_equipment": false,
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "rated_current_a",
+        "interrupting_ka"
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:15",
+      "source_identifier": "15",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1236,
+            1096,
+            1254
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 15; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 15, SERVES Space + Bus; POLE 3; FRAME (AMP) blank; TRIP (AMP) blank"
+        }
+      ],
+      "source_position_class": "empty_prepared_space",
+      "remarks": "Space + Bus",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity.",
+      "unscored_preparation_features": {
+        "pole_count": 3
+      },
+      "expected_installed_equipment": false,
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "rated_current_a",
+        "interrupting_ka"
+      ]
+    },
+    {
+      "id": "HP-SB1:CKT:16",
+      "source_identifier": "16",
+      "source_table": "HP-SB1",
+      "identity_scope": "table_local_circuit_number",
+      "source_container_identifier": "HP-SB1",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1254,
+            1096,
+            1272
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 16; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 16, SERVES Space + Bus; POLE 3; FRAME (AMP) blank; TRIP (AMP) blank"
+        }
+      ],
+      "source_position_class": "empty_prepared_space",
+      "remarks": "Space + Bus",
+      "identity_note": "Answer-key compound ID is a table/row coordinate, not an asserted source device tag or installed-equipment identity.",
+      "unscored_preparation_features": {
+        "pole_count": 3
+      },
+      "expected_installed_equipment": false,
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "rated_current_a",
+        "interrupting_ka"
+      ]
+    }
+  ],
+  "device_inventory_complete": false,
+  "approved_reconstruction_eligible": false,
+  "approved_reference": null,
+  "source_authority": "public_bid_reference_only",
+  "ineligibility_reason": "Official public bid reference dated 2026-02-23, not a paired customer-input/manufacturer-approved output, not verified present installation or engineer-certified gold. Extraction only.",
+  "unscored_source_facts": [
+    {
+      "description": "Target table header includes panel-level KAIC SCA SYM. This is not promoted to 16 individual breaker interrupting ratings.",
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "text": "HP-SB1; 65 KAIC SCA SYM.",
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            1000,
+            900,
+            1096,
+            938
+          ],
+          "coordinate_system": "pdf_points"
+        }
+      ]
+    },
+    {
+      "description": "Panel header bus/main and system voltage/wire metadata are outside this bounded breaker-row numeric key. No main frame or main trip is inferred.",
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "text": "225A BUS; 100A MCB; 480/277V 3 phase; 4 WIRE + EQUIPMENT GROUNDING",
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            235,
+            984,
+            325,
+            1269
+          ],
+          "coordinate_system": "pdf_points"
+        }
+      ]
+    },
+    {
+      "description": "Prepared Space + Bus rows explicitly print preparation poles while leaving frame/trip blank. They are not equipped spare breakers.",
+      "source_refs": [
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1182,
+            1096,
+            1200
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 12; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 12, SERVES Space + Bus; POLE 3; FRAME (AMP) blank; TRIP (AMP) blank"
+        },
+        {
+          "source_id": "fresh-official-bid-schedules-secondary-v3",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "page": 2,
+          "method": "manual_original_source_image_inspection",
+          "bbox": [
+            325,
+            1254,
+            1096,
+            1272
+          ],
+          "coordinate_system": "pdf_points",
+          "region_description": "HP-SB1 table on original physical page 2, CKT. NO. 16; OVERCURRENT columns POLE, FRAME (AMP), TRIP (AMP).",
+          "text": "HP-SB1, CKT. NO. 16, SERVES Space + Bus; POLE 3; FRAME (AMP) blank; TRIP (AMP) blank"
+        }
+      ]
+    }
+  ]
+}

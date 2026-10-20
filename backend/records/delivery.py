@@ -14,7 +14,12 @@ from backend.config import allowed_origins
 from backend.domain.service import fail, scoped
 from backend.orders.service import lock_order
 from backend.storage.db import Session
-from backend.storage.models import OrderInbox, TeamInbox
+from backend.storage.models import (
+    OrderInbox,
+    TeamInbox,
+    RecordAgentProposal,
+    RecordAgentRun,
+)
 
 from . import service
 
@@ -74,7 +79,7 @@ def order_link(base, order_id, comment_id=""):
     return f"{base}/#order/{quote(str(order_id), safe='')}?{urlencode(query)}"
 
 
-def digest(w, base=""):
+def digest(w, base="", proposals=()):
     review = w.get("revision_review", {})
     latest = review.get("latest_revision")
     comments = [
@@ -132,6 +137,34 @@ def digest(w, base=""):
     items.sort(
         key=lambda item: (priority.get(item["label"], 4), item["comment_number"])
     )
+    prepared = []
+    for proposal in proposals:
+        if (
+            proposal["order_id"] != w["order"]["id"]
+            or proposal["status"] not in {"pending", "prepared"}
+            or proposal["base_version"] != w["version"]
+        ):
+            continue
+        prepared.append(
+            {
+                "id": proposal["id"],
+                "origin": proposal["origin"],
+                "status": proposal["status"],
+                "titles": [
+                    op.get("title") or "Prepared coordination draft"
+                    for op in proposal["operations"]
+                ],
+                "url": (
+                    f"{base}/#order/{quote(str(w['order']['id']), safe='')}?"
+                    + urlencode(
+                        {"tab": "work", "agent": "1", "run": proposal["run_id"]}
+                    )
+                )
+                if base
+                else "",
+            }
+        )
+    prepared_count = sum(len(item["titles"]) for item in prepared)
     lines = [
         subject,
         w["order"]["title"],
@@ -142,6 +175,16 @@ def digest(w, base=""):
         "A flag is a review cue, not an engineering or commercial determination.",
         "",
     ]
+    if prepared:
+        lines.extend([f"{prepared_count} drafts prepared for review", ""])
+        for item in prepared:
+            lines.append(
+                "AI prepared" if item["origin"] == "ai" else "Rule-based preparation"
+            )
+            lines.extend(f"- {title}" for title in item["titles"])
+            if item["url"]:
+                lines.append(item["url"])
+        lines.extend(["Saved to the order; no message sent or change approved.", ""])
     for key, label in FLAG_LABELS.items():
         lines.append(f"{label}: {counts[key]}")
     if items:
@@ -195,7 +238,29 @@ def digest(w, base=""):
         '<!doctype html><html><body style="font-family:Arial,sans-serif;line-height:1.6;color:#23212a">'
         f"<h1>{escape(subject)}</h1><p>{escape(w['order']['title'])}</p>"
         f"<p><strong>{escape(overview)}</strong></p>"
-        "<p>Prepared from the saved record. Review flags before taking action. "
+        + (
+            f"<h2>{prepared_count} drafts prepared for review</h2>"
+            + "".join(
+                (
+                    "<p>AI prepared</p>"
+                    if item["origin"] == "ai"
+                    else "<p>Rule-based preparation</p>"
+                )
+                + "<ul>"
+                + "".join(f"<li>{escape(title)}</li>" for title in item["titles"])
+                + "</ul>"
+                + (
+                    f'<p><a href="{escape(item["url"], quote=True)}">Review prepared work</a></p>'
+                    if item["url"]
+                    else ""
+                )
+                for item in prepared
+            )
+            + "<p>Saved to the order; no message sent or change approved.</p>"
+            if prepared
+            else ""
+        )
+        + "<p>Prepared from the saved record. Review flags before taking action. "
         "A flag is a review cue, not an engineering or commercial determination.</p>"
         + "<ul>"
         + "".join(
@@ -224,6 +289,8 @@ def digest(w, base=""):
         "needs_response": len(needs_response),
         "needs_review": len(needs_review),
         "items": items,
+        "prepared_work": prepared,
+        "prepared_count": prepared_count,
         "order_url": link,
         "sent": False,
         "origin": "automatic",
@@ -243,7 +310,25 @@ def email_bytes(preview):
 
 def get_digest(id):
     with Session.begin() as s:
-        return digest(service.view(s, lock_order(s, id)), workspace_url())
+        from .agent_service import input_hash, proposal_view
+
+        w = service.view(s, lock_order(s, id))
+        proposals = s.scalars(
+            scoped(RecordAgentProposal)
+            .join(RecordAgentRun, RecordAgentRun.id == RecordAgentProposal.run_id)
+            .where(
+                RecordAgentProposal.order_id == id,
+                RecordAgentProposal.status.in_(["pending", "prepared"]),
+                RecordAgentProposal.base_version == w["version"],
+                RecordAgentProposal.input_hash == input_hash(w),
+                RecordAgentRun.status.in_(
+                    ["waiting_for_review", "completed", "waiting_for_input"]
+                ),
+            )
+            .order_by(RecordAgentProposal.created_at.desc())
+            .limit(100)
+        )
+        return digest(w, workspace_url(), [proposal_view(p) for p in proposals])
 
 
 @router.get("/orders/{id}/record/digest")
@@ -268,10 +353,38 @@ def download_digest(id: str, expected_version: int = Query(ge=1)):
 
 @router.get("/integrations/adoption")
 def adoption_status():
+    from backend.connected_context.diagnostics import integration_health
+    from backend.mailbox.models import MailboxConnection
+    from backend.mailbox.service import connection_view
+
     state = mail.status()
     with Session() as s:
         aliases = list(s.scalars(scoped(OrderInbox).where(OrderInbox.enabled == True)))
         team = s.scalar(scoped(TeamInbox).where(TeamInbox.enabled == True))
+        mailbox_states = [
+            connection_view(s, row) for row in s.scalars(scoped(MailboxConnection))
+        ]
+        sharepoint = integration_health(s, "sharepoint")
+        sap = integration_health(s, "erp")
+    active_mailboxes = [item for item in mailbox_states if item["enabled"]]
+    outlook_current = bool(active_mailboxes) and all(
+        item["status"] == "current" for item in active_mailboxes
+    )
+    outlook_status = (
+        "current"
+        if outlook_current
+        else (
+            "attention_required"
+            if active_mailboxes
+            else ("paused" if mailbox_states else "not_connected")
+        )
+    )
+    outlook_details = {
+        "current": "Configured Outlook folders are up to date. Check mailbox settings for capture exceptions and folder coverage.",
+        "attention_required": "A mailbox is configured, but its sync or captured mail needs attention. Check mailbox settings before relying on automatic intake.",
+        "paused": "Mailbox monitoring is paused. Resume it in mailbox settings to capture new messages.",
+        "not_connected": "Forward email or import a saved .eml file. Connect Microsoft 365 in mailbox settings for automatic intake.",
+    }
     receiving = bool(state["configured"] and state["receiving_domain"])
     delivery = bool(
         receiving and state["webhook_configured"] and not state["local_only"]
@@ -302,20 +415,18 @@ def adoption_status():
             {
                 "id": "outlook",
                 "name": "Outlook",
-                "status": "not_connected",
-                "detail": "Forward email or import a saved .eml file. Automatic shared-mailbox sync is not connected.",
+                "status": outlook_status,
+                "detail": outlook_details[outlook_status],
             },
             {
                 "id": "sharepoint",
                 "name": "SharePoint",
-                "status": "not_connected",
-                "detail": "Upload a downloaded file. Rivet does not currently browse or write to SharePoint.",
+                **sharepoint,
             },
             {
                 "id": "sap",
                 "name": "SAP",
-                "status": "not_connected",
-                "detail": "Order identifiers can be entered at intake. Rivet does not read from or update SAP.",
+                **sap,
             },
         ],
         "outbound": {

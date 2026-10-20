@@ -1,0 +1,204 @@
+{
+  "schema_version": "rivet.real-packages.v1",
+  "packages": [
+    {
+      "id": "alachua-powell",
+      "kind": "real_public",
+      "sources": [
+        {
+          "id": "alachua-powell",
+          "name": "alachua-powell.pdf",
+          "path": "../../.data/real-document-corpus/alachua-powell.pdf",
+          "sha256": "38a65a88e53f6d07f061cfc2f7da8d3a9c36a54656682b3d8436ebc951a821d3",
+          "role": "drawing",
+          "revision": "As-published",
+          "side": "target",
+          "url": "https://www.cityofalachua.com/DocumentCenter/View/1317/Addendum-1-Attachment-Alachua-Substation-EE12-FAC-261326-025-0-Powell-Switchgear_RESPONSE-1?bidId="
+        }
+      ],
+      "answer_key": "keys/alachua-powell.json"
+    },
+    {
+      "id": "talco-4212",
+      "kind": "real_public",
+      "sources": [
+        {
+          "id": "talco-4212",
+          "name": "talco-4212.pdf",
+          "path": "../../.data/real-document-corpus/talco-4212.pdf",
+          "sha256": "f61136b5fd3dfd2d0d5ab63cefccfc42241862eb803f0868f7a708d8910bf191",
+          "role": "drawing",
+          "revision": "As-published",
+          "side": "target",
+          "url": "https://tal-co.com/wp-content/uploads/2019/07/Electrical-Shop-Drawings-Reviewed.pdf"
+        }
+      ],
+      "answer_key": "keys/talco-4212.json"
+    },
+    {
+      "id": "avta-20180424",
+      "kind": "real_public",
+      "sources": [
+        {
+          "id": "avta-20180424",
+          "name": "avta-20180424.pdf",
+          "path": "../../.data/real-document-corpus/avta-20180424.pdf",
+          "sha256": "a2f248fdef015e5dffef27bf24ce93cf35717c1cba8e6d45b984360b98b14086",
+          "role": "drawing",
+          "revision": "As-published",
+          "side": "target",
+          "url": "https://www.avta.com/downloads/meetings/bod/2018/042418-agenda.pdf"
+        }
+      ],
+      "answer_key": "keys/avta-20180424.json"
+    },
+    {
+      "id": "kansas-docking-switchboard",
+      "kind": "real_public",
+      "project_count": 1,
+      "scope": "One real project; bounded H3 subpackage plus same-sheet dated Control CenterNo1 issue comparison. All original pages remain unchanged. Not independent projects or a complete266-page inventory.",
+      "sources": [
+        {
+          "id": "kansas-h3-drawings",
+          "name": "H3-returned-drawings-pages-241-245.pdf",
+          "path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/H3-returned-drawings-pages-241-245.pdf",
+          "sha256": "aaf4e66a90b1118199eaac6b30a819ee8178d0aaa4aed7aeb5db42bf6b6e2590",
+          "role": "drawing",
+          "side": "target",
+          "revision": "Drawing May30,2012 / reviewed July12,2012",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              241,
+              242,
+              243,
+              244,
+              245
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        },
+        {
+          "id": "kansas-h3-schedule",
+          "name": "H3-circuit-schedule-page-246.pdf",
+          "path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/H3-circuit-schedule-page-246.pdf",
+          "sha256": "d09363b2a683ad7f697fb76d534a8ade89e23428ba9b9d0a17d7a904bef776b6",
+          "role": "bom",
+          "side": "target",
+          "revision": "Drawing May30,2012, revision dash as printed",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              246
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        },
+        {
+          "id": "kansas-c1-may15",
+          "name": "Control-Center-1-one-line-May15-page-194.pdf",
+          "path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Control-Center-1-one-line-May15-page-194.pdf",
+          "sha256": "113c0b0fd819530695b42c5e14ff07a21717c5048068b87c4d08171d6e387c45",
+          "role": "drawing",
+          "side": "baseline",
+          "revision": "Dated issue May15,2012; revision dash",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              194
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        },
+        {
+          "id": "kansas-c1-may30",
+          "name": "Control-Center-1-one-line-May30-page-252.pdf",
+          "path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Control-Center-1-one-line-May30-page-252.pdf",
+          "sha256": "b973a8c75aa75d826269574811bebee6f82e01c120c5d55a72779f330e9fcf94",
+          "role": "drawing",
+          "side": "target",
+          "revision": "Dated issue May30,2012; revision dash",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              252
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        }
+      ],
+      "revision_pairs": [
+        {
+          "baseline_source_id": "kansas-c1-may15",
+          "target_source_id": "kansas-c1-may30",
+          "sheet_id": "O29528680-009-01 / sheet1of2",
+          "date_evidence": [
+            "May15,2012",
+            "May30,2012"
+          ],
+          "revision_label_evidence": "Dash in both titleblocks"
+        }
+      ],
+      "answer_key": "keys/kansas-docking-switchboard.json"
+    },
+    {
+      "id": "alaska-passenger-wireless",
+      "kind": "real_public",
+      "title": "Alaska Railroad passenger car wireless installation",
+      "publisher": "Alaska Railroad Corporation",
+      "source_page": "https://www.alaskarailroad.com/corporate/procurement/solicitations",
+      "package_type": "adjacent_transit_electrical_procurement",
+      "sources": [
+        {
+          "id": "alaska-wireless-bom",
+          "name": "Passenger_Car_Wireless_Bill_of_Materials.pdf",
+          "path": "../../.data/real-document-corpus/alaska-adjacent-bom/Passenger_Car_Wireless_Bill_of_Materials.pdf",
+          "sha256": "e5f802ad72a87f2edbfde3bf0ada1af055653e72b04e5644c691259ac5541734",
+          "bytes": 60785,
+          "pages": 1,
+          "url": "https://www.alaskarailroad.com/sites/default/files/procurement/Passenger_Car_Wireless_Bill_of_Materials.pdf",
+          "role": "bom",
+          "side": "target",
+          "revision": "Bill dated 2025-06-23 in PDF title",
+          "original_unchanged": true,
+          "metadata_title": "Passenger Car Wireless Bill of Materials 6.23.25.xlsx"
+        },
+        {
+          "id": "alaska-wireless-ifc",
+          "name": "ARRC_WIRELESS_WIFI_IFC.pdf",
+          "path": "../../.data/real-document-corpus/alaska-adjacent-bom/ARRC_WIRELESS_WIFI_IFC.pdf",
+          "sha256": "b133f6dc6f1330c7cf464aa174a4e859e3d48904d465369e070abf569411975f",
+          "bytes": 4517898,
+          "pages": 23,
+          "url": "https://www.alaskarailroad.com/sites/default/files/procurement/ARRC_WIRELESS_WIFI_IFC.pdf",
+          "role": "drawing",
+          "side": "target",
+          "revision": "IFC Rev 0, 2024-02-01",
+          "original_unchanged": true,
+          "metadata_title": ""
+        }
+      ],
+      "provenance": "Official project owner originals; transit electrical installation, not a custom-switchgear manufacturer review or native CAD export. PDF metadata title ending .xlsx does not establish workbook bytes.",
+      "project_package_count": 1,
+      "completed_customer_return_cycle_established": false,
+      "answer_key": "keys/alaska-passenger-wireless.json",
+      "scope": "One adjacent transit electrical procurement project, not manufacturer design. Complete ten-line PDF BOM key; full IFC inventory unlabelled. PDF metadata title does not establish XLSX."
+    }
+  ]
+}

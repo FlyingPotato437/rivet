@@ -1,0 +1,34 @@
+{
+  "schema_version": "rivet.reconstruction-manifest.v1",
+  "packages": [
+    {
+      "id": "official-public-schedule-a-unseen-v3",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "source_authority": "historical_reference_only",
+      "sources": [
+        {
+          "id": "official-public-schedule-a-original",
+          "name": "Official public proposed electrical branch breaker schedule A",
+          "path": "../../.data/real-document-corpus/sealed-fresh-schedules-20261019/source-d-candidate-original.pdf",
+          "role": "customer_one_line",
+          "source_authority": "historical_reference_only",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "url": "https://fo4b.dswd.gov.ph/wp-content/uploads/2023/10/INVITATION-TO-BID-FOR-THE-ELECTRICAL-UPGRADE-OF-53-YEAR-OLD-DSWD-MIMAROPA-ADMIN-BUILDING-UNDER-PROJECT-ID-NO.-DSWD4B-2023-027.pdf",
+          "pages": [
+            81
+          ]
+        }
+      ],
+      "answer_key": "key-private.draft-20261019.json",
+      "approved_reconstruction_eligible": false,
+      "limits": [
+        "Private source-only labels; independent QA pending.",
+        "Extraction only; never configure or generate from this official public reference.",
+        "One original physical page; 24 numeric facts on eight branch circuit rows, including two spare breakers.",
+        "Printed current role is trip current, not continuous/rated current.",
+        "Other pages, connected-load currents, main/aggregate row, voltage-drop calculations and engineering completeness are unscored."
+      ]
+    }
+  ]
+}

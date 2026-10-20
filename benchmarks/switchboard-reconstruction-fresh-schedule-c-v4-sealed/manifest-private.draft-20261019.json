@@ -1,0 +1,35 @@
+{
+  "schema_version": "rivet.reconstruction-manifest.v1",
+  "packages": [
+    {
+      "id": "official-public-schedule-c-unseen-v4",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "source_authority": "historical_reference_only",
+      "sources": [
+        {
+          "id": "official-public-schedule-c-original",
+          "name": "Official public electrical branch-breaker schedule C",
+          "path": "../../.data/real-document-corpus/sealed-fresh-schedules-v4-20261019/source-c-original.pdf",
+          "role": "customer_one_line",
+          "source_authority": "historical_reference_only",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "url": "https://ftp.txdot.gov/plans/Facilities/2023/04%20April/SLBC%2014-380421317%20New%20Lockhart%20MNT%20Facility/14-21317-plans2.pdf",
+          "pages": [
+            179
+          ]
+        }
+      ],
+      "answer_key": "key-private.draft-20261019.json",
+      "approved_reconstruction_eligible": false,
+      "limits": [
+        "Initial source-only labels require independent assistant source QA; not engineer verified.",
+        "Extraction only; never configure or generate from this public historical reference.",
+        "Whole original physical page is parser input; evaluation-only source_scope_bbox is present solely inside private answer-key refs and must not be passed to locator/reader.",
+        "Four branch positions, eight scored numeric facts, one explicitly rated spare; no empty/prepared positions in this complete bounded table.",
+        "Bare breaker AMP is scored as rated_current_a, not trip_a; branch-scoped KAIC is scored per branch. No branch frame is printed; frame is unscored.",
+        "Unlabelled same-page tables and all other content cannot be called false alarms using this bounded key."
+      ]
+    }
+  ]
+}

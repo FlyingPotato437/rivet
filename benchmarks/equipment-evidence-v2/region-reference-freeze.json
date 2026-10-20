@@ -1,0 +1,8 @@
+{
+  "frozen_at": "2026-10-19T00:43:59.905658+00:00",
+  "file": "benchmarks/equipment-evidence-v2/source-only-region-references.json",
+  "sha256": "21f2fa882186a42464dfc97b49c48a2fac1e75863d157075f62711ebfe08b115",
+  "regions": 21,
+  "prediction_results_opened": false,
+  "label_policy": "Complete physical printed schedule rows only; manually located on source crops. Homography solely maps source crop coordinates to the original rendered page. Does not establish all-page device inventory, model misses or engineering correctness."
+}

@@ -1,3 +1,8 @@
+import { OrderOverview } from "./OrderOverview";
+import { ProjectWorkspace } from "./ProjectHub";
+import { ProjectRecords } from "./ProjectRecords";
+import { ApprovalReview } from "./ApprovalReview";
+import { EngineeringWorkspace } from "./EngineeringWorkspace";
 import { useAccount } from "./Auth";
 import { OrderInboxPanel, SendNoticeButton } from "./Integrations";
 import { NoticeRecipients } from "./NoticeRecipients";
@@ -19,12 +24,16 @@ import {
   UploadSimple,
   WarningCircle,
   SidebarSimple,
+  CaretDown,
   X,
 } from "@phosphor-icons/react";
 import { api, when } from "./api";
 import { Busy, Empty, ErrorNote, Modal } from "./ui";
 import { OrderEvidence } from "./OrderEvidence";
+import { ConnectedSources } from "./ConnectedSources";
+import { CustomerBrief } from "./CustomerBrief";
 import { CommentConnections } from "./RecordConnections";
+import { resolveRecordSource } from "./record-source-navigation";
 import {
   RecordCoordination,
   AnchorIndex,
@@ -59,10 +68,10 @@ const tabs = [
 type Tab = (typeof tabs)[number];
 const names = {
   work: "Review work",
-  coordination: "Readiness",
-  comments: "Comment log",
+  coordination: "Team work",
+  comments: "Comments",
   changes: "Revision history",
-  documents: "Documents",
+  documents: "Files",
   sharing: "Approvals & sharing",
 };
 const values = (form: HTMLFormElement) =>
@@ -80,7 +89,83 @@ const draftComment: Partial<RecordComment> = {
   linked_email_id: "",
   reviewed: false,
 };
-export function RecordWorkspace({
+export function RecordWorkspace(props: {
+  id: string;
+  navigate: (to: string) => void;
+  notify: (s: string) => void;
+}) {
+  const params = new URLSearchParams(location.hash.split("?")[1] || "");
+  if (params.get("approval"))
+    return (
+      <ApprovalReview id={params.get("approval")!} navigate={props.navigate} />
+    );
+  return (
+    <EngineeringWorkspace
+      {...props}
+      review={<LegacyRecordWorkspace {...props} />}
+    />
+  );
+}
+function LegacyRecordWorkspace(props: {
+  id: string;
+  navigate: (to: string) => void;
+  notify: (s: string) => void;
+}) {
+  const params = new URLSearchParams(location.hash.split("?")[1] || "");
+  if (params.get("approval"))
+    return (
+      <ApprovalReview id={params.get("approval")!} navigate={props.navigate} />
+    );
+  if (
+    params.get("view") !== "advanced" &&
+    ((params.get("view") === "tools" &&
+      ["comments", "documents"].includes(params.get("tab") || "")) ||
+      (!params.has("view") &&
+        (params.has("source") ||
+          params.has("comment") ||
+          ["comments", "documents"].includes(params.get("tab") || ""))))
+  )
+    return <ProjectRecords {...props} />;
+  const tools =
+    params.get("view") === "advanced" ||
+    params.get("view") === "tools" ||
+    params.get("edit") === "1" ||
+    ["sharing", "coordination", "changes", "history"].includes(
+      params.get("tab") || "",
+    );
+  if (!tools)
+    return params.has("source") ||
+      params.has("comment") ||
+      params.has("tab") ? (
+      <OrderOverview {...props} />
+    ) : (
+      <ProjectWorkspace {...props} />
+    );
+  const navigate = (to: string) => {
+    if (to.startsWith(`order/${props.id}?`)) {
+      const [path, query] = to.split("?");
+      const next = new URLSearchParams(query);
+      next.set("view", "tools");
+      props.navigate(`${path}?${next}`);
+    } else props.navigate(to);
+  };
+  return (
+    <div className="order-record-tools">
+      <div className="order-tools-return">
+        <button
+          className="text-button"
+          onClick={() => props.navigate(`order/${props.id}`)}
+        >
+          <ArrowLeft size={16} />
+          Back to order
+        </button>
+        <span>Record tools</span>
+      </div>
+      <AdvancedRecordWorkspace {...props} navigate={navigate} />
+    </div>
+  );
+}
+function AdvancedRecordWorkspace({
   id,
   navigate,
   notify,
@@ -90,6 +175,7 @@ export function RecordWorkspace({
   notify: (s: string) => void;
 }) {
   const qc = useQueryClient();
+  const [customerHistoryOpen, setCustomerHistoryOpen] = useState(false);
   const query = useQuery({
     queryKey: ["record", id],
     queryFn: () => api<RecordView>(`/orders/${id}/record`),
@@ -100,9 +186,11 @@ export function RecordWorkspace({
     "tab",
   );
   const routeParams = new URLSearchParams(location.hash.split("?")[1] ?? "");
-  const tab: Tab =
-    incoming === "comments" &&
-    (routeParams.has("comment") || routeParams.get("agent") === "1")
+  const linkedSource = routeParams.get("source");
+  const tab: Tab = linkedSource
+    ? "work"
+    : incoming === "comments" &&
+        (routeParams.has("comment") || routeParams.get("agent") === "1")
       ? "work"
       : incoming === "work" && routeParams.has("task")
         ? "coordination"
@@ -122,37 +210,52 @@ export function RecordWorkspace({
   const [comparison, setComparison] = useState({ before: "", after: "" });
   const initializedOrder = useRef("");
   const sourceNavigated = useRef(false);
+  const handledSourceLink = useRef("");
   const linkedComment = new URLSearchParams(
     location.hash.split("?")[1] ?? "",
   ).get("comment");
   useEffect(() => {
-    if (linkedComment) {
+    if (linkedComment && !linkedSource) {
       setSelected(linkedComment);
     }
     if (routeParams.get("agent") === "1") setAgentOpen(true);
-  }, [tab, linkedComment, routeParams.get("agent")]);
+  }, [tab, linkedComment, linkedSource, routeParams.get("agent")]);
   useEffect(() => {
     if (!w || initializedOrder.current === id) return;
     initializedOrder.current = id;
-    sourceNavigated.current = false;
+    sourceNavigated.current = !!linkedSource;
     setComparison({ before: "", after: "" });
     setImportedCount(0);
     const first =
       w.comments.find((item) => item.id === linkedComment) ??
       w.comments.find((item) => !item.reviewed) ??
       w.comments[0];
-    setSelected(first?.id ?? null);
+    const linked = linkedSource
+      ? resolveRecordSource(w, linkedSource, linkedComment)
+      : null;
+    setSelected(
+      linkedSource ? (linked?.commentId ?? null) : (first?.id ?? null),
+    );
     setSource(
       tab === "work"
-        ? first?.target_source_id ||
+        ? linkedSource
+          ? linked?.sourceId || ""
+          : first?.target_source_id ||
             first?.source_ids[0] ||
             first?.document_id ||
             ""
         : "",
     );
-  }, [id, w, linkedComment]);
+  }, [id, w, linkedComment, linkedSource]);
   useEffect(() => {
-    if (!w || selected || linkedComment || sourceNavigated.current) return;
+    if (
+      !w ||
+      selected ||
+      linkedComment ||
+      linkedSource ||
+      sourceNavigated.current
+    )
+      return;
     const first = w.comments.find((item) => !item.reviewed) ?? w.comments[0];
     if (!first) return;
     setSelected(first.id);
@@ -160,15 +263,31 @@ export function RecordWorkspace({
       setSource(
         first.target_source_id || first.source_ids[0] || first.document_id,
       );
-  }, [w?.comments, selected, linkedComment, tab]);
+  }, [w?.comments, selected, linkedComment, linkedSource, tab]);
   useEffect(() => {
-    if (tab !== "work" || !linkedComment || !w) return;
+    if (tab !== "work" || !linkedComment || linkedSource || !w) return;
     const item = w.comments.find((value) => value.id === linkedComment);
     if (item)
       setSource(
         item.target_source_id || item.source_ids[0] || item.document_id,
       );
-  }, [tab, linkedComment, w?.order.id]);
+  }, [tab, linkedComment, linkedSource, w?.order.id]);
+  useEffect(() => {
+    if (!linkedSource) {
+      handledSourceLink.current = "";
+      return;
+    }
+    if (!w || w.order.id !== id || tab !== "work") return;
+    const key = `${id}:${linkedSource}:${linkedComment || ""}`;
+    if (handledSourceLink.current === key) return;
+    const linked = resolveRecordSource(w, linkedSource, linkedComment);
+    if (!linked) return;
+    handledSourceLink.current = key;
+    sourceNavigated.current = true;
+    setSelected(linked.commentId);
+    setSource(linked.sourceId);
+    setSourceRequest((request) => request + 1);
+  }, [id, linkedSource, linkedComment, tab, w]);
   useEffect(() => {
     if (!source) return;
     const frame = requestAnimationFrame(() =>
@@ -250,15 +369,11 @@ export function RecordWorkspace({
           </header>
           <div className="record-statusline">
             <span>{w.order.number || "Order number not recorded"}</span>
-            <span>{w.documents.length} source documents</span>
-            <span className="record-updated">
-              <CheckCircle size={14} /> Saved record
-            </span>
           </div>
         </div>
         <nav className="ow-tabs record-tabs" aria-label="Order record views">
           {tabs
-            .filter((t) => t !== "coordination" && t !== "work")
+            .filter((t) => t === "comments" || t === "documents")
             .map((t) => (
               <button
                 key={t}
@@ -280,6 +395,30 @@ export function RecordWorkspace({
                 {names[t]}
               </button>
             ))}
+          <details className="record-more-menu" key={tab}>
+            <summary>
+              {["changes", "sharing", "coordination"].includes(tab)
+                ? names[tab]
+                : "Order details"}
+              <CaretDown size={14} />
+            </summary>
+            <div>
+              <button onClick={() => setCustomerHistoryOpen(true)}>
+                Customer history
+              </button>
+              {(["changes", "sharing", "coordination"] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => {
+                    setSource("");
+                    navigate(`order/${id}?tab=${t}`);
+                  }}
+                >
+                  {names[t]}
+                </button>
+              ))}
+            </div>
+          </details>
         </nav>
         <div className={`record-center-views record-view-${tab}`}>
           {importedCount > 0 && (
@@ -311,113 +450,138 @@ export function RecordWorkspace({
           {query.isError && (
             <ErrorNote message="Could not refresh. Showing the last saved record." />
           )}
-          {tab === "work" && (
-            <div className="revision-detail-back">
-              <button
-                className="text-button"
-                onClick={() => {
-                  setAgentOpen(false);
+          {tab === "work" &&
+            linkedSource &&
+            !resolveRecordSource(w, linkedSource, linkedComment) && (
+              <section role="alert">
+                <ErrorNote message="This source is not available in this order. The link may be outdated; no substitute source has been opened." />
+                <button
+                  className="secondary"
+                  onClick={() => navigate(`order/${id}?tab=documents`)}
+                >
+                  View order files
+                </button>
+              </section>
+            )}
+          {tab === "work" &&
+            (!linkedSource ||
+              !!resolveRecordSource(w, linkedSource, linkedComment)) && (
+              <div className="revision-detail-back">
+                <button
+                  className="text-button"
+                  onClick={() => {
+                    setAgentOpen(false);
+                    navigate(`order/${id}?tab=comments`);
+                  }}
+                >
+                  <ArrowLeft size={16} /> Back to comment log
+                </button>
+              </div>
+            )}
+          {tab === "work" &&
+            (!linkedSource ||
+              !!resolveRecordSource(w, linkedSource, linkedComment)) && (
+              <RecordWorkbench
+                key={`workbench:${id}`}
+                w={w}
+                selectedId={selected}
+                sourceId={source}
+                sourceRequest={sourceRequest}
+                openSource={openEvidence}
+                selectComment={(commentId) => {
+                  setSelected(commentId);
+                  navigate(`order/${id}?tab=work&comment=${commentId}`);
+                }}
+                agentOpen={agentOpen}
+                setAgentOpen={setAgentOpen}
+                addDocuments={() => setUpload(true)}
+                openComments={() => {
+                  setSource("");
                   navigate(`order/${id}?tab=comments`);
                 }}
-              >
-                <ArrowLeft size={16} /> Back to comment log
-              </button>
-              <span>Review the source, then record your response.</span>
-            </div>
-          )}
-          {tab === "work" && (
-            <RecordWorkbench
-              key={`workbench:${id}`}
-              w={w}
-              selectedId={selected}
-              sourceId={source}
-              sourceRequest={sourceRequest}
-              openSource={openEvidence}
-              selectComment={(commentId) => {
-                setSelected(commentId);
-                navigate(`order/${id}?tab=work&comment=${commentId}`);
-              }}
-              agentOpen={agentOpen}
-              setAgentOpen={setAgentOpen}
-              addDocuments={() => setUpload(true)}
-              openComments={() => {
-                setSource("");
-                navigate(`order/${id}?tab=comments`);
-              }}
-              openChanges={(changeId) => {
-                setSource("");
-                navigate(
-                  `order/${id}?tab=changes${changeId ? `&change=${changeId}` : selected ? `&comment=${selected}` : ""}`,
-                );
-              }}
-              openReadiness={() => {
-                setSource("");
-                navigate(`order/${id}?tab=coordination`);
-              }}
-              save={save}
-              busy={busy}
-              error={error}
-              editRequested={routeParams.get("edit") === "1"}
-              renderEditor={(close) =>
-                comment ? (
-                  <CommentEditor
-                    key={`work:${selected}`}
-                    comment={comment}
-                    w={w}
-                    busy={busy}
-                    hasNext={w.comments.some(
-                      (item) => !item.reviewed && item.id !== selected,
-                    )}
-                    close={close}
-                    openSource={openEvidence}
-                    openChanges={() => {
-                      setSource("");
-                      navigate(`order/${id}?tab=changes&comment=${selected}`);
-                    }}
-                    save={async (body, advance) => {
-                      if (
-                        await save(
-                          `/comments${selected === "new" ? "" : "/" + selected}`,
-                          body,
-                        )
-                      ) {
-                        const latest = qc.getQueryData<RecordView>([
-                          "record",
-                          id,
-                        ]);
-                        const next = advance
-                          ? latest?.comments.find(
-                              (item) => !item.reviewed && item.id !== selected,
-                            )
-                          : selected === "new"
-                            ? latest?.comments.find(
+                openChanges={(changeId) => {
+                  setSource("");
+                  navigate(
+                    `order/${id}?tab=changes${changeId ? `&change=${changeId}` : selected ? `&comment=${selected}` : ""}`,
+                  );
+                }}
+                openReadiness={() => {
+                  setSource("");
+                  navigate(`order/${id}?tab=coordination`);
+                }}
+                save={save}
+                busy={busy}
+                error={error}
+                editRequested={routeParams.get("edit") === "1"}
+                renderEditor={(close) =>
+                  comment ? (
+                    <CommentEditor
+                      key={`work:${selected}`}
+                      comment={comment}
+                      w={w}
+                      busy={busy}
+                      hasNext={w.comments.some(
+                        (item) => !item.reviewed && item.id !== selected,
+                      )}
+                      close={close}
+                      openSource={openEvidence}
+                      openChanges={() => {
+                        setSource("");
+                        navigate(`order/${id}?tab=changes&comment=${selected}`);
+                      }}
+                      save={async (body, advance) => {
+                        if (
+                          await save(
+                            `/comments${selected === "new" ? "" : "/" + selected}`,
+                            body,
+                          )
+                        ) {
+                          const latest = qc.getQueryData<RecordView>([
+                            "record",
+                            id,
+                          ]);
+                          const next = advance
+                            ? (latest?.comments.find(
                                 (item) =>
-                                  !w.comments.some((old) => old.id === item.id),
-                              )
-                            : latest?.comments.find(
-                                (item) => item.id === selected,
+                                  !item.reviewed &&
+                                  item.id !== selected &&
+                                  item.revision === comment?.revision,
+                              ) ??
+                              latest?.comments.find(
+                                (item) =>
+                                  !item.reviewed && item.id !== selected,
+                              ))
+                            : selected === "new"
+                              ? latest?.comments.find(
+                                  (item) =>
+                                    !w.comments.some(
+                                      (old) => old.id === item.id,
+                                    ),
+                                )
+                              : latest?.comments.find(
+                                  (item) => item.id === selected,
+                                );
+                          if (next) {
+                            setSelected(next.id);
+                            if (advance || selected === "new")
+                              navigate(
+                                `order/${id}?tab=work&comment=${next.id}&edit=1`,
                               );
-                        if (next) {
-                          setSelected(next.id);
-                          if (advance || selected === "new")
-                            navigate(
-                              `order/${id}?tab=work&comment=${next.id}&edit=1`,
-                            );
-                          if (advance || selected === "new")
-                            setSource(
-                              next.target_source_id ||
-                                next.source_ids[0] ||
-                                next.document_id,
-                            );
+                            if (advance || selected === "new")
+                              setSource(
+                                next.target_source_id ||
+                                  next.source_ids[0] ||
+                                  next.document_id,
+                              );
+                          }
+                          close();
                         }
-                        close();
-                      }
-                    }}
-                  />
-                ) : null
-              }
-            />
-          )}
+                      }}
+                    />
+                  ) : null
+                }
+              />
+            )}
           {tab === "coordination" && (
             <RecordCoordination
               key={`coordination:${id}`}
@@ -433,8 +597,10 @@ export function RecordWorkspace({
               addDocuments={() => setUpload(true)}
             />
           )}
+          {tab === "comments" && <ConnectedSources orderId={id} compact />}
           {tab === "comments" && (
             <RevisionReview
+              key={`revision-review:${id}`}
               w={w}
               openComment={(commentId) => {
                 setAgentOpen(false);
@@ -512,14 +678,21 @@ export function RecordWorkspace({
                   Add the submittal and review comments to start the record.
                 </Empty>
               )}
-              <AnchorIndex
-                w={w}
-                openSource={openEvidence}
-                openComment={(commentId) =>
-                  navigate(`order/${id}?tab=comments&comment=${commentId}`)
-                }
-              />
-              <OrderInboxPanel id={w.order.id} />
+              <details className="record-file-details">
+                <summary>Connected sources and drawing references</summary>
+                <ConnectedSources orderId={id} />
+                <AnchorIndex
+                  w={w}
+                  openSource={openEvidence}
+                  openComment={(commentId) =>
+                    navigate(`order/${id}?tab=comments&comment=${commentId}`)
+                  }
+                />
+              </details>
+              <details className="record-file-details">
+                <summary>Email forwarding for this order</summary>
+                <OrderInboxPanel id={w.order.id} />
+              </details>
             </section>
           )}
           {tab === "changes" && (
@@ -554,6 +727,18 @@ export function RecordWorkspace({
             />
           )}
         </div>
+        {customerHistoryOpen && (
+          <Modal
+            title="Customer history"
+            onClose={() => setCustomerHistoryOpen(false)}
+          >
+            <CustomerBrief
+              key={`customer-history-dialog:${id}`}
+              orderId={id}
+              initiallyOpen
+            />
+          </Modal>
+        )}
         {upload && (
           <RecordUpload
             w={w}
@@ -629,6 +814,7 @@ function CommentEditor({
 }) {
   const account = useAccount();
   const [editVersion] = useState(w.version);
+  const [commentText, setCommentText] = useState(c.text || "");
   const [locationSearch, setLocationSearch] = useState("");
   const [targetSource, setTargetSource] = useState(c.target_source_id || "");
   const detail = useRef<HTMLElement>(null);
@@ -711,16 +897,21 @@ function CommentEditor({
           );
         }}
       >
-        <label>
-          Comment
-          <textarea
-            name="text"
-            required
-            rows={4}
-            maxLength={16000}
-            defaultValue={c.text}
-          />
-        </label>
+        <input type="hidden" name="text" value={commentText} />
+        {c.id ? (
+          <p className="record-review-comment">{commentText}</p>
+        ) : (
+          <label>
+            Comment
+            <textarea
+              required
+              rows={3}
+              maxLength={16000}
+              value={commentText}
+              onChange={(event) => setCommentText(event.target.value)}
+            />
+          </label>
+        )}
         <label>
           Manufacturer response
           <textarea
@@ -732,14 +923,6 @@ function CommentEditor({
           />
         </label>
         <div className="form-row">
-          <label>
-            Response author
-            <input
-              name="responder"
-              defaultValue={c.responder || account.name}
-              maxLength={180}
-            />
-          </label>
           <label>
             Next step after review
             <select
@@ -762,172 +945,31 @@ function CommentEditor({
             </select>
           </label>
         </div>
-        {c.original_text && (
-          <details className="record-original">
-            <summary>Original comment · {c.origin}</summary>
-            <blockquote>{c.original_text}</blockquote>
-            {c.source_ids?.map((s) => (
-              <button
-                type="button"
-                className="text-button"
-                key={s}
-                onClick={() => openSource(s)}
-              >
-                <ArrowUpRight size={14} />
-                Open source{c.source_page ? ` · p. ${c.source_page}` : ""}
-              </button>
-            ))}
-          </details>
-        )}
-        {c.flags && c.flags.length > 0 && !c.reviewed && (
-          <details className="record-review-note">
-            <summary>
-              <WarningCircle size={16} /> {c.flags.length}{" "}
-              {c.flags.length === 1 ? "detail" : "details"} to confirm before
-              marking reviewed
-            </summary>
-            <ul>
-              {c.flags.map((flag) => (
-                <li key={flag}>{flag}</li>
-              ))}
-            </ul>
-          </details>
-        )}
-        {c.id && (
-          <details className="record-edit-metadata">
-            <summary>Connected drawing and approval records</summary>
-            <CommentConnections
-              id={c.id}
-              w={w}
-              openSource={openSource}
-              openChanges={openChanges}
-            />
-          </details>
-        )}
-        <details className="record-edit-metadata" open={!c.id || undefined}>
-          <summary>Edit author, date, revision & drawing link</summary>
-          <div className="record-edit-metadata-fields">
-            <div className="form-row">
-              <label>
-                Comment number
-                <input
-                  name="number"
-                  required
-                  defaultValue={c.number}
-                  maxLength={40}
-                />
-              </label>
-              <label>
-                Revision
-                <input
-                  name="revision"
-                  defaultValue={c.revision}
-                  maxLength={40}
-                  placeholder="e.g. 02"
-                />
-              </label>
-            </div>
-            <div className="form-row">
-              <label>
-                Comment author
-                <input
-                  name="author"
-                  defaultValue={c.author}
-                  maxLength={180}
-                  placeholder="Not stated"
-                />
-              </label>
-              <label>
-                Comment date
-                <input
-                  name="authored_at"
-                  defaultValue={c.authored_at}
-                  maxLength={80}
-                  placeholder="As stated in source"
-                />
-              </label>
-            </div>
-            <label>
-              Find a drawing area
-              <input
-                placeholder="File, page number, or text…"
-                value={locationSearch}
-                onChange={(e) => setLocationSearch(e.target.value)}
-              />
-            </label>
-            {c.source_ids?.[0] && (
-              <button
-                type="button"
-                className="text-button record-use-location"
-                onClick={() => setTargetSource(c.source_ids![0])}
-              >
-                <LinkSimple size={14} />
-                Use the original markup location
-              </button>
-            )}
-            {c.source_ids?.[0] && (
-              <small className="record-location-hint">
-                Use only when the comment refers to the area marked in the
-                source.
-              </small>
-            )}
-            <label>
-              Drawing location
-              <select
-                name="target_source_id"
-                value={targetSource}
-                onChange={(e) => setTargetSource(e.target.value)}
-              >
-                <option value="">Needs a location / not applicable</option>
-                {sourceOptions.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {w.documents.find((d) => d.id === s.document_id)?.name} ·{" "}
-                    {s.location.page ? `p. ${s.location.page}` : "excerpt"} ·{" "}
-                    {s.text.slice(0, 90)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {targetSource && (
-              <button
-                type="button"
-                className="text-button"
-                onClick={() => openSource(targetSource)}
-              >
-                <LinkSimple size={14} />
-                Open linked drawing area
-              </button>
-            )}
-            <label>
-              Linked email
-              <select name="linked_email_id" defaultValue={c.linked_email_id}>
-                <option value="">None</option>
-                {w.documents
-                  .filter((d) => d.email)
-                  .map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.email?.subject || d.name}
-                    </option>
-                  ))}
-              </select>
-            </label>
+        {!!c.flags?.length && !c.reviewed && (
+          <div className="record-review-uncertainty">
+            <WarningCircle size={16} />
+            <span>
+              {c.flags.join(" ")} You can save a draft while details remain
+              unconfirmed.
+            </span>
           </div>
-        </details>
+        )}
         <label className="record-checkbox">
           <input type="checkbox" name="reviewed" defaultChecked={c.reviewed} />I
           reviewed the extracted fields and drawing location.
         </label>
-        <AuditFields defaultReason="Reviewed source and comment details" />
+        <details
+          className="record-review-audit"
+          open={account.mode !== "clerk" || undefined}
+        >
+          <summary>
+            Recorded by {account.name || "your team"} · Review note
+          </summary>
+          <AuditFields defaultReason="Reviewed source and comment details" />
+        </details>
         <div className="record-save-actions">
           <button className={hasNext ? "secondary" : "primary"} disabled={busy}>
-            {busy ? (
-              <Busy />
-            ) : (
-              <>
-                <Check size={16} />
-                Save comment
-              </>
-            )}
+            {busy ? <Busy /> : <>Save comment</>}
           </button>
           {hasNext && (
             <button
@@ -936,22 +978,196 @@ function CommentEditor({
               value="next"
               disabled={busy}
             >
-              Save & next <ArrowRight size={15} />
+              Save & next
             </button>
           )}
         </div>
+        <details className="record-source-details" open={!c.id || undefined}>
+          <summary>Source details & corrections</summary>
+          {c.original_text && (
+            <details className="record-original">
+              <summary>Original comment · {c.origin}</summary>
+              <blockquote>{c.original_text}</blockquote>
+              {c.source_ids?.map((s) => (
+                <button
+                  type="button"
+                  className="text-button"
+                  key={s}
+                  onClick={() => openSource(s)}
+                >
+                  <ArrowUpRight size={14} />
+                  Open source{c.source_page ? ` · p. ${c.source_page}` : ""}
+                </button>
+              ))}
+            </details>
+          )}
+          {c.flags && c.flags.length > 0 && !c.reviewed && (
+            <details className="record-review-note">
+              <summary>
+                <WarningCircle size={16} /> {c.flags.length}{" "}
+                {c.flags.length === 1 ? "detail" : "details"} to confirm before
+                marking reviewed
+              </summary>
+              <ul>
+                {c.flags.map((flag) => (
+                  <li key={flag}>{flag}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+          {c.id && (
+            <details className="record-edit-metadata">
+              <summary>Connected drawing and approval records</summary>
+              <CommentConnections
+                id={c.id}
+                w={w}
+                openSource={openSource}
+                openChanges={openChanges}
+              />
+            </details>
+          )}
+          <section className="record-edit-metadata">
+            <div className="record-edit-metadata-fields">
+              <label>
+                Correct extracted comment
+                <textarea
+                  rows={3}
+                  maxLength={16000}
+                  value={commentText}
+                  onChange={(event) => setCommentText(event.target.value)}
+                />
+              </label>
+              <label>
+                Response author
+                <input
+                  name="responder"
+                  defaultValue={c.responder || account.name}
+                  maxLength={180}
+                />
+              </label>
+              <div className="form-row">
+                <label>
+                  Comment number
+                  <input
+                    name="number"
+                    required
+                    defaultValue={c.number}
+                    maxLength={40}
+                  />
+                </label>
+                <label>
+                  Revision
+                  <input
+                    name="revision"
+                    defaultValue={c.revision}
+                    maxLength={40}
+                    placeholder="e.g. 02"
+                  />
+                </label>
+              </div>
+              <div className="form-row">
+                <label>
+                  Comment author
+                  <input
+                    name="author"
+                    defaultValue={c.author}
+                    maxLength={180}
+                    placeholder="Not stated"
+                  />
+                </label>
+                <label>
+                  Comment date
+                  <input
+                    name="authored_at"
+                    defaultValue={c.authored_at}
+                    maxLength={80}
+                    placeholder="As stated in source"
+                  />
+                </label>
+              </div>
+              <label>
+                Find a drawing area
+                <input
+                  placeholder="File, page number, or text…"
+                  value={locationSearch}
+                  onChange={(e) => setLocationSearch(e.target.value)}
+                />
+              </label>
+              {c.source_ids?.[0] && (
+                <button
+                  type="button"
+                  className="text-button record-use-location"
+                  onClick={() => setTargetSource(c.source_ids![0])}
+                >
+                  <LinkSimple size={14} />
+                  Use the original markup location
+                </button>
+              )}
+              {c.source_ids?.[0] && (
+                <small className="record-location-hint">
+                  Use only when the comment refers to the area marked in the
+                  source.
+                </small>
+              )}
+              <label>
+                Drawing location
+                <select
+                  name="target_source_id"
+                  value={targetSource}
+                  onChange={(e) => setTargetSource(e.target.value)}
+                >
+                  <option value="">Needs a location / not applicable</option>
+                  {sourceOptions.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {w.documents.find((d) => d.id === s.document_id)?.name} ·{" "}
+                      {s.location.page ? `p. ${s.location.page}` : "excerpt"} ·{" "}
+                      {s.text.slice(0, 90)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {targetSource && (
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => openSource(targetSource)}
+                >
+                  <LinkSimple size={14} />
+                  Open linked drawing area
+                </button>
+              )}
+              <label>
+                Linked email
+                <select name="linked_email_id" defaultValue={c.linked_email_id}>
+                  <option value="">None</option>
+                  {w.documents
+                    .filter((d) => d.email)
+                    .map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.email?.subject || d.name}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            </div>
+          </section>
+        </details>
       </form>
     </aside>
   );
 }
-function RecordUpload({
+export function RecordUpload({
   w,
   close,
   done,
+  defaultKind = "markups",
+  introduction,
 }: {
   w: RecordView;
   close: () => void;
   done: (count: number) => void;
+  defaultKind?: "markups" | "approval_drawing" | "specification" | "auto";
+  introduction?: string;
 }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -987,8 +1203,7 @@ function RecordUpload({
         }}
       >
         <p className="modal-intro">
-          Add the submittal, marked-up files, or saved emails. Comments retain
-          their original source.
+          {introduction || "Add the submittal, marked-up files, or saved emails. Comments retain their original source."}
         </p>
         <label className="record-file-picker">
           <span>
@@ -1005,7 +1220,7 @@ function RecordUpload({
         <div className="form-row">
           <label>
             Document type
-            <select name="kind" defaultValue="markups">
+            <select name="kind" defaultValue={defaultKind}>
               <option value="markups">Review comments / markups</option>
               <option value="approval_drawing">Submittal / drawing</option>
               <option value="specification">Specification</option>
@@ -1018,8 +1233,8 @@ function RecordUpload({
           </label>
         </div>
         <p className="record-note">
-          PDF, TXT, CSV, XLSX, or EML · Up to 20 MB per file and 150 pages per
-          PDF. Email attachments are included. Scanned pages and unclear
+          PDF up to 200 MB and 500 pages; TXT, CSV, XLSX or EML up to 20 MB.
+          Email attachments retain their own limits. Scanned pages and unclear
           locations need review.
         </p>
         {error && <ErrorNote message={error} />}

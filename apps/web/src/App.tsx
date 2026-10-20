@@ -1,4 +1,6 @@
 import { TeamSwitcher, AccountControl, TeamSettings, useAccount } from "./Auth";
+import Customers from "./Customers";
+import { YourWork, AutonomyPreferences } from "./YourWork";
 import { IntegrationSettings } from "./Integrations";
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,6 +24,9 @@ import {
   Info,
   GitDiff,
   SidebarSimple,
+  UsersThree,
+  DotsThree,
+  Sparkle,
 } from "@phosphor-icons/react";
 import { api, usd, dateLabel, when, type Project, type Workspace } from "./api";
 import { Mark, Status, Modal, Empty, ErrorNote, Busy, RivetIcon } from "./ui";
@@ -32,7 +37,6 @@ import { RecordWorkspace as OrderWorkspace } from "./RecordWorkspace";
 import {
   RecordFeed as OrderFeed,
   useRecordOrders as useOrders,
-  useRecordInbox,
 } from "./RecordFeed";
 import { OrderGuide } from "./OrderGuide";
 import sampleScheduleUrl from "../../../examples/equipment-schedule.csv?url";
@@ -41,6 +45,10 @@ import switchgearQuoteUrl from "../../../examples/switchgear-current-quote.csv?u
 import switchgearOfferUrl from "../../../examples/switchgear-initial-offer.txt?url";
 import switchgearAddendumUrl from "../../../examples/switchgear-addendum-02.txt?url";
 import switchgearReplyUrl from "../../../examples/switchgear-revised-offer.txt?url";
+import "./workspace-material.css";
+import { ProjectNavigation, ProjectsDashboard } from "./ProjectHub";
+import { Today } from "./Today";
+import { OrderActivity } from "./OrderActivity";
 
 type Health = {
   status: string;
@@ -52,19 +60,27 @@ type Health = {
 export default function App() {
   const account = useAccount();
   const qc = useQueryClient();
-  const [route, setRoute] = useState(
-    () => location.hash.slice(1) || "decisions",
-  );
+  const [route, setRoute] = useState(() => location.hash.slice(1) || "today");
+  const routeBase = route.split("?")[0];
+  const workRoute = [
+    "today",
+    "work",
+    "autopilot",
+    "review",
+    "inbox",
+    "decisions",
+  ].includes(routeBase);
   const [newOrder, setNewOrder] = useState(false);
   const orders = useOrders();
-  const inbox = useRecordInbox();
   const [newProject, setNewProject] = useState(false);
   const [search, setSearch] = useState(false);
   const [toast, setToast] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
-  const legacyRoute =
-    ["quotes", "bids", "catalog", "activity"].includes(route) ||
+  const legacyEnabled = import.meta.env.VITE_ENABLE_LEGACY_ENGINES === "true";
+  const isLegacy =
+    ["quotes", "bids", "catalog"].includes(route) ||
     route.startsWith("project/");
+  const legacyRoute = legacyEnabled && isLegacy;
   const projects = useQuery({
     queryKey: ["projects"],
     enabled: legacyRoute,
@@ -83,10 +99,15 @@ export default function App() {
   }, []);
   const notify = useCallback((message: string) => setToast(message), []);
   useEffect(() => {
-    const f = () => setRoute(location.hash.slice(1) || "decisions");
+    const f = () => setRoute(location.hash.slice(1) || "today");
     window.addEventListener("hashchange", f);
     return () => window.removeEventListener("hashchange", f);
   }, []);
+  // Top-level navigation starts at the page heading. In-order deep links keep
+  // their own source/comment positioning.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [routeBase]);
   useEffect(() => {
     const f = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMobileNav(false);
@@ -154,10 +175,6 @@ export default function App() {
   const order = orders.data?.orders.find(
     (o) => "order/" + o.id === route.split("?")[0],
   );
-  const decisions =
-    inbox.data?.items.length ??
-    orders.data?.orders.reduce((n, o) => n + o.counts.review, 0) ??
-    0;
   return (
     <div
       className={`app-shell${route.startsWith("order/") ? " order-workbench-shell" : ""}`}
@@ -169,7 +186,7 @@ export default function App() {
         <button
           className="brand"
           aria-label="Rivet home"
-          onClick={() => navigate("home")}
+          onClick={() => navigate("work")}
         >
           <Mark />
           <span>
@@ -177,102 +194,66 @@ export default function App() {
           </span>
         </button>
         <TeamSwitcher />
-        <div className="nav-label">Workspace</div>
-        <nav>
+        <nav className="simple-workspace-nav" aria-label="Workspace">
           <button
-            className={route === "decisions" ? "active" : ""}
-            onClick={() => navigate("decisions")}
+            className={workRoute ? "active" : ""}
+            onClick={() => navigate("today")}
           >
             <RivetIcon name="inbox" size={19} />
-            Inbox
-            {decisions > 0 && <span className="nav-count">{decisions}</span>}
+            Today
           </button>
           <button
             className={
-              route === "projects" ||
-              route === "orders" ||
+              ["orders", "projects"].includes(routeBase) ||
               route.startsWith("order/")
                 ? "active"
                 : ""
             }
-            onClick={() => navigate("projects")}
+            onClick={() => navigate("orders")}
           >
-            <RivetIcon name="equipment" size={19} />
+            <FolderSimple size={19} />
             Orders
-            <span className="nav-count">{orders.data?.orders.length ?? 0}</span>
+          </button>
+          <button
+            className={routeBase === "activity" ? "active" : ""}
+            onClick={() => navigate("activity")}
+          >
+            <Clock size={19} />
+            Activity
+          </button>
+          <button
+            className={routeBase === "settings" ? "active" : ""}
+            onClick={() => navigate("settings")}
+          >
+            <SlidersHorizontal size={19} />
+            Settings
           </button>
         </nav>
-        <div className="nav-label recent-label">
-          Recent orders
-          <button aria-label="New order" onClick={() => setNewOrder(true)}>
-            <Plus size={14} />
-          </button>
-        </div>
-        <div className="recent-projects">
-          {recent.slice(0, 4).map((o) => (
-            <button
-              key={o.id}
-              className={order?.id === o.id ? "selected" : ""}
-              onClick={() => navigate("order/" + o.id)}
-            >
-              <span className="project-dot violet" />
-              <span>{o.title}</span>
-            </button>
-          ))}
-        </div>
-        {["quotes", "bids", "catalog", "activity"].includes(route) ||
-        route.startsWith("project/") ? (
-          <details className="order-tools" open>
-            <summary>
-              Quote tools
-              <CaretRight size={13} />
-            </summary>
-            <nav>
-              <button
-                className={
-                  route === "quotes" || route.startsWith("project/")
-                    ? "active"
-                    : ""
-                }
-                onClick={() => navigate("quotes")}
-              >
-                <Folder size={17} />
-                Quotes
-              </button>
-              <button
-                className={route === "bids" ? "active" : ""}
-                onClick={() => navigate("bids")}
-              >
-                <ListChecks size={17} />
-                Bid queue
-              </button>
-              <button
-                className={route === "catalog" ? "active" : ""}
-                onClick={() => navigate("catalog")}
-              >
-                <Stack size={17} />
-                Equipment catalog
-              </button>
-              <button
-                className={route === "activity" ? "active" : ""}
-                onClick={() => navigate("activity")}
-              >
-                <Clock size={17} />
-                Quote activity
-              </button>
-            </nav>
-          </details>
-        ) : null}
+        <ProjectNavigation
+          navigate={navigate}
+          activeId={
+            route.startsWith("order/")
+              ? route.split("/")[1].split("?")[0]
+              : undefined
+          }
+        />
         <div className="sidebar-bottom">
-          <button onClick={() => navigate("guide")}>
-            <BookOpen size={17} />
-            Getting started
-            <ArrowUpRight size={14} />
-          </button>
-          <button onClick={() => navigate("settings")}>
-            <SlidersHorizontal size={17} />
-            Workspace settings
-          </button>
+          <div className="workspace-profile-tools">
+            <button
+              aria-label="Workspace settings"
+              title="Workspace settings"
+              onClick={() => navigate("settings")}
+            >
+              <SlidersHorizontal size={18} />
+            </button>
+            <button
+              aria-label="Getting started"
+              title="Getting started"
+              onClick={() => navigate("guide")}
+            >
+              <BookOpen size={18} />
+            </button>
+          </div>
           <AccountControl />
         </div>
       </aside>
@@ -295,7 +276,7 @@ export default function App() {
             >
               <SidebarSimple size={20} />
             </button>
-            <button className="breadcrumb" onClick={() => navigate("projects")}>
+            <button className="breadcrumb" onClick={() => navigate("work")}>
               Workspace
             </button>
             <span className="slash">/</span>
@@ -303,17 +284,25 @@ export default function App() {
               {order?.number ??
                 project?.title ??
                 {
+                  work: "Today",
+                  today: "Today",
+                  autopilot: "Today",
                   projects: "Orders",
                   orders: "Orders",
-                  decisions: "Inbox",
+                  decisions: "Today",
+                  inbox: "Today",
+                  review: "Today",
+                  customers: "Customers",
                   bids: "Bid queue",
                   quotes: "Quotes",
                   catalog: "Equipment catalog",
                   activity: "Activity",
                   settings: "Settings",
                   guide: "Getting started",
-                }[route] ??
-                "Orders"}
+                }[routeBase] ??
+                (routeBase.startsWith("customer/")
+                  ? "Customer context"
+                  : "Orders")}
             </span>
           </div>
           <div className="topbar-right">
@@ -327,7 +316,7 @@ export default function App() {
                 ? "Server unavailable"
                 : health.data
                   ? account.mode === "clerk"
-                    ? "Connected"
+                    ? "Workspace online"
                     : "Local workspace"
                   : "Connecting…"}
             </span>
@@ -350,17 +339,37 @@ export default function App() {
             navigate={navigate}
             notify={notify}
           />
-        ) : ["projects", "orders", "decisions"].includes(route) ? (
-          <OrderFeed
-            key={route}
+        ) : workRoute ? (
+          <Today navigate={navigate} onNew={() => setNewOrder(true)} />
+        ) : ["projects", "orders"].includes(routeBase) ? (
+          <ProjectsDashboard
             navigate={navigate}
             onNew={() => setNewOrder(true)}
-            decisionsOnly={route === "decisions"}
+          />
+        ) : routeBase === "activity" ? (
+          <OrderActivity navigate={navigate} />
+        ) : routeBase === "customers" || routeBase.startsWith("customer/") ? (
+          <Customers
+            navigate={navigate}
+            customerId={
+              routeBase.startsWith("customer/")
+                ? routeBase.slice("customer/".length)
+                : undefined
+            }
           />
         ) : route === "settings" ? (
           <Settings health={health.data} />
         ) : route === "guide" ? (
           <OrderGuide onNew={() => setNewOrder(true)} navigate={navigate} />
+        ) : isLegacy && !legacyEnabled ? (
+          <main className="page">
+            <h1>Continue in Orders</h1>
+            <p>
+              This workspace brings the customer workflow together in each
+              order.
+            </p>
+            <button onClick={() => navigate("orders")}>Open orders</button>
+          </main>
         ) : projects.isError ? (
           <div className="page">
             <ErrorNote message="Rivet could not load these records. Check your connection and try again." />
@@ -1160,6 +1169,7 @@ function Settings({ health }: { health: Health | undefined }) {
           />
         </div>
       </section>
+      <AutonomyPreferences />
       <IntegrationSettings />
       <TeamSettings />
       <details className="workspace-legacy-tools">
@@ -1169,6 +1179,9 @@ function Settings({ health }: { health: Health | undefined }) {
         </p>
         <a href="#quotes">
           Open quote tools <ArrowUpRight size={14} />
+        </a>
+        <a href="#customers">
+          Customer history <ArrowUpRight size={14} />
         </a>
       </details>
     </main>

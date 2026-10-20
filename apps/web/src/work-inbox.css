@@ -715,3 +715,309 @@
     padding: 20px 16px;
   }
 }
+
+/* Email context beside the one decision the PM needs to make. */
+.intake-match-focused {
+  margin-top: 0;
+}
+.intake-match {
+  background: var(--surface, #19191f);
+  border-color: var(--line, #36363d);
+  border-radius: 10px;
+}
+.intake-match-summary {
+  padding: 24px;
+  gap: 16px;
+  border: 0;
+}
+.intake-match-summary > svg {
+  flex: none;
+  color: #bda6d7;
+}
+.intake-match-summary > .is-open {
+  transform: rotate(180deg);
+}
+.intake-match-summary strong {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.intake-match-summary small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.intake-confirmation-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 1fr);
+  border-top: 1px solid var(--line);
+}
+.intake-message {
+  padding: 26px;
+  min-width: 0;
+}
+.intake-message-meta,
+.intake-detected {
+  margin: 0 0 22px;
+  display: grid;
+  gap: 9px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.intake-message-meta > div,
+.intake-detected > div {
+  display: grid;
+  grid-template-columns: 65px minmax(0, 1fr);
+  gap: 12px;
+}
+.intake-message-meta dt,
+.intake-detected dt {
+  color: var(--muted);
+}
+.intake-message-meta dd,
+.intake-detected dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.intake-message-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 12px;
+}
+.intake-message-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 18px 0 0;
+}
+.intake-confirmation-layout form {
+  padding: 26px;
+  border-left: 1px solid var(--line);
+  background: rgba(189, 166, 215, 0.035);
+  min-width: 0;
+}
+.intake-confirmation-layout h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.intake-match-explanation,
+.intake-match-hints {
+  margin: 0 0 22px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.intake-match-hints {
+  color: #c6b4d5;
+}
+.intake-detected {
+  padding: 14px 0;
+  border-block: 1px solid var(--line);
+}
+.intake-detected > div {
+  grid-template-columns: 125px minmax(0, 1fr);
+}
+.intake-confirmation-layout .intake-match-fields {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+.intake-match-fields label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.intake-match-fields input,
+.intake-match-fields select {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  min-height: 44px;
+}
+.intake-match-fields select {
+  appearance: none;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23b7b0bf' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.intake-confirmation-layout form > footer {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 18px;
+  margin-top: 28px;
+}
+.intake-confirmation-layout form > footer .primary {
+  order: -1;
+  min-height: 42px;
+}
+.intake-attachments {
+  margin-top: 28px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.intake-attachments > button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  color: var(--text);
+  font-size: 13px;
+}
+.intake-attachments > button > span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.intake-attachments small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.intake-outlook-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+@media (max-width: 1100px) {
+  .intake-confirmation-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .intake-confirmation-layout form {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .intake-message-body {
+    max-height: 300px;
+  }
+}
+@media (max-width: 600px) {
+  .intake-match-summary,
+  .intake-message,
+  .intake-confirmation-layout form {
+    padding: 20px;
+  }
+  .intake-message-meta > div {
+    grid-template-columns: 50px minmax(0, 1fr);
+  }
+}
+.intake-set-aside-action {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.intake-set-aside {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  max-width: 700px;
+}
+.intake-set-aside h2 {
+  font-size: 19px;
+}
+.intake-set-aside p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.75;
+}
+.review-set-aside {
+  margin: 22px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.review-set-aside summary {
+  cursor: pointer;
+  padding: 10px 0;
+}
+.review-set-aside button {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  padding: 12px 0;
+  text-align: left;
+}
+.review-set-aside button span {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.intake-triage-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-right: 24px;
+}
+.intake-triage-header .intake-match-summary {
+  min-width: 0;
+  flex: 1;
+}
+.intake-triage-header .intake-match-summary:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.intake-triage-decision {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 420px;
+  font-size: 14px;
+  flex: none;
+}
+.intake-triage-decision > div {
+  display: flex;
+  gap: 8px;
+}
+.intake-triage-decision button {
+  min-width: 54px;
+  min-height: 36px;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.intake-triage-decision small {
+  flex-basis: 100%;
+  text-align: right;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: -8px;
+}
+.intake-confirmation-layout.intake-preview-only {
+  display: block;
+}
+.intake-preview-only .intake-message {
+  max-width: 850px;
+}
+.intake-other-order {
+  margin: 0 24px 20px;
+  font-size: 12px;
+}
+.review-rows > .intake-match {
+  margin: 0 0 12px;
+}
+@media (max-width: 780px) {
+  .intake-triage-header {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 0 0 20px;
+    gap: 0;
+  }
+  .intake-triage-decision {
+    justify-content: flex-start;
+    padding: 0 20px;
+    max-width: none;
+  }
+  .intake-triage-decision small {
+    text-align: left;
+  }
+}

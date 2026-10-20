@@ -1,0 +1,297 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "kansas-docking-switchboard",
+  "review": {
+    "reviewer": "Codex assistant independent visual inspection",
+    "reviewed_at": "2026-10-18T22:10:05.332996+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Preliminary visual transcription from rendered unchanged original pages before running Rivet predictions. H3 complete bounded subpackage: original pages241\u2013246. Four populated breakers, four prepared spaces and one incoming connection are distinct. Requires manufacturer/engineer second review. The control-center dated issue pair has identical sheet ID; no causal customer request or corrected post-review release is claimed."
+  },
+  "source_hashes": {
+    "kansas-h3-drawings": "aaf4e66a90b1118199eaac6b30a819ee8178d0aaa4aed7aeb5db42bf6b6e2590",
+    "kansas-h3-schedule": "d09363b2a683ad7f697fb76d534a8ade89e23428ba9b9d0a17d7a904bef776b6",
+    "kansas-c1-may15": "113c0b0fd819530695b42c5e14ff07a21717c5048068b87c4d08171d6e387c45",
+    "kansas-c1-may30": "b973a8c75aa75d826269574811bebee6f82e01c120c5d55a72779f330e9fcf94"
+  },
+  "parent_original": {
+    "sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+    "pages": 266,
+    "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf"
+  },
+  "labels": {
+    "comments": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "kansas-h3-drawings",
+          "page": 1
+        },
+        {
+          "source_id": "kansas-h3-drawings",
+          "page": 2
+        },
+        {
+          "source_id": "kansas-h3-drawings",
+          "page": 3
+        },
+        {
+          "source_id": "kansas-h3-drawings",
+          "page": 4
+        },
+        {
+          "source_id": "kansas-h3-drawings",
+          "page": 5
+        },
+        {
+          "source_id": "kansas-h3-schedule",
+          "page": 1
+        }
+      ],
+      "items": [
+        {
+          "id": "h3-review-disposition",
+          "source_id": "kansas-h3-drawings",
+          "page": 1,
+          "text": "NO EXCEPTIONS TAKEN",
+          "kind": "review_stamp",
+          "actionable": false,
+          "note": "The checked LoCHNER disposition is a review status; it does not authorize an inferred customer release or manufacturing action."
+        }
+      ]
+    },
+    "devices": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "kansas-h3-drawings",
+          "page": 5
+        }
+      ],
+      "items": [
+        {
+          "id": "h3-printed-assembly-tag",
+          "source_id": "kansas-h3-drawings",
+          "page": 5,
+          "tag": "H3",
+          "source_label": "SWITCHBOARD H3",
+          "note": "Complete printed assembly-tag presence on the H3 one-line. Circuit numerals are local positions, not invented CB tags."
+        }
+      ]
+    },
+    "bom_rows": {
+      "scope": "complete",
+      "source_ids": [
+        "kansas-h3-schedule"
+      ],
+      "items": [
+        {
+          "id": "h3-incoming",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 1,
+          "fields": {
+            "section_no": 1,
+            "device_frame": "Incoming Connection",
+            "connection": "Busway"
+          },
+          "source_row_kind": "incoming_connection",
+          "parent_page": 246,
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit1",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 2,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 1,
+            "device_frame": "HL (PS)",
+            "trip_a": 100,
+            "pole_count": 3,
+            "position_state": "prepared_space"
+          },
+          "source_row_kind": "prepared_space",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit2",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 3,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 2,
+            "device_frame": "HL (PS)",
+            "trip_a": 100,
+            "pole_count": 3,
+            "position_state": "prepared_space"
+          },
+          "source_row_kind": "prepared_space",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit3",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 4,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 3,
+            "device_frame": "JL",
+            "trip_a": 200,
+            "pole_count": 3,
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit4",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 5,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 4,
+            "device_frame": "JL",
+            "trip_a": 250,
+            "pole_count": 3,
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit5",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 6,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 5,
+            "device_frame": "HL (PS)",
+            "trip_a": 100,
+            "pole_count": 3,
+            "position_state": "prepared_space"
+          },
+          "source_row_kind": "prepared_space",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit6",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 7,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 6,
+            "device_frame": "HL (PS)",
+            "trip_a": 100,
+            "pole_count": 3,
+            "position_state": "prepared_space"
+          },
+          "source_row_kind": "prepared_space",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit7",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 8,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 7,
+            "device_frame": "HL",
+            "trip_a": 30,
+            "pole_count": 3,
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        },
+        {
+          "id": "h3-section2-circuit8",
+          "source_id": "kansas-h3-schedule",
+          "sheet": "O29528680-008-01 / sheet2of2",
+          "row": 9,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 8,
+            "device_frame": "LI",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "parent_page": 246,
+          "identity_note": "Section/circuit are printed local schedule coordinates, not invented enterprise device tags.",
+          "page": 1
+        }
+      ],
+      "note": "Complete nine-row source PDF schedule, not an Excel workbook. Printed row 1 is incoming; four HL(PS) rows are prepared spaces and only circuits3,4,7,8 are populated breakers."
+    },
+    "issues": null,
+    "revision_checks": {
+      "scope": "partial",
+      "source_ids": [
+        "kansas-c1-may30"
+      ],
+      "items": [
+        {
+          "id": "control-center-transition-added",
+          "kind": "drawing_connection_added",
+          "device_tag": "CONTROL CENTER NO 1 SWB",
+          "field": "transition_to_existing_mcc",
+          "source_id": "kansas-c1-may30",
+          "page": 1,
+          "status": "observed_change",
+          "before": false,
+          "after": true,
+          "source_label": "Transition to Existing MCC",
+          "evidence_note": "Original physicalpage194 dated May15 shows section4 without this connected transition; physicalpage252 dated May30 shows the new connected transition. Same drawing O29528680-009-01, sheet1of2. Revision boxes remain dashes; no revision letter is invented."
+        }
+      ]
+    }
+  },
+  "inventory_summary": {
+    "scope": "Complete H3 circuit positions, original246 / drawingO29528680-008-01 sheet2of2",
+    "incoming_connections": 1,
+    "prepared_spaces": 4,
+    "populated_breakers": 4,
+    "installed_breaker_circuits": [
+      3,
+      4,
+      7,
+      8
+    ],
+    "not_established": [
+      "Internal component wiring",
+      "Complete266-page binder inventory",
+      "Fault/rating/coordination correctness",
+      "Corrected manufacture release after July12 review"
+    ]
+  },
+  "reference_corrections": [
+    {
+      "method": "physical_source_provenance_binding",
+      "note": "All H3 schedule rows are on physical page1 of the unchanged evaluation copy (parent original246); a reviewer-friendly sheet caption is not a worksheet identifier. Values unchanged.",
+      "engineering_reviewed": false
+    }
+  ]
+}

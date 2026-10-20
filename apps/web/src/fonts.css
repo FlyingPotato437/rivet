@@ -1,8 +1,31 @@
 /* OFL fonts are bundled with the application; no third-party font requests. */
+@font-face {
+  font-family: "Onest";
+  src: url("/fonts/onest-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/sora-latin.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
-  --font-sans: "Schibsted Grotesk Variable", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Onest", "Helvetica Neue", Arial, sans-serif;
   --font-heading: var(--font-sans);
   --mono: "Commit Mono", "SFMono-Regular", Consolas, monospace;
   font-kerning: normal;
   font-synthesis: none;
+  --rivet-body: "Onest", "Helvetica Neue", Arial, sans-serif;
+  --rivet-display: "Sora", "Onest", sans-serif;
+  --rivet-graphite: #111315;
+  --rivet-panel: #191c1f;
+  --rivet-ink: #f1f2f2;
+  --rivet-secondary: #a6aaaf;
+  --rivet-accent: #c3b6df;
+  --rivet-edge: #ffffff14;
+  --rivet-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
 }

@@ -1,0 +1,38 @@
+{
+  "schema_version": "rivet.reconstruction-manifest.v1",
+  "packages": [
+    {
+      "id": "official-public-schedule-d-unseen-v4",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "source_authority": "historical_reference_only",
+      "sources": [
+        {
+          "id": "official-public-schedule-d-original",
+          "name": "Domain-blind selected official public electrical schedule D",
+          "path": "../../.data/real-document-corpus/sealed-fresh-schedules-v4-20261019/source-d-original.pdf",
+          "role": "customer_one_line",
+          "source_authority": "historical_reference_only",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "url": "https://hallandalebeachfl.gov/DocumentCenter/View/35764/EXHIBIT-A---BID-PLANS",
+          "pages": [
+            27
+          ]
+        }
+      ],
+      "answer_key": "key-private.qa-complete-source-scope-20261019.json",
+      "approved_reconstruction_eligible": false,
+      "limits": [
+        "Private source-only labels independently cross-reviewed before prediction; not engineer verified.",
+        "Extraction-only official public reference; never configure or generate.",
+        "Source is the complete unchanged original physical page; no expected bbox, crop, key, row hint or table locator is passed to parser.",
+        "11 bare branch breaker AMPS facts across 11 logical breaker rows. No explicit branch frame/interrupting denominator.",
+        "12 literal circuit positions include four rated SPARE breakers and one multipole continuation; no empty or prepared positions.",
+        "Header short-circuit ratings are not promoted to branch interrupting values; bare AMPS is not typed as trip.",
+        "Main/header, totals, connected-load KVA, pole counts and other equipment are outside scalar score.",
+        "No compatibility selection, provider calls, backend parser/evaluator, source locator or prediction used in preparation.",
+        "Assistant transcription only, not engineer-certified or approved reconstruction."
+      ]
+    }
+  ]
+}

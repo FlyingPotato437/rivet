@@ -1,0 +1,147 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "kansas-control-revision-development-v2",
+  "split": "development",
+  "reference_version": 2,
+  "review": {
+    "reviewer": "Codex independent validation agent manual visual inspection",
+    "reviewed_at": "2026-10-18T23:06:44.340119+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Independently inspected original physical pages194and252 upright at3x before opening model predictions. This is a complete reference of four grouped engineering/annotation differences within the compared one-line body. Title-block, author/date/status/drawing-number changes and scan alignment noise are outside this bounded score. Development data, not unseen validation. Requires electrical engineer confirmation."
+  },
+  "source_hashes": {
+    "kansas-c1-may15": "113c0b0fd819530695b42c5e14ff07a21717c5048068b87c4d08171d6e387c45",
+    "kansas-c1-may30": "b973a8c75aa75d826269574811bebee6f82e01c120c5d55a72779f330e9fcf94"
+  },
+  "parent_original": {
+    "sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+    "physical_pages": [
+      194,
+      252
+    ],
+    "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf"
+  },
+  "coordinate_system": "Original unrotated visible page, normalized[0,1]; after_bbox uses target original252, before_bbox uses baseline original194. No transformed model coordinates.",
+  "labels": {
+    "comments": null,
+    "devices": null,
+    "bom_rows": null,
+    "issues": null,
+    "revision_checks": {
+      "scope": "complete",
+      "source_ids": [
+        "kansas-c1-may30"
+      ],
+      "items": [
+        {
+          "id": "section4-transition-connection-added",
+          "kind": "drawing_connection_added",
+          "source_id": "kansas-c1-may30",
+          "page": 1,
+          "before": false,
+          "after": true,
+          "after_bbox": [
+            0.408497,
+            0.179293,
+            0.754357,
+            0.330808
+          ],
+          "source_label": "Transition to Existing MCC",
+          "description": "Section4 now contains a vertical connected branch, transition symbol and the printed Transition to Existing MCC label; these were absent from the earlier depiction.",
+          "engineering_claim": "Observed connection depiction only, not verified internal connectivity, construction or release."
+        },
+        {
+          "id": "section2-interior-rating-label-added",
+          "kind": "drawing_text_changed",
+          "source_id": "kansas-c1-may30",
+          "page": 1,
+          "after": "2500A INTERIOR",
+          "after_bbox": [
+            0.471133,
+            0.558081,
+            0.490196,
+            0.619108
+          ],
+          "source_label": "2500A INTERIOR",
+          "section": "SECTION 2",
+          "description": "The text2500A INTERIOR appears beside the section2 interior conductor. No corresponding text appears in the earlier drawing.",
+          "engineering_claim": "A rating label was added; this does not establish that the physical equipment rating changed."
+        },
+        {
+          "id": "section3-interior-rating-label-added",
+          "kind": "drawing_text_changed",
+          "source_id": "kansas-c1-may30",
+          "page": 1,
+          "after": "2500A INTERIOR",
+          "after_bbox": [
+            0.471133,
+            0.385522,
+            0.490196,
+            0.448653
+          ],
+          "source_label": "2500A INTERIOR",
+          "section": "SECTION 3",
+          "description": "The text2500A INTERIOR appears beside the section3 interior conductor. No corresponding text appears in the earlier drawing.",
+          "engineering_claim": "A rating label was added; this does not establish that the physical equipment rating changed."
+        },
+        {
+          "id": "right-future-bus-extension-depiction-removed",
+          "kind": "drawing_connection_removed",
+          "source_id": "kansas-c1-may30",
+          "page": 1,
+          "before": true,
+          "after": false,
+          "before_source_id": "kansas-c1-may15",
+          "before_page": 1,
+          "before_bbox": [
+            0.183007,
+            0.805976,
+            0.275599,
+            0.877525
+          ],
+          "source_label": "FUTURE BUS EXTN 19.5 in",
+          "description": "The right-hand future-bus-extension end-stub depiction and its printed FUTURE BUS EXTN19.5in label are present in the earlier drawing and absent from the later drawing. The left future extension remains.",
+          "engineering_claim": "Removed depiction only; no assertion that installed buswork was removed."
+        }
+      ],
+      "scope_note": "Four grouped engineering/annotation differences in the reviewed one-line drawing body only. Metadata/stamp/frame changes excluded. Two identical labels are separate changes at independently labelled locations."
+    }
+  },
+  "unchanged_controls": [
+    {
+      "property": "circuit7trip_current",
+      "before": "500A",
+      "after": "500A",
+      "note": "Visually printed500A in both dated issues; a500\u2192600A prediction is false."
+    },
+    {
+      "property": "all_other_MJ_trip_labels",
+      "before": "600A",
+      "after": "600A",
+      "note": "Circuit1\u20136and8\u201310 remain600A in both issues; presence versus prepared-space outlines is unchanged."
+    }
+  ],
+  "source_identity_audit": {
+    "supersedes_only_reference_assertion": "Old partial key said Same drawingO29528680-009-01; that claim is false. Old key/file is retained unchanged for audit.",
+    "baseline": {
+      "source_id": "kansas-c1-may15",
+      "parent_physical_page": 194,
+      "printed_drawing_number": "O29528680-01",
+      "printed_sheet": "1 OF 2",
+      "printed_date": "May15,2012",
+      "printed_status": "QUOTE",
+      "printed_equipment": "CONTROL CENTER NO1 SWB"
+    },
+    "target": {
+      "source_id": "kansas-c1-may30",
+      "parent_physical_page": 252,
+      "printed_drawing_number": "O29528680-009-01",
+      "printed_sheet": "1 OF 2",
+      "printed_date": "May30,2012",
+      "printed_status": "APPROVAL",
+      "printed_equipment": "CONTROL CENTER NO1 SWB"
+    },
+    "matching_basis": "Same printed equipment designation, one-line title, sheet1of2 and matching circuit/section layout across dated issues; drawing number was extended/renumbered. No invented revision letter or causal returned-comment-to-release cycle."
+  }
+}

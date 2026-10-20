@@ -235,12 +235,25 @@ def _role(document, text):
     if explicit:
         role = ROLE_ALIASES.get(str(explicit).lower(), str(explicit).lower())
         return role if role in ROLES else "unknown", "metadata"
+    # A returned engineering change schedule can arrive as an ordinary email
+    # attachment with an arbitrary filename. Its literal change rows identify
+    # requested work; they are never treated as observed drawing facts or an
+    # approval. Unsupported instructions still enter the correction checker,
+    # where they block preparation rather than silently disappearing.
+    if re.search(
+        r"(?im)^\s*CHANGE\s+[A-Z0-9_-]{1,32}\s*:\s*(?:move|relocate|resize|rewire|reroute|add|remove|delete|rotate)\b",
+        text,
+    ):
+        return "markup", "change_schedule"
     name = str(_get(document, "name", "")).lower().replace("_", " ").replace("-", " ")
     choices = [
         ("accepted_exception", r"accepted\s+exceptions?"),
         ("supplier_po", r"supplier\s+(?:purchase\s+order|po)"),
         ("purchase_order", r"purchase\s+order|(?:^|\s)po(?:\s|\.)"),
-        ("markup", r"markups?|review\s+comments?"),
+        (
+            "markup",
+            r"markups?|redlines?|review\s+comments?|returned\s+changes?|change\s+schedule",
+        ),
         ("nameplate", r"nameplates?"),
         ("bom", r"(?:^|\s)bom(?:\s|\.)|bill\s+of\s+materials"),
         ("specification", r"specifications?|(?:^|\s)spec(?:\s|\.)"),
@@ -516,7 +529,19 @@ def parse_pdf_annotations(path: str | Path) -> list[dict]:
                 viewport = PDFViewport(page)
             except (TypeError, ValueError, AttributeError):
                 viewport = None
-            for index, annotation in enumerate(page.annots or [], 1):
+            try:
+                annotations = page.annots or []
+            except (
+                pdfplumber.utils.exceptions.MalformedPDFException,
+                RecursionError,
+                UnicodeError,
+            ):
+                # Some real Bluebeam packages have cyclic annotation references.
+                # Resolve annotations with the independent parser; never discard
+                # the entire returned package because a popup points to itself.
+                output.extend(_mupdf_annotations(path, page_number))
+                continue
+            for index, annotation in enumerate(annotations, 1):
                 data = annotation.get("data", {})
                 subtype = str(data.get("Subtype", "Annotation")).strip("/'")
                 # Form controls and popup display containers are not separate
@@ -556,3 +581,45 @@ def parse_pdf_annotations(path: str | Path) -> list[dict]:
                     }
                 )
     return output
+
+
+def _mupdf_annotations(path, page_number):
+    import pymupdf
+
+    result = []
+    with pymupdf.open(path) as pdf:
+        page = pdf[page_number - 1]
+        for index, a in enumerate(page.annots() or [], 1):
+            if a.type[1] in {"Link", "Widget", "Popup"}:
+                continue
+            text = a.info.get("content", "").strip()
+            rect = a.rect * page.rotation_matrix
+            bbox = [
+                max(0, min(1, value))
+                for value in (
+                    rect.x0 / page.rect.width,
+                    rect.y0 / page.rect.height,
+                    rect.x1 / page.rect.width,
+                    rect.y1 / page.rect.height,
+                )
+            ]
+            warning = ""
+            if bbox[0] >= bbox[2] or bbox[1] >= bbox[3]:
+                bbox, warning = (
+                    [0, 0, 1, 1],
+                    "Annotation location is outside the visible page. Review the original.",
+                )
+            result.append(
+                {
+                    "id": a.info.get("id") or f"page-{page_number}-annotation-{index}",
+                    "text": text,
+                    "page": page_number,
+                    "bbox": bbox,
+                    "kind": a.type[1],
+                    "author": a.info.get("title", ""),
+                    "authored_at": a.info.get("modDate", ""),
+                    "needs_review": not bool(text),
+                    "geometry_warning": warning,
+                }
+            )
+    return result

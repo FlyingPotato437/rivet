@@ -11,6 +11,8 @@
   "scripts": {
     "dev": "vite --config apps/web/vite.config.ts",
     "build": "npm run build -w apps/web",
+    "build:outlook": "npm run build:outlook -w apps/web",
+    "build:workspace": "npm run build:workspace -w apps/web",
     "typecheck": "npm run typecheck -w apps/web",
     "start": "python3 scripts/dev.py"
   },

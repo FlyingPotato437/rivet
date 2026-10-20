@@ -7,15 +7,23 @@ from fastapi import FastAPI, Request, UploadFile, File, Form, Header, HTTPExcept
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-from backend.config import allowed_origins, allowed_hosts, validate_configuration, production, workspace_enabled
+from backend.config import (
+    allowed_origins,
+    allowed_hosts,
+    validate_configuration,
+    production,
+    workspace_enabled,
+)
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from backend.storage.db import Session, BLOBS, ROOT
 from backend.identity import current_actor, auth_mode
 from backend.storage.models import *
+from backend.equipment.evidence import models as equipment_evidence_models  # noqa: F401 - register append-only evidence tables
 from backend.domain.schemas import *
 from backend.domain.service import *
 from backend.ingestion.parser import persist_blob, ALLOWED, map_document
+from backend.ingestion.limits import upload_max_bytes, validate_pdf_upload, DWG_REQUEST
 from backend.domain.exports import customer_snapshot, xlsx, pdf, html
 from backend.agents.gateway import configured
 from backend.domain.coordination import (
@@ -40,17 +48,36 @@ async def lifespan(app):
 
 
 app = FastAPI(
-    title="Rivet API", version="0.1.0", lifespan=lifespan,
+    title="Rivet API",
+    version="0.1.0",
+    lifespan=lifespan,
     docs_url=None if production() else "/docs",
     redoc_url=None if production() else "/redoc",
     openapi_url=None if production() else "/openapi.json",
 )
 from backend.pilot import router as pilot_router
+
 app.include_router(pilot_router)
+from backend.pilot_packages import (
+    PilotPackageBodyLimitMiddleware,
+    router as pilot_packages_router,
+)
+app.include_router(pilot_packages_router)
+from backend.project_flow.activity import router as order_activity_router
+app.include_router(order_activity_router)
+from backend.notifications.api import router as approval_cards_router
+app.include_router(approval_cards_router)
+from backend.mailbox.notifications import router as graph_notifications_router
+app.include_router(graph_notifications_router)
+from backend.workflow_actions.publication import router as publication_router
+app.include_router(publication_router)
+from backend.outlook_session import router as outlook_session_router
+app.include_router(outlook_session_router)
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=allowed_hosts(),
 )
+app.add_middleware(PilotPackageBodyLimitMiddleware)
 
 
 @app.middleware("http")
@@ -62,8 +89,13 @@ async def workspace_boundary(request, call_next):
     mode = auth_mode()
     local_only = os.getenv("RIVET_LOCAL_ONLY", "true") == "true"
     try:
-        if not workspace_enabled() and request.url.path not in {"/api/health", "/api/pilot-requests"}:
-            raise HTTPException(403, "Workspace access is not open. Request a pilot at /pilot.")
+        if not workspace_enabled() and request.url.path not in {
+            "/api/health",
+            "/api/pilot-requests",
+        }:
+            raise HTTPException(
+                403, "Workspace access is not open. Request a pilot at /pilot."
+            )
         if mode not in {"local", "clerk"} or (not local_only and mode != "clerk"):
             raise HTTPException(
                 503, "Shared access requires configured authentication."
@@ -75,9 +107,10 @@ async def workspace_boundary(request, call_next):
         ):
             raise HTTPException(403, "Local access only.")
         path = request.url.path
-        webhook = path == "/api/webhooks/resend"
+        webhook = path in {"/api/webhooks/resend", "/api/webhooks/microsoft"} or path.startswith("/api/actions/outlook/")
         public = (
-            path in {"/api/health", "/api/auth/config", "/api/pilot-requests"}
+            path in {"/api/health", "/api/auth/config", "/api/pilot-requests", "/api/outlook/session/resume"}
+            or (path == "/api/outlook/session" and request.method == "DELETE")
             or path.startswith("/api/shared/")
             or webhook
         )
@@ -118,8 +151,19 @@ app.add_middleware(
     allow_origins=allowed_origins(),
     allow_credentials=False,  # Clerk bearer tokens; no cross-site API cookies.
     allow_methods=["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "X-Rivet-Client", "Idempotency-Key", "Range"],
-    expose_headers=["Content-Disposition", "Content-Length", "Content-Range", "Accept-Ranges"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "X-Rivet-Client",
+        "Idempotency-Key",
+        "Range",
+    ],
+    expose_headers=[
+        "Content-Disposition",
+        "Content-Length",
+        "Content-Range",
+        "Accept-Ranges",
+    ],
 )
 
 
@@ -633,10 +677,13 @@ def revert(id: str, body: Revert, idempotency_key: str = Header()):
 
 def add_document(s, p, name, kind, data, metadata=None):
     ext = Path(name).suffix.lower()
+    if ext == ".dwg":
+        fail(DWG_REQUEST)
     if ext not in ALLOWED:
         fail("Upload a PDF, CSV, XLSX, TXT, or EML file.")
-    if not data or len(data) > 20 * 1024 * 1024:
-        fail("Upload a nonempty file no larger than 20 MB.")
+    limit = upload_max_bytes(name)
+    if not data or len(data) > limit:
+        fail(f"Upload a nonempty file no larger than {limit // (1024 * 1024)} MB.")
     if ext == ".pdf" and not data.startswith(b"%PDF"):
         fail("This file is not a valid PDF.")
     # Serialize file identity with other uploads to this project. Retry keys
@@ -646,8 +693,13 @@ def add_document(s, p, name, kind, data, metadata=None):
     metadata = metadata or {}
     sha = hashlib.sha256(data).hexdigest()
     parser_fields = {
-        "headers", "rows", "suggested_mapping", "parser_version", "email",
-        "confirmed_mapping", "purpose",
+        "headers",
+        "rows",
+        "suggested_mapping",
+        "parser_version",
+        "email",
+        "confirmed_mapping",
+        "purpose",
     }
     for existing in s.scalars(
         scoped(Document).where(
@@ -663,18 +715,10 @@ def add_document(s, p, name, kind, data, metadata=None):
         if intake == metadata:
             return {**document_dict(existing), "duplicate": True}
     if ext == ".pdf":
-        from io import BytesIO
-        import pdfplumber
-
         try:
-            with pdfplumber.open(BytesIO(data)) as pdf:
-                page_count = len(pdf.pages)
-        except Exception:
-            fail("This PDF cannot be opened. Export an unlocked PDF and try again.")
-        if page_count > 150:
-            fail(
-                "PDFs are limited to 150 pages. Split this package into clearly named sections before importing."
-            )
+            validate_pdf_upload(data)
+        except ValueError as exc:
+            fail(str(exc))
     blob, sha = persist_blob(data, ext)
     d = Document(
         project_id=p.id,
@@ -727,7 +771,7 @@ async def upload(
     revision_label: str = Form("", max_length=40),
     idempotency_key: str = Header(),
 ):
-    data = await file.read(20 * 1024 * 1024 + 1)
+    data = await file.read(upload_max_bytes(file.filename or "document") + 1)
     with Session.begin() as s:
         p = get(s, Project, id, True)
         return idempotent(
@@ -1079,12 +1123,23 @@ from backend.orders.api import router as orders_router
 
 app.include_router(orders_router)
 
+from backend.equipment.api import router as equipment_router
+
+app.include_router(equipment_router)
+from backend.engineering.api import router as engineering_router
+
+app.include_router(engineering_router)
+from backend.equipment.profile_api import router as equipment_profile_router
+
+app.include_router(equipment_profile_router)
+
 from backend.records.api import router as records_router
 
 app.include_router(records_router)
 
 from backend.records.intake import router as intake_router
 from backend.records.delivery import router as delivery_router
+
 app.include_router(intake_router)
 app.include_router(delivery_router)
 
@@ -1097,3 +1152,33 @@ app.include_router(record_inbox_router)
 from backend.email_api import router as email_router
 
 app.include_router(email_router)
+
+from backend.mailbox.api import router as mailbox_router
+from backend.company_context.api import router as company_context_router
+from backend.reply_assistant.api import router as reply_assistant_router
+
+app.include_router(mailbox_router)
+app.include_router(company_context_router)
+app.include_router(reply_assistant_router)
+
+from backend.connected_context.api import router as connected_context_router
+from backend.autopilot.api import router as autopilot_router
+
+app.include_router(connected_context_router)
+app.include_router(autopilot_router)
+
+from backend.lifecycle.api import router as lifecycle_router
+
+app.include_router(lifecycle_router)
+
+from backend.workflow_actions.api import router as workflow_actions_router
+
+app.include_router(workflow_actions_router)
+
+from backend.routine_status.api import router as routine_status_router
+
+app.include_router(routine_status_router)
+
+from backend.project_flow.api import router as project_flow_router
+
+app.include_router(project_flow_router)

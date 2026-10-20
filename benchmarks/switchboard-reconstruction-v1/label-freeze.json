@@ -1,0 +1,10 @@
+{
+  "schema_version": "rivet.reconstruction-label-freeze.v1",
+  "created_at": "2026-10-19T06:56:23.738152+00:00",
+  "predictions_opened": false,
+  "files": {
+    "manifest.json": "bd69634766aa85d72aa85d3b859c5b6347dcf7ee931bb10076f8e0d7435e6a0b",
+    "keys/tctc-anderson-requirements.json": "43df145937d1fce33e0f44a63ed070175546ecb991112f72b5abb392ca8e55ca"
+  },
+  "independence": "Source-only assistant labels, not engineering-approved gold. Development sources may be inspected by implementers; this key is not an input to requirements/configuration/generation."
+}

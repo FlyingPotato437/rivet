@@ -1,12 +1,22 @@
 # Rivet
 
-Rivet builds a comment and change record for custom equipment orders. The PM reviews extracted comments, links the correct drawing location, records the team's response, and preserves who requested or approved each change. Customer and production teams can receive the same reviewed record.
+Rivet handles the customer drawing-approval loop for custom equipment manufacturers. It prepares source-linked replies in Outlook and keeps reviewed customer preferences available across jobs and engineers. The workspace holds original markups, revision history, responses and human decisions.
+
+The workspace now starts with **Projects**: editable names, automatic email grouping, preparation progress, confirmed sent replies and waiting-for-customer status. Rivet works in the background; the PM reviews and sends in Outlook. See [the project workflow and live verification](docs/project-workflow.md).
+
+The [current positioning and roadmap](docs/positioning-and-roadmap.md) focuses on customer approvals and customer history. The local **Customer brief** provides kickoff preferences, a pre-send passage check and search across that customer's linked orders. The check assists review; it does not certify engineering compliance. See [customer-memory boundaries](docs/company-learning.md).
 
 The **Inbox** begins with a returned PDF or forwarded/saved email. Rivet matches explicit job and revision identifiers, asks for confirmation when uncertain, and opens a spreadsheet-style **Comment log** with evidence-linked revision checks. Click a comment to review the source and response together. Export a response letter, Excel log, drafting list, or email brief. Existing durable agents investigate references and prepare cited internal changes for human review. Engineering and commercial decisions remain with people.
 
 The public production website is **marketing-only**. `/pilot` embeds the founder’s Cal.com calendar. Private app code and authentication are excluded from the public build, and production API workspace access is closed by default. See [public pilot release](docs/public-pilot-release.md) and [inbox-first adoption](docs/inbox-first-adoption.md).
 
 [Current comment-record architecture and boundaries](docs/comment-record-architecture.md).
+
+The [Outlook pilot](docs/outlook-pilot-workflow.md) adds background Microsoft 365
+capture, a compact **Generate with Rivet** reply pane, opt-in internal work briefs,
+and approved company guidance. Open `/outlook/taskpane.html` locally to test the
+authenticated preview. A live mailbox requires the separately documented Microsoft
+tenant setup; the preview is not a connected inbox.
 
 ## Run locally
 
@@ -91,7 +101,7 @@ For a repeatable connected-workflow walkthrough, use [the fictional connected re
 
 The server-side connection uses `OPENAI_API_KEY`, `OPENAI_MODEL=gpt-6-luna` for questions, and `RIVET_AGENT_MODEL=gpt-6-luna` for durable tasks. Restart the API and worker after changing them. Keys never belong in frontend code. Comment extraction, manual review, source inspection, text comparisons, and exports work without a model key. Without a key, tasks use explicitly labelled deterministic reference rules. Questions and model tasks send bounded order context with `store: false`; no additional key is required.
 
-The main workspace is a drawing review workbench with a collapsible comment queue and one Record/Rivet inspector. Runs, steps, evidence-linked proposals, per-order instructions, and private question history persist in PostgreSQL. The Work inbox collects actionable records across orders. Automatic preparation is opt-in per order, and `RIVET_AGENT_AUTORUN=false` disables the scheduler globally. Agents prepare internal work; people review changes, record engineering responses, approve records, and send notices. Apply migrations through `0008` before starting this version.
+The main workspace is a drawing review workbench with a collapsible comment queue and one Record/Rivet inspector. Runs, steps, evidence-linked proposals, per-order instructions, and private question history persist in PostgreSQL. The Work inbox collects actionable records across orders. New orders enable automatic draft preparation; existing orders retain their saved setting, and `RIVET_AGENT_AUTORUN=false` disables the scheduler globally. Agents prepare internal work; people review changes, record engineering responses, approve records, and send notices. Apply migrations through `0008` before starting this version.
 
 The previous engineering workflow remains in the code and API for later stages. The current record workflow adds EML import, editable comments, source-linked text comparisons, frozen approvals, local read-only links, recipient lists, notice drafts, and Excel/PDF logs. Mailbox synchronization beyond Resend, Outlook drafts, scan/vision interpretation, CAD attribute reads/edits, ERP writes, pricing-rule integration, reviewer profiles, and learned checks are extension stages. They are not shown as connected. Clerk sign-in, organization isolation, authenticated downloads, Resend intake, and explicit notice sending are implemented. Hosting, a production Clerk instance, and receiving/sending domain configuration remain deployment steps. See [accounts and email setup](docs/accounts-email-setup.md).
 

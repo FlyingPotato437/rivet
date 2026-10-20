@@ -2,6 +2,7 @@ import type { OrderDocument, OrderSource } from "./order-types";
 export type RecordComment = {
   id: string;
   number: string;
+  log_reference?: string;
   revision: string;
   text: string;
   original_text: string;
@@ -27,6 +28,8 @@ export type RecordComment = {
   created_at: string;
   updated_at: string;
   origin: string;
+  transcription_reviewed?: boolean;
+  transcription_example_id?: string;
 };
 export type RecordChange = {
   id: string;
@@ -65,6 +68,7 @@ export type RecordApproval = {
   version: number;
 };
 export type RecordView = {
+  email_context?: RecordComment[];
   revision_review?: RevisionReview;
   coordination?: RecordCoordinationView;
   connections: {
@@ -118,6 +122,7 @@ export type RecordView = {
     origin?: "ai" | "automatic";
     reviewed_by?: string;
     edited?: boolean;
+    source_ids?: string[];
   }[];
   approvals: RecordApproval[];
   shares: {

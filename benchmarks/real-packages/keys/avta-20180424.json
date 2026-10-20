@@ -1,0 +1,77 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "avta-20180424",
+  "review": {
+    "reviewer": "Codex assistant visual inspection",
+    "reviewed_at": "2026-10-18T22:19:29.104313+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Preliminary reference labels transcribed from rendered originals independently of Rivet output; requires manufacturer/engineer second review.",
+    "notes": "Physical page 79 only; printed footer 120 of 239. Not a complete 198-page board-packet label. Reviewer surname ambiguous; excluded from actionable comments."
+  },
+  "source_hashes": {
+    "avta-20180424": "a2f248fdef015e5dffef27bf24ce93cf35717c1cba8e6d45b984360b98b14086"
+  },
+  "labels": {
+    "comments": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "avta-20180424",
+          "page": 79
+        }
+      ],
+      "items": [
+        {
+          "id": "avta-20180424-p79-1",
+          "source_id": "avta-20180424",
+          "page": 79,
+          "text": "1.) THE INCOMING SERVICE TO BE ON THE RIGHT SIDE OF THE LINEUP, NOT THE LEFT SIDE.",
+          "kind": "handwritten",
+          "actionable": true,
+          "bbox": [
+            0.08,
+            0.39,
+            0.57,
+            0.47
+          ],
+          "accepted_texts": [
+            "THE INCOMING SERVICE TO BE ON THE RIGHT SIDE OF THE LINEUP, NOT THE LEFT SIDE."
+          ]
+        },
+        {
+          "id": "avta-20180424-p79-2",
+          "source_id": "avta-20180424",
+          "page": 79,
+          "text": "2.) SWITCHGEAR TO MEET THE SEISMIC REQUIREMENTS PER CALIF. CODES, AND SPECIFICATION DOCUMENTS.",
+          "kind": "handwritten",
+          "actionable": true,
+          "bbox": [
+            0.08,
+            0.47,
+            0.61,
+            0.57
+          ],
+          "accepted_texts": [
+            "SWITCHGEAR TO MEET THE SEISMIC REQUIREMENTS PER CALIF. CODES, AND SPECIFICATION DOCUMENTS."
+          ]
+        }
+      ]
+    },
+    "devices": null,
+    "bom_rows": null,
+    "issues": null,
+    "revision_checks": null
+  },
+  "reference_corrections": [
+    {
+      "reviewed_at": "2026-10-18T22:37:21.366549+00:00",
+      "method": "second_assistant_visual_review_of_original_render",
+      "reference_id": "avta-20180424-p79-1",
+      "before": "THE INCOMING SERVICES",
+      "after": "THE INCOMING SERVICE",
+      "reason": "Enlarged original handwriting clearly reads SERVICE singular. Reference correction, not a change to extracted text. LINEUP remains one printed word; model LINE UP still fails the strict transcription metric.",
+      "engineering_reviewed": false
+    }
+  ]
+}

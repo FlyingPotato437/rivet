@@ -2379,7 +2379,7 @@ form > .form-row {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 1000;
   background: #030205c7;
   backdrop-filter: blur(7px);
   display: flex;

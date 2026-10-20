@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from backend.domain.service import fail, get, scoped
 from backend.identity import auth_mode, current_actor
+from backend.ingestion.markup_classification import annotation_actionability
 from backend.orders.extraction import COMMENT_RE, extract_order_document
 from backend.storage.models import (
     Document,
@@ -100,6 +101,9 @@ def ensure(s, order):
                 "notices": [],
                 "approvals": [],
                 "ingested": [],
+                # Preparation is part of intake for new orders. Existing records
+                # retain their prior setting; this does not enable retroactive work.
+                "agent_settings": {"enabled": True},
             },
         )
         s.add(record)
@@ -109,7 +113,7 @@ def ensure(s, order):
         s.scalars(
             scoped(Document)
             .where(Document.project_id == order.project_id)
-            .order_by(Document.created_at)
+            .order_by(Document.created_at, Document.id)
         )
     )
     spans = list(
@@ -117,13 +121,15 @@ def ensure(s, order):
             scoped(Span)
             .join(Document)
             .where(Document.project_id == order.project_id)
-            .order_by(Span.created_at)
+            .order_by(Span.created_at, Span.id)
         )
     )
     added = False
     for doc in documents:
         # Include original metadata in the identity: reclassifying a source can reveal comments.
         signature = f"{doc.id}:{doc.meta.get('order_role', doc.kind)}:{doc.meta.get('revision_label', '')}"
+        if doc.meta.get("vision", {}).get("pages"):
+            signature += ":vision:" + str(len(doc.meta["vision"]["pages"]))
         if signature in data["ingested"] or doc.state in {
             "queued",
             "failed",
@@ -132,6 +138,20 @@ def ensure(s, order):
         }:
             continue
         docspans = [sp for sp in spans if sp.document_id == doc.id]
+
+        def is_candidate(sp):
+            if sp.location.get("actionable") is False:
+                return False
+            if (
+                sp.location.get("annotation_id")
+                and sp.location.get("extraction_method") != "vision"
+            ):
+                actionable, _ = annotation_actionability(
+                    {"text": sp.text, "kind": sp.location.get("annotation_type", "")}
+                )
+                return actionable is not False
+            return True
+
         annotated_pages = {
             sp.location.get("page")
             for sp in docspans
@@ -142,15 +162,29 @@ def ensure(s, order):
         review_spans = [
             sp
             for sp in docspans
-            if sp.location.get("page") not in annotated_pages
-            or sp.location.get("annotation_id")
+            if is_candidate(sp)
+            and (
+                sp.location.get("page") not in annotated_pages
+                or sp.location.get("annotation_id")
+            )
         ]
         extracted = extract_order_document(doc, review_spans)
         candidates = extracted["comments"]
-        # All PDF annotation text is a review record, irrespective of equipment vocabulary.
+        from .email_comment_context import attachment_cover_reason
+
+        context_reason = attachment_cover_reason(
+            "\n".join(sp.text for sp in docspans if sp.location.get("email")),
+            has_attachments=bool(doc.meta.get("attachment_document_ids")),
+        )
+        # All native marks remain source evidence; administrative metadata does
+        # not become a technical response task. Ambiguous marks stay reviewable.
         used = {sid for c in candidates for sid in c["source_ids"]}
         for sp in docspans:
-            if sp.location.get("annotation_id") and sp.id not in used:
+            if (
+                sp.location.get("annotation_id")
+                and sp.id not in used
+                and is_candidate(sp)
+            ):
                 candidates.append(
                     {
                         "number": str(len(candidates) + 1),
@@ -160,7 +194,7 @@ def ensure(s, order):
                         "location": sp.location,
                     }
                 )
-            elif sp.location.get("email") and not candidates:
+            elif sp.location.get("email") and not candidates and not context_reason:
                 # Never invent splits for an unstructured email; retain one verifiable record.
                 candidates.append(
                     {
@@ -193,6 +227,16 @@ def ensure(s, order):
                 flags = [
                     f"Comment references page {refs[0]}; its source is on page {location.get('page', 'not stated')}. Confirm the target drawing."
                 ]
+            if location.get("extraction_method") == "vision":
+                flags.insert(
+                    0,
+                    "AI transcription; compare with the marked area on the original page.",
+                )
+                if location.get("needs_transcription_review"):
+                    flags.insert(
+                        0,
+                        "Rivet couldn’t read this confidently. Confirm the original marked area.",
+                    )
             if not source.text:
                 flags.insert(0, "Graphical markup: human transcription required.")
             if not author:
@@ -218,11 +262,16 @@ def ensure(s, order):
                     "response": "",
                     "responder": "",
                     "reviewed": False,
-                    "confidence": "Needs review",
+                    "confidence": "AI transcription · "
+                    + location.get("transcription_confidence", "unknown")
+                    if location.get("extraction_method") == "vision"
+                    else "Needs review",
                     "flags": flags,
                     "created_at": stamp(),
                     "updated_at": stamp(),
-                    "origin": "email"
+                    "origin": "ai_transcription"
+                    if location.get("extraction_method") == "vision"
+                    else "email"
                     if metadata
                     else "annotation"
                     if location.get("annotation_id")
@@ -284,7 +333,11 @@ def ensure(s, order):
             "intake",
             "Imported " + doc.name,
             "Document reader",
-            after={"document_id": doc.id, "comments": len(candidates)},
+            after={
+                "document_id": doc.id,
+                "comments": len(candidates),
+                **({"context_only_reason": context_reason} if context_reason else {}),
+            },
             actor_kind="automatic",
         )
         added = True
@@ -339,12 +392,15 @@ def source_data(s, order):
         s.scalars(
             scoped(Document)
             .where(Document.project_id == order.project_id)
-            .order_by(Document.created_at)
+            .order_by(Document.created_at, Document.id)
         )
     )
     spans = list(
         s.scalars(
-            scoped(Span).join(Document).where(Document.project_id == order.project_id)
+            scoped(Span)
+            .join(Document)
+            .where(Document.project_id == order.project_id)
+            .order_by(Span.created_at, Span.id)
         )
     )
     by_document = {}
@@ -390,9 +446,24 @@ def source_data(s, order):
             "role": d.meta.get("order_role", d.kind),
             "revision_label": d.meta.get("revision_label", ""),
             "coverage": coverage,
+            "vision": d.meta.get("vision", {}),
             "warnings": warnings,
             "email": d.meta.get("email"),
+            # Only original importer links within this order, never name matching.
+            "attachment_document_ids": [
+                attachment.id
+                for attachment in docs
+                if attachment.id != d.id
+                and (
+                    attachment.id in d.meta.get("attachment_document_ids", [])
+                    or attachment.meta.get("email_document_id") == d.id
+                )
+            ]
+            if d.meta.get("email")
+            else [],
             "public_source": d.meta.get("public_source"),
+            "connected_source": d.meta.get("connected_source"),
+            "active": d.meta.get("active", True),
             "created_at": d.created_at.isoformat(),
         }
 
@@ -470,8 +541,12 @@ def view(s, order, record=None):
             "hosted_sharing": not email["local_only"],
         },
     }
+    from .presentation import comment_presentation
     from .revision_review import review_summary, workflow_status
 
+    result["comments"], result["email_context"] = comment_presentation(
+        result["comments"], docs
+    )
     for comment in result["comments"]:
         comment["workflow_status"] = workflow_status(comment)
     result["revision_review"] = review_summary(result)
@@ -526,12 +601,71 @@ def change_record(s, order, record, body, kind, item_id=""):
             updated_at=stamp(),
             confidence="PM reviewed" if body.reviewed else "Needs review",
         )
+        if (
+            before
+            and before.get("text") != body.text
+            and (
+                before.get("origin") == "ai_transcription"
+                or before.get("transcription_reviewed")
+            )
+        ):
+            from .transcription_corrections import correction_example
+
+            doc = get(s, Document, before["document_id"])
+            try:
+                label = correction_example(
+                    before, doc, sources, body.text, body.actor, stamp()
+                )
+            except ValueError as exc:
+                fail(str(exc), 422)
+            examples = data.setdefault("transcription_examples", [])
+            if not any(row["id"] == label["id"] for row in examples):
+                examples.append(label)
+            item.update(
+                transcription_reviewed=True, transcription_example_id=label["id"]
+            )
         if body.workflow_status:
             set_workflow(item, body.workflow_status)
         event(
             data,
             kind,
             f"{'Updated' if before else 'Added'} comment {body.number}",
+            body.actor,
+            before,
+            deepcopy(item),
+            body.reason,
+            item["id"],
+        )
+    elif kind == "transcription":
+        from .transcription_corrections import correction_example
+
+        item = next((c for c in data["comments"] if c["id"] == item_id), None)
+        if not item:
+            fail("Comment not found.", 404)
+        document = get(s, Document, item.get("document_id", ""))
+        if document.project_id != order.project_id:
+            fail("Choose a comment from this order.", 422)
+        before = deepcopy(item)
+        try:
+            label = correction_example(
+                item, document, source_data(s, order)[1], body.text, body.actor, stamp()
+            )
+        except ValueError as exc:
+            fail(str(exc), 422)
+        examples = data.setdefault("transcription_examples", [])
+        if not any(row["id"] == label["id"] for row in examples):
+            examples.append(label)
+        item.update(
+            text=label["human_text"],
+            updated_at=label["labelled_at"],
+            transcription_reviewed=True,
+            transcription_example_id=label["id"],
+            confidence="PM corrected transcription",
+        )
+        event(
+            data,
+            "transcription",
+            "Corrected transcription for comment " + item["number"],
             body.actor,
             before,
             deepcopy(item),
@@ -675,6 +809,10 @@ def change_record(s, order, record, body, kind, item_id=""):
     record.version += 1
     order.updated_at = now()
     s.flush()
+    if kind == "comment":
+        from backend.company_context.customers import refresh_order_customer_candidates
+
+        refresh_order_customer_candidates(s, order)
     return view(s, order, record)
 
 

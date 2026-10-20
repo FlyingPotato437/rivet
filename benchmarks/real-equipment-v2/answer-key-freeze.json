@@ -1,0 +1,21 @@
+{
+  "schema_version": "rivet.answer-key-freeze.v1",
+  "scope": "Independent manually transcribed reference cells before model execution",
+  "keys": [
+    {
+      "path": "keys/heldout-kansas-control-schedule.json",
+      "sha256": "e088e8deca6b80e2751887671e00241b6f7dc7cf7b43558ac716b7f74e6eb1b0",
+      "rows": 11
+    },
+    {
+      "path": "keys/heldout-kansas-main-schedule.json",
+      "sha256": "9f8c69d5a52ed8e5d7be2036a6528c7be34724ada570b1385ba8a2a290e5bf2e",
+      "rows": 11
+    },
+    {
+      "path": "keys/heldout-scow-panel-bom.json",
+      "sha256": "84729d1dd56610b8611620861728356675efd7a7da077d46270ec453ce5634f7",
+      "rows": 12
+    }
+  ]
+}

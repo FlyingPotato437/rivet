@@ -1,0 +1,64 @@
+{
+  "schema_version": "rivet.equipment-validation-split.v1",
+  "frozen_at": "2026-10-18T22:53:20.248837+00:00",
+  "frozen_by": "independent validation agent before implementation evaluation",
+  "policy": "No answers/images from heldout scopes are shown to implementation agents; run once after readers/prompt freeze. Any result used to tune becomes development and requires a new test split.",
+  "development": [
+    {
+      "package": "kansas-docking-switchboard",
+      "parent_physical_pages": [
+        194,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        252
+      ],
+      "purpose": "H3 schedule/tag plus known Control Center May15/May30 revision pair; already inspected/tuned in prior work"
+    },
+    {
+      "package": "alachua-powell",
+      "scope": "prior visual comment corpus"
+    },
+    {
+      "package": "talco-4212",
+      "scope": "prior visual comment corpus"
+    },
+    {
+      "package": "avta-20180424",
+      "scope": "previously labelled physical page79"
+    }
+  ],
+  "unseen_test": [
+    {
+      "package": "heldout-kansas-main-schedule",
+      "source_sha256": "6019ea377b4cab0f9c8db6bae9898e195b1b95d1fab0aa89d96d4030efeaff33",
+      "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+      "parent_physical_page": 240,
+      "key": "keys/heldout-kansas-main-schedule.json",
+      "medium": "raster_scan",
+      "independence": "New page/device set, same original binder and manufacturer as development; not a new manufacturer"
+    },
+    {
+      "package": "heldout-kansas-control-schedule",
+      "source_sha256": "28a88474a3f8124635b77475a00d3a1d4622b1216320aa0f75cd5c3644219bde",
+      "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+      "parent_physical_page": 253,
+      "key": "keys/heldout-kansas-control-schedule.json",
+      "medium": "raster_scan",
+      "independence": "New page/device set, same original binder and manufacturer as development; not a new manufacturer"
+    },
+    {
+      "package": "heldout-scow-panel-bom",
+      "source_sha256": "a5e159848096a65d094075a8237d497e8654d7a364d07cbd9ca4d2e787bb25f9",
+      "parent_sha256": "a54dc91665d5ad1096632fe59b36a61298e993f0116dfa9271f247f0e8f2df10",
+      "parent_physical_page": 35,
+      "key": "keys/heldout-scow-panel-bom.json",
+      "medium": "outlined_vector_cad",
+      "independence": "Different project and drawing publisher; CAD text rendered as outlines, not a raster scan"
+    }
+  ],
+  "revision_pair_inventory_status": "See revision-pairs.json. Only the previously inspected Kansas same-drawing dated issue pair has confirmed visual change labels; no unseen pair claimed."
+}

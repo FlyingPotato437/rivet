@@ -1,0 +1,928 @@
+{
+  "schema_version": "rivet.region-references.v1",
+  "labelled_at": "2026-10-18T23:55:22.046458+00:00",
+  "labelled_by": "catalog evidence agent after catalog implementation freeze, acting as independent region annotator",
+  "input_policy": "Only original unchanged PDFs and diagnostic source renders opened. No equipment predictions, synthesis output or old answer keys inspected. Existing answer keys untouched.",
+  "reader_freeze": ".data/equipment-catalogs/freeze-before-region-labelling.json",
+  "coordinate_system": "Normalized original unrotated physical PDF page [x0,y0,x1,y1], top-left origin, x/y in [0,1].",
+  "scope": "Complete row-region references on three original public pages; some context regions and a partial control-symbol sample. Does not label every ink/text region, inventory all devices, or establish engineering correctness.",
+  "metric_policy": "Score row-region detection separately from per-cell value correctness and equipment recall. A covered row is not proof that every value was extracted. Partial device-symbol labels cannot support page-wide device recall.",
+  "sources": [
+    {
+      "id": "heldout-kansas-main-schedule",
+      "path": "../../.data/real-document-corpus/equipment-v2-heldout/heldout-kansas-main-schedule.pdf",
+      "sha256": "6019ea377b4cab0f9c8db6bae9898e195b1b95d1fab0aa89d96d4030efeaff33",
+      "page": 1,
+      "page_size_points": [
+        612.0,
+        792.0
+      ],
+      "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+      "parent_physical_page": 240,
+      "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+      "complete_scope": {
+        "equipment_schedule_rows": true,
+        "bom_rows": false,
+        "device_symbols": false,
+        "all_ink_regions": false
+      },
+      "row_count": 11
+    },
+    {
+      "id": "heldout-kansas-control-schedule",
+      "path": "../../.data/real-document-corpus/equipment-v2-heldout/heldout-kansas-control-schedule.pdf",
+      "sha256": "28a88474a3f8124635b77475a00d3a1d4622b1216320aa0f75cd5c3644219bde",
+      "page": 1,
+      "page_size_points": [
+        612.0,
+        792.0
+      ],
+      "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+      "parent_physical_page": 253,
+      "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+      "complete_scope": {
+        "equipment_schedule_rows": true,
+        "bom_rows": false,
+        "device_symbols": false,
+        "all_ink_regions": false
+      },
+      "row_count": 11
+    },
+    {
+      "id": "heldout-scow-panel-bom",
+      "path": "../../.data/real-document-corpus/equipment-v2-heldout/heldout-scow-panel-bom.pdf",
+      "sha256": "a5e159848096a65d094075a8237d497e8654d7a364d07cbd9ca4d2e787bb25f9",
+      "page": 1,
+      "page_size_points": [
+        2447.0,
+        1583.0
+      ],
+      "parent_sha256": "a54dc91665d5ad1096632fe59b36a61298e993f0116dfa9271f247f0e8f2df10",
+      "parent_physical_page": 35,
+      "url": "https://www.petersburgak.gov/sites/default/files/fileattachments/power_amp_light/page/18954/petersburg_borough_scow_bay_generator_2_switchgear_bid_package_8.22.25.pdf",
+      "complete_scope": {
+        "equipment_schedule_rows": false,
+        "bom_rows": true,
+        "device_symbols": false,
+        "all_ink_regions": false
+      },
+      "row_count": 12
+    }
+  ],
+  "regions": [
+    {
+      "id": "heldout-kansas-main-schedule:row-1",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.255719,
+        0.229798,
+        0.272876,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Main 1 populated schedule row",
+      "unreadable": false,
+      "row_index": 1,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-2",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.272876,
+        0.229798,
+        0.290033,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Main 1 accessory-only continuation row; not another breaker",
+      "unreadable": false,
+      "row_index": 2,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-3",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.290033,
+        0.229798,
+        0.30719,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Section 2 future busduct provision",
+      "unreadable": false,
+      "row_index": 3,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-4",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.30719,
+        0.229798,
+        0.324346,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Section 3 prepared I-Line space; not installed breaker",
+      "unreadable": false,
+      "row_index": 4,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-5",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.324346,
+        0.229798,
+        0.341503,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Section 4 switchboard SBDB-4 row crossed out by reviewer",
+      "unreadable": false,
+      "row_index": 5,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-6",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.341503,
+        0.229798,
+        0.35866,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Tie populated schedule row",
+      "unreadable": false,
+      "row_index": 6,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-7",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.35866,
+        0.229798,
+        0.375817,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Section 5 switchboard H3 populated row",
+      "unreadable": false,
+      "row_index": 7,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-8",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.375817,
+        0.229798,
+        0.392974,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Section 6 Control Center No.1 populated row",
+      "unreadable": false,
+      "row_index": 8,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-9",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.392974,
+        0.229798,
+        0.410131,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Section 7 future busduct provision",
+      "unreadable": false,
+      "row_index": 9,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-10",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.410131,
+        0.229798,
+        0.427288,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Section 8 Main 2 populated row",
+      "unreadable": false,
+      "row_index": 10,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:row-11",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.427288,
+        0.229798,
+        0.445261,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Main 2 accessory-only continuation row; not another breaker",
+      "unreadable": false,
+      "row_index": 11,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-main-schedule:schedule-header",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.220588,
+        0.229798,
+        0.255719,
+        0.929293
+      ],
+      "kind": "table_header",
+      "note": "Column labels and multi-line lug headings",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-kansas-main-schedule:legend",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.227124,
+        0.073864,
+        0.518791,
+        0.221591
+      ],
+      "kind": "legend",
+      "note": "Accessory abbreviation legend; not equipment rows",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-kansas-main-schedule:titleblock",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.793301,
+        0.068813,
+        0.861111,
+        0.511995
+      ],
+      "kind": "title_block",
+      "note": "Drawing identity, date, approval status and page number",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-kansas-main-schedule:review-strike",
+      "source_id": "heldout-kansas-main-schedule",
+      "page": 1,
+      "bbox": [
+        0.328431,
+        0.618687,
+        0.335784,
+        0.90846
+      ],
+      "kind": "review_note",
+      "note": "Red strike crosses the section-4 schedule row; do not treat as a new device",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-1",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.257353,
+        0.229798,
+        0.27451,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Incoming connection / busway",
+      "unreadable": false,
+      "row_index": 1,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-2",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.27451,
+        0.229798,
+        0.291667,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 1 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 2,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-3",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.291667,
+        0.229798,
+        0.308824,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 2 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 3,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-4",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.308824,
+        0.229798,
+        0.32598,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 3 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 4,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-5",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.32598,
+        0.229798,
+        0.343137,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 4 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 5,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-6",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.343137,
+        0.229798,
+        0.360294,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 5 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 6,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-7",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.360294,
+        0.229798,
+        0.377451,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 6 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 7,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-8",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.377451,
+        0.229798,
+        0.394608,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 7 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 8,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-9",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.394608,
+        0.229798,
+        0.411765,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 8 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 9,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-10",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.411765,
+        0.229798,
+        0.428922,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 9 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 10,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:row-11",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.428922,
+        0.229798,
+        0.446895,
+        0.929293
+      ],
+      "kind": "equipment_schedule_row",
+      "note": "Circuit 10 schedule row; parenthesized prepared-space notation remains distinct",
+      "unreadable": false,
+      "row_index": 11,
+      "table_id": "schedule",
+      "table_layout": "row clockwise90 from native page"
+    },
+    {
+      "id": "heldout-kansas-control-schedule:schedule-header",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.220588,
+        0.229798,
+        0.257353,
+        0.929293
+      ],
+      "kind": "table_header",
+      "note": "Column labels and multi-line lug headings",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-kansas-control-schedule:legend",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.227941,
+        0.073864,
+        0.264706,
+        0.22096
+      ],
+      "kind": "legend",
+      "note": "No-accessories legend; not a device",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-kansas-control-schedule:titleblock",
+      "source_id": "heldout-kansas-control-schedule",
+      "page": 1,
+      "bbox": [
+        0.793301,
+        0.068813,
+        0.861111,
+        0.511995
+      ],
+      "kind": "title_block",
+      "note": "Drawing identity, date, approval status and page number",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-1",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.536273,
+        0.970343,
+        0.557094
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 01; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 1,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-2",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.557094,
+        0.970343,
+        0.577922
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 02; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 2,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-3",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.577922,
+        0.970343,
+        0.598743
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 03; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 3,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-4",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.598743,
+        0.970343,
+        0.619564
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 04; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 4,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-5",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.619564,
+        0.970343,
+        0.640392
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 05; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 5,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-6",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.640392,
+        0.970343,
+        0.661213
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 06; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 6,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-7",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.661213,
+        0.970343,
+        0.68204
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 07; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 7,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-8",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.68204,
+        0.970343,
+        0.702862
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 08; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 8,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-9",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.702862,
+        0.970343,
+        0.723683
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 09; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 9,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-10",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.723683,
+        0.970343,
+        0.74451
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 10; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 10,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-11",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.74451,
+        0.970343,
+        0.765332
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 11; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 11,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:row-12",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.765332,
+        0.970343,
+        0.786153
+      ],
+      "kind": "bom_row",
+      "note": "Bill of material reference 12; one row may describe more than one installed instance",
+      "unreadable": false,
+      "row_index": 12,
+      "table_id": "bom-sections-1-2",
+      "table_layout": "native landscape horizontal row"
+    },
+    {
+      "id": "heldout-scow-panel-bom:bom-header",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.647041,
+        0.494277,
+        0.970343,
+        0.536273
+      ],
+      "kind": "table_header",
+      "note": "BOM title and unit/quantity/description/catalog column headings",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-scow-panel-bom:titleblock",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.689824,
+        0.86734,
+        0.984879,
+        0.977258
+      ],
+      "kind": "title_block",
+      "note": "Drawing number SBSWGR-EL-4500 and sheet identification",
+      "unreadable": false
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N101",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.17837,
+        0.292631,
+        0.203851,
+        0.345769
+      ],
+      "kind": "device_symbol",
+      "note": "Protective relay in section1; adjacent source marker N101",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N102-N103",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.217794,
+        0.292631,
+        0.247362,
+        0.321987
+      ],
+      "kind": "device_symbol",
+      "note": "Upper ABB test-switch depiction, section1",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N104-N105",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.217794,
+        0.324217,
+        0.247362,
+        0.353573
+      ],
+      "kind": "device_symbol",
+      "note": "Lower ABB test-switch depiction, section1",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N106",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.185101,
+        0.362863,
+        0.240871,
+        0.424919
+      ],
+      "kind": "device_symbol",
+      "note": "Genset controller depiction, section1",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N107",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.186783,
+        0.436439,
+        0.200245,
+        0.463193
+      ],
+      "kind": "device_symbol",
+      "note": "Breaker-control switch 52CS depiction, section1",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N108",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.224765,
+        0.436439,
+        0.238948,
+        0.463193
+      ],
+      "kind": "device_symbol",
+      "note": "86G2 lockout-switch depiction, section1",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N201",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.339672,
+        0.292631,
+        0.365393,
+        0.345769
+      ],
+      "kind": "device_symbol",
+      "note": "Protective relay in section2; adjacent source marker N201",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N202-N203",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.379336,
+        0.292631,
+        0.409144,
+        0.321987
+      ],
+      "kind": "device_symbol",
+      "note": "Upper ABB test-switch depiction, section2",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N204-N205",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.379336,
+        0.324217,
+        0.409144,
+        0.353573
+      ],
+      "kind": "device_symbol",
+      "note": "Lower ABB test-switch depiction, section2",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    },
+    {
+      "id": "heldout-scow-panel-bom:symbol-N206",
+      "source_id": "heldout-scow-panel-bom",
+      "page": 1,
+      "bbox": [
+        0.36948,
+        0.436439,
+        0.383663,
+        0.463193
+      ],
+      "kind": "device_symbol",
+      "note": "86T1 lockout-switch depiction, section2",
+      "unreadable": false,
+      "scope": "partial symbol sample, not a complete inventory"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ from decimal import Decimal, InvalidOperation
 
 from backend.agents.gateway import configured
 from backend.domain.service import digest, fail, get, new_project, scoped
-from backend.identity import current_actor, auth_mode
+from backend.identity import auth_mode, current_actor
 from backend.storage.models import (
     Document,
     Order,
@@ -569,6 +569,9 @@ def commit(s, order, summary, kind="change", data=None, initial=False, actor=Non
     checksum = digest(snapshot)
     order.snapshot_hash = checksum
     blocked = any(c["status"] not in ("pass", "waived") for c in checks)
+    from backend.equipment.service import release_blockers as equipment_release_blockers
+
+    blocked = blocked or bool(equipment_release_blockers(s, order))
     pending = any(a["status"] == "pending" for a in actions) or any(
         t["status"] != "verified" for t in order.state.get("tasks", [])
     )
@@ -1041,6 +1044,9 @@ def refresh_project_orders(s, project_id):
         from backend.records.service import ensure
 
         ensure(s, order)
+        from backend.equipment.service import synchronize as synchronize_equipment
+
+        synchronize_equipment(s, order)
 
 
 def accept_action(s, order, action_id, reason, edited_text=None):
@@ -1239,7 +1245,9 @@ def waive(s, order, body):
 
 
 def release_state(s, order, checks, actions):
-    blockers = []
+    from backend.equipment.service import release_blockers as equipment_release_blockers
+
+    blockers = equipment_release_blockers(s, order)
     unresolved = [c for c in checks if c["status"] not in ("pass", "waived")]
     if unresolved:
         blockers.append(

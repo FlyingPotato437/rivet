@@ -1,0 +1,726 @@
+{
+  "schema_version": "rivet.reconstruction-answer-key.v1",
+  "package_id": "municipal-historical-reference-extraction-unseen-v2",
+  "kind": "real_public",
+  "split": "unseen_test",
+  "label_status": "assistant_source_reviewed_not_engineer_verified",
+  "label_method": "Initial independent manual transcription followed by a second independent assistant source-only QA of the original PDF physical pages 8 and 9, including locally enlarged schedule and source-note regions. One numeric transcription fact corrected before any prediction run reported by coordinator; mirrored inventory and evidence text synchronized. No prediction opened, provider call, network call, handwritten engineering interpretation, or current installation guarantee. QA receipt: qa-private-source-review-20261019.jsonl.",
+  "scope": {
+    "requirements": "24 numeric schedule facts from eight equipped/spare positions: explicit frame, continuous current, interrupting RMS symmetrical amperes converted exactly to kA. No continuous-current-to-trip conversion.",
+    "device_inventory": "All15 literal positions in physical9 Power Circuit Breaker Schedule. Seven blank/space positions have no asserted installed breaker ratings. Physical8 overall one-line is processing stress/context, not exhaustively labelled.",
+    "complete_engineering_key": false,
+    "complete_schedule_position_inventory": true,
+    "pages_with_labels": [
+      9
+    ],
+    "unlabelled_context_pages": [
+      8
+    ]
+  },
+  "requirements": [
+    {
+      "id": "MB-1.frame_a",
+      "subject_id": "MB-1",
+      "key": "frame_a",
+      "value": 1600,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "MB-1.rated_current_a",
+      "subject_id": "MB-1",
+      "key": "rated_current_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "MB-1.interrupting_ka",
+      "subject_id": "MB-1",
+      "key": "interrupting_ka",
+      "value": 42,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "MB-2.frame_a",
+      "subject_id": "MB-2",
+      "key": "frame_a",
+      "value": 1600,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-2: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "MB-2.rated_current_a",
+      "subject_id": "MB-2",
+      "key": "rated_current_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-2: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "MB-2.interrupting_ka",
+      "subject_id": "MB-2",
+      "key": "interrupting_ka",
+      "value": 42,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-2: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "TB-1.frame_a",
+      "subject_id": "TB-1",
+      "key": "frame_a",
+      "value": 1600,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "TB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "TB-1.rated_current_a",
+      "subject_id": "TB-1",
+      "key": "rated_current_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "TB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "TB-1.interrupting_ka",
+      "subject_id": "TB-1",
+      "key": "interrupting_ka",
+      "value": 42,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "TB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-1.frame_a",
+      "subject_id": "FB-1",
+      "key": "frame_a",
+      "value": 800,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-1: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-1.rated_current_a",
+      "subject_id": "FB-1",
+      "key": "rated_current_a",
+      "value": 800,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-1: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-1.interrupting_ka",
+      "subject_id": "FB-1",
+      "key": "interrupting_ka",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-1: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-2.frame_a",
+      "subject_id": "FB-2",
+      "key": "frame_a",
+      "value": 800,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-2: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-2.rated_current_a",
+      "subject_id": "FB-2",
+      "key": "rated_current_a",
+      "value": 400,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-2: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-2.interrupting_ka",
+      "subject_id": "FB-2",
+      "key": "interrupting_ka",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-2: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-3.frame_a",
+      "subject_id": "FB-3",
+      "key": "frame_a",
+      "value": 800,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-3: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-3.rated_current_a",
+      "subject_id": "FB-3",
+      "key": "rated_current_a",
+      "value": 400,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-3: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-3.interrupting_ka",
+      "subject_id": "FB-3",
+      "key": "interrupting_ka",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-3: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-11.frame_a",
+      "subject_id": "FB-11",
+      "key": "frame_a",
+      "value": 800,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-11: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-11.rated_current_a",
+      "subject_id": "FB-11",
+      "key": "rated_current_a",
+      "value": 800,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-11: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-11.interrupting_ka",
+      "subject_id": "FB-11",
+      "key": "interrupting_ka",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-11: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-12.frame_a",
+      "subject_id": "FB-12",
+      "key": "frame_a",
+      "value": 800,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-12: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-12.rated_current_a",
+      "subject_id": "FB-12",
+      "key": "rated_current_a",
+      "value": 400,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-12: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    },
+    {
+      "id": "FB-12.interrupting_ka",
+      "subject_id": "FB-12",
+      "key": "interrupting_ka",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-12: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ]
+    }
+  ],
+  "customer_device_inventory": [
+    {
+      "id": "MB-1",
+      "features": {
+        "frame_a": 1600,
+        "rated_current_a": 1200,
+        "interrupting_ka": 42
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped",
+      "remarks": "ELECTRICALLY OPERATED"
+    },
+    {
+      "id": "MB-2",
+      "features": {
+        "frame_a": 1600,
+        "rated_current_a": 1200,
+        "interrupting_ka": 42
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "MB-2: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped",
+      "remarks": "ELECTRICALLY OPERATED"
+    },
+    {
+      "id": "TB-1",
+      "features": {
+        "frame_a": 1600,
+        "rated_current_a": 1200,
+        "interrupting_ka": 42
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "TB-1: FRAME 1600, CONT.CURRENT 1200, INTERR.RATING RMS AMP SYMM. 42000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped",
+      "remarks": "ELECTRICALLY OPERATED"
+    },
+    {
+      "id": "FB-1",
+      "features": {
+        "frame_a": 800,
+        "rated_current_a": 800,
+        "interrupting_ka": 30
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-1: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped",
+      "remarks": ""
+    },
+    {
+      "id": "FB-2",
+      "features": {
+        "frame_a": 800,
+        "rated_current_a": 400,
+        "interrupting_ka": 30
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-2: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped",
+      "remarks": ""
+    },
+    {
+      "id": "FB-3",
+      "features": {
+        "frame_a": 800,
+        "rated_current_a": 400,
+        "interrupting_ka": 30
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-3: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped_spare",
+      "remarks": "SPARE"
+    },
+    {
+      "id": "FB-4",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-4: continuous current blank; BLANKS AS REQ’D",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "empty_blank",
+      "remarks": "BLANKS AS REQ’D"
+    },
+    {
+      "id": "FB-5",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-5: continuous current blank; BLANKS AS REQ’D",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "empty_blank",
+      "remarks": "BLANKS AS REQ’D"
+    },
+    {
+      "id": "FB-6",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-6: continuous current blank; BLANKS AS REQ’D",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "empty_blank",
+      "remarks": "BLANKS AS REQ’D"
+    },
+    {
+      "id": "FB-7",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-7: continuous current blank; BLANKS AS REQ’D",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "empty_blank",
+      "remarks": "BLANKS AS REQ’D"
+    },
+    {
+      "id": "FB-8",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-8: continuous current blank; BLANKS AS REQ’D",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "empty_blank",
+      "remarks": "BLANKS AS REQ’D"
+    },
+    {
+      "id": "FB-9",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-9: continuous current blank; BLANKS AS REQ’D",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "empty_blank",
+      "remarks": "BLANKS AS REQ’D"
+    },
+    {
+      "id": "FB-10",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-10: continuous current blank; SPACE",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "empty_prepared_space",
+      "remarks": "SPACE"
+    },
+    {
+      "id": "FB-11",
+      "features": {
+        "frame_a": 800,
+        "rated_current_a": 800,
+        "interrupting_ka": 30
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-11: FRAME 800, CONT.CURRENT 800, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped",
+      "remarks": ""
+    },
+    {
+      "id": "FB-12",
+      "features": {
+        "frame_a": 800,
+        "rated_current_a": 400,
+        "interrupting_ka": 30
+      },
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "FB-12: FRAME 800, CONT.CURRENT 400, INTERR.RATING RMS AMP SYMM. 30000",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Power Circuit Breaker Schedule at lower-left; individual printed device row, including explicit vertical arrows in frame/interrupt columns."
+        }
+      ],
+      "source_position_class": "equipped",
+      "remarks": ""
+    }
+  ],
+  "device_inventory_complete": false,
+  "approved_reconstruction_eligible": false,
+  "approved_reference": null,
+  "source_authority": "historical_reference_only",
+  "ineligibility_reason": "Information-only historical reference sheets copied from previous construction. No new purchase requirements, verified present installation, or manufacturer approval.",
+  "unscored_source_facts": [
+    {
+      "description": "Bus printed1200A,3PH,3W; not individual breaker pole counts.",
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "1200A,3PH,3W BUS",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Upper one-line bus annotation on physical page 9; outside the lower-left bounded schedule."
+        }
+      ]
+    },
+    {
+      "description": "Blank=no provisions; space=provisions for future breaker; spare=complete installed spare breaker and auxiliaries. Empty row continuous-current cells stay unknown.",
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "In the power circuit breaker schedule the following remarks apply: BLANK, SPACE, SPARE.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Right-side Notes 1(A)-(C) on physical page 9; literal BLANK, SPACE, and SPARE definitions."
+        }
+      ]
+    },
+    {
+      "description": "Information copied from previous construction; no completeness/accuracy guarantee; field verification required before construction.",
+      "source_refs": [
+        {
+          "source_id": "annarbor-historical-reference-drawings",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "page": 9,
+          "text": "This drawing includes information that has been copied from a previous construction project and is provided for information only... no guarantee... field verify...",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Lower-right information-only reference warning box on physical page 9."
+        }
+      ]
+    }
+  ]
+}

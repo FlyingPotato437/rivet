@@ -1,0 +1,185 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "alaska-passenger-wireless",
+  "review": {
+    "reviewer": "Codex assistant independent visual inspection",
+    "reviewed_at": "2026-10-18T22:18:34.860921+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "All ten BOM rows visually transcribed from the unchanged official PDF before running Rivet predictions. This is adjacent transit electrical procurement, not a custom-switchgear design BOM. No workbook bytes were acquired. Descriptions retain observed catalogue strings; hyphen glyphs normalized to ASCII. Manufacturer/engineer second review remains necessary."
+  },
+  "source_hashes": {
+    "alaska-wireless-bom": "e5f802ad72a87f2edbfde3bf0ada1af055653e72b04e5644c691259ac5541734",
+    "alaska-wireless-ifc": "b133f6dc6f1330c7cf464aa174a4e859e3d48904d465369e070abf569411975f"
+  },
+  "labels": {
+    "comments": null,
+    "devices": null,
+    "bom_rows": {
+      "scope": "complete",
+      "source_ids": [
+        "alaska-wireless-bom"
+      ],
+      "items": [
+        {
+          "id": "alaska-bom-item-1",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 1,
+          "fields": {
+            "item_number": 1,
+            "unit": "EA",
+            "description": "EN 50155 Managed Gbps PoE Routing Switch-Viper-12A-PoE Series-3635-0720",
+            "supplied_by": "ARRC"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-2",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 2,
+          "fields": {
+            "item_number": 2,
+            "unit": "EA",
+            "description": "EN 50155 Wi-Fi 6 Access Point, PoE PD Ibex-1510-T2G2.5-PoE NA Dual-3628-15112",
+            "supplied_by": "ARRC"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-3",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 3,
+          "fields": {
+            "item_number": 3,
+            "unit": "EA",
+            "description": "CAB ASS SPUMA 240-FR-01 QMA-W STR MALE QMA-W STR MALE 2m-3623-0820",
+            "supplied_by": "ARRC"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-4",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 4,
+          "fields": {
+            "item_number": 4,
+            "unit": "EA",
+            "description": "3629-0888 Antenna 3x3 Omni MIMO ANT-H-W2/5O6-Q3-T-w, TP -100-4500",
+            "supplied_by": "ARRC"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-5",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 5,
+          "fields": {
+            "item_number": 5,
+            "unit": "EA",
+            "description": "ANTENNA WESTERMO ICL ROUND 5GHZ QMA-3623-0797",
+            "supplied_by": "ARRC"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-6",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 6,
+          "fields": {
+            "item_number": 6,
+            "unit": "EA",
+            "description": "ABB SU202M-5A 2-Pole-DC Circuit Breaker (Installed by ARRC)",
+            "supplied_by": "ARRC"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-7",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 7,
+          "fields": {
+            "item_number": 7,
+            "unit": "FT",
+            "description": "12 AWG RHW-2-Power Cable",
+            "supplied_by": "ARRC"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-8",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 8,
+          "fields": {
+            "item_number": 8,
+            "unit": "FT",
+            "description": "Plenum rated Cat 6A Cable",
+            "supplied_by": "Contractor"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-9",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 9,
+          "fields": {
+            "item_number": 9,
+            "unit": "EA",
+            "description": "M12 Connectors",
+            "supplied_by": "Contractor"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        },
+        {
+          "id": "alaska-bom-item-10",
+          "source_id": "alaska-wireless-bom",
+          "page": 1,
+          "sheet": "PDF page 1 / Passenger Car Wireless BOM",
+          "row": 10,
+          "fields": {
+            "item_number": 10,
+            "unit": "EA",
+            "description": "Additional Installation Materials-Weatherproofing ,Wire mold, Cable ties, Labels, Mounting Hardware, Misc. Installation Materials",
+            "supplied_by": "Contractor"
+          },
+          "quantity_established": false,
+          "note": "Printed item number is a row identifier, not a procurement quantity."
+        }
+      ]
+    },
+    "issues": null,
+    "revision_checks": null
+  },
+  "scope_notes": {
+    "complete_bom_source": "One-page official PDF; all 10 item lines. Title/header are not items.",
+    "drawing_inventory": "23-page IFC drawing set acquired but not independently inventoried or scored by this key.",
+    "quantities": "Not established: title explicitly says Quantity will vary per car and no quantity column exists. EA and FT are units, item numbers 1-10 are not quantities.",
+    "workbook_structure": "Not applicable: original is PDF despite metadata title ending .xlsx. No worksheet, merged-cell, formula or Excel export claim."
+  }
+}

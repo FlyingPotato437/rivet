@@ -155,15 +155,12 @@ export function RecordAgent({
       (proposal) => proposal.run_id === runId,
     );
     return (
-      related.some(
+      related.length > 0 &&
+      related.every(
         (proposal) =>
           proposal.status === "stale" ||
-          (proposal.status === "pending" &&
+          (["pending", "prepared"].includes(proposal.status) &&
             proposal.base_version !== w.version),
-      ) &&
-      !related.some(
-        (proposal) =>
-          proposal.status === "pending" && proposal.base_version === w.version,
       )
     );
   };
@@ -172,6 +169,19 @@ export function RecordAgent({
     : runs[0];
   const evidenceChanged = !!selectedRun && changedEvidence(selectedRun.id);
   const selectedGoal = selectedRun ? agentRequestText(selectedRun.goal) : "";
+  const attemptStarted = selectedRun?.events
+    .filter(
+      (event) => event.kind === "queued" || event.kind === "evidence_arrived",
+    )
+    .at(-1)?.at;
+  const attemptSteps =
+    selectedRun?.steps.filter(
+      (step) => !attemptStarted || step.at >= attemptStarted,
+    ) ?? [];
+  const earlierSteps =
+    selectedRun?.steps.filter(
+      (step) => attemptStarted && step.at < attemptStarted,
+    ) ?? [];
   const proposals = allProposals.filter(
     (proposal) => proposal.run_id === selectedRun?.id,
   );
@@ -181,8 +191,8 @@ export function RecordAgent({
     selectedRun.status !== "waiting_for_input" &&
     (proposals.length > 0 || !!selectedRun.result?.summary);
   const showingResult = view === "runs" && resultReady;
-  const pending = allProposals.filter(
-    (proposal) => proposal.status === "pending",
+  const pending = allProposals.filter((proposal) =>
+    ["pending", "prepared"].includes(proposal.status),
   );
   const active = runs.find((run) => activeStatus(run.status));
   const readyCount = pending.filter(
@@ -389,6 +399,41 @@ export function RecordAgent({
   const selectedProposal = proposals.find(
     (proposal) => proposal.id === proposalId,
   );
+  const lastWrite = selectedRun?.steps
+    .filter((step) => step.name === "stage_changes")
+    .at(-1);
+  const preparationFailed =
+    !!selectedRun &&
+    !activeStatus(selectedRun.status) &&
+    !proposals.length &&
+    (selectedRun.status === "failed" || lastWrite?.status === "failed");
+  const retryPreparation = () =>
+    selectedRun &&
+    void mutate(async () => {
+      const run = await api<RecordAgentRun>(
+        `${base}/agent/runs/${selectedRun.id}/retry`,
+        {
+          expected_version: w.version,
+          actor,
+          reason: "Retry with current order evidence",
+        },
+      );
+      qc.setQueryData<RecordAgentView>(
+        ["record-agent", w.order.id],
+        (current) =>
+          current
+            ? {
+                ...current,
+                runs: [
+                  run,
+                  ...current.runs.filter((item) => item.id !== run.id),
+                ],
+              }
+            : current,
+      );
+      setSelectedRunId(run.id);
+      body.current?.scrollTo({ top: 0 });
+    });
   return (
     <section
       id="record-agent-panel"
@@ -408,24 +453,28 @@ export function RecordAgent({
               ? `Comment ${scopeComment.number}`
               : scopeDocument?.name || "This order"}
           </span>
-          <small>Record v{w.version}</small>
+          <small>
+            {agent.data?.settings.enabled
+              ? "Automatic preparation on"
+              : "Automatic preparation paused"}
+          </small>
         </div>
       )}
       <nav className="record-agent-tabs" aria-label="Rivet views">
         <button aria-pressed={view === "runs"} onClick={() => setView("runs")}>
-          Tasks{pending.length > 0 && <span>{pending.length}</span>}
+          Prepared work{pending.length > 0 && <span>{pending.length}</span>}
         </button>
         <button
           aria-pressed={view === "questions"}
           onClick={() => setView("questions")}
         >
-          Questions
+          Ask Rivet
         </button>
         <button
           aria-pressed={view === "activity"}
           onClick={() => setView("activity")}
         >
-          Activity
+          History
         </button>
       </nav>
       <div className="record-agent-body" ref={body}>
@@ -454,7 +503,7 @@ export function RecordAgent({
               <Busy text="Loading saved tasks…" />
             ) : (
               <>
-                {runs.length > 0 && (
+                {runs.length > 1 && (
                   <label className="agent-run-picker">
                     <span className={showingResult ? "sr-only" : undefined}>
                       Saved task
@@ -533,11 +582,49 @@ export function RecordAgent({
                       </>
                     )}
                     {selectedRun.result?.summary && !proposals.length && (
-                      <p className="agent-run-summary">
-                        {selectedRun.result.summary}
-                      </p>
+                      <section
+                        className="agent-run-report"
+                        aria-label="Preparation result"
+                      >
+                        <Origin
+                          mode={selectedRun.mode}
+                          label={
+                            selectedRun.mode === "ai"
+                              ? "AI investigation"
+                              : "Automatic check"
+                          }
+                        />
+                        {preparationFailed ? (
+                          <>
+                            <h2>No drafts were saved</h2>
+                            <p>
+                              Rivet could not finish preparing the changes. Your
+                              documents and order record are unchanged.
+                            </p>
+                            <button
+                              className="primary"
+                              disabled={busy || !!active}
+                              onClick={retryPreparation}
+                            >
+                              <ArrowCounterClockwise size={16} /> Retry
+                              preparation
+                            </button>
+                            <details className="agent-preparation-notes">
+                              <summary>What happened</summary>
+                              <AgentMarkdown
+                                text={
+                                  selectedRun.result.details ||
+                                  selectedRun.result.summary
+                                }
+                              />
+                            </details>
+                          </>
+                        ) : (
+                          <AgentMarkdown text={selectedRun.result.summary} />
+                        )}
+                      </section>
                     )}
-                    {selectedRun.result?.error && (
+                    {selectedRun.result?.error && !preparationFailed && (
                       <ErrorNote message={selectedRun.result.error} />
                     )}
 
@@ -588,9 +675,7 @@ export function RecordAgent({
                     )}
                     {proposals.length > 0 && (
                       <section className="agent-proposals">
-                        <h3>
-                          Prepared changes <span>{proposals.length}</span>
-                        </h3>
+                        <h3 className="sr-only">Saved work</h3>
                         {proposals.map((proposal) => (
                           <div
                             key={proposal.id}
@@ -607,11 +692,19 @@ export function RecordAgent({
                             >
                               <RivetIcon name="revision" size={17} />
                               <span>
-                                <strong>{proposal.title}</strong>
+                                <strong title={proposal.title}>
+                                  {selectedRun.origin === "event"
+                                    ? `${proposal.operations.length} ${proposal.operations.length === 1 ? "draft" : "drafts"} prepared`
+                                    : proposal.title}
+                                </strong>
                                 <small>
                                   {proposal.status === "pending"
-                                    ? "Awaiting your review"
-                                    : proposal.status}
+                                    ? selectedRun.origin === "event"
+                                      ? "One record decision to confirm"
+                                      : "Record decision"
+                                    : proposal.status === "prepared"
+                                      ? "Saved by Rivet"
+                                      : proposal.status}
                                 </small>
                               </span>
                               <CaretDown size={15} />
@@ -628,6 +721,7 @@ export function RecordAgent({
                                   activeStatus(selectedRun.status)
                                 }
                                 actor={actor}
+                                focusedCommentId={scopeComment?.id}
                                 openSource={openSource}
                                 openComment={openComment}
                                 resolve={(action, reason, expectedVersion) =>
@@ -659,7 +753,7 @@ export function RecordAgent({
                     {proposals.length > 0 && selectedRun.result?.summary && (
                       <details className="agent-preparation-notes">
                         <summary>Task summary</summary>
-                        <p>{selectedRun.result.summary}</p>
+                        <AgentMarkdown text={selectedRun.result.summary} />
                       </details>
                     )}
                     {showingResult && (
@@ -700,7 +794,7 @@ export function RecordAgent({
                       open={activeStatus(selectedRun.status) || undefined}
                     >
                       <summary>
-                        {selectedRun.steps.length}{" "}
+                        {attemptSteps.length}{" "}
                         {activeStatus(selectedRun.status)
                           ? "steps so far"
                           : "recorded steps"}
@@ -711,7 +805,7 @@ export function RecordAgent({
                         </span>
                       </summary>
                       <ol className="agent-step-list">
-                        {selectedRun.steps.map((step) => (
+                        {attemptSteps.map((step) => (
                           <li
                             key={step.id}
                             className={step.status === "failed" ? "failed" : ""}
@@ -726,7 +820,14 @@ export function RecordAgent({
                             <strong>
                               {step.label || step.name.replaceAll("_", " ")}
                             </strong>
-                            <p>{step.summary}</p>
+                            {step.summary.length > 180 ? (
+                              <details className="agent-step-note">
+                                <summary>Read result</summary>
+                                <AgentMarkdown text={step.summary} />
+                              </details>
+                            ) : (
+                              <p>{step.summary}</p>
+                            )}
                             {step.evidence_ids?.length > 0 && (
                               <EvidenceButtons
                                 ids={step.evidence_ids}
@@ -751,14 +852,36 @@ export function RecordAgent({
                                 : "Waiting for the worker"}
                             </strong>
                             <p>
-                              Saved progress will update here. Changes remain
-                              staged for review.
+                              Rivet saves the work as it goes. Only a blocking
+                              decision needs your input.
                             </p>
                           </li>
                         )}
                       </ol>
                     </details>
-                    <div className="agent-run-actions">
+                    {earlierSteps.length > 0 && (
+                      <details className="agent-run-audit">
+                        <summary>
+                          Earlier attempts · {earlierSteps.length} steps
+                        </summary>
+                        <ol className="agent-step-list">
+                          {earlierSteps.map((step) => (
+                            <li key={step.id}>
+                              <strong>
+                                {step.label || step.name.replaceAll("_", " ")}
+                              </strong>
+                              <small>
+                                {when(step.at)} · {step.status}
+                              </small>
+                            </li>
+                          ))}
+                        </ol>
+                      </details>
+                    )}
+                    <div
+                      className="agent-run-actions"
+                      hidden={preparationFailed}
+                    >
                       {activeStatus(selectedRun.status) ||
                       selectedRun.status === "waiting_for_input" ? (
                         <button
@@ -875,28 +998,37 @@ export function RecordAgent({
                 ) : (
                   <div className="record-agent-welcome">
                     <RivetIcon name="agent" size={30} />
-                    <h2>Start an order task</h2>
+                    <h2>
+                      {agent.data?.settings.enabled
+                        ? "Rivet prepares the next steps"
+                        : "Turn on automatic preparation"}
+                    </h2>
                     <p>
-                      Give Rivet a source-grounded task. It records its steps
-                      and stages proposed changes for your review.
+                      {agent.data?.settings.enabled
+                        ? "New documents trigger preparation. Rivet saves drafts and asks only for decisions it cannot make."
+                        : "Let Rivet read new documents and save useful drafts automatically. Decisions and outgoing messages stay with you."}
                     </p>
-                    <div className="record-agent-prompts">
-                      {[
-                        scopeComment
-                          ? "Check this comment’s drawing reference and prepare a supported link."
-                          : "Review returned comments and prepare supported drawing links.",
-                        "Find unresolved comments and draft clarification questions.",
-                      ].map((goal) => (
-                        <button
-                          key={goal}
-                          disabled={busy}
-                          onClick={() => start(goal)}
-                        >
-                          {goal}
-                          <ArrowRight size={15} />
-                        </button>
-                      ))}
-                    </div>
+                    {!agent.data?.settings.enabled && agent.data?.settings && (
+                      <button
+                        className="primary"
+                        disabled={busy}
+                        onClick={() =>
+                          void mutate(() =>
+                            api(`${base}/agent/settings`, {
+                              ...agent.data!.settings,
+                              version: undefined,
+                              enabled: true,
+                              expected_version: w.version,
+                              actor,
+                              reason:
+                                "Enabled automatic preparation for returned documents",
+                            }),
+                          )
+                        }
+                      >
+                        Enable automatic preparation
+                      </button>
+                    )}
                   </div>
                 )}
                 {agent.data?.settings && (
@@ -955,7 +1087,7 @@ export function RecordAgent({
                             name="max_steps"
                             type="number"
                             min={2}
-                            max={12}
+                            max={80}
                             defaultValue={agent.data.settings.max_steps}
                             required
                           />
@@ -966,7 +1098,7 @@ export function RecordAgent({
                             name="max_output_tokens"
                             type="number"
                             min={512}
-                            max={3000}
+                            max={16000}
                             defaultValue={agent.data.settings.max_output_tokens}
                             required
                           />
@@ -1251,7 +1383,7 @@ export function RecordAgent({
                       ? "Read-only question"
                       : active
                         ? "A task is running"
-                        : "Proposed changes need review"}
+                        : "Drafts save automatically · You control what is sent"}
                   </span>
                   <button
                     className="record-agent-send"
@@ -1280,6 +1412,33 @@ export function RecordAgent({
         </footer>
       )}
     </section>
+  );
+}
+
+function AgentMarkdown({ text }: { text: string }) {
+  return (
+    <div className="agent-readable-report">
+      <ReactMarkdown
+        allowedElements={[
+          "p",
+          "ul",
+          "ol",
+          "li",
+          "strong",
+          "em",
+          "code",
+          "blockquote",
+          "br",
+          "h2",
+          "h3",
+          "h4",
+        ]}
+        unwrapDisallowed
+        skipHtml
+      >
+        {text}
+      </ReactMarkdown>
+    </div>
   );
 }
 
@@ -1320,7 +1479,7 @@ function EvidenceButtons({
           (item) => item.id === (source?.document_id || id),
         );
         const label = comment
-          ? `Comment ${comment.number}`
+          ? `Comment ${comment.log_reference || comment.number}`
           : `${source?.location.page ? `p. ${source.location.page} · ` : ""}${document?.name || "Source evidence"}`;
         return (
           <button
@@ -1355,6 +1514,7 @@ function ProposalReview({
   w,
   disabled,
   actor,
+  focusedCommentId,
   openSource,
   openComment,
   resolve,
@@ -1364,6 +1524,7 @@ function ProposalReview({
   w: RecordView;
   disabled: boolean;
   actor: string;
+  focusedCommentId?: string;
   openSource: (id: string) => void;
   openComment: (id: string) => void;
   resolve: (
@@ -1374,7 +1535,6 @@ function ProposalReview({
 }) {
   const [reviewVersion] = useState(w.version);
   const [reason, setReason] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
   const stale =
     proposal.status === "stale" ||
     proposal.base_version !== w.version ||
@@ -1383,35 +1543,66 @@ function ProposalReview({
     <div className="agent-proposal-review">
       <div className="agent-proposal-meta">
         <Origin mode={proposal.origin} />
-        <span>Record v{proposal.base_version}</span>
+        <span title={`Prepared from record version ${proposal.base_version}`}>
+          Source-linked draft
+        </span>
       </div>
       <div className="agent-domain-changes">
-        {proposal.operations.map((operation, index) => (
-          <OperationReview
-            key={index}
-            operation={operation}
-            proposal={proposal}
-            w={w}
-            openSource={openSource}
-            openComment={openComment}
-          />
-        ))}
+        {[...proposal.operations]
+          .sort(
+            (a, b) =>
+              Number(b.comment_id === focusedCommentId) -
+              Number(a.comment_id === focusedCommentId),
+          )
+          .map((operation, index) => (
+            <details
+              className="agent-draft-item"
+              key={`${index}:${focusedCommentId || ""}`}
+              open={
+                proposal.operations.length === 1 ||
+                operation.comment_id === focusedCommentId ||
+                (!focusedCommentId && index === 0) ||
+                undefined
+              }
+            >
+              <summary>
+                {operation.title ||
+                  (operation.type === "link_source"
+                    ? "Drawing reference"
+                    : "Prepared draft")}
+              </summary>
+              <OperationReview
+                key={index}
+                operation={operation}
+                proposal={proposal}
+                w={w}
+                openSource={openSource}
+                openComment={openComment}
+              />
+            </details>
+          ))}
       </div>
       <details className="agent-preparation-notes">
-        <summary>Why these changes were prepared</summary>
-        <p>{proposal.summary}</p>
+        <summary>Reasoning and supporting sources</summary>
+        <AgentMarkdown text={proposal.summary} />
+        <EvidenceButtons
+          ids={proposal.evidence_ids}
+          w={w}
+          openSource={openSource}
+          openComment={openComment}
+        />
       </details>
-      <EvidenceButtons
-        ids={proposal.evidence_ids}
-        w={w}
-        openSource={openSource}
-        openComment={openComment}
-      />
       {proposal.status === "pending" ? (
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            void resolve("accept", reason.trim(), reviewVersion);
+            void resolve(
+              "accept",
+              reason.trim().length >= 3
+                ? reason.trim()
+                : "Checked the prepared record changes.",
+              reviewVersion,
+            );
           }}
         >
           {stale && (
@@ -1425,25 +1616,18 @@ function ProposalReview({
             Acceptance saves these internal record changes. It does not send a
             message, create an engineering response, or approve the package.
           </p>
-          <label className="agent-checkbox">
-            <input
-              type="checkbox"
-              checked={confirmed}
-              onChange={(event) => setConfirmed(event.target.checked)}
-            />
-            I reviewed the proposed changes and supporting evidence.
-          </label>
-          <label>
-            Review note
-            <textarea
-              rows={2}
-              required
-              minLength={3}
-              value={reason}
-              onChange={(event) => setReason(event.target.value)}
-              placeholder="Why these changes are correct, or why they should be dismissed"
-            />
-          </label>
+          <details className="agent-check-note">
+            <summary>Add a note (optional)</summary>
+            <label>
+              Note
+              <textarea
+                rows={2}
+                value={reason}
+                onChange={(event) => setReason(event.target.value)}
+                placeholder="Anything the team should know"
+              />
+            </label>
+          </details>
           <small>
             Decision recorded by <ActorName actor={actor} />
           </small>
@@ -1451,31 +1635,34 @@ function ProposalReview({
             <button
               className="secondary"
               type="button"
-              disabled={disabled || reason.trim().length < 3}
+              disabled={disabled}
               onClick={() =>
-                void resolve("reject", reason.trim(), reviewVersion)
+                void resolve(
+                  "reject",
+                  reason.trim().length >= 3
+                    ? reason.trim()
+                    : "Not needed for this order.",
+                  reviewVersion,
+                )
               }
             >
               Dismiss
             </button>
-            <button
-              className="primary"
-              disabled={
-                disabled || stale || !confirmed || reason.trim().length < 3
-              }
-            >
-              Accept reviewed changes
+            <button className="primary" disabled={disabled || stale}>
+              Looks good · save
               <Check size={15} />
             </button>
           </div>
         </form>
       ) : (
         <p className="agent-proposal-outcome">
-          {proposal.status === "accepted"
-            ? "Accepted by a person and saved to the record."
-            : proposal.status === "rejected"
-              ? "Dismissed by a person. The record was not changed."
-              : "This proposal is out of date. Prepare a fresh task against the current record."}
+          {proposal.status === "prepared"
+            ? "Saved automatically. Check the final reply in Outlook before sending."
+            : proposal.status === "accepted"
+              ? "Accepted by a person and saved to the record."
+              : proposal.status === "rejected"
+                ? "Dismissed by a person. The record was not changed."
+                : "This proposal is out of date. Prepare a fresh task against the current record."}
         </p>
       )}
     </div>
@@ -1533,7 +1720,7 @@ function OperationReview({
             className="text-button"
             onClick={() => openComment(comment.id)}
           >
-            Comment {comment.number}
+            Comment {comment.log_reference || comment.number}
             <ArrowUpRight size={12} />
           </button>
         )}
@@ -1554,7 +1741,7 @@ function OperationReview({
         ) : (
           <>
             {operation.title && <strong>{operation.title}</strong>}
-            <p>{operation.text}</p>
+            <AgentMarkdown text={operation.text || ""} />
             {operation.type === "create_task" && operation.role && (
               <small>
                 Team:{" "}
@@ -1593,8 +1780,14 @@ function OperationReview({
         ) : (
           <p>
             {operation.type === "create_task"
-              ? "This task has not been added to the record."
-              : "This summary has not been saved to the record."}
+              ? proposal.status === "accepted"
+                ? "This task was reviewed and added to the record."
+                : "This task has not been added to the record."
+              : proposal.status === "accepted"
+                ? "This summary was reviewed and saved to the record."
+                : proposal.status === "prepared"
+                  ? "This draft is saved with Rivet’s work and has not been sent."
+                  : "This summary has not been saved to the record."}
           </p>
         )}
       </details>

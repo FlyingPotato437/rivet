@@ -1,4 +1,4 @@
-import { apiUrl, authorizationHeaders } from "./api";
+import { apiFetch, apiUrl, authorizationHeaders } from "./api";
 import { useEffect, useRef, useState } from "react";
 import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@phosphor-icons/react";
 import { Busy, Empty, ErrorNote, Modal } from "./ui";
 import type { OrderDocument, OrderSource } from "./order-types";
+import { sortDocumentSources } from "./record-source-navigation";
 
 export function EvidenceLinks({
   ids,
@@ -90,8 +91,56 @@ export function OrderEvidence({
   const restorePosition = useRef(initialPosition);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openingOriginal, setOpeningOriginal] = useState(false);
   const canvas = useRef<HTMLCanvasElement>(null);
   const pdf = document.name.toLowerCase().endsWith(".pdf");
+  async function openOriginal() {
+    const textSource = /\.(txt|csv|json|md)$/i.test(document.name);
+    const download = !pdf && !textSource;
+    const preview = download ? null : window.open("", "_blank");
+    if (preview) preview.opener = null;
+    setOpeningOriginal(true);
+    try {
+      let blob: Blob;
+      if (pdfDocument) {
+        const bytes = await pdfDocument.getData();
+        blob = new Blob([new Uint8Array(bytes)], { type: "application/pdf" });
+      } else {
+        const response = await apiFetch(
+          contentUrl || `/api/documents/${document.id}/content`,
+        );
+        if (!response.ok) throw new Error("The original could not be opened.");
+        const bytes = await response.arrayBuffer();
+        blob = new Blob([bytes], {
+          type: pdf
+            ? "application/pdf"
+            : textSource
+              ? "text/plain;charset=utf-8"
+              : "application/octet-stream",
+        });
+      }
+      const url = URL.createObjectURL(blob);
+      if (download) {
+        const link = window.document.createElement("a");
+        link.href = url;
+        link.download = document.name;
+        link.click();
+      } else if (preview)
+        preview.location.href = `${url}${pdf ? `#page=${page}` : ""}`;
+      else {
+        URL.revokeObjectURL(url);
+        throw new Error(
+          "Allow this document to open in a new tab, then try again.",
+        );
+      }
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (err) {
+      preview?.close();
+      setError((err as Error).message);
+    } finally {
+      setOpeningOriginal(false);
+    }
+  }
   useEffect(() => {
     if (!pdf && selectedId)
       selectedText.current?.scrollIntoView({ block: "nearest" });
@@ -193,17 +242,22 @@ export function OrderEvidence({
         <span>
           {sharedExcerpts
             ? "Shared excerpts"
-            : document.revision_label || "Original source"}
+            : document.revision_label
+              ? `${pdf ? "Revision" : "Source version"} · ${document.revision_label}`
+              : "Original source"}
         </span>
-        <a
+        <button
           className="text-button"
-          href={contentUrl || `/api/documents/${document.id}/content`}
-          target="_blank"
-          rel="noreferrer"
+          onClick={() => void openOriginal()}
+          disabled={openingOriginal}
         >
-          {sharedExcerpts ? "Download shared excerpts" : "Open original"}{" "}
+          {openingOriginal
+            ? "Opening…"
+            : sharedExcerpts
+              ? "Open shared excerpts"
+              : "Open original"}{" "}
           <ArrowUpRight size={15} />
-        </a>
+        </button>
       </div>
       {!!document.warnings?.length && (
         <details className="record-document-warnings">
@@ -286,15 +340,14 @@ export function OrderEvidence({
         <>
           <div className="ow-page-controls">
             {workbench && (
-              <a
+              <button
                 className="workbench-original-link"
-                href={contentUrl || `/api/documents/${document.id}/content`}
-                target="_blank"
-                rel="noreferrer"
+                onClick={() => void openOriginal()}
+                disabled={openingOriginal}
               >
-                Original
+                {openingOriginal ? "Opening…" : "Original"}
                 <ArrowUpRight size={13} />
-              </a>
+              </button>
             )}
             <button
               className="icon-button"
@@ -385,7 +438,7 @@ export function OrderEvidence({
         </>
       ) : (
         <div className="ow-source-text">
-          {sources.map((s) => (
+          {sortDocumentSources(sources).map((s) => (
             <div
               key={s.id}
               ref={s.id === selectedId ? selectedText : undefined}
@@ -425,7 +478,7 @@ export function OrderEvidence({
         {!workbench && (
           <header className="record-inline-evidence-head">
             <button className="text-button" onClick={close}>
-              <CaretLeft size={16} /> Back to record
+              <CaretLeft size={16} /> Back to order
             </button>
             <div>
               <span>

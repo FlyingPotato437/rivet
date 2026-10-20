@@ -24,6 +24,7 @@ from .schemas import (
     SubscriberWrite,
     SuggestionWrite,
     TaskWrite,
+    TranscriptionWrite,
     WorkflowWrite,
     Write,
 )
@@ -100,6 +101,13 @@ def edit_comment(
     id: str, item: str, body: CommentWrite, idempotency_key: str = Header()
 ):
     return mutate(id, body, idempotency_key, "comment", item)
+
+
+@router.post("/orders/{id}/record/comments/{item}/transcription")
+def correct_transcription(
+    id: str, item: str, body: TranscriptionWrite, idempotency_key: str = Header()
+):
+    return mutate(id, body, idempotency_key, "transcription", item)
 
 
 @router.post("/orders/{id}/record/comments/{item}/workflow")

@@ -30,6 +30,12 @@ def normalized(text):
     return " ".join(re.findall(r"\w+", text.casefold()))
 
 
+def source_wording(comment):
+    if comment.get("transcription_reviewed"):
+        return comment.get("text", "")
+    return comment.get("original_text") or comment.get("text", "")
+
+
 def instant(value):
     try:
         parsed = datetime.fromisoformat(value)
@@ -82,7 +88,7 @@ def review_summary(w):
     # not evidence that two engineering requests have the same meaning.
     previous_text = {}
     for comment in prior:
-        text = normalized(comment.get("original_text") or comment.get("text", ""))
+        text = normalized(source_wording(comment))
         if text and comment.get("origin") != "unreadable area":
             previous_text.setdefault(text, []).append(comment)
     flags = []
@@ -131,7 +137,7 @@ def review_summary(w):
     for comment in current:
         if comment.get("origin") == "unreadable area":
             continue
-        original = comment.get("original_text") or comment.get("text", "")
+        original = source_wording(comment)
         matches = previous_text.get(normalized(original), [])
         if matches:
             previous = matches[-1]

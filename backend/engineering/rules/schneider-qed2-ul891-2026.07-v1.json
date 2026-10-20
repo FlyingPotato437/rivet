@@ -1,0 +1,1155 @@
+{
+  "schema_version": "rivet.engineering-rule-pack.v1",
+  "id": "schneider-qed2-ul891-2026.07-v1",
+  "version": "1.0.0",
+  "state": "proposed_for_company_engineer_review",
+  "manufacturer": "Schneider Electric",
+  "family": "Square D Power-Style QED-2",
+  "product_standard": "UL891",
+  "review_history": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-18",
+      "actor": "Rivet primary-source curation",
+      "status": "unapproved",
+      "reason": "Narrow explicit catalog subset; not a manufacturer configuration authority or UL certification."
+    }
+  ],
+  "sources": {
+    "schneider-2700CT1101-2026": {
+      "publisher": "Schneider Electric",
+      "document": "2700CT1101",
+      "edition": "07/2026",
+      "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+      "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf",
+      "kind": "primary_manufacturer_catalog",
+      "physical_page_equals_printed_page": true
+    },
+    "seattle-nec2020": {
+      "publisher": "Seattle Department of Construction and Inspections",
+      "document": "2020 Seattle Electrical Code replacement pages",
+      "edition": "2020 local adoption; modified testing provisions are not generalized",
+      "sha256": "a23b15d12c14b632fe698eadc879d57c309685627c2bc08cedb70f6da199d965",
+      "url": "https://www.seattle.gov/Documents/Departments/SDCI/Codes/2020SeattleElectricalCodeReplacementPages.pdf",
+      "kind": "primary_adopting_authority"
+    },
+    "se-0760DB1402": {
+      "publisher": "Schneider Electric",
+      "document": "0760DB1402",
+      "edition": "09/2022; discusses NEC2020/2023",
+      "url": "https://download.schneider-electric.com/files?p_Doc_Ref=0760DB1402",
+      "kind": "primary_manufacturer_application_bulletin",
+      "sha256": "73ca78e12663a310018cab742630e5f8040b6d434159db94c4d370b81586a6cb"
+    },
+    "ul891-scope": {
+      "publisher": "UL Standards and Engagement",
+      "document": "UL891",
+      "edition": "12, published2019-07-19, revision2025-03-21",
+      "url": "https://www.shopulstandards.com/ProductDetail.aspx?productId=UL891_12_S_20190719",
+      "kind": "primary_standard_publisher_scope",
+      "sha256": null
+    }
+  },
+  "scope": {
+    "current_type": "AC",
+    "maximum_voltage_v": 600,
+    "maximum_service_a": 5000,
+    "through_bus_range_a": [
+      1200,
+      6000
+    ],
+    "height_in": 91.5,
+    "source_refs": [
+      {
+        "source_id": "schneider-2700CT1101-2026",
+        "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+        "page": 5,
+        "printed_page": "5",
+        "section": "Features",
+        "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+      },
+      {
+        "source_id": "schneider-2700CT1101-2026",
+        "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+        "page": 8,
+        "printed_page": "8",
+        "section": "Through Bus",
+        "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+      }
+    ]
+  },
+  "devices": [
+    {
+      "id": "BJ-125",
+      "frame": "BJ",
+      "frame_family": "B",
+      "frame_a": 125,
+      "minimum_a": 15,
+      "maximum_a": 125,
+      "pole_count": 3,
+      "trip_types": [
+        "LI"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 4.5,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 63,
+          "printed_page": "63",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "requires_wye_at_480": true,
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 44,
+          "printed_page": "44",
+          "section": "B-frame trip features",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "HD-150",
+      "frame": "HD",
+      "frame_family": "H",
+      "frame_a": 150,
+      "minimum_a": 15,
+      "maximum_a": 150,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 25,
+        "480": 18,
+        "600": 14
+      },
+      "mounting_space_in": 3,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 63,
+          "printed_page": "63",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "HG-150",
+      "frame": "HG",
+      "frame_family": "H",
+      "frame_a": 150,
+      "minimum_a": 15,
+      "maximum_a": 150,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 65,
+        "480": 35,
+        "600": 18
+      },
+      "mounting_space_in": 3,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 63,
+          "printed_page": "63",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "HJ-150",
+      "frame": "HJ",
+      "frame_family": "H",
+      "frame_a": 150,
+      "minimum_a": 15,
+      "maximum_a": 150,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 65,
+        "480": 35,
+        "600": 18
+      },
+      "mounting_space_in": 4.5,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 63,
+          "printed_page": "63",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "HL-150",
+      "frame": "HL",
+      "frame_family": "H",
+      "frame_a": 150,
+      "minimum_a": 15,
+      "maximum_a": 150,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 4.5,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 63,
+          "printed_page": "63",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "JJ-250",
+      "frame": "JJ",
+      "frame_family": "J",
+      "frame_a": 250,
+      "minimum_a": 150,
+      "maximum_a": 250,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 4.5,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 63,
+          "printed_page": "63",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "LJ-250",
+      "frame": "LJ",
+      "frame_family": "L",
+      "frame_a": 250,
+      "minimum_a": 70,
+      "maximum_a": 250,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 6,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 64,
+          "printed_page": "64",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "LJ-400",
+      "frame": "LJ",
+      "frame_family": "L",
+      "frame_a": 400,
+      "minimum_a": 125,
+      "maximum_a": 400,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 6,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 64,
+          "printed_page": "64",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "LJ-600",
+      "frame": "LJ",
+      "frame_family": "L",
+      "frame_a": 600,
+      "minimum_a": 200,
+      "maximum_a": 600,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LSI",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 6,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 64,
+          "printed_page": "64",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "MJ-800",
+      "frame": "MJ",
+      "frame_family": "M",
+      "frame_a": 800,
+      "minimum_a": 300,
+      "maximum_a": 800,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LS",
+        "LSI",
+        "LIG",
+        "LSG",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 9,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 64,
+          "printed_page": "64",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Trip Unit Options",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "PJ-1200",
+      "frame": "PJ",
+      "frame_family": "P",
+      "frame_a": 1200,
+      "minimum_a": 100,
+      "maximum_a": 1200,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LS",
+        "LSI",
+        "LIG",
+        "LSG",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": 9,
+      "roles": [
+        "feeder"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 64,
+          "printed_page": "64",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Trip Unit Options",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "MJ-800-main",
+      "frame": "MJ",
+      "frame_family": "M",
+      "frame_a": 800,
+      "minimum_a": 300,
+      "maximum_a": 800,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LS",
+        "LSI",
+        "LIG",
+        "LSG",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": null,
+      "roles": [
+        "main"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Table11",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "section_width_in": 30,
+      "minimum_depth_in": 24,
+      "conditions": {
+        "enclosure": "NEMA1",
+        "opposite_side_line_load": true
+      },
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Trip Unit Options",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "PJ-1200-main",
+      "frame": "PJ",
+      "frame_family": "P",
+      "frame_a": 1200,
+      "minimum_a": 100,
+      "maximum_a": 1200,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LS",
+        "LSI",
+        "LIG",
+        "LSG",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": null,
+      "roles": [
+        "main"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Table11",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "section_width_in": 30,
+      "minimum_depth_in": 24,
+      "conditions": {
+        "enclosure": "NEMA1",
+        "opposite_side_line_load": true
+      },
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Trip Unit Options",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "RJ-2500-main",
+      "frame": "RJ",
+      "frame_family": "R",
+      "frame_a": 2500,
+      "minimum_a": 250,
+      "maximum_a": 2500,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LS",
+        "LSI",
+        "LIG",
+        "LSG",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 100,
+        "480": 65,
+        "600": 25
+      },
+      "mounting_space_in": null,
+      "roles": [
+        "main"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Table11",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "section_width_in": 36,
+      "minimum_depth_in": 24,
+      "conditions": {
+        "enclosure": "NEMA1",
+        "opposite_side_line_load": true
+      },
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Trip Unit Options",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "RL-2500-main",
+      "frame": "RL",
+      "frame_family": "R",
+      "frame_a": 2500,
+      "minimum_a": 250,
+      "maximum_a": 2500,
+      "pole_count": 3,
+      "trip_types": [
+        "LI",
+        "LS",
+        "LSI",
+        "LIG",
+        "LSG",
+        "LSIG"
+      ],
+      "catalog_sccr_ka": {
+        "240": 125,
+        "480": 100,
+        "600": 25
+      },
+      "mounting_space_in": null,
+      "roles": [
+        "main"
+      ],
+      "exact_catalog_number": null,
+      "standard_ratings_a": null,
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Table11",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ],
+      "section_width_in": 36,
+      "minimum_depth_in": 24,
+      "conditions": {
+        "enclosure": "NEMA1",
+        "opposite_side_line_load": true
+      },
+      "trip_type_source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Trip Unit Options",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    }
+  ],
+  "section_types": [
+    {
+      "id": "iline-42-2000",
+      "kind": "distribution",
+      "width_in": 42,
+      "minimum_depth_in": 24,
+      "height_in": 91.5,
+      "interior_bus_a": 2000,
+      "sides": {
+        "left": {
+          "mounting_space_in": 54,
+          "maximum_frame_a": 600,
+          "families": [
+            "B",
+            "H",
+            "J",
+            "L"
+          ]
+        },
+        "right": {
+          "mounting_space_in": 63,
+          "maximum_frame_a": 250,
+          "families": [
+            "B",
+            "H",
+            "J",
+            "Q"
+          ]
+        }
+      },
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 65,
+          "printed_page": "65",
+          "section": "Table21, first full-height interior,42in row",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "iline-48-2000",
+      "kind": "distribution",
+      "width_in": 48,
+      "minimum_depth_in": 24,
+      "height_in": 91.5,
+      "interior_bus_a": 2000,
+      "sides": {
+        "left": {
+          "mounting_space_in": 54,
+          "maximum_frame_a": 1200,
+          "families": [
+            "B",
+            "H",
+            "J",
+            "L",
+            "M",
+            "P",
+            "R"
+          ]
+        },
+        "right": {
+          "mounting_space_in": 63,
+          "maximum_frame_a": 250,
+          "families": [
+            "B",
+            "H",
+            "J",
+            "Q"
+          ]
+        }
+      },
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 65,
+          "printed_page": "65",
+          "section": "Table21, first full-height interior,48in row",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "iline-54-3000",
+      "kind": "distribution",
+      "width_in": 54,
+      "minimum_depth_in": 36,
+      "height_in": 91.5,
+      "interior_bus_a": 3000,
+      "sides": {
+        "left": {
+          "mounting_space_in": 72,
+          "maximum_frame_a": 1200,
+          "families": [
+            "B",
+            "H",
+            "J",
+            "L",
+            "M",
+            "P",
+            "R"
+          ]
+        },
+        "right": {
+          "mounting_space_in": 40.5,
+          "maximum_frame_a": 250,
+          "families": [
+            "B",
+            "H",
+            "J",
+            "Q"
+          ]
+        }
+      },
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 65,
+          "printed_page": "65",
+          "section": "Table21, fourth full-height interior",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    }
+  ],
+  "interior_unknown_loading_factors": [
+    {
+      "maximum_devices": 1,
+      "factor": 1.0
+    },
+    {
+      "maximum_devices": 3,
+      "factor": 0.8
+    },
+    {
+      "maximum_devices": 6,
+      "factor": 0.7
+    },
+    {
+      "maximum_devices": 12,
+      "factor": 0.6
+    },
+    {
+      "maximum_devices": null,
+      "factor": 0.5
+    }
+  ],
+  "code_triggers": {
+    "nec23095": {
+      "id": "NEC230.95-2020-trigger",
+      "verified_editions": [
+        "2020"
+      ],
+      "minimum_disconnect_a": 1000,
+      "exclusive_minimum_voltage_to_ground_v": 150,
+      "maximum_phase_voltage_v": 1000,
+      "grounding": "solidly_grounded_wye",
+      "exceptions_automatically_applied": false,
+      "source_refs": [
+        {
+          "source_id": "seattle-nec2020",
+          "page": 88,
+          "printed_page": "70-96.1",
+          "section": "230.95 opening paragraphs; local testing modifications not generalized"
+        }
+      ],
+      "limitations": "Trigger reference only. Local adoption and all exceptions require engineer confirmation. Not an interpretation of NEC2026.",
+      "explicit_nontrigger_groundings": [
+        "solidly_grounded_delta",
+        "ungrounded_delta",
+        "high_resistance_grounded_wye",
+        "ungrounded_wye"
+      ]
+    },
+    "nec24087": {
+      "id": "NEC240.87-2020-2023-trigger",
+      "verified_editions": [
+        "2020",
+        "2023"
+      ],
+      "minimum_maximum_trip_a": 1200,
+      "source_refs": [
+        {
+          "source_id": "se-0760DB1402",
+          "page": 1,
+          "printed_page": "1",
+          "section": "Highest actual trip capability and documentation"
+        },
+        {
+          "source_id": "se-0760DB1402",
+          "page": 3,
+          "printed_page": "3",
+          "section": "Methods5\u20137 and performance testing"
+        }
+      ],
+      "methods": [
+        "zone_selective_interlocking",
+        "differential_relaying",
+        "maintenance_switch_with_local_status",
+        "active_arc_flash_mitigation",
+        "instantaneous_setting",
+        "instantaneous_override",
+        "approved_equivalent"
+      ],
+      "requires_arcing_current_study": true,
+      "requires_site_performance_testing": true
+    }
+  },
+  "ul891_scope": {
+    "maximum_nominal_voltage_v": 1000,
+    "maximum_available_fault_ka": 200,
+    "short_time_rating_supported": false,
+    "source_refs": [
+      {
+        "source_id": "ul891-scope",
+        "page": null,
+        "section": "1.1\u20131.5 official public scope"
+      }
+    ]
+  },
+  "limitations": [
+    "This subset does not enumerate exact orderable catalog numbers or all standard sensor/rating combinations. Those remain unresolved.",
+    "Catalog device-table SCCR is retained as catalog_sccr_ka; it is not silently relabelled as an accepted device interrupting rating or an assembly certification.",
+    "NEMA3R, utility metering, service access, seismic qualification, cable bending space, exact mounting datum, bus conductor design and exact accessories require manufacturer/engineer data.",
+    "No company engineer has approved this rule pack. Every generated configuration remains proposed.",
+    "Priors rank only configurations without known rule failures."
+  ],
+  "rules": [
+    {
+      "id": "qed2.scope",
+      "version": "1.0.0",
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 5,
+          "printed_page": "5",
+          "section": "Features",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "frame.range",
+      "version": "1.0.0",
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 63,
+          "printed_page": "63",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        },
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 64,
+          "printed_page": "64",
+          "section": "Table20",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "frame.trip_type",
+      "version": "1.0.0",
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 45,
+          "printed_page": "45",
+          "section": "Table9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        },
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Trip Unit Options",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "packing.side_and_space",
+      "version": "1.0.0",
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 65,
+          "printed_page": "65",
+          "section": "Table21",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "interior.unknown_loading_bus",
+      "version": "1.0.0",
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 65,
+          "printed_page": "65",
+          "section": "Table21 footnote27",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "main.dimensions",
+      "version": "1.0.0",
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 54,
+          "printed_page": "54",
+          "section": "Table11 and footnote9",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "topology.single_main_bus",
+      "version": "1.0.0",
+      "source_refs": [
+        {
+          "source_id": "schneider-2700CT1101-2026",
+          "sha256": "3004a4513f7b9ad2a60eaf49f933a90e032f6a23c369dd2dec1e4ec037d8b2c8",
+          "page": 8,
+          "printed_page": "8",
+          "section": "Through Bus",
+          "url": "https://download.schneider-electric.com/files?p_Doc_Ref=2700CT1101&p_enDocType=Catalog&p_File_Name=QED_2_Catalog_2700CT1101_7_2026.pdf"
+        }
+      ]
+    }
+  ],
+  "family_verification": {
+    "source_id": "kansas-h3-schedule",
+    "sha256": "d09363b2a683ad7f697fb76d534a8ade89e23428ba9b9d0a17d7a904bef776b6",
+    "page": 1,
+    "parent_physical_page": 246,
+    "literal_title": "POWER STYLE QED-2 SWITCHBOARD",
+    "inspection": "Agent visual inspection of original development source page; not independently human verified.",
+    "role": "Manufacturer family binding only; not customer requirements or real reconstruction input.",
+    "catalog_match": "Schneider2700CT1101 QED-2 family; exact historical2012 product/options require period-specific manufacturer confirmation."
+  }
+}

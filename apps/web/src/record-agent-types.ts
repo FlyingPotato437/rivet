@@ -14,7 +14,7 @@ export type RecordAgentProposal = {
   kind: string;
   title: string;
   summary: string;
-  status: "pending" | "accepted" | "rejected" | "stale";
+  status: "pending" | "prepared" | "accepted" | "rejected" | "stale";
   origin: "ai" | "rules";
   operations: RecordAgentOperation[];
   before: unknown;
@@ -54,6 +54,7 @@ export type RecordAgentRun = {
     summary?: string;
     question?: string;
     error?: string;
+    details?: string;
     coverage?: unknown;
   };
   usage: {

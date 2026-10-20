@@ -61,13 +61,14 @@ def example(client, monkeypatch, ai=False):
     return o, w
 
 
-def test_rule_work_is_durable_reviewed_and_does_not_send_or_close(client, monkeypatch):
+def test_rule_drafts_save_automatically_without_sending_or_closing(client, monkeypatch):
     o, w = example(client, monkeypatch)
     r = start(client, o, w)
     assert r["mode"] == "rules" and r["status"] == "queued" and not r["model"]
     process(claim())
     done = fetched(client, o, r)
-    assert done["status"] == "waiting_for_review"
+    assert done["status"] == "completed"
+    assert done["proposals"][0]["status"] == "prepared"
     assert done["steps"][0]["name"] == "inspect_record"
     assert "No model was used" in done["proposals"][0]["summary"]
     assert view(client, o) == w
@@ -206,7 +207,7 @@ def test_ai_runs_pause_resume_and_retain_real_steps(client, monkeypatch):
     assert resumed.status_code == 202, resumed.text
     process(claim())
     final = fetched(client, o, run)
-    assert final["status"] == "waiting_for_review"
+    assert final["status"] == "completed"
     assert final["usage"]["model_calls"] == 4
     assert len([s for s in final["steps"] if s["name"] == "inspect_record"]) == 1
     assert seen[-1]["state"]["answers"][-1]["origin"] == "human"
@@ -261,7 +262,8 @@ def test_tool_validation_blocks_cross_order_sources_and_technical_mutations(
     run = start(client, o, w)
     process(claim())
     final = fetched(client, o, run)
-    assert final["status"] == "completed"
+    assert final["status"] == "failed"
+    assert "No drafts were saved" in final["result"]["summary"]
     assert len([s for s in final["steps"] if s["status"] == "failed"]) == 4
     assert not final["proposals"] and view(client, o) == w
     assert (
@@ -299,9 +301,9 @@ def test_automatic_event_work_deduplicates_and_respects_disabled_setting(
     client, monkeypatch
 ):
     o, w = example(client, monkeypatch)
-    assert (
-        agent.scheduled_pass() == 0
-    )  # Never analyze existing customer orders without opt-in.
+    assert client.get(f"/api/orders/{o['id']}/record/agent").json()["settings"][
+        "enabled"
+    ]
     enabled = post(
         client,
         f"/orders/{o['id']}/record/agent/settings",
@@ -336,10 +338,40 @@ def test_automatic_event_work_deduplicates_and_respects_disabled_setting(
         ),
     )
     assert cfg.status_code == 200, cfg.text
-    assert cfg.json()["version"] == 3
+    assert cfg.json()["version"] == 4
     assert agent.scheduled_pass() == 0
     current = view(client, o)
     start(client, o, current)  # manual commands remain available
+
+
+def test_new_order_prepares_work_without_a_user_prompt(client, monkeypatch):
+    o, w = example(client, monkeypatch)
+    assert agent.scheduled_pass() == 1
+    assert agent.scheduled_pass() == 0
+    process(claim())
+    result = client.get(f"/api/orders/{o['id']}/record/agent").json()
+    assert result["runs"][0]["origin"] == "event"
+    assert result["proposals"]
+    assert all(p["status"] == "prepared" for p in result["proposals"])
+    assert result["runs"][0]["status"] == "completed"
+    assert view(client, o) == w
+    with Session() as s:
+        assert not list(s.scalars(select(NoticeDelivery)))
+
+
+def test_legacy_orders_are_not_silently_opted_into_automatic_work(client, monkeypatch):
+    from backend.storage.models import OrderRecord
+
+    o, _ = example(client, monkeypatch)
+    with Session.begin() as s:
+        record = s.scalar(select(OrderRecord).where(OrderRecord.order_id == o["id"]))
+        data = deepcopy(record.data)
+        data.pop("agent_settings")
+        record.data = data
+    assert agent.scheduled_pass() == 0
+    assert not client.get(f"/api/orders/{o['id']}/record/agent").json()["settings"][
+        "enabled"
+    ]
 
 
 def test_graph_keeps_markup_and_target_separate_and_preserves_provenance(
@@ -390,7 +422,8 @@ def test_budget_stops_repeated_model_reads_without_faking_completion(
     process(claim())
     result = fetched(client, o, run)
     assert (
-        result["status"] == "waiting_for_input"
+        result["status"] == "failed"
+        and result["result"]["incomplete"]
         and "budget" in result["result"]["summary"]
     )
     assert result["usage"]["model_calls"] == 2
@@ -464,12 +497,44 @@ def test_retry_can_restage_same_operations_without_unique_key_failure(
     )
     process(claim())
     result = fetched(client, o, run)
-    assert result["status"] == "waiting_for_review"
+    assert result["status"] == "completed"
     assert len(result["proposals"]) == 2
     assert (
         next(p for p in result["proposals"] if p["id"] == first["id"])["status"]
-        == "rejected"
+        == "stale"  # Finished drafts are retained; retry supersedes their evidence snapshot.
     )
+
+
+def test_batched_comment_read_uses_only_selected_original_anchors(client, monkeypatch):
+    from backend.storage.models import Order
+
+    o, w = example(client, monkeypatch, ai=True)
+    r = start(client, o, w)
+    cid = w["comments"][0]["id"]
+    with Session.begin() as s:
+        result, ids, _ = agent.execute_tool(
+            s,
+            s.get(Order, o["id"]),
+            s.get(RecordAgentRun, r["id"]),
+            w,
+            "read_comment_sources",
+            {"comment_ids": [cid]},
+        )
+        assert ids == w["comments"][0]["source_ids"]
+        assert result["sources"][0]["id"] == ids[0]
+        assert "customer requests" in result["coverage"]
+        from fastapi import HTTPException
+
+        with pytest.raises(HTTPException) as rejected:
+            agent.execute_tool(
+                s,
+                s.get(Order, o["id"]),
+                s.get(RecordAgentRun, r["id"]),
+                w,
+                "read_comment_sources",
+                {"comment_ids": ["foreign-comment"]},
+            )
+        assert rejected.value.status_code == 422
 
 
 def test_paginated_tools_reach_later_records_and_provider_payload_is_bounded(
@@ -541,7 +606,7 @@ def test_paginated_tools_reach_later_records_and_provider_payload_is_bounded(
         },
         large,
     )
-    assert len(json.dumps(captured["input"])) <= 45000
+    assert agent.token_count(captured["input"], "gpt-6-luna") <= 64000 - 1600
     assert captured["reasoning"] == {"effort": "low"}
     assert captured["store"] is False
     assert all(
@@ -754,7 +819,8 @@ def test_malformed_model_batches_roll_back_every_operation_and_can_recover(
     run = start(client, o, w)
     process(claim())
     result = fetched(client, o, run)
-    assert result["status"] == "completed"
+    assert result["status"] == "failed"
+    assert "No drafts were saved" in result["result"]["summary"]
     assert not result["proposals"]
     assert len([step for step in result["steps"] if step["status"] == "failed"]) == 1
     assert view(client, o) == w
@@ -977,7 +1043,7 @@ def test_reference_ambiguity_prepares_questions_without_picking_a_drawing(
     run = start(client, o, w)
     process(claim())
     result = fetched(client, o, run)
-    assert result["status"] == "waiting_for_review"
+    assert result["status"] == "completed"
     operations = result["proposals"][0]["operations"]
     assert len(operations) == 1 and operations[0]["type"] == "draft_clarification"
     assert set(c["source_ids"]) <= set(operations[0]["evidence_ids"])
@@ -1011,7 +1077,11 @@ def test_accepted_task_is_not_recreated_by_a_second_agent_run(client, monkeypatc
     monkeypatch.setattr(agent, "provider_call", lambda *a: (*next(sequence), {}))
     first = start(client, o, w)
     process(claim())
-    proposal = fetched(client, o, first)["proposals"][0]
+    first_result = fetched(client, o, first)
+    assert first_result["status"] == "waiting_for_review"
+    proposal = first_result["proposals"][0]
+    assert proposal["status"] == "pending"
+    assert view(client, o) == w, "A human assignment must not be silently committed"
     accepted = post(
         client,
         f"/orders/{o['id']}/record/agent/proposals/{proposal['id']}/resolve",
@@ -1165,13 +1235,246 @@ def test_annotation_only_search_repeat_finalizes_into_specific_reviewable_draft(
     )
     process(claim())
     result = fetched(client, o, run)
-    assert (
-        result["status"] == "waiting_for_review" and result["usage"]["model_calls"] == 6
-    )
+    assert result["status"] == "completed" and result["usage"]["model_calls"] == 6
     assert len(result["proposals"]) == 1
     proposal = result["proposals"][0]
     assert proposal["operations"][0]["type"] == "draft_clarification"
     assert proposal["evidence_ids"] == [source]
     assert len([s for s in result["steps"] if s["name"] == "search_evidence"]) == 1
     assert not result["result"].get("question")
+    assert view(client, o) == w
+
+
+def test_annotation_id_error_recovers_then_review_commits_real_draft(
+    client, monkeypatch
+):
+    o, w = example(client, monkeypatch, ai=True)
+    comment = w["comments"][0]
+    sid = comment["source_ids"][0]
+    attempt = {"stage": 0}
+
+    def model(data, workspace):
+        tools = agent.available_tools(data, workspace)
+        stage_tool = next((t for t in tools if t["name"] == "stage_changes"), None)
+        if stage_tool:
+            choices = stage_tool["parameters"]["properties"]["operations"]["items"][
+                "properties"
+            ]["comment_id"]["enum"]
+            assert choices == ["", comment["id"]]
+            assert "pdf-annotation-1" not in choices
+        previous = data["steps"]
+        if len(previous) == 1:
+            return "read_source", {"source_id": sid}, {}
+        if attempt["stage"] < 2:
+            invalid = attempt["stage"] == 0
+            if not invalid:
+                assert {t["name"] for t in tools} == {"stage_changes", "request_input"}
+            attempt["stage"] += 1
+            return (
+                "stage_changes",
+                {
+                    "title": "Confirm the drawing reference",
+                    "summary": "A source-linked question.",
+                    "operations": [
+                        {
+                            "type": "draft_clarification",
+                            "comment_id": "pdf-annotation-1"
+                            if invalid
+                            else comment["id"],
+                            "title": "Confirm drawing and revision",
+                            "text": "Which sheet and revision does the red item refer to?",
+                            "evidence_ids": [sid],
+                        }
+                    ],
+                },
+                {},
+            )
+        return (
+            "complete",
+            {
+                "summary": "## Prepared\n- A clarification draft.\n\n## Needs your review\n- Confirm the drawing reference.",
+                "source_ids": [sid],
+            },
+            {},
+        )
+
+    monkeypatch.setattr(agent, "provider_call", model)
+    run = start(client, o, w)
+    process(claim())
+    final = fetched(client, o, run)
+    assert final["status"] == "completed"
+    assert len(final["proposals"]) == 1
+    assert len([step for step in final["steps"] if step["status"] == "failed"]) == 1
+    assert view(client, o) == w
+    proposal = final["proposals"][0]
+    accepted = post(
+        client,
+        f"/orders/{o['id']}/record/agent/proposals/{proposal['id']}/resolve",
+        write(w, action="accept"),
+    )
+    assert accepted.status_code == 200, accepted.text
+    current = view(client, o)
+    draft = next(
+        n for n in current["notices"] if n.get("proposal_id") == proposal["id"]
+    )
+    assert draft["body"] == "Which sheet and revision does the red item refer to?"
+    assert draft["status"] == "draft"
+    assert current["comments"][0]["text"] == comment["text"]
+    assert not current["comments"][0]["reviewed"]
+    with Session() as s:
+        assert not list(s.scalars(select(NoticeDelivery)))
+
+
+def test_current_legacy_draft_is_available_without_a_review_migration(
+    client, monkeypatch
+):
+    from backend.storage.models import RecordAgentProposal
+
+    o, w = example(client, monkeypatch)
+    run = start(client, o, w)
+    process(claim())
+    result = fetched(client, o, run)
+    pid = result["proposals"][0]["id"]
+    with Session.begin() as s:
+        s.get(RecordAgentProposal, pid).status = "pending"
+        s.get(RecordAgentRun, run["id"]).status = "waiting_for_review"
+    queue = client.get("/api/records/inbox").json()["items"]
+    proposal = next(i for i in queue if i.get("proposal_id") == pid)
+    assert proposal["status"] == "ready"
+    assert proposal["review_required"] is False
+    assert proposal["prepared_automatically"] is True
+    assert proposal["prepared_outputs"] == 1
+    assert fetched(client, o, run)["status"] == "completed"
+    assert view(client, o) == w
+
+
+def test_saved_draft_does_not_hide_incomplete_work(client, monkeypatch):
+    o, w = example(client, monkeypatch, ai=True)
+    source = w["comments"][0]["source_ids"][0]
+    actions = iter(
+        [
+            ("read_source", {"source_id": source}),
+            (
+                "stage_changes",
+                {
+                    "title": "Partial clarification",
+                    "operations": [
+                        {
+                            "type": "draft_clarification",
+                            "comment_id": w["comments"][0]["id"],
+                            "text": "Please provide the referenced sheet and revision.",
+                            "evidence_ids": [source],
+                        }
+                    ],
+                },
+            ),
+        ]
+    )
+
+    def model(*args):
+        try:
+            return (*next(actions), {})
+        except StopIteration:
+            raise agent.RunBudgetReached("Reached the run budget.")
+
+    monkeypatch.setattr(agent, "provider_call", model)
+    run = start(client, o, w)
+    process(claim())
+    result = fetched(client, o, run)
+    assert result["status"] == "failed"
+    assert result["result"]["incomplete"] is True
+    assert result["proposals"][0]["status"] == "prepared"
+    items = client.get("/api/records/inbox").json()["items"]
+    blocker = next(
+        i for i in items if i.get("kind") == "run" and i.get("run_id") == run["id"]
+    )
+    assert blocker["status"] == "needs_review" and blocker["review_required"]
+    assert view(client, o) == w
+
+
+def test_repeated_preparation_does_not_duplicate_saved_drafts(client, monkeypatch):
+    o, w = example(client, monkeypatch)
+    first = start(client, o, w)
+    process(claim())
+    pid = fetched(client, o, first)["proposals"][0]["id"]
+    second = start(
+        client, o, w, goal="Prepare the same missing-reference clarification again."
+    )
+    process(claim())
+    assert fetched(client, o, second)["status"] == "completed"
+    aggregate = client.get(f"/api/orders/{o['id']}/record/agent").json()
+    assert [p["id"] for p in aggregate["proposals"] if p["status"] == "prepared"] == [
+        pid
+    ]
+    assert view(client, o) == w
+
+
+def test_legacy_budget_stop_is_not_presented_as_a_human_question(client, monkeypatch):
+    o, w = example(client, monkeypatch)
+    run = start(client, o, w)
+    with Session.begin() as s:
+        row = s.get(RecordAgentRun, run["id"])
+        row.status = "waiting_for_input"
+        row.result = {
+            "question": "Narrow the next step to continue within a new run allowance."
+        }
+        row.events = [{"kind": "budget_reached", "at": "2026-10-14T00:00:00Z"}]
+    result = fetched(client, o, run)
+    assert result["status"] == "failed"
+    assert result["result"]["incomplete"]
+    assert not result["result"]["question"]
+    assert view(client, o) == w
+
+
+def test_agent_reserves_budget_to_write_the_result_instead_of_more_reads(
+    client, monkeypatch
+):
+    o, w = example(client, monkeypatch, ai=True)
+    comment = w["comments"][0]
+    sid = comment["source_ids"][0]
+    calls = []
+
+    def model(data, workspace):
+        calls.append(data["state"].get("phase", "investigate"))
+        if len(calls) == 1:
+            return "read_source", {"source_id": sid}, {"total_tokens": 1600000}
+        if len(calls) == 2:
+            assert data["state"]["phase"] == "finalize"
+            assert {t["name"] for t in agent.available_tools(data, workspace)} == {
+                "stage_changes",
+                "request_input",
+                "complete",
+            }
+            return (
+                "stage_changes",
+                {
+                    "title": "Clarification ready",
+                    "operations": [
+                        {
+                            "type": "draft_clarification",
+                            "comment_id": comment["id"],
+                            "text": "Please share the marked-up sheet and revision.",
+                            "evidence_ids": [sid],
+                        }
+                    ],
+                },
+                {"total_tokens": 5000},
+            )
+        assert data["state"]["phase"] == "finish"
+        return (
+            "complete",
+            {
+                "summary": "A cited clarification is saved. No drawing location was inferred.",
+                "source_ids": [sid],
+            },
+            {"total_tokens": 2000},
+        )
+
+    monkeypatch.setattr(agent, "provider_call", model)
+    run = start(client, o, w)
+    process(claim())
+    result = fetched(client, o, run)
+    assert calls == ["investigate", "finalize", "finish"]
+    assert result["status"] == "completed"
+    assert result["proposals"][0]["status"] == "prepared"
     assert view(client, o) == w

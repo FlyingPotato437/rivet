@@ -13,6 +13,13 @@ import { useAccount } from "./Auth";
 import { ErrorNote, Modal } from "./ui";
 import type { RecordView } from "./record-types";
 import "./integrations.css";
+import { MicrosoftMailboxSettings } from "./MicrosoftMailboxSettings";
+import CompanyContextSettings from "./CompanyContextSettings";
+import { ManufacturerProfileSettings } from "./ManufacturerProfileSettings";
+import { LearningModelSettings } from "./LearningModelSettings";
+import { CompanyLearning } from "./CompanyLearning";
+import { SapConnectionSettings } from "./SapConnectionSettings";
+import { AutomationReadiness } from "./AutomationReadiness";
 
 type EmailStatus = {
   configured: boolean;
@@ -50,6 +57,12 @@ export function AdoptionReadiness({ compact = false }: { compact?: boolean }) {
     available: "Available",
     export_available: "Export available",
     not_connected: "Not connected",
+    current: "Up to date",
+    attention_required: "Needs attention",
+    paused: "Paused",
+    configured: "Ready to check",
+    sandbox_verified: "Sandbox verified",
+    demo_only: "Local demo",
   };
   return (
     <section className={`adoption-readiness${compact ? " is-compact" : ""}`}>
@@ -77,7 +90,7 @@ export function AdoptionReadiness({ compact = false }: { compact?: boolean }) {
                   <p>{integration.detail}</p>
                 </div>
                 <span
-                  className={`adoption-state ${integration.status === "not_connected" ? "is-later" : "is-available"}`}
+                  className={`adoption-state ${["not_connected", "attention_required", "paused"].includes(integration.status) ? "is-later" : "is-available"}`}
                 >
                   {labels[integration.status] || integration.status}
                 </span>
@@ -92,7 +105,7 @@ export function AdoptionReadiness({ compact = false }: { compact?: boolean }) {
                 : "No forwarding address has been created for this team. An administrator can enable forwarding in the Inbox."}{" "}
             {state.data.forwarding.automatic_delivery_configured
               ? "A receiving webhook is configured; verify delivery with a test email during setup."
-              : "Automatic email intake is not enabled. Saved email uploads work without it."}
+              : "Automatic forwarding intake is not enabled. Saved email uploads work without it; Outlook monitoring is configured separately."}
           </p>
         </>
       )}
@@ -112,6 +125,17 @@ export function IntegrationSettings() {
   const data = checked || status.data;
   return (
     <>
+      <MicrosoftMailboxSettings />
+      <SapConnectionSettings />
+      <AutomationReadiness />
+      <LearningModelSettings />
+      <CompanyLearning
+        navigate={(to) => {
+          location.hash = to;
+        }}
+      />
+      <CompanyContextSettings />
+      <ManufacturerProfileSettings />
       <AdoptionReadiness />
       <section className="settings-section">
         <h3>Email forwarding setup</h3>
@@ -548,6 +572,13 @@ type Brief = {
   text: string;
   version: number;
   order_url: string;
+  prepared_count: number;
+  prepared_work: {
+    id: string;
+    origin: string;
+    titles: string[];
+    url: string;
+  }[];
   items: {
     id: string;
     label: string;
@@ -634,6 +665,33 @@ export function ReviewBrief({
                 </span>
                 <h3>{preview.data.subject}</h3>
                 <p>{preview.data.summary}</p>
+                {preview.data.prepared_count > 0 && (
+                  <section className="review-brief-work">
+                    <h3>
+                      {preview.data.prepared_count} drafts ready for your review
+                    </h3>
+                    {preview.data.prepared_work.map((work) => (
+                      <div key={work.id}>
+                        <span>
+                          {work.origin === "ai"
+                            ? "AI prepared"
+                            : "Rule-based preparation"}
+                        </span>
+                        <ul>
+                          {work.titles.map((title, index) => (
+                            <li key={index}>{title}</li>
+                          ))}
+                        </ul>
+                        {work.url && (
+                          <a href={work.url} onClick={() => setOpen(false)}>
+                            Review prepared work
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                    <p>Pending review. Nothing has been sent or approved.</p>
+                  </section>
+                )}
                 {preview.data.items.map((item) => (
                   <article key={item.id}>
                     <span>

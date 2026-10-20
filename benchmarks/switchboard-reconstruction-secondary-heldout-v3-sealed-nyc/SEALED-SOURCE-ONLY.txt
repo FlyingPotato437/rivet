@@ -1,0 +1,1 @@
+SEALED: Source pixels and expected values are private to source-label authors and independent QA. Implementers and root should read only aggregate receipts/paths/hashes. No parser, provider/model, extractor, evaluator or prediction allowed before a separately recorded implementation freeze and final source-only QA. This is draft, not engineer verified.

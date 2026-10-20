@@ -1,0 +1,91 @@
+package,parent_physical_page,row,field,value,review
+campbell-evgo-schedule-new-holdout,17,1,section_no,1,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,1,circuit_no,UCT,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,1,device_frame,1200A,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,1,designation,Pacific G&E (CA),Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,2,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,2,circuit_no,M1,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,2,device_frame,PJ 1200A Plug A,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,2,trip_a,1200,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,2,pole_count,3,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,3,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,3,circuit_no,1,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,3,device_frame,LJ 600A,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,3,trip_a,300,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,3,pole_count,3,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,4,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,4,circuit_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,4,device_frame,LJ 600A,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,4,trip_a,300,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,4,pole_count,3,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,5,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,5,device_frame,120kA SPD,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,6,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,6,circuit_no,3,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,6,device_frame,BJ,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,6,trip_a,30,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,6,pole_count,3,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,7,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,7,circuit_no,4,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,7,device_frame,JJ 250A,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,7,trip_a,175,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,7,pole_count,3,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,8,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,8,circuit_no,5,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,8,device_frame,JJ 250A,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,8,trip_a,175,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,8,pole_count,3,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,9,section_no,2,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,9,circuit_no,6,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,9,device_frame,BJ,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,9,trip_a,20,Source image only; no Rivet predictions viewed
+campbell-evgo-schedule-new-holdout,17,9,pole_count,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,1,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,1,device_frame,Strip Heater,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,2,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,2,circuit_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,2,device_frame,MJ,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,2,trip_a,350,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,2,pole_count,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,3,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,3,circuit_no,2,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,3,device_frame,MJ,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,3,trip_a,350,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,3,pole_count,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,4,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,4,circuit_no,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,4,device_frame,BJ,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,4,trip_a,50,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,4,pole_count,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,5,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,5,circuit_no,4,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,5,device_frame,MJ,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,5,trip_a,350,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,5,pole_count,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,6,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,6,circuit_no,5,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,6,device_frame,MJ (PS),Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,6,trip_a,350,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,6,pole_count,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,7,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,7,circuit_no,6,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,7,device_frame,MJ,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,7,trip_a,350,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,7,pole_count,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,8,section_no,1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,8,device_frame,240kA SPD,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,9,section_no,2,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,9,device_frame,Strip Heater,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,10,section_no,2,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,10,circuit_no,ATS,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,10,device_frame,ASCO ATS H FRAME 1200A,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,10,pole_count,4,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,11,section_no,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,11,circuit_no,UCT,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,11,device_frame,1200A,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,11,designation,Ameren (MO & IL),Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,12,section_no,3,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,12,circuit_no,M1,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,12,device_frame,PJ 1200A Plug A,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,12,trip_a,1200,Source image only; no Rivet predictions viewed
+osage-dsg-schedule-new-holdout,104,12,pole_count,3,Source image only; no Rivet predictions viewed

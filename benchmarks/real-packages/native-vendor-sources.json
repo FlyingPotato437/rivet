@@ -1,0 +1,525 @@
+{
+  "schema_version": "rivet.native-vendor-source-catalog.v1",
+  "items": [
+    {
+      "id": "autodesk-au-2018-im226476",
+      "publisher": "Autodesk University",
+      "source_page": "https://www.autodesk.com/autodesk-university/class/Automatic-Drawing-Creation-AutoCAD-Electrical-2018",
+      "url": "https://static.au-uw2-prd.autodesk.com/Optional_Additional_Class_Materials_IM226476_Automatic_Drawing_Creation_with_AutoCAD_Electrical_Randy_Brunette.zip",
+      "path": "../../.data/real-document-corpus/official-native-exports/autodesk-au-2018-IM226476.zip",
+      "sha256": "a892a858517dfe35c1651aaf2b2f2f357d5d0f3f9da4296a1d09beb8d724d95b",
+      "bytes": 207980,
+      "kind": "official_training_sample",
+      "customer_package": false,
+      "archive_members": [
+        {
+          "name": "IM226476-Automatic_Drawings_Dataset/3Phase_Ladder.dwg_30.dwg",
+          "bytes": 45874
+        },
+        {
+          "name": "IM226476-Automatic_Drawings_Dataset/Automatic_Drawings.aepx",
+          "bytes": 724
+        },
+        {
+          "name": "IM226476-Automatic_Drawings_Dataset/Automatic_Drawings.wdp",
+          "bytes": 1683
+        },
+        {
+          "name": "IM226476-Automatic_Drawings_Dataset/Automatic_Drawings_10.dwg",
+          "bytes": 178596
+        },
+        {
+          "name": "IM226476-Automatic_Drawings_Dataset/Single_Phase_Ladder_20.dwg",
+          "bytes": 46800
+        }
+      ],
+      "extensions": {
+        ".dwg": 3,
+        ".aepx": 1,
+        ".wdp": 1
+      },
+      "notes": "Unchanged original published training material, not a real customer manufacturing review cycle. Archive not executed. Some nested ZIPs may contain CAD project files; contents require separate provenance inspection."
+    },
+    {
+      "id": "autodesk-au-2014-md5595",
+      "publisher": "Autodesk University",
+      "source_page": "https://www.autodesk.com/autodesk-university/class/Cables-and-Harnessing-AutoCAD-Electrical-2014",
+      "url": "https://static.au-uw2-prd.autodesk.com/additional_5595_MD5595-Cables_20and_20Harnessing_20in_20AutoCAD_20Electrical_20Dataset.zip",
+      "path": "../../.data/real-document-corpus/official-native-exports/autodesk-au-2014-cables-harnessing.zip",
+      "sha256": "e0c626a6ae389d9a4241b86cba31fcd981328cccafadbb77e4e4efed5aff2c4d",
+      "bytes": 20025227,
+      "kind": "official_training_sample",
+      "customer_package": false,
+      "archive_members": [
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/ACADE_TITLE.dwg",
+          "bytes": 42013
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/C&H-AU_01.dwg",
+          "bytes": 298075
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/C&H-AU_Rack_01.dwg",
+          "bytes": 706030
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/C&H-AU_Rack_02.dwg",
+          "bytes": 861440
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/Cables&Harnesses-AU2015.wdp",
+          "bytes": 1413
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/cables&harnesses-au2015.wdt",
+          "bytes": 3425
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/Cables&Harnesses-AU2015.zip",
+          "bytes": 10483379
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/Cables&Harnesses-AU2015_cat.mdb",
+          "bytes": 39145472
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/footprint_lookup.mdb",
+          "bytes": 78045184
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/FP_MRK_2426_Front_2D.dwg",
+          "bytes": 201094
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/FP_WS-C3750X-16T-S.dwg",
+          "bytes": 327569
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/FP_WS-C3750X-16T-S.png",
+          "bytes": 139
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/FP_WS-C3750X-24T-S.dwg",
+          "bytes": 319894
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/FP_WS-C3750X-24T-S.png",
+          "bytes": 133
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HCN2_3W_PLUG.dwg",
+          "bytes": 22576
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_029.dwg",
+          "bytes": 18388
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_034.dwg",
+          "bytes": 18323
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_BAT.dwg",
+          "bytes": 29557
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_CBL.dwg",
+          "bytes": 17555
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_CS.dwg",
+          "bytes": 22645
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_FLT.dwg",
+          "bytes": 23093
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_GPS.dwg",
+          "bytes": 22033
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_MC.dwg",
+          "bytes": 22261
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_PLUG-L.dwg",
+          "bytes": 17744
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_PLUG-R.dwg",
+          "bytes": 17839
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_Rack_Switch_01.dwg",
+          "bytes": 338386
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_Rack_Switch_01.png",
+          "bytes": 160
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_Rack_Switch_03.dwg",
+          "bytes": 321876
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_Rack_Switch_03.png",
+          "bytes": 145
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_RCVR.dwg",
+          "bytes": 21427
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_RCVR_SAT.dwg",
+          "bytes": 21108
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_SCR.dwg",
+          "bytes": 21583
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_SERVO-L.dwg",
+          "bytes": 22802
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_SERVO-R.dwg",
+          "bytes": 31164
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_SERVO.dwg",
+          "bytes": 22772
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_SRV.dwg",
+          "bytes": 18036
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_TLD.dwg",
+          "bytes": 18930
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_VLT.dwg",
+          "bytes": 22613
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV1_VMS.dwg",
+          "bytes": 21328
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV2_Rack_Switch_02.dwg",
+          "bytes": 47480
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HDV2_Rack_Switch_02.png",
+          "bytes": 141
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HMO13_MTR.dwg",
+          "bytes": 22293
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/Hw02.dwg",
+          "bytes": 20179
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HW02_3WIRE_PLUG.dwg",
+          "bytes": 22805
+        },
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/HW02_TEST.dwg",
+          "bytes": 23250
+        }
+      ],
+      "extensions": {
+        ".dwg": 35,
+        ".wdp": 1,
+        ".wdt": 1,
+        ".zip": 1,
+        ".mdb": 2,
+        ".png": 5
+      },
+      "notes": "Unchanged official electrical training dataset. Native project files are authentic vendor-provided samples, not customer review cycles. Archive inspected, not executed.",
+      "nested_archives": [
+        {
+          "name": "MD5595-Cables and Harnessing in AutoCAD Electrical Dataset/Cables&Harnesses-AU2015.zip",
+          "members": [
+            {
+              "name": "ACADE_TITLE.dwg",
+              "bytes": 42013
+            },
+            {
+              "name": "C&H-AU_01.dwg",
+              "bytes": 298075
+            },
+            {
+              "name": "C&H-AU_Rack_01.dwg",
+              "bytes": 706030
+            },
+            {
+              "name": "C&H-AU_Rack_02.dwg",
+              "bytes": 861440
+            },
+            {
+              "name": "Cables&Harnesses-AU2015.wdp",
+              "bytes": 1413
+            },
+            {
+              "name": "cables&harnesses-au2015.wdt",
+              "bytes": 3425
+            },
+            {
+              "name": "Cables&Harnesses-AU2015_cat.ldb",
+              "bytes": 64
+            },
+            {
+              "name": "Cables&Harnesses-AU2015_cat.mdb",
+              "bytes": 39145472
+            },
+            {
+              "name": "footprint_lookup.mdb",
+              "bytes": 78045184
+            },
+            {
+              "name": "FP_MRK_2426_Front_2D.dwg",
+              "bytes": 201094
+            },
+            {
+              "name": "FP_WS-C3750X-16T-S.dwg",
+              "bytes": 327569
+            },
+            {
+              "name": "FP_WS-C3750X-16T-S.png",
+              "bytes": 139
+            },
+            {
+              "name": "FP_WS-C3750X-24T-S.dwg",
+              "bytes": 319894
+            },
+            {
+              "name": "FP_WS-C3750X-24T-S.png",
+              "bytes": 133
+            },
+            {
+              "name": "HCN2_3W_PLUG.dwg",
+              "bytes": 22576
+            },
+            {
+              "name": "HDV1_029.dwg",
+              "bytes": 18388
+            },
+            {
+              "name": "HDV1_034.dwg",
+              "bytes": 18323
+            },
+            {
+              "name": "HDV1_BAT.dwg",
+              "bytes": 29557
+            },
+            {
+              "name": "HDV1_CBL.dwg",
+              "bytes": 17555
+            },
+            {
+              "name": "HDV1_CS.dwg",
+              "bytes": 22645
+            },
+            {
+              "name": "HDV1_FLT.dwg",
+              "bytes": 23093
+            },
+            {
+              "name": "HDV1_GPS.dwg",
+              "bytes": 22033
+            },
+            {
+              "name": "HDV1_MC.dwg",
+              "bytes": 22261
+            },
+            {
+              "name": "HDV1_PLUG-L.dwg",
+              "bytes": 17744
+            },
+            {
+              "name": "HDV1_PLUG-R.dwg",
+              "bytes": 17839
+            },
+            {
+              "name": "HDV1_Rack_Switch_01.dwg",
+              "bytes": 338386
+            },
+            {
+              "name": "HDV1_Rack_Switch_01.png",
+              "bytes": 160
+            },
+            {
+              "name": "HDV1_Rack_Switch_03.dwg",
+              "bytes": 321876
+            },
+            {
+              "name": "HDV1_Rack_Switch_03.png",
+              "bytes": 145
+            },
+            {
+              "name": "HDV1_RCVR.dwg",
+              "bytes": 21427
+            },
+            {
+              "name": "HDV1_RCVR_SAT.dwg",
+              "bytes": 21108
+            },
+            {
+              "name": "HDV1_SCR.dwg",
+              "bytes": 21583
+            },
+            {
+              "name": "HDV1_SERVO-L.dwg",
+              "bytes": 22802
+            },
+            {
+              "name": "HDV1_SERVO-R.dwg",
+              "bytes": 31164
+            },
+            {
+              "name": "HDV1_SERVO.dwg",
+              "bytes": 22772
+            },
+            {
+              "name": "HDV1_SRV.dwg",
+              "bytes": 18036
+            },
+            {
+              "name": "HDV1_TLD.dwg",
+              "bytes": 18930
+            },
+            {
+              "name": "HDV1_VLT.dwg",
+              "bytes": 22613
+            },
+            {
+              "name": "HDV1_VMS.dwg",
+              "bytes": 21328
+            },
+            {
+              "name": "HDV2_Rack_Switch_02.dwg",
+              "bytes": 47480
+            },
+            {
+              "name": "HDV2_Rack_Switch_02.png",
+              "bytes": 141
+            },
+            {
+              "name": "HMO13_MTR.dwg",
+              "bytes": 22293
+            },
+            {
+              "name": "Hw02.dwg",
+              "bytes": 20179
+            },
+            {
+              "name": "HW02_3WIRE_PLUG.dwg",
+              "bytes": 22805
+            },
+            {
+              "name": "HW02_TEST.dwg",
+              "bytes": 23250
+            }
+          ],
+          "extensions": {
+            ".dwg": 35,
+            ".wdp": 1,
+            ".wdt": 1,
+            ".ldb": 1,
+            ".mdb": 2,
+            ".png": 5
+          }
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "These are authentic official training datasets, not independent real manufacturer customer orders.",
+    "No CAD application was invoked to export BOM/wire reports; no Excel or EPLAN export is claimed.",
+    "Archive members and nested archives were inspected without executing CAD, macros, databases or other code.",
+    "No EPLAN native project/report export was acquired."
+  ],
+  "documentation": [
+    {
+      "id": "autodesk-au2019-electrical-attributes",
+      "url": "https://static.au-uw2-prd.autodesk.com/MFG321761-L_Additional_Class_Materials_MFG321761L_Tiffany_Bachmeier.pdf",
+      "sha256": "4833bcd71b8321ded8d9e0c177b492b860575219bbea6b8089c3d4f9fbf34f97",
+      "kind": "official_attribute_reference",
+      "customer_package": false,
+      "path": "../../.data/real-document-corpus/official-native-exports/autodesk-electrical-quick-reference.pdf"
+    }
+  ],
+  "eplan_source_research": [
+    {
+      "publisher": "EPLAN",
+      "url": "https://www.eplan.com/int/en/main-guided-installation/guided-installation-platform-2026/single-user-license-update-installation/first-steps/open-sample-project.html",
+      "finding": "Official documentation identifies EPLAN Sample Project supplied with sample data and opened inside the EPLAN application. No direct public project/report export file was acquired."
+    },
+    {
+      "publisher": "EPLAN",
+      "url": "https://www.eplan.com/content/dam/eplan/website/global/downloads/industries/operator/plant-operator-tips-for-creating-supplier-guidelines.pdf",
+      "finding": "Official guide describes basic projects available after login. No login gate was bypassed and no fictional file was labelled an official export."
+    }
+  ],
+  "report_export_availability": {
+    "archive_inventory_checked": true,
+    "nested_archives_checked": true,
+    "csv_reports_found": 0,
+    "xls_reports_found": 0,
+    "xlsx_reports_found": 0,
+    "pdf_reports_found_in_archives": 0,
+    "fresh_cad_exports_performed": 0,
+    "eplan_native_or_report_files_acquired": 0,
+    "quick_reference_pdf_is_a_report_export": false
+  },
+  "local_exporter_check": {
+    "checked_on": "2026-10-18",
+    "application_locations_checked": [
+      "/Applications",
+      "~/Applications"
+    ],
+    "autocad_electrical_application_found": false,
+    "eplan_application_found": false,
+    "other_application_observed": "Autodesk Fusion",
+    "commands_not_found_on_path": [
+      "AutoCAD",
+      "EPLAN",
+      "eplan",
+      "ODAFileConverter",
+      "dwgread",
+      "dwg2dxf",
+      "dwgconvert",
+      "wine",
+      "wine64",
+      "QCAD",
+      "qcad",
+      "LibreCAD"
+    ],
+    "verified_runnable_licensed_exporter": false,
+    "scope": "Inventory of the stated application locations and PATH, not proof that no other host, virtual machine or installation exists. Fusion presence does not establish AutoCAD Electrical export capability."
+  },
+  "platform_and_rights_sources": [
+    {
+      "url": "https://help.autodesk.com/view/ACD/2026/ENU/?caas=caas%2Fsfdcarticles%2Fsfdcarticles%2FSystem-requirements-for-AutoCAD-2026-including-Specialized-Toolsets.html",
+      "finding": "Official AutoCAD 2026 specialized-toolset requirements identify Windows."
+    },
+    {
+      "url": "https://eplan.help/en-us/infoportal/content/swreqs/Content/htm/SwReqs_k_win10_2025.htm",
+      "finding": "Official EPLAN requirements describe supported Windows environments."
+    },
+    {
+      "url": "https://www.autodesk.com/company/legal-notices-trademarks/access-use/website-terms-of-use",
+      "finding": "Website terms restrict use of downloadable materials, subject to applicable additional terms. No open licence, commercial benchmark, training, modification or redistribution permission is inferred."
+    },
+    {
+      "url": "https://www.autodesk.com/company/legal-notices-trademarks/intellectual-property/copyright",
+      "finding": "Different material categories can have different terms; no general Creative Commons licence is assigned to the AU ZIPs."
+    }
+  ],
+  "rights_status": "Publisher source and file identity established; applicable permission for commercial evaluation, model training or redistribution has not been established. No original files are included in this metadata registry."
+}

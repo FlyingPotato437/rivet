@@ -12,6 +12,7 @@ import {
 import { Empty, RivetIcon } from "./ui";
 import { OrderEvidence, type EvidencePosition } from "./OrderEvidence";
 import { CommentAttribution } from "./RecordAttribution";
+import { TranscriptionCorrection } from "./TranscriptionCorrection";
 import {
   RecordAgent,
   type AgentWorkState,
@@ -110,12 +111,12 @@ export function RecordWorkbench({
     (item) =>
       (queueFilter === "all" ||
         (queueFilter === "review" ? !item.reviewed : item.status === "open")) &&
-      `${item.number} ${item.text} ${item.author}`
+      `${item.log_reference || ""} ${item.number} ${item.text} ${item.author}`
         .toLowerCase()
         .includes(query.toLowerCase()),
   );
   useEffect(() => {
-    setEditing(selectedId === "new" || editRequested);
+    setEditing(!!selectedId || editRequested);
   }, [selectedId, editRequested]);
   const select = (item: RecordComment) => {
     selectComment(item.id);
@@ -130,52 +131,42 @@ export function RecordWorkbench({
   const targetActive = !!target && effectiveSourceId === target.id;
   return (
     <section className="rivet-workbench" aria-label="Drawing review workbench">
-      <div className="workbench-review-bar">
-        <div>
-          <RivetIcon name="review" size={19} />
-          <span>
-            {needsReview.length
-              ? `${needsReview.length} ${needsReview.length === 1 ? "comment needs" : "comments need"} review`
-              : w.comments.length
-                ? "Extracted comments reviewed"
-                : processing
-                  ? "Reading documents…"
-                  : w.documents.length
-                    ? "No extracted comments — review sources"
-                    : "Add a document to begin"}
-          </span>
-        </div>
-        {hasOrderWork && (
+      {!comment && (
+        <div className="workbench-review-bar">
           <div>
-            <button
-              className="text-button"
-              onClick={openReadiness}
-              title="Team assignments, owners, and readiness"
-            >
-              Team tasks
-              <span>
-                {w.coordination?.tasks.filter((task) => task.status !== "done")
-                  .length ?? 0}
-              </span>
-              <ArrowUpRight size={14} />
-            </button>
-            {w.comments.length > 0 && (
-              <button
-                className={
-                  "secondary workbench-queue-toggle" +
-                  (queueOpen ? " active" : "")
-                }
-                aria-expanded={queueOpen}
-                aria-controls="workbench-review-queue"
-                onClick={() => setQueueOpen(!queueOpen)}
-              >
-                <List size={17} />
-                Review queue<span>{needsReview.length}</span>
-              </button>
-            )}
+            <RivetIcon name="review" size={19} />
+            <span>
+              {needsReview.length
+                ? `${needsReview.length} ${needsReview.length === 1 ? "comment needs" : "comments need"} review`
+                : w.comments.length
+                  ? "Extracted comments reviewed"
+                  : processing
+                    ? "Reading documents…"
+                    : w.documents.length
+                      ? "No extracted comments — review sources"
+                      : "Add a document to begin"}
+            </span>
           </div>
-        )}
-      </div>
+          {hasOrderWork && (
+            <div>
+              {w.comments.length > 0 && (
+                <button
+                  className={
+                    "secondary workbench-queue-toggle" +
+                    (queueOpen ? " active" : "")
+                  }
+                  aria-expanded={queueOpen}
+                  aria-controls="workbench-review-queue"
+                  onClick={() => setQueueOpen(!queueOpen)}
+                >
+                  <List size={17} />
+                  Review queue<span>{needsReview.length}</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
       {queueOpen && (
         <section
           className="workbench-queue"
@@ -223,7 +214,7 @@ export function RecordWorkbench({
                 onClick={() => select(item)}
               >
                 <span className="workbench-queue-ref">
-                  {item.number}
+                  {item.log_reference || item.number}
                   <small>Rev {item.revision || "—"}</small>
                 </span>
                 <span>
@@ -278,15 +269,8 @@ export function RecordWorkbench({
                 ))}
               </select>
             </label>
-            <button
-              className="icon-button"
-              aria-label="Add source documents"
-              onClick={addDocuments}
-            >
-              <Plus size={18} />
-            </button>
           </div>
-          {comment && (
+          {comment && target && (
             <div
               className="workbench-document-locations"
               aria-label="Source and drawing locations"
@@ -346,29 +330,6 @@ export function RecordWorkbench({
               actual source beside each record.
             </Empty>
           )}
-          <div className="workbench-source-route">
-            <RivetIcon name="evidence" size={15} />
-            {comment ? (
-              <>
-                <strong>Comment {comment.number}</strong>
-                <span>→</span>
-                <span>
-                  Source{" "}
-                  {comment.source_page
-                    ? `p. ${comment.source_page}`
-                    : "attached"}
-                </span>
-                <span>→</span>
-                <span>
-                  {target
-                    ? `Drawing ${target.location.page ? `p. ${target.location.page}` : "linked"}`
-                    : "Drawing reference needs review"}
-                </span>
-              </>
-            ) : (
-              <span>Original source · document contents remain unchanged</span>
-            )}
-          </div>
         </div>
         <aside
           ref={inspector}
@@ -381,11 +342,11 @@ export function RecordWorkbench({
               onClick={() => setAgentOpen(false)}
             >
               <RivetIcon name="comment" size={16} />
-              Comment & response
+              Response
             </button>
             <button aria-pressed={agentOpen} onClick={() => setAgentOpen(true)}>
               <RivetIcon name="agent" size={16} />
-              Rivet work
+              Rivet’s work
               {agentWork.working ? (
                 <span className="workbench-work-badge is-working">Working</span>
               ) : agentWork.ready > 0 ? (
@@ -402,14 +363,6 @@ export function RecordWorkbench({
               className="workbench-comment-nav"
               aria-label="Comment navigation"
             >
-              <button
-                className="icon-button"
-                aria-label="Previous comment"
-                disabled={commentIndex <= 0}
-                onClick={() => select(w.comments[commentIndex - 1])}
-              >
-                <ArrowLeft size={16} />
-              </button>
               <select
                 aria-label="Current comment"
                 value={comment?.id || ""}
@@ -427,30 +380,21 @@ export function RecordWorkbench({
                 )}
                 {w.comments.map((item) => (
                   <option key={item.id} value={item.id}>
-                    Comment {item.number || "—"}
-                    {item.source_page ? ` · p. ${item.source_page}` : ""}
-                    {item.revision ? ` · Rev ${item.revision}` : ""} ·{" "}
-                    {item.text.slice(0, 80)}
+                    Comment {item.log_reference || item.number || "—"}
+                    {item.revision ? ` · Rev ${item.revision}` : ""}
+                    {item.source_page ? ` · Page ${item.source_page}` : ""}
                   </option>
                 ))}
               </select>
-              <button
-                className="icon-button"
-                aria-label="Next comment"
-                disabled={commentIndex >= w.comments.length - 1}
-                onClick={() => select(w.comments[commentIndex + 1])}
-              >
-                <ArrowRight size={16} />
-              </button>
             </nav>
           )}
           <div className="workbench-record-context" hidden={agentOpen}>
             {editing ? (
-              renderEditor(() => setEditing(false))
+              renderEditor(openComments)
             ) : comment ? (
               <>
                 <div className="workbench-comment-heading">
-                  <span>Comment {comment.number}</span>
+                  <span>Comment {comment.log_reference || comment.number}</span>
                   <span
                     className={
                       "workbench-review-status" +
@@ -462,6 +406,7 @@ export function RecordWorkbench({
                   </span>
                 </div>
                 <p className="workbench-comment-text">{comment.text}</p>
+                <TranscriptionCorrection key={`${w.order.id}:${comment.id}`} w={w} comment={comment} />
                 <p
                   className="workbench-comment-author"
                   title={comment.authored_at}
@@ -712,7 +657,10 @@ export function RecordWorkbench({
           Give Rivet a task or ask about this {comment ? "comment" : "order"}…
         </button>
         <span>
-          Context: {comment ? `comment ${comment.number}` : "this order"}
+          Context:{" "}
+          {comment
+            ? `comment ${comment.log_reference || comment.number}`
+            : "this order"}
         </span>
         <kbd>⌘ J</kbd>
       </div>

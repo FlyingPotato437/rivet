@@ -292,3 +292,302 @@
     flex-direction: column;
   }
 }
+
+.ms-mailbox-settings {
+  margin: 0 0 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border, #33303a);
+}
+.ms-mailbox-settings > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.ms-mailbox-settings h3 {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  margin: 7px 0 10px;
+}
+.ms-mailbox-settings > header p {
+  max-width: 570px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0;
+}
+.ms-mailbox-settings > header a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #c8b3e1;
+  white-space: nowrap;
+  margin-top: 8px;
+}
+.ms-mailbox-kicker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #c8b3e1;
+  font-size: 12px;
+}
+.ms-mailbox-empty {
+  padding: 20px 0;
+  border-top: 1px solid var(--border, #33303a);
+}
+.ms-mailbox-empty strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 7px;
+}
+.ms-mailbox-empty p {
+  max-width: 660px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.ms-mailbox-register {
+  margin-top: 14px;
+}
+.ms-mailbox-register form {
+  max-width: 720px;
+  padding: 24px;
+  background: #18161d;
+  border-radius: 7px;
+}
+.ms-mailbox-register h4 {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 10px;
+}
+.ms-mailbox-register form > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 0 0 22px;
+}
+.ms-mailbox-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 19px;
+}
+.ms-mailbox-register label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+.ms-mailbox-register input:not([type="checkbox"]),
+.ms-mailbox-register textarea {
+  width: 100%;
+  background: #111015;
+  border: 1px solid #423849;
+  color: #efe9f4;
+  border-radius: 5px;
+  padding: 11px 12px;
+  min-height: 42px;
+  font: inherit;
+  line-height: 1.5;
+}
+.ms-mailbox-register textarea {
+  resize: vertical;
+}
+.ms-mailbox-register input:focus,
+.ms-mailbox-register textarea:focus {
+  outline: 1px solid #c8b3e1;
+  border-color: #c8b3e1;
+}
+.ms-mailbox-help {
+  font-size: 12px !important;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 10px 0 18px !important;
+  max-width: 680px;
+}
+.ms-mailbox-register .ms-mailbox-confirm {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  gap: 10px;
+  line-height: 1.6;
+  margin: 22px 0;
+}
+.ms-mailbox-confirm input {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  accent-color: #c8b3e1;
+}
+.ms-mailbox-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.ms-mailbox-actions .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.ms-mailbox-error {
+  color: #e0b6a5 !important;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.ms-mailbox-notice {
+  color: #cdbce0;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 16px;
+}
+.ms-mailbox-scope {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 760px;
+  margin: 24px 0 0;
+}
+.ms-mailbox-connection {
+  border-top: 1px solid var(--border, #33303a);
+  padding: 23px 0;
+}
+.ms-mailbox-connection-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.ms-mailbox-connection-title h4 {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ms-mailbox-state {
+  color: #d2b993;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.ms-mailbox-state.current {
+  color: #9dc3ab;
+}
+.ms-mailbox-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin: 18px 0 22px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.ms-mailbox-counts strong {
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 500;
+  margin-right: 3px;
+}
+.ms-mailbox-folders {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 24px;
+}
+.ms-mailbox-folders > div {
+  padding-left: 13px;
+  border-left: 2px solid #4c3e5b;
+}
+.ms-mailbox-folders > div > div {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ms-mailbox-folders strong {
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.ms-mailbox-folders span,
+.ms-mailbox-folders p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 5px 0 0;
+  line-height: 1.6;
+}
+.ms-mailbox-receipts {
+  margin-top: 23px;
+  border-top: 1px solid var(--border, #33303a);
+  padding-top: 16px;
+}
+.ms-mailbox-receipts summary {
+  color: #c8b3e1;
+  cursor: pointer;
+  font-size: 13px;
+}
+.ms-mailbox-receipts > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.ms-mailbox-receipt {
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border, #33303a);
+}
+.ms-mailbox-receipt > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 20px;
+}
+.ms-mailbox-receipt strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.ms-mailbox-receipt span {
+  font-size: 12px;
+  color: #b8a2ce;
+  white-space: nowrap;
+}
+.ms-mailbox-receipt p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 7px 0;
+}
+.ms-mailbox-receipt-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 9px;
+  font-size: 12px;
+}
+.ms-mailbox-receipt-actions a {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  color: #c8b3e1;
+}
+@media (max-width: 650px) {
+  .ms-mailbox-settings > header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ms-mailbox-fields {
+    grid-template-columns: 1fr;
+  }
+  .ms-mailbox-register form {
+    padding: 20px 16px;
+  }
+  .ms-mailbox-connection-title {
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

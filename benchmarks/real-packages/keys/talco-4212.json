@@ -1,0 +1,111 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "talco-4212",
+  "review": {
+    "reviewer": "Codex assistant visual inspection",
+    "reviewed_at": "2026-10-18T22:19:29.103795+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Preliminary reference labels transcribed from rendered originals independently of Rivet output; requires manufacturer/engineer second review."
+  },
+  "source_hashes": {
+    "talco-4212": "f61136b5fd3dfd2d0d5ab63cefccfc42241862eb803f0868f7a708d8910bf191"
+  },
+  "labels": {
+    "comments": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "talco-4212",
+          "page": 1
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 2
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 3
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 4
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 5
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 6
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 7
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 8
+        },
+        {
+          "source_id": "talco-4212",
+          "page": 9
+        }
+      ],
+      "items": [
+        {
+          "id": "talco-4212-p1-1",
+          "source_id": "talco-4212",
+          "page": 1,
+          "text": "Light Fixtures - No comment",
+          "kind": "printed_markup",
+          "actionable": false
+        },
+        {
+          "id": "talco-4212-p1-2",
+          "source_id": "talco-4212",
+          "page": 1,
+          "text": "Alternate Wall Switch - No comment",
+          "kind": "printed_markup",
+          "actionable": false
+        },
+        {
+          "id": "talco-4212-p1-3",
+          "source_id": "talco-4212",
+          "page": 1,
+          "text": "Electrical panel - shall be 100A, 120/208V, 1PH, as discussed on site",
+          "kind": "printed_markup",
+          "actionable": true
+        },
+        {
+          "id": "talco-4212-p2-1",
+          "source_id": "talco-4212",
+          "page": 2,
+          "text": "Matt to review alternate Legrand Occupancy Sensor.",
+          "kind": "printed_markup",
+          "actionable": true
+        },
+        {
+          "id": "talco-4212-p2-2",
+          "source_id": "talco-4212",
+          "page": 2,
+          "text": "Matt, TBIL & Lamarche Review Panel P1 Re & Re on site, c/w panel enclosure box size limitations.",
+          "kind": "printed_markup",
+          "actionable": true
+        },
+        {
+          "id": "talco-4212-p2-3",
+          "source_id": "talco-4212",
+          "page": 2,
+          "text": "Lamarche to ensure panel cover (NC32S) is lockable.",
+          "kind": "printed_markup",
+          "actionable": true
+        }
+      ]
+    },
+    "devices": null,
+    "bom_rows": null,
+    "issues": null,
+    "revision_checks": null
+  }
+}

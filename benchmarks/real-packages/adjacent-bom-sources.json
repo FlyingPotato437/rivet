@@ -1,0 +1,52 @@
+{
+  "schema_version": "rivet.adjacent-public-source-catalog.v1",
+  "packages": [
+    {
+      "id": "alaska-passenger-wireless",
+      "kind": "real_public",
+      "title": "Alaska Railroad passenger car wireless installation",
+      "publisher": "Alaska Railroad Corporation",
+      "source_page": "https://www.alaskarailroad.com/corporate/procurement/solicitations",
+      "package_type": "adjacent_transit_electrical_procurement",
+      "sources": [
+        {
+          "id": "alaska-wireless-bom",
+          "name": "Passenger_Car_Wireless_Bill_of_Materials.pdf",
+          "path": "../../.data/real-document-corpus/alaska-adjacent-bom/Passenger_Car_Wireless_Bill_of_Materials.pdf",
+          "sha256": "e5f802ad72a87f2edbfde3bf0ada1af055653e72b04e5644c691259ac5541734",
+          "bytes": 60785,
+          "pages": 1,
+          "url": "https://www.alaskarailroad.com/sites/default/files/procurement/Passenger_Car_Wireless_Bill_of_Materials.pdf",
+          "role": "bom",
+          "side": "target",
+          "revision": "Bill dated 2025-06-23 in PDF title",
+          "original_unchanged": true,
+          "metadata_title": "Passenger Car Wireless Bill of Materials 6.23.25.xlsx"
+        },
+        {
+          "id": "alaska-wireless-ifc",
+          "name": "ARRC_WIRELESS_WIFI_IFC.pdf",
+          "path": "../../.data/real-document-corpus/alaska-adjacent-bom/ARRC_WIRELESS_WIFI_IFC.pdf",
+          "sha256": "b133f6dc6f1330c7cf464aa174a4e859e3d48904d465369e070abf569411975f",
+          "bytes": 4517898,
+          "pages": 23,
+          "url": "https://www.alaskarailroad.com/sites/default/files/procurement/ARRC_WIRELESS_WIFI_IFC.pdf",
+          "role": "drawing",
+          "side": "target",
+          "revision": "IFC Rev 0, 2024-02-01",
+          "original_unchanged": true,
+          "metadata_title": ""
+        }
+      ],
+      "provenance": "Official project owner originals; transit electrical installation, not a custom-switchgear manufacturer review or native CAD export. PDF metadata title ending .xlsx does not establish workbook bytes.",
+      "project_package_count": 1,
+      "completed_customer_return_cycle_established": false
+    }
+  ],
+  "failed_workbook_candidate": {
+    "url": "https://aws.state.ak.us/OnlinePublicNotices/Notices/Attachment.aspx?id=156269",
+    "observed_content_type": "text/html",
+    "body_bytes": 245,
+    "finding": "HTTP 200 Request Rejected page; not acquired as XLSX or evaluated as workbook."
+  }
+}

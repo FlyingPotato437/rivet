@@ -1,0 +1,309 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "heldout-scow-panel-bom",
+  "review": {
+    "reviewer": "Codex independent validation agent visual inspection",
+    "reviewed_at": "2026-10-18T22:53:20.248837+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Preliminary manually transcribed original page. Frozen before reader evaluation; not licensed engineer validation. All physical data rows in the bounded schedule are labelled. Selected core engineering fields are transcribed; cells not included in the key are not scored. Blanks and dashes stay unknown, never inferred."
+  },
+  "source_hashes": {
+    "heldout-scow-panel-bom": "a5e159848096a65d094075a8237d497e8654d7a364d07cbd9ca4d2e787bb25f9"
+  },
+  "parent_original": {
+    "sha256": "a54dc91665d5ad1096632fe59b36a61298e993f0116dfa9271f247f0e8f2df10",
+    "page": 35,
+    "url": "https://www.petersburgak.gov/sites/default/files/fileattachments/power_amp_light/page/18954/petersburg_borough_scow_bay_generator_2_switchgear_bid_package_8.22.25.pdf"
+  },
+  "labels": {
+    "comments": null,
+    "devices": null,
+    "bom_rows": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1
+        }
+      ],
+      "source_ids": [
+        "heldout-scow-panel-bom"
+      ],
+      "items": [
+        {
+          "id": "heldout-scow-panel-bom-row-1",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 1,
+          "fields": {
+            "item_number": 1,
+            "unit": "EA",
+            "quantity": 2,
+            "description": "BLANK FILLER PANEL, METALLIC GREY, 3U",
+            "manufacturer_catalog": "BUD/PA-1103-MG"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-2",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 2,
+          "fields": {
+            "item_number": 2,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "BLANK FILLER PANEL, METALLIC GREY, 4U",
+            "manufacturer_catalog": "BUD/PA-1104-MG"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-3",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 3,
+          "fields": {
+            "item_number": 3,
+            "unit": "EA",
+            "quantity": 2,
+            "description": "BLANK FILLER PANEL, METALLIC GREY, 6U",
+            "manufacturer_catalog": "BUD/PA-1106-MG"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-4",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 4,
+          "fields": {
+            "item_number": 4,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "DGC-2020HD GENSET CONTROLLER (DGC-G2)",
+            "manufacturer_catalog": "BASLER/DGC-2020HD5NS2DNSBA"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-5",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 5,
+          "fields": {
+            "item_number": 5,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "PROTECTIVE RELAY GENERATOR (700G-G2)",
+            "manufacturer_catalog": "SCHWEITZER/700G#7JD4"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-6",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 6,
+          "fields": {
+            "item_number": 6,
+            "unit": "EA",
+            "quantity": 2,
+            "description": "TEST SWITCH, FT-1 STYLE, (6-C, 4-P) (TS-S1-1, TS-S2-1)",
+            "manufacturer_catalog": "ABB/C714B325G32"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-7",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 7,
+          "fields": {
+            "item_number": 7,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "TEST SWITCH, FT-1 STYLE, (8-C, 2-P) (TS-S1-2)",
+            "manufacturer_catalog": "ABB/XXXXXXX"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-8",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 8,
+          "fields": {
+            "item_number": 8,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "TEST SWITCH, FT-1 STYLE, (2-C, 8-P) (TS-S2-2)",
+            "manufacturer_catalog": "ABB/XXXXXXX"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-9",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 9,
+          "fields": {
+            "item_number": 9,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "BREAKER CONTROL SWITCH (52CS-G2)",
+            "manufacturer_catalog": "ELECTROSWITCH/24PB38D"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-10",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 10,
+          "fields": {
+            "item_number": 10,
+            "unit": "EA",
+            "quantity": 2,
+            "description": "86 LOCKOUT SWITCH (86G2, 52T1)",
+            "manufacturer_catalog": "ELECTROSWITCH/24XXXXX"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-11",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 11,
+          "fields": {
+            "item_number": 11,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "PROTECTIVE RELAY FEEDER (751-T1)",
+            "manufacturer_catalog": "SCHWEITZER/751#JN9D"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-scow-panel-bom-row-12",
+          "source_id": "heldout-scow-panel-bom",
+          "page": 1,
+          "row": 12,
+          "fields": {
+            "item_number": 12,
+            "unit": "EA",
+            "quantity": 1,
+            "description": "BASLER DECS-250 VOLTAGE REGULATOR (DECS-G2)",
+            "manufacturer_catalog": "BASLER/DECS250 STYLE: CN1C1N"
+          },
+          "source_row_kind": "bom_line",
+          "cell_review_confidence": {
+            "item_number": "high",
+            "unit": "high",
+            "quantity": "high",
+            "description": "high",
+            "manufacturer_catalog": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        }
+      ]
+    },
+    "issues": null,
+    "revision_checks": null
+  },
+  "scope_notes": [
+    "Outline/vector text with zero extractable text; not a raster scan.",
+    "Manufacturer BOM prints tag 52T1 in row10; elevation prints 86T1. Preserve discrepancy as observed, do not silently normalize.",
+    "Placeholder X catalogues are explicitly printed, not known part numbers.",
+    "BOM row count is twelve; installed device count differs from BOM line count and quantities."
+  ]
+}

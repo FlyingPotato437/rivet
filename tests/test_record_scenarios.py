@@ -465,3 +465,45 @@ def test_rotated_cropped_pdf_matches_visible_viewport_coordinates(
     axis = {0: 0, 90: 1, 180: 2, 270: 3}[rotation]
     expected_edge = 70 / 480 if rotation in (0, 90) else 410 / 480
     assert text["location"]["bbox"][axis] == pytest.approx(expected_edge, abs=0.000001)
+
+
+def test_source_order_is_stable_across_record_and_agent_reads(client):
+    """Database row order must not manufacture an evidence change on each read."""
+    from datetime import datetime, timedelta, timezone
+    from backend.storage.models import Span
+    from backend.records import service, agent_service
+
+    order = create(client)
+    import_file(
+        client,
+        order,
+        "comments.txt",
+        b"Comment 1: Confirm sheet E-10.\nComment 2: Confirm sheet E-12.",
+    )
+    with Session.begin() as s:
+        rows = list(
+            s.scalars(
+                select(Span)
+                .join(Document)
+                .where(Document.project_id == order["project_id"])
+                .order_by(Span.id)
+            )
+        )
+        assert len(rows) >= 2
+        for index, row in enumerate(rows):
+            row.created_at = datetime(2026, 1, 1, tzinfo=timezone.utc) + timedelta(
+                seconds=len(rows) - index
+            )
+        expected_ids = [row.id for row in reversed(rows)]
+    first = view(client, order)
+    for _ in range(3):
+        with Session.begin() as s:
+            o = s.get(Order, order["id"])
+            record = service.ensure(s, o)
+            worker_view = service.view(s, o, record)
+            assert [source["id"] for source in worker_view["sources"]] == expected_ids
+            assert worker_view["version"] == first["version"]
+            assert agent_service.input_hash(worker_view) == agent_service.input_hash(
+                first
+            )
+        assert view(client, order)["version"] == first["version"]

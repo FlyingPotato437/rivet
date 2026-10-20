@@ -1,0 +1,44 @@
+{
+  "schema_version": "rivet.cad-report-sources.v1",
+  "sources": [
+    {
+      "id": "autodesk-au2019-harness",
+      "name": "ACADE-XML-COMPLETE.xml",
+      "path": "../../.data/real-document-corpus/official-native-exports/ACADE-XML-COMPLETE.xml",
+      "sha256": "4b2c5db5c721c99a0156ea9a73ef8d38ed69b320f305827e0dd0ba1efe3f92db",
+      "role": "drawing",
+      "revision": "Published AU2019 sample",
+      "dataset_kind": "vendor_sample",
+      "customer_package": false,
+      "publisher": "Autodesk University; Duke Energy authors",
+      "source_page": "https://www.autodesk.com/autodesk-university/class/Inventor-and-AutoCAD-Electrical-Working-Together-2019",
+      "url": "https://static.au-uw2-prd.autodesk.com/Additional_Class_Materials_ENR321974_Justin_Martin.zip",
+      "archive_sha256": "5ad48213a564c595cb2dce973f7ac0547b93fb74f711a186324f5593d21433d6",
+      "archive_bytes": 24786585,
+      "archive_members": [
+        "ENR321974_Inventor_Dataset_Handout.zip",
+        "Workspaces/Workspace/ACADE XML_COMPLETE.xml"
+      ],
+      "documentation": "https://static.au-uw2-prd.autodesk.com/Class_Handout_ENR321974_Justin_Martin.pdf",
+      "note": "Authentic exported electrical harness XML supplied in official training materials. Not a customer pilot, new export performed locally, component/BOM CSV or measured physical manufacturing truth."
+    }
+  ],
+  "answer_key": "keys/autodesk-au2019-harness.json",
+  "documented_formats": [
+    {
+      "format": "AutoCAD Electrical Component CSV/XLSX",
+      "documentation": "https://help.autodesk.com/cloudhelp/2024/ENU/AutoCAD-Electrical/files/GUID-D90536AC-6035-4B87-B138-1069F8728251.htm",
+      "authentic_local_csv_xlsx_report": false
+    },
+    {
+      "format": "AutoCAD Electrical Wire From/To CSV/XLSX",
+      "documentation": "https://help.autodesk.com/cloudhelp/2016/ENU/AutoCAD-Electrical/files/GUID-7D10A9DF-F5AD-4071-8F68-4BAE7FB021F4.htm",
+      "authentic_local_csv_xlsx_report": false
+    },
+    {
+      "format": "EPLAN configurable English device/connection CSV/XLSX",
+      "documentation": "https://eplan.help/en-us/Infoportal/Content/Plattform/2.9/Content/htm/labelgui_d_paramartikelauswertung.htm",
+      "authentic_local_report": false
+    }
+  ]
+}

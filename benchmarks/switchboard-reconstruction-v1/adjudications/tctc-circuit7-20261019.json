@@ -1,0 +1,36 @@
+{
+  "schema_version": "rivet.post-evaluation-source-adjudication.v1",
+  "created_at": "2026-10-19T08:09:27.314706+00:00",
+  "package_id": "tctc-anderson-customer-input-development",
+  "split": "development",
+  "original_key_path": "benchmarks/switchboard-reconstruction-v1/keys/tctc-anderson-requirements.json",
+  "original_key_sha256": "43df145937d1fce33e0f44a63ed070175546ecb991112f72b5abb392ca8e55ca",
+  "corrected_key_path": "benchmarks/switchboard-reconstruction-v1/keys/tctc-anderson-requirements-adjudicated-v2.json",
+  "corrected_key_sha256": "e711178b4dd68371778be6ac40b651adad9b6828d8b2eab35c84a7526eac05a2",
+  "changed_scalar_values": [
+    {
+      "id": "7.frame_a",
+      "old": 800,
+      "new": 600
+    }
+  ],
+  "changed_inventory_fields": [
+    {
+      "id": "7",
+      "feature": "frame_a",
+      "old": 800,
+      "new": 600
+    }
+  ],
+  "source_quote_corrections": [
+    "7.trip_a and7.frame_a source text now correctly reads600A T /600A F."
+  ],
+  "reason": "Original manual key associated downstream panelDPA800A MCB with circled7 breaker frame. Independent fresh-context source-only review of the original PDF confirms circuit7 is600A T /600A F.",
+  "independent_qa_report": ".data/switchboard-reconstruction-v1/tctc-circuit7-source-only-qa.json",
+  "independent_qa_sha256": "8caf0fff8235d7696ccef22073da777a21c1f68058cf91f23007ad582c79ee41",
+  "reviewer_was_not_given_key_or_predicted_values": true,
+  "old_keys_scores_and_predictions_preserved": true,
+  "heldout_keys_changed": false,
+  "new_unseen_claim": false,
+  "label_status": "assistant_source_reviewed_not_engineer_verified"
+}

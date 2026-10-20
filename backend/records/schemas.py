@@ -39,6 +39,10 @@ class CommentWrite(Write):
     workflow_status: WorkflowStatus | None = None
 
 
+class TranscriptionWrite(Write):
+    text: str = Field(min_length=1, max_length=16000)
+
+
 class ChangeWrite(Write):
     title: str = Field(min_length=1, max_length=240)
     before: str = Field(default="", max_length=2000)

@@ -1,0 +1,46 @@
+{
+  "schema_version": "rivet.pre-prediction-label-freeze.v1",
+  "created_at": "2026-10-19T07:46:33.486822+00:00",
+  "source_sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+  "source_pdf_original_pages": [
+    56,
+    63
+  ],
+  "key_sha256": "f1b2b1da7632df44be8a28faa392ed972cfbcf46a32063f958dfa1eaab91972c",
+  "manifest_sha256": "eeda5819f7ac5e2b8f5cac15c28b9eed12a073a7d65bae22b2b9e8fcf670f61e",
+  "labelled_scalar_requirements": 39,
+  "bounded_breaker_inventory": 15,
+  "printed_device_values": 33,
+  "predictions_opened": false,
+  "implementers_have_source_content": false,
+  "approved_reconstruction_eligible": false,
+  "label_status": "assistant_source_reviewed_not_engineer_verified",
+  "split_exclusion": [
+    "All TCTC, Kansas, Ellington and other previously opened source projects excluded from this heldout package."
+  ],
+  "source_only_review_passes": 2,
+  "pre_prediction_label_correction": {
+    "reason": "Use the existing public requirement contract subject order for the SPD option. No source values, labels or identity truth changed; no model prediction exists.",
+    "original_freeze_preserved": "label-history/initial-label-freeze.json"
+  },
+  "label_schema_corrections": [
+    {
+      "reason": "Use existing scorer customer_device_inventory field name, preserving all 15 identities and 33 values. No predictions exist.",
+      "prior_freeze": "label-history/pre-inventory-contract-label-freeze.json"
+    },
+    {
+      "reason": "Source semantics QA: bus symmetrical short-circuit label is not breaker interrupting capacity. Preserve65 source value under literal bus rating feature; no model predictions exist.",
+      "prior_freeze": "label-history/pre-rating-semantics-label-freeze.json"
+    },
+    {
+      "reason": "Source semantics QA: no literal voltage-to-ground value printed. Remove inferred scalar from denominator, keep paired expression in unscored ambiguity. All33 device values and15 identities unchanged; no predictions exist.",
+      "prior_freeze": "label-history/pre-paired-voltage-qa-label-freeze.json"
+    },
+    {
+      "reason": "Independent source-only QA: twelve bare-A current labels do not literally specify AT. Preserve every number under rated_current_a rather than inferring trip setting. No prediction has been generated/opened.",
+      "changed_key_count": 12,
+      "prior_freeze": "label-history/pre-independent-qa-current-semantics-label-freeze.json"
+    }
+  ],
+  "independent_source_qa_report": ".data/switchboard-reconstruction-v1/fresh-input-label-independent-qa.json"
+}

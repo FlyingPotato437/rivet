@@ -1,0 +1,4118 @@
+{
+  "schema": "rivet.equipment-catalogs.v1",
+  "scope": "Curated, exact listed North American products only; not a complete catalog or product selector.",
+  "sources": {
+    "se-0611ct1001": {
+      "manufacturer": "Schneider Electric",
+      "title": "PowerPacT H-, J-, and L-Frame Circuit Breakers",
+      "document": "0611CT1001 R09/24",
+      "url": "https://download.schneider-electric.com/files?p_Doc_Ref=0611CT1001&p_EnDocType=Catalog&p_File_Name=0611CT1001.pdf",
+      "sha256": "a24d4eb70a9852b050c97c3b11f2aeb0849bf2ed70db55d2c230a0777b945111",
+      "local_original": ".data/equipment-catalogs/schneider-0611CT1001.pdf",
+      "retrieved": "2026-10-18"
+    },
+    "siemens-bqd-cqd": {
+      "manufacturer": "Siemens",
+      "title": "Molded Case Circuit Breakers BQD/CQD",
+      "document": "CBDS-BCQD-0520 (2020)",
+      "url": "https://cache.industry.siemens.com/dl/files/274/109792274/att_1051362/v1/SIE_SS_MCCB_BQD-CQD.pdf",
+      "sha256": "25ffd7a6361d7f8f74e6252c390d71449605f2d0325af7cdb373f029ea8c1165",
+      "local_original": ".data/equipment-catalogs/siemens-BQD-CQD.pdf",
+      "retrieved": "2026-10-18"
+    },
+    "eaton-hfd2225l": {
+      "manufacturer": "Eaton",
+      "title": "HFD2225L product specifications",
+      "url": "https://www.eaton.com/us/en-us/skuPage.HFD2225L.html",
+      "section": "Product specifications",
+      "retrieved": "2026-10-18",
+      "local_original": null,
+      "sha256": null,
+      "retrieval_note": "Verified through browser web reader; direct PDF retrieval unavailable. No original-byte hash asserted."
+    },
+    "eaton-hfd3200l": {
+      "manufacturer": "Eaton",
+      "title": "HFD3200L product specifications",
+      "url": "https://www.eaton.com/us/en-us/skuPage.HFD3200L.html",
+      "section": "Product specifications",
+      "retrieved": "2026-10-18",
+      "local_original": null,
+      "sha256": null,
+      "retrieval_note": "Verified through browser web reader; direct PDF retrieval unavailable. No original-byte hash asserted."
+    },
+    "eaton-f-frame-numbering": {
+      "manufacturer": "Eaton",
+      "title": "Series C F-frame circuit breaker time current curves",
+      "document": "TC01200002E April 2022",
+      "url": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/molded-case-circuit-breakers/series-c-molded-case-circuit-breakers/f-frame-time-current-curves-tc01200002e.pdf",
+      "page": 4,
+      "retrieved": "2026-10-18",
+      "local_original": null,
+      "sha256": null,
+      "retrieval_note": "Official search excerpt confirms catalog numbering section; decoding restricted to separately verified exact product numbers."
+    },
+    "eaton-f-frame-ratings": {
+      "manufacturer": "Eaton",
+      "title": "Molded case circuit breakers",
+      "document": "CA08100005E May 2025",
+      "url": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/molded-case-circuit-breakers/mccb-catalog-v4-t2-ca08100005e.pdf",
+      "section": "Series C F-frame product selection, printed V4-T2-242; general frame table printed V4-T2-226",
+      "retrieved": "2026-10-18",
+      "local_original": null,
+      "sha256": null,
+      "retrieval_note": "Official indexed table verifies FD/HFD 15\u2013225 A, F frame. Direct catalog download failed; no original-byte hash asserted."
+    }
+  },
+  "products": {
+    "HDL26015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26125": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26125": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26125": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26125": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36015": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36020": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36025": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36030": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36035": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36040": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36045": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36050": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36060": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36070": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36080": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36090": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36100": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36110": {
+      "source_id": "se-0611ct1001",
+      "page": 41,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36125": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36125": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36125": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36125": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HGL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HJL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HLL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 42,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL26150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL26175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL26175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL26175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL26175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL26200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL26200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL26200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL26200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL26225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL26225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL26225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL26225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL26250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL26250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL26250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL26250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JRL36150": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL36175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL36175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL36175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL36175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JRL36175": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL36200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL36200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL36200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL36200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JRL36200": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL36225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL36225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL36225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL36225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JRL36225": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JDL36250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JGL36250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JJL36250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JLL36250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "JRL36250": {
+      "source_id": "se-0611ct1001",
+      "page": 43,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "thermal_magnetic"
+    },
+    "HDL36060U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36060U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36060U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36060U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36060U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36100U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36100U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36100U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36100U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36100U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36150U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36150U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36150U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36150U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36150U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JDL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JGL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JJL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JLL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JRL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36060U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36060U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36060U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36060U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36060U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36100U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36100U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36100U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36100U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36100U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36150U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36150U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36150U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36150U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36150U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JDL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JGL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JJL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JLL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JRL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36060U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36060U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36060U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36060U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36060U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36100U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36100U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36100U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36100U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36100U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36150U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36150U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36150U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36150U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36150U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JDL36250U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JGL36250U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JJL36250U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JLL36250U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JRL36250U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36060U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36060U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36060U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36060U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36060U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36100U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36100U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36100U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36100U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36100U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36150U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36150U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36150U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36150U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36150U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JDL36250U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JGL36250U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JJL36250U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JLL36250U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JRL36250U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36060U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36060U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36060U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36060U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36060U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36100U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36100U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36100U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36100U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36100U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36150U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36150U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36150U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36150U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36150U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JDL36250U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JGL36250U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JJL36250U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JLL36250U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JRL36250U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36060U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36060U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36060U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36060U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36060U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36100U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36100U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36100U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36100U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36100U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HDL36150U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HGL36150U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HJL36150U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HLL36150U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "HRL36150U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JDL36250U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JGL36250U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JJL36250U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JLL36250U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "JRL36250U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 44,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36250U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36400U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36400U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36400U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36400U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36600U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36600U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36600U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36600U31X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36250U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36400U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36400U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36400U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36400U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36600U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36600U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36600U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36600U33X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36400U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36400U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36400U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36400U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36600U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36600U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36600U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36600U43X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36400U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36400U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36400U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36400U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36600U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36600U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36600U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36600U53X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36400U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36400U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36400U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36400U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36600U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36600U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36600U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36600U44X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36400U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36400U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36400U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36400U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LGL36600U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LJL36600U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LLL36600U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "LRL36600U54X": {
+      "source_id": "se-0611ct1001",
+      "page": 52,
+      "section": "Unit-mount complete circuit breaker selection",
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "trip_type": "electronic"
+    },
+    "BQD115": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD215": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD315": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD120": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD220": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD320": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD125": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD225": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD325": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD130": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD230": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD330": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD135": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD235": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD335": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD140": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD240": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD340": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD145": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD245": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD345": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD150": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD250": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD350": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD160": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD260": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD360": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD170": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD270": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD370": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD180": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD280": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD380": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD190": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD290": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD390": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD1100": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD2100": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD3100": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD",
+      "trip_type": null
+    },
+    "BQD6115": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6215": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6315": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6120": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6220": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6320": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6125": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6225": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6325": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6130": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6230": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6330": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6135": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6235": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6335": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6140": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6240": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6340": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6145": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6245": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6345": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6150": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6250": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6350": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6160": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6260": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6360": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6170": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6270": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "BQD6370": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 1,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "BQD6",
+      "trip_type": null
+    },
+    "CQD115": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD215": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD315": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD120": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD220": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD320": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD125": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD225": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD325": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD130": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD230": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD330": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD135": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD235": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD335": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD140": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD240": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD340": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD145": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD245": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD345": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD150": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD250": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD350": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD160": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD260": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD360": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD170": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD270": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD370": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD180": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD280": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD380": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD190": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD290": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD390": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD1100": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD2100": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD3100": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD",
+      "trip_type": null
+    },
+    "CQD6215": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6315": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6120": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6220": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6320": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6125": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6225": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6325": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6130": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6230": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6330": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6135": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6235": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6335": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6140": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6240": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6340": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6145": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6245": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6345": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6150": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6250": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6350": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6160": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6260": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6360": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6170": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "CQD6270": {
+      "source_id": "siemens-bqd-cqd",
+      "page": 2,
+      "section": "Catalog-number table",
+      "manufacturer": "Siemens",
+      "family": "CQD6",
+      "trip_type": null
+    },
+    "HFD2225L": {
+      "source_id": "eaton-hfd2225l",
+      "manufacturer": "Eaton",
+      "family": "Series C F",
+      "device_frame": "F",
+      "frame_a": 225,
+      "rated_current_a": 225,
+      "pole_count": 2,
+      "trip_type": "thermal_magnetic",
+      "section": "Product specifications",
+      "interrupting_ka": {
+        "AC": {
+          "240": 100,
+          "480": 65
+        }
+      }
+    },
+    "HFD3200L": {
+      "source_id": "eaton-hfd3200l",
+      "manufacturer": "Eaton",
+      "family": "Series C F",
+      "device_frame": "F",
+      "frame_a": 225,
+      "rated_current_a": 200,
+      "pole_count": 3,
+      "trip_type": "thermal_magnetic",
+      "section": "Product specifications",
+      "interrupting_ka": {
+        "AC": {
+          "240": 100,
+          "480": 65
+        }
+      }
+    }
+  },
+  "frame_constraints": [
+    {
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "frame": "H",
+      "minimum_a": 15,
+      "maximum_a": 150,
+      "capacity_a": 150,
+      "current_type": "AC",
+      "source_id": "se-0611ct1001",
+      "page": 27
+    },
+    {
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "frame": "J",
+      "minimum_a": 70,
+      "maximum_a": 250,
+      "capacity_a": 250,
+      "current_type": "AC",
+      "source_id": "se-0611ct1001",
+      "page": 27
+    },
+    {
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "frame": "L400",
+      "minimum_a": 70,
+      "maximum_a": 400,
+      "capacity_a": 400,
+      "current_type": "AC",
+      "source_id": "se-0611ct1001",
+      "page": 29
+    },
+    {
+      "manufacturer": "Schneider Electric",
+      "family": "PowerPacT",
+      "frame": "L600",
+      "minimum_a": 200,
+      "maximum_a": 600,
+      "capacity_a": 600,
+      "current_type": "AC",
+      "source_id": "se-0611ct1001",
+      "page": 29
+    }
+  ],
+  "schneider_air_ul489_ac": {
+    "H": {
+      "D": [
+        25,
+        18,
+        14
+      ],
+      "G": [
+        65,
+        35,
+        18
+      ],
+      "J": [
+        100,
+        65,
+        25
+      ],
+      "L": [
+        125,
+        100,
+        50
+      ],
+      "R": [
+        200,
+        200,
+        100
+      ]
+    },
+    "J": {
+      "D": [
+        25,
+        18,
+        14
+      ],
+      "G": [
+        65,
+        35,
+        18
+      ],
+      "J": [
+        100,
+        65,
+        25
+      ],
+      "L": [
+        125,
+        100,
+        50
+      ],
+      "R": [
+        200,
+        200,
+        100
+      ]
+    },
+    "L": {
+      "G": [
+        65,
+        35,
+        18
+      ],
+      "J": [
+        100,
+        65,
+        25
+      ],
+      "L": [
+        125,
+        100,
+        50
+      ],
+      "R": [
+        200,
+        200,
+        100
+      ]
+    }
+  },
+  "schneider_air_voltage_columns": [
+    240,
+    480,
+    600
+  ],
+  "limitations": [
+    "Unknown suffixes are not stripped or inferred.",
+    "Catalog claims constrain a bound product; they do not certify the observed installation, trip setting, or release state.",
+    "Legacy LI, MJ and other old frame designations are unbound and unsupported.",
+    "A catalog capacity is not evidence that an OCR value is the capacity.",
+    "DC PowerPacT variants and IEC Icu/Ics ratings are not decoded by this first curated set."
+  ]
+}

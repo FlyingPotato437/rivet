@@ -1,0 +1,50 @@
+{
+  "internal_channels": {
+    "organizations": {
+      "RIVET_ORGANIZATION_UUID": {
+        "enabled": false,
+        "timezone": "America/Los_Angeles",
+        "brief_hour": 8,
+        "webhook_env": "RIVET_TEAMS_WORKFLOW_URL",
+        "allowed_hosts": ["YOUR_APPROVED_WORKFLOW_HOST"]
+      }
+    }
+  },
+  "write_targets": {
+    "organizations": {
+      "RIVET_ORGANIZATION_UUID": {
+        "jobs": {
+          "EXACT_ORDER_NUMBER": {
+            "sharepoint-approved-outputs": {
+              "enabled": false,
+              "auto_publish": false,
+              "kind": "sharepoint",
+              "tenant_id": "MICROSOFT_TENANT_UUID",
+              "drive_id": "EXPLICIT_DRIVE_ID",
+              "parent_id": "EXPLICIT_OUTPUT_FOLDER_ID",
+              "upload_hosts": ["EXACT_MICROSOFT_UPLOAD_HOST"],
+              "download_hosts": ["EXACT_MICROSOFT_DOWNLOAD_HOST"],
+              "artifacts": ["quote.pdf", "change-order.pdf", "response-letter.pdf"]
+            },
+            "manufacturer-sap-bridge": {
+              "enabled": false,
+              "auto_publish": false,
+              "kind": "sap_bridge",
+              "base_url": "https://manufacturer.example.test/rivet",
+              "token_env": "MANUFACTURER_BRIDGE_TOKEN",
+              "artifacts": ["quote.json", "change-order.json"]
+            },
+            "manufacturer-vault-bridge": {
+              "enabled": false,
+              "auto_publish": false,
+              "kind": "vault_bridge",
+              "base_url": "https://vault.example.test/rivet",
+              "token_env": "VAULT_BRIDGE_TOKEN",
+              "artifacts": ["drafting-list.pdf", "revision-check.json"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

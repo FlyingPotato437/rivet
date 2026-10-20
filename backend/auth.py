@@ -2,10 +2,12 @@
 
 import base64
 import os
+
+from clerk_backend_api import AuthenticateRequestOptions, authenticate_request
 from fastapi import HTTPException
-from clerk_backend_api import authenticate_request, AuthenticateRequestOptions
-from backend.identity import Identity, tenant_id
+
 from backend.config import allowed_origins
+from backend.identity import Identity, tenant_id
 
 
 def publishable_key():
@@ -31,6 +33,9 @@ def verify_identity(request):
     if not secret or not publishable_key():
         raise HTTPException(503, "Clerk configuration is incomplete.")
     if not request.headers.get("authorization", "").startswith("Bearer "):
+        if request.headers.get("x-rivet-session") == "outlook":
+            from backend.outlook_session import verify_identity as verify_outlook
+            return verify_outlook(request)
         raise HTTPException(401, "Sign in to your Rivet workspace.")
     state = authenticate_request(
         request,
@@ -56,6 +61,7 @@ def verify_identity(request):
     if not org:
         raise HTTPException(403, "Choose or create a team to continue.")
     role = role if role.startswith("org:") else "org:" + role
+    request.state.clerk_claims = claims
     return Identity(tenant_id(org), claims["sub"], role, org)
 
 

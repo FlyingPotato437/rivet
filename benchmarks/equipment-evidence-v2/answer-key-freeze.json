@@ -1,0 +1,15 @@
+{
+  "schema_version": "rivet.independent-source-label-freeze.v1",
+  "frozen_at": "2026-10-19T00:32:28.822631+00:00",
+  "implementation_agents_have_no_page_or_key_access": true,
+  "model_predictions_seen": false,
+  "files": {
+    "benchmarks/equipment-evidence-v2/new-independent-packages.json": "2bc43310450d1f2bcf4dfcfb97f2bb958543f5ba64cbb39e0fd3371ce6470bbc",
+    "benchmarks/equipment-evidence-v2/source-only-label-review.csv": "7bd391184edb4d40c44103de11d45657e6be1fb5e818abc90cba35ae79f27c3e",
+    "benchmarks/equipment-evidence-v2/keys/campbell-evgo-schedule-new-holdout.json": "1b0479f96b66cbead45225bc0f4236e334a82bfd3be93bccab652668f5da057d",
+    "benchmarks/equipment-evidence-v2/keys/osage-dsg-schedule-new-holdout.json": "01572eb2fb544de1a1e87e84e5c1350c8c5ccb17b3feb8660cd415e564ad4bf1"
+  },
+  "labelled_rows": 21,
+  "labelled_values": 90,
+  "original_source_acquisition": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/evidence-v3-new-independent/acquisition.json"
+}

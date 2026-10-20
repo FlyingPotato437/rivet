@@ -1,0 +1,35 @@
+{
+  "schema_version": "rivet.reconstruction-manifest.v1",
+  "packages": [
+    {
+      "id": "municipal-historical-reference-extraction-unseen-v2",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "source_authority": "historical_reference_only",
+      "sources": [
+        {
+          "id": "annarbor-historical-reference-drawings",
+          "name": "Historical municipal reference electrical drawings",
+          "path": "../../.data/real-document-corpus/evidence-v4-independent/annarbor-water-switchgear.pdf",
+          "role": "customer_one_line",
+          "source_authority": "historical_reference_only",
+          "sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+          "url": "https://www.a2gov.org/media/chch2l5x/itb20435120plans.pdf",
+          "pages": [
+            8,
+            9
+          ]
+        }
+      ],
+      "answer_key": "key-private.json",
+      "approved_reconstruction_eligible": false,
+      "limits": [
+        "Extraction-only historical reference case; --extract-only required.",
+        "Two scanned reference pages, only bounded15-position schedule on physical9 exhaustively keyed.",
+        "24values on eight equipped/spare positions; blank/prepared rows must not acquire invented continuous current or installed-equipment status.",
+        "Independent assistant transcription; not engineer-verified.",
+        "No generated design, engineering approval or time-saving claim."
+      ]
+    }
+  ]
+}

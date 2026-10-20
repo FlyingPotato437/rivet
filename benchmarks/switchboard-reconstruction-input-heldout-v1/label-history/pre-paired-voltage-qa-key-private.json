@@ -1,0 +1,1393 @@
+{
+  "schema_version": "rivet.reconstruction-answer-key.v1",
+  "package_id": "gonzales-customer-drawing-input-unseen",
+  "kind": "real_public",
+  "split": "unseen_test",
+  "label_status": "assistant_source_reviewed_not_engineer_verified",
+  "label_method": "Two source-only manual review passes on original consultant PDF images and independent enlarged source crops; no extractor prediction or generated design opened. Every breaker pole and printed current in bounded MDS one-line independently transcribed.",
+  "scope": {
+    "requirements": "40 scalar facts: six MDS system ratings, three main ratings/poles, SPD presence, and 30 explicitly printed feeder current/pole/frame facts. Broad notes, downstream MCCs and administrative clauses excluded.",
+    "device_inventory": "Complete 15 breaker symbols in dashed MDS boundary on physical page 56: main plus 400A/400B/400C and 401–411. ATS internal 400N/400L/400E contacts are not extra breakers; downstream switches, transformers and MCC components are outside inventory.",
+    "placement": "Consultant E-17 general layout is a customer design constraint, not manufacturer-approved production layout. No engineering approval inferred.",
+    "complete_engineering_key": false
+  },
+  "requirements": [
+    {
+      "id": "order.service_rating_a",
+      "subject_id": "order",
+      "key": "service_rating_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BUS 480/277V, 3φ, 4W, 1200A BUS, 65kA SYMMETRICAL",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            690,
+            88,
+            910,
+            112
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.voltage_v",
+      "subject_id": "order",
+      "key": "voltage_v",
+      "value": 480,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BUS 480/277V, 3φ, 4W, 1200A BUS, 65kA SYMMETRICAL",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            690,
+            88,
+            910,
+            112
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.voltage_to_ground_v",
+      "subject_id": "order",
+      "key": "voltage_to_ground_v",
+      "value": 277,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BUS 480/277V, 3φ, 4W, 1200A BUS, 65kA SYMMETRICAL",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            690,
+            88,
+            910,
+            112
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.phases",
+      "subject_id": "order",
+      "key": "phases",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BUS 480/277V, 3φ, 4W, 1200A BUS, 65kA SYMMETRICAL",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            690,
+            88,
+            910,
+            112
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.wires",
+      "subject_id": "order",
+      "key": "wires",
+      "value": 4,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BUS 480/277V, 3φ, 4W, 1200A BUS, 65kA SYMMETRICAL",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            690,
+            88,
+            910,
+            112
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.bus_symmetrical_short_circuit_ka",
+      "subject_id": "order",
+      "key": "bus_symmetrical_short_circuit_ka",
+      "value": 65,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BUS 480/277V, 3φ, 4W, 1200A BUS, 65kA SYMMETRICAL",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            690,
+            88,
+            910,
+            112
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.main.trip_a",
+      "subject_id": "order",
+      "key": "main.trip_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BREAKER 400N 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            78,
+            106,
+            148,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.main.frame_a",
+      "subject_id": "order",
+      "key": "main.frame_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BREAKER 400N 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            78,
+            106,
+            148,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.main.poles",
+      "subject_id": "order",
+      "key": "main.poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BREAKER 400N 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            78,
+            106,
+            148,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order.spd",
+      "subject_id": "order",
+      "key": "spd",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "SURGE SUPPRESSOR",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            158,
+            143,
+            198,
+            168
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400A.trip_a",
+      "subject_id": "400A",
+      "key": "trip_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400A 3P 100A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            148,
+            108,
+            202,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400A.poles",
+      "subject_id": "400A",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400A 3P 100A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            148,
+            108,
+            202,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400B.trip_a",
+      "subject_id": "400B",
+      "key": "trip_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400B 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            209,
+            108,
+            263,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400B.poles",
+      "subject_id": "400B",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400B 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            209,
+            108,
+            263,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400B.frame_a",
+      "subject_id": "400B",
+      "key": "frame_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400B 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            209,
+            108,
+            263,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400C.trip_a",
+      "subject_id": "400C",
+      "key": "trip_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400C 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            271,
+            108,
+            325,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400C.poles",
+      "subject_id": "400C",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400C 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            271,
+            108,
+            325,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400C.frame_a",
+      "subject_id": "400C",
+      "key": "frame_a",
+      "value": 1200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400C 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            271,
+            108,
+            325,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "401.trip_a",
+      "subject_id": "401",
+      "key": "trip_a",
+      "value": 1000,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "401 3P 1000A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            331,
+            108,
+            385,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "401.poles",
+      "subject_id": "401",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "401 3P 1000A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            331,
+            108,
+            385,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "402.trip_a",
+      "subject_id": "402",
+      "key": "trip_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "402 3P 250A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            386,
+            108,
+            440,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "402.poles",
+      "subject_id": "402",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "402 3P 250A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            386,
+            108,
+            440,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "403.trip_a",
+      "subject_id": "403",
+      "key": "trip_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "403 3P 250A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            442,
+            108,
+            496,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "403.poles",
+      "subject_id": "403",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "403 3P 250A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            442,
+            108,
+            496,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "404.trip_a",
+      "subject_id": "404",
+      "key": "trip_a",
+      "value": 200,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "404 3P 200A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            497,
+            108,
+            551,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "404.poles",
+      "subject_id": "404",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "404 3P 200A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            497,
+            108,
+            551,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "405.trip_a",
+      "subject_id": "405",
+      "key": "trip_a",
+      "value": 70,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "405 3P 70A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            552,
+            108,
+            606,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "405.poles",
+      "subject_id": "405",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "405 3P 70A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            552,
+            108,
+            606,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "406.trip_a",
+      "subject_id": "406",
+      "key": "trip_a",
+      "value": 40,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "406 3P 40A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            606,
+            108,
+            660,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "406.poles",
+      "subject_id": "406",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "406 3P 40A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            606,
+            108,
+            660,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "407.trip_a",
+      "subject_id": "407",
+      "key": "trip_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "407 3P 100A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            658,
+            108,
+            712,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "407.poles",
+      "subject_id": "407",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "407 3P 100A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            658,
+            108,
+            712,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "408.trip_a",
+      "subject_id": "408",
+      "key": "trip_a",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "408 3P 30A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            711,
+            108,
+            765,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "408.poles",
+      "subject_id": "408",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "408 3P 30A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            711,
+            108,
+            765,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "409.trip_a",
+      "subject_id": "409",
+      "key": "trip_a",
+      "value": 80,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "409 3P 80A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            764,
+            108,
+            818,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "409.poles",
+      "subject_id": "409",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "409 3P 80A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            764,
+            108,
+            818,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "410.trip_a",
+      "subject_id": "410",
+      "key": "trip_a",
+      "value": 80,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "410 3P 80A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            818,
+            108,
+            872,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "410.poles",
+      "subject_id": "410",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "410 3P 80A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            818,
+            108,
+            872,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "411.trip_a",
+      "subject_id": "411",
+      "key": "trip_a",
+      "value": 90,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "411 3P 90A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            871,
+            108,
+            925,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "411.poles",
+      "subject_id": "411",
+      "key": "poles",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "411 3P 90A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            871,
+            108,
+            925,
+            144
+          ]
+        }
+      ]
+    }
+  ],
+  "device_inventory_complete": true,
+  "approved_reconstruction_eligible": false,
+  "approved_reference": null,
+  "unscored_explicit_requirements": [
+    {
+      "description": "All breakers 400A and larger frame shall be 100% rated.",
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "BREAKERS 400A AND LARGER FRAME SHALL BE 100% RATED.",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            942,
+            273,
+            1185,
+            288
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Breakers rated ≥225A require long-time, short-time, ground-fault and instantaneous trip functions.",
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "CIRCUIT BREAKERS RATED ≥ 225A SHALL BE PROVIDED WITH A TRIP UNIT ... LONG TIME ... SHORT TIME ... GROUND-FAULT ... INSTANTANEOUS.",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            940,
+            136,
+            1185,
+            180
+          ]
+        }
+      ]
+    },
+    {
+      "description": "The two bypass breakers shall be key interlocked so only one can close.",
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 63,
+          "text": "THESE TWO BREAKERS SHALL BE KEY INTERLOCKED SUCH THAT ONLY ONE BREAKER MAY BE CLOSED AT ANY ONE TIME.",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            940,
+            258,
+            1185,
+            275
+          ]
+        }
+      ]
+    }
+  ],
+  "customer_layout_reference": {
+    "source_refs": [
+      {
+        "source_id": "gonzales-consultant-addendum-drawings",
+        "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+        "page": 63,
+        "text": "MAIN DISTRIBUTION SWITCHBOARD MDS GENERAL LAYOUT",
+        "method": "manual_source_image_inspection",
+        "bbox_pdf_points": [
+          94,
+          68,
+          695,
+          338
+        ]
+      }
+    ],
+    "approval_status": "consultant_design_general_layout_only",
+    "width_in": 200,
+    "height_in": 90,
+    "left_to_right_widths_in": [
+      36,
+      45,
+      38,
+      45,
+      36
+    ],
+    "regions": [
+      {
+        "description": "left feeder section",
+        "source_refs": [
+          {
+            "source_id": "gonzales-consultant-addendum-drawings",
+            "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+            "page": 63,
+            "text": "MDS-401, MDS-402 ... MDS-411",
+            "method": "manual_source_image_inspection",
+            "bbox_pdf_points": [
+              108,
+              95,
+              190,
+              310
+            ]
+          }
+        ]
+      },
+      {
+        "description": "bypass/load and camlock breaker section",
+        "source_refs": [
+          {
+            "source_id": "gonzales-consultant-addendum-drawings",
+            "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+            "page": 63,
+            "text": "MDS-400B, MDS-400C",
+            "method": "manual_source_image_inspection",
+            "bbox_pdf_points": [
+              205,
+              80,
+              336,
+              334
+            ]
+          }
+        ]
+      },
+      {
+        "description": "automatic transfer switch section",
+        "source_refs": [
+          {
+            "source_id": "gonzales-consultant-addendum-drawings",
+            "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+            "page": 63,
+            "text": "AUTOMATIC TRANSFER SWITCH",
+            "method": "manual_source_image_inspection",
+            "bbox_pdf_points": [
+              336,
+              68,
+              450,
+              338
+            ]
+          }
+        ]
+      },
+      {
+        "description": "meter and utility main section",
+        "source_refs": [
+          {
+            "source_id": "gonzales-consultant-addendum-drawings",
+            "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+            "page": 63,
+            "text": "PG&E METER, UTILITY MAIN BREAKER MDS-400",
+            "method": "manual_source_image_inspection",
+            "bbox_pdf_points": [
+              452,
+              68,
+              584,
+              338
+            ]
+          }
+        ]
+      },
+      {
+        "description": "pull section",
+        "source_refs": [
+          {
+            "source_id": "gonzales-consultant-addendum-drawings",
+            "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+            "page": 63,
+            "text": "PULL SECTION",
+            "method": "manual_source_image_inspection",
+            "bbox_pdf_points": [
+              585,
+              68,
+              695,
+              338
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "unknowns_or_conflicts": [
+    {
+      "description": "Main breaker one-line prints 400N while general elevation prints MDS-400; preserve original IDs and explicit main functional role. ATS also contains a 400N contact, so a bare tag is not a globally unique identity."
+    },
+    {
+      "description": "No feeder frame inferred from ampere trip values where AF is absent."
+    },
+    {
+      "description": "Elevation notes call this a general layout and require final physical configuration per approved shop drawings; no such manufacturer output supplied."
+    },
+    {
+      "description": "Space locations in general elevation do not imply populated spare breakers; the one-line has a distinct 100A 407 spare breaker."
+    },
+    {
+      "description": "The bus label says65kA symmetrical, not a literal breaker interrupting-current requirement. Scored as bus_symmetrical_short_circuit_ka; do not coerce it into device interrupting capacity or a certified assembly SCCR."
+    }
+  ],
+  "source_pair_audit": {
+    "customer_input_genuine": true,
+    "basis": "City issued February 13, 2025 bid addendum with signed Dudek consultant drawings E-3/E-17 dated February 12, 2025.",
+    "manufacturer_output_available": false,
+    "reconstruction_claim": "Input extraction only; no approved reconstruction or drafter-time score."
+  },
+  "customer_device_inventory": [
+    {
+      "id": "main",
+      "source_identifier": "400N",
+      "features": {
+        "trip_a": 1200,
+        "frame_a": 1200,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "MAIN BREAKER 400N 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            78,
+            106,
+            148,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400A",
+      "features": {
+        "trip_a": 100,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400A 3P 100A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            148,
+            108,
+            202,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400B",
+      "features": {
+        "trip_a": 1200,
+        "poles": 3,
+        "frame_a": 1200
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400B 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            209,
+            108,
+            263,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "400C",
+      "features": {
+        "trip_a": 1200,
+        "poles": 3,
+        "frame_a": 1200
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "400C 3P 1200AF 1200AT",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            271,
+            108,
+            325,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "401",
+      "features": {
+        "trip_a": 1000,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "401 3P 1000A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            331,
+            108,
+            385,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "402",
+      "features": {
+        "trip_a": 250,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "402 3P 250A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            386,
+            108,
+            440,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "403",
+      "features": {
+        "trip_a": 250,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "403 3P 250A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            442,
+            108,
+            496,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "404",
+      "features": {
+        "trip_a": 200,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "404 3P 200A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            497,
+            108,
+            551,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "405",
+      "features": {
+        "trip_a": 70,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "405 3P 70A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            552,
+            108,
+            606,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "406",
+      "features": {
+        "trip_a": 40,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "406 3P 40A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            606,
+            108,
+            660,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "407",
+      "features": {
+        "trip_a": 100,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "407 3P 100A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            658,
+            108,
+            712,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "408",
+      "features": {
+        "trip_a": 30,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "408 3P 30A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            711,
+            108,
+            765,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "409",
+      "features": {
+        "trip_a": 80,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "409 3P 80A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            764,
+            108,
+            818,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "410",
+      "features": {
+        "trip_a": 80,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "410 3P 80A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            818,
+            108,
+            872,
+            144
+          ]
+        }
+      ]
+    },
+    {
+      "id": "411",
+      "features": {
+        "trip_a": 90,
+        "poles": 3
+      },
+      "source_refs": [
+        {
+          "source_id": "gonzales-consultant-addendum-drawings",
+          "sha256": "fd90913d99367a39f66b835658e7a971fd4da95066aac0656313236289f230d2",
+          "page": 56,
+          "text": "411 3P 90A",
+          "method": "manual_source_image_inspection",
+          "bbox_pdf_points": [
+            871,
+            108,
+            925,
+            144
+          ]
+        }
+      ]
+    }
+  ]
+}

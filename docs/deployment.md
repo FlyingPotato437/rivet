@@ -181,11 +181,12 @@ The migration adds persistent runs, proposals, and private question history.
 Back up the database and original documents before upgrading. Keep the worker
 running: a task queued in the browser cannot progress without it.
 
-Automatic work is **opt-in per order** under Rivet activity → Project instructions
-& limits. `RIVET_AGENT_AUTORUN=false` is a server-wide scheduler switch; manual
-tasks remain available. Existing orders are not automatically sent to the model
-when the upgraded worker starts. Review the per-run step and output limits before
-enabling automatic work. Results retain model usage and execution history.
+Automatic draft preparation is **enabled for new order records**. Existing orders
+keep their prior setting; enable or pause them under Rivet’s work → Project
+instructions & limits. `RIVET_AGENT_AUTORUN=false` is a server-wide scheduler
+switch; manual tasks remain available. Upgrading does not silently enable older
+orders. The worker checks changed evidence once per minute, with per-run step and
+output limits. Results retain model usage and execution history.
 
 Agents can inspect, retrieve, compare extracted text, and prepare internal
 coordination proposals. Accepting a proposal checks its source fingerprint and

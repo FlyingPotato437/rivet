@@ -1,0 +1,36 @@
+{
+  "schema_version": "rivet.reconstruction-manifest.v1",
+  "packages": [
+    {
+      "id": "official-secondary-table-extraction-unseen-v3",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "source_authority": "public_bid_reference_only",
+      "sources": [
+        {
+          "id": "fresh-official-bid-schedules-secondary-v3",
+          "name": "Official public bid electrical schedules, secondary source",
+          "path": "../../.data/real-document-corpus/fresh-holdout-20261019-second-source-private/nyc-city-record-43585-electrical-bid-drawings.pdf",
+          "role": "customer_one_line",
+          "source_authority": "public_bid_reference_only",
+          "sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+          "url": "https://a856-cityrecord.nyc.gov/Search/GetFile?documentId=43585&requestId=20260309026&requestStatus=Archived&sectionId=6",
+          "pages": [
+            2
+          ]
+        }
+      ],
+      "answer_key": "key-private.draft-20261019.json",
+      "approved_reconstruction_eligible": false,
+      "limits": [
+        "Extraction-only public bid reference; --extract-only required by evaluation protocol.",
+        "One original full page; only one bounded table is keyed, other tables are context and unscored.",
+        "33 numeric facts across 11 scheduled equipped/spare rows; 16 total schedule positions with five prepared spaces.",
+        "Circuit numbers remain table-local positions, not source device tags.",
+        "Header AIC is not a per-breaker interrupting rating; no continuous current is inferred from trip.",
+        "Key is draft pending independent source-only QA. No implementation exposure, provider calls, parser runs, or predictions precede labels.",
+        "No configuration, generation, engineering approval or time-saving claim."
+      ]
+    }
+  ]
+}

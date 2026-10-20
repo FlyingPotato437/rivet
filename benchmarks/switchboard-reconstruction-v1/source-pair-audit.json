@@ -1,0 +1,96 @@
+{
+  "schema_version": "rivet.reconstruction-source-audit.v1",
+  "reviewed_at": "2026-10-19T07:03:41.403360+00:00",
+  "eligible_approved_pairs": 0,
+  "scope": "Audit of acquired PDFs plus bounded public-source search. Missing means not obtained/established in this corpus, not that the document does not exist.",
+  "packages": [
+    {
+      "id": "kansas-docking-squared",
+      "kind": "real_public",
+      "original_path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+      "sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+      "source_url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+      "manufacturer_output_present": true,
+      "customer_input_present": false,
+      "approved_reference_status": "Drawing binder contains returned/revised subpackages; no blanket approval inferred for all 266 pages.",
+      "excluded_input_candidates": [
+        {
+          "page": 50,
+          "printed_document": "Square D Q2C29528680 Quote8 Rev0",
+          "reason": "Manufacturer quote/configuration already includes its design; original customer requirements or accepted quote exception not established."
+        }
+      ],
+      "missing": [
+        "Original project specification applicable to H3",
+        "Consultant/customer one-line or schedule",
+        "Relevant PO and accepted exceptions",
+        "Per-lineup review disposition if approval is claimed"
+      ],
+      "approved_reconstruction_eligible": false
+    },
+    {
+      "id": "ellington-windermere-eaton",
+      "kind": "real_public",
+      "original_path": "../../.data/real-document-corpus/ellington.pdf",
+      "sha256": "2b6c44d3403328716c45fe1948fefba6f0105524e71e3f73a0bcd4a1301b89ac",
+      "source_url": "https://resources.finalsite.net/images/v1698333811/ellingtonctgov/a64ocbcojprofygg7zeu/WES_26_24_13___26_28_26___Submittal_7-21-23_-_CES_Review.pdf",
+      "manufacturer_output_present": true,
+      "customer_input_present": false,
+      "approved_reference_status": "Page1: CES Reviewed/No Exceptions Taken8/1/2023; CM ApprovedAsNoted requests SPD separate review/approval. Neither stamp is represented as a production release.",
+      "manufacturer_design_pages": [
+        12,
+        13,
+        14,
+        16,
+        17,
+        18,
+        19
+      ],
+      "excluded_input_candidates": [
+        {
+          "url": "https://resources.finalsite.net/images/v1697028193/ellingtonctgov/ziaukq2cufqptnvhzaps/Addendum_No_1_-_Specifications.pdf",
+          "reason": "Available Phase2 addendum/specification dated Aug/Oct2023, later than July21 manufacturer package; no evidence it was the original procurement input. Mainly boiler addendum content, not an original switchboard spec."
+        }
+      ],
+      "missing": [
+        "Phase1 early switchboard procurement spec",
+        "Applicable consultant one-line",
+        "Original PO/accepted scope exceptions"
+      ],
+      "approved_reconstruction_eligible": false
+    },
+    {
+      "id": "tctc-anderson-customer-input-development",
+      "kind": "real_public",
+      "customer_input_present": true,
+      "manufacturer_output_present": false,
+      "approved_reference_status": "Not obtained. Procurement spec p14 requires vendor official submittals approved before award, but that sentence is not proof that any specific design was approved.",
+      "customer_sources": [
+        "tctc-rebid-spec",
+        "tctc-engineer-one-line"
+      ],
+      "missing": [
+        "Manufacturer-submitted drawing/BOM",
+        "Actual customer/engineer disposition",
+        "Accepted changes/clarifications"
+      ],
+      "approved_reconstruction_eligible": false
+    },
+    {
+      "id": "uncw-housing-abb-candidate",
+      "kind": "real_public",
+      "original_path": "../../.data/real-document-corpus/reconstruction-candidates/uncw-housing-addendum-02.pdf",
+      "sha256": "c444614ae417442d3b0940e48b880aaa55347757a7181c7ed4873919f11f6041",
+      "source_url": "https://www.tawoods.com/wp-content/uploads/2026/03/Addendum-02.pdf",
+      "manufacturer_output_present": true,
+      "customer_input_present": false,
+      "approved_reference_status": "Early procurement submittal embedded in addendum. Review comments request changed fire-pump tap and verification; no complete approved-as-built target established.",
+      "limits": [
+        "ABB family outside initial SquareD QED2 rule pack",
+        "Original E611 and switchboard spec not obtained",
+        "Public WP media API responded401; no authenticated access attempted"
+      ],
+      "approved_reconstruction_eligible": false
+    }
+  ]
+}

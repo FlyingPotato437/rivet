@@ -1,0 +1,142 @@
+.learning-settings {
+  margin: 32px 0;
+  padding: 28px;
+  border: 1px solid #ffffff16;
+  border-radius: 12px;
+  background: var(--rivet-panel, #191c1f);
+}
+.learning-settings > header,
+.sap-profile-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+.learning-settings h3 {
+  margin: 0 0 9px;
+  font: 550 20px/1.3 var(--rivet-display, var(--font-sans));
+  letter-spacing: -0.025em;
+}
+.learning-settings header p,
+.sap-profile > p {
+  color: var(--rivet-secondary, #a6aaaf);
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 65ch;
+  margin: 0;
+}
+.connection-label {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  border: 1px solid #ffffff16;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: #c6bed5;
+  font-size: 12px;
+}
+.connection-label.is-current {
+  color: #a6c8b1;
+  border-color: #a6c8b133;
+}
+.learning-settings .learning-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 24px 0;
+  border-bottom: 1px solid #ffffff10;
+}
+.learning-option:first-of-type {
+  margin-top: 8px;
+}
+.learning-option strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+.learning-option small,
+.learning-training-state small {
+  display: block;
+  max-width: 72ch;
+  margin-top: 8px;
+  color: #a6aaaf;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.learning-option input {
+  accent-color: #c3b6df;
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  margin: 0;
+}
+.learning-training-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 24px;
+}
+.learning-training-state strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.learning-training-state p {
+  color: #a6aaaf;
+  font-size: 13px;
+}
+.learning-training-state button {
+  flex-shrink: 0;
+}
+.sap-profile {
+  padding: 25px 0 4px;
+  margin-top: 20px;
+  border-top: 1px solid #ffffff12;
+}
+.sap-profile h4 {
+  margin: 8px 0 15px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.connection-overline {
+  color: #c3b6df;
+  font-size: 12px;
+}
+.sap-profile > .sap-boundary {
+  font-size: 12px;
+  margin: 10px 0 20px;
+}
+.connection-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+.connection-source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: #c3b6df;
+  text-decoration: none;
+}
+.connection-empty {
+  margin-top: 22px;
+  color: #a6aaaf;
+  font-size: 14px;
+  line-height: 1.7;
+}
+@media (max-width: 760px) {
+  .learning-settings {
+    padding: 22px 18px;
+  }
+  .learning-settings > header,
+  .learning-training-state {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

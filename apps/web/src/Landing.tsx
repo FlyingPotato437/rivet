@@ -23,7 +23,7 @@ export function PublicHeader({ booking = false }: { booking?: boolean }) {
         </span>
       </a>
       <span className="public-header-note">
-        Order coordination for custom equipment
+        Customer approvals for custom equipment
       </span>
       <a className="public-header-cta" href={booking ? "/#workflow" : "/pilot"}>
         {booking ? "Explore the product" : "Request a pilot"}
@@ -383,7 +383,7 @@ function WorkflowDemo() {
           </span>
           {scrollDriven && <ArrowDown size={16} />}
         </div>
-        <a className="public-demo-skip" href="#inbox">
+        <a className="public-demo-skip" href="#outlook">
           Continue below <ArrowDown size={12} />
         </a>
       </div>
@@ -705,12 +705,17 @@ export function Landing() {
                 </h1>
                 <div className="public-hero-bottom">
                   <p>
-                    Rivet prepares the comment log, flags revision risks, and
-                    organizes the next handoff. Your team makes the decisions.
+                    Rivet reads returned drawings, checks the order context, and
+                    prepares cited replies in Outlook. You review and send.
                   </p>
-                  <a className="public-text-link" href="#workflow">
-                    See how it works <ArrowDown size={19} />
-                  </a>
+                  <div className="public-hero-actions">
+                    <a className="public-button" href="/pilot">
+                      Request a pilot <ArrowUpRight size={18} />
+                    </a>
+                    <a className="public-text-link" href="#workflow">
+                      See how it works <ArrowDown size={19} />
+                    </a>
+                  </div>
                 </div>
               </div>
               <div
@@ -740,7 +745,7 @@ export function Landing() {
             </div>
             <WorkflowDemo />
           </section>
-          <section id="inbox" className="public-inbox-section">
+          <section id="outlook" className="public-inbox-section">
             <div className="public-inbox-layout public-wrap">
               <div className="public-inbox-copy" data-public-reveal>
                 <p className="public-eyebrow">Built around the PM</p>
@@ -763,9 +768,9 @@ export function Landing() {
                   <span>Export the spreadsheet your team already uses</span>
                 </div>
                 <p className="public-integration-note">
-                  Forwarding is configured during pilot setup. Outlook,
-                  SharePoint, and ERP connections are planned; they are not
-                  required to start.
+                  Start with email forwarding. Outlook and SharePoint are
+                  available in the connected demo; ERP and drawing-vault
+                  connections are scoped to your pilot.
                 </p>
               </div>
               <div className="public-digest">

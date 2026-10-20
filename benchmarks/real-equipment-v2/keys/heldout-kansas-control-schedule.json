@@ -1,0 +1,397 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "heldout-kansas-control-schedule",
+  "review": {
+    "reviewer": "Codex independent validation agent visual inspection",
+    "reviewed_at": "2026-10-18T22:53:20.248837+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Preliminary manually transcribed original page. Frozen before reader evaluation; not licensed engineer validation. All physical data rows in the bounded schedule are labelled. Selected core engineering fields are transcribed; cells not included in the key are not scored. Blanks and dashes stay unknown, never inferred."
+  },
+  "source_hashes": {
+    "heldout-kansas-control-schedule": "28a88474a3f8124635b77475a00d3a1d4622b1216320aa0f75cd5c3644219bde"
+  },
+  "parent_original": {
+    "sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+    "page": 253,
+    "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf"
+  },
+  "labels": {
+    "comments": null,
+    "devices": null,
+    "bom_rows": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1
+        }
+      ],
+      "source_ids": [
+        "heldout-kansas-control-schedule"
+      ],
+      "items": [
+        {
+          "id": "heldout-kansas-control-schedule-row-1",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 1,
+          "fields": {
+            "section_no": 1,
+            "device_frame": "Incoming Connection",
+            "connection": "Busway"
+          },
+          "source_row_kind": "incoming_connection",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "device_frame": "high",
+            "connection": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-2",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 2,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 1,
+            "device_frame": "MJ (PS)",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "prepared_space",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "prepared_space",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-3",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 3,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 2,
+            "device_frame": "MJ",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "populated_breaker",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-4",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 4,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 3,
+            "device_frame": "MJ",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "populated_breaker",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-5",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 5,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 4,
+            "device_frame": "MJ (PS)",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "prepared_space",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "prepared_space",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-6",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 6,
+          "fields": {
+            "section_no": 3,
+            "circuit_no": 5,
+            "device_frame": "MJ (PS)",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "prepared_space",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "prepared_space",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-7",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 7,
+          "fields": {
+            "section_no": 3,
+            "circuit_no": 6,
+            "device_frame": "MJ",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "populated_breaker",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-8",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 8,
+          "fields": {
+            "section_no": 3,
+            "circuit_no": 7,
+            "device_frame": "MJ",
+            "trip_a": 500,
+            "pole_count": 3,
+            "position_state": "populated_breaker",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-9",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 9,
+          "fields": {
+            "section_no": 3,
+            "circuit_no": 8,
+            "device_frame": "MJ (PS)",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "prepared_space",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "prepared_space",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-10",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 10,
+          "fields": {
+            "section_no": 3,
+            "circuit_no": 9,
+            "device_frame": "MJ (PS)",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "prepared_space",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "prepared_space",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-control-schedule-row-11",
+          "source_id": "heldout-kansas-control-schedule",
+          "page": 1,
+          "row": 11,
+          "fields": {
+            "section_no": 3,
+            "circuit_no": 10,
+            "device_frame": "MJ (PS)",
+            "trip_a": 600,
+            "pole_count": 3,
+            "position_state": "prepared_space",
+            "gmd_height": "9 in",
+            "phase_lug_quantity": 3,
+            "phase_wire_range": "3/0 - 500 kcmil",
+            "neutral_lug_quantity": 2,
+            "neutral_wire_range": "4/0 - 500kcmil"
+          },
+          "source_row_kind": "prepared_space",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "position_state": "high",
+            "gmd_height": "high",
+            "phase_lug_quantity": "high",
+            "phase_wire_range": "high",
+            "neutral_lug_quantity": "high",
+            "neutral_wire_range": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        }
+      ]
+    },
+    "issues": null,
+    "revision_checks": null
+  }
+}

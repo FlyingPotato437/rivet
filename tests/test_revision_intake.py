@@ -19,9 +19,11 @@ from backend.records.intake import (
     original,
     queue,
     receive,
+    reinspect_pending,
 )
 from backend.records.revision_review import review_summary
 from backend.storage.db import Session
+from backend.storage.models import RecordIntake
 from scripts.make_order_replay import write_pdf
 
 
@@ -71,6 +73,129 @@ def test_exact_existing_job_routes_without_project_setup(client):
     )
     assert later["status"] == "matched" and later["order_id"] == first["order_id"]
     assert "Exact job number" in later["reason"]
+
+
+def test_reused_sheet_number_does_not_block_one_exact_job_match(client):
+    other = incoming(
+        client, "other.txt", b"Job 24-999 Rev A\nDrawing E-01\nComment 1: Finish."
+    )
+    target = incoming(client, "target.txt", b"Job 24-118 Rev A\nComment 1: Rating.")
+    drain()
+    later = incoming(
+        client,
+        "returned.txt",
+        b"Job 24-118 Rev B\nDrawing E-01\nComment 2: Confirm rating.",
+    )
+    assert later["status"] == "matched"
+    assert later["order_id"] == target["order_id"] != other["order_id"]
+    assert "Exact job number" in later["reason"]
+
+
+def test_po_revision_filename_is_not_a_second_purchase_order(client, tmp_path):
+    first = incoming(
+        client, "original.txt", b"Job 24-118 Revision B\nComment 1: Finish."
+    )
+    path = tmp_path / "24-118-PO-Revision-1.pdf"
+    write_pdf(
+        path,
+        "Purchase order",
+        ["Job: 24-118", "Purchase order: PO-442", "PO revision: 1"],
+    )
+    mail = EmailMessage()
+    mail["Subject"] = "Job 24-118 | Purchase order Rev 1"
+    mail.set_content("Please compare the attached purchase order with your quotation.")
+    mail.add_attachment(
+        path.read_bytes(), maintype="application", subtype="pdf", filename=path.name
+    )
+    staged = incoming(client, "order.eml", mail.as_bytes())
+    assert staged["status"] == "matched" and staged["order_id"] == first["order_id"]
+    assert staged["detected"]["po_numbers"] == ["PO-442"]
+    assert staged["detected"]["revision"] == "1"
+    assert identifiers("PO: REVISION-1")["po_numbers"] == ["REVISION-1"]
+    assert identifiers("PO number REVISION-1")["po_numbers"] == ["REVISION-1"]
+
+
+def test_returned_drawing_revision_is_not_confused_with_referenced_specification(
+    client, tmp_path
+):
+    first = incoming(
+        client, "original.txt", b"Job 24-118 Revision B\nComment 1: Finish."
+    )
+    path = tmp_path / "24-118-E-10-Rev-C-Returned.pdf"
+    write_pdf(
+        path,
+        "Job 24-118 | Sheet E-10 | Revision C",
+        [
+            "SharePoint specification Rev 2",
+            "Please reconcile the conflicting trip units.",
+        ],
+        [],
+    )
+    message = EmailMessage()
+    message["Subject"] = "Job 24-118 | Rev C comments attached"
+    message.set_content("Please review the returned comments for job 24-118, Rev C.")
+    message.add_attachment(
+        path.read_bytes(), maintype="application", subtype="pdf", filename=path.name
+    )
+    staged = incoming(client, "returned.eml", message.as_bytes())
+    assert staged["status"] == "matched" and staged["order_id"] == first["order_id"]
+    assert staged["revision_label"] == "C"
+    assert staged["detected"]["referenced_revisions"] == ["2"]
+    assert staged["detected"]["revision_evidence"]
+
+
+def test_subject_does_not_override_conflicting_drawing_header(client, tmp_path):
+    incoming(client, "original.txt", b"Job 24-118 Revision B\nComment 1: Finish.")
+    path = tmp_path / "24-118-E-10-Rev-C-Returned.pdf"
+    write_pdf(path, "Job 24-118 | Sheet E-10 | Revision D", ["Review comments"], [])
+    message = EmailMessage()
+    message["Subject"] = "Job 24-118 | Rev C comments attached"
+    message.set_content("Please review the attached drawing.")
+    message.add_attachment(
+        path.read_bytes(), maintype="application", subtype="pdf", filename=path.name
+    )
+    staged = incoming(client, "returned.eml", message.as_bytes())
+    assert staged["status"] == "needs_confirmation" and not staged["order_id"]
+    assert set(staged["detected"]["revisions"]) == {"C", "D"}
+
+
+def test_reinspection_reuses_saved_original_without_overriding_persons_decision(
+    client, monkeypatch
+):
+    first = incoming(
+        client, "original.txt", b"Job 24-118 Revision B\nComment 1: Finish."
+    )
+    import backend.records.intake as intake_service
+
+    inspect = intake_service.inspect_file
+
+    def old_inspection(name, data):
+        detected, email = inspect(name, data)
+        return {**detected, "revision": "", "revisions": ["C", "2"]}, email
+
+    monkeypatch.setattr(intake_service, "inspect_file", old_inspection)
+    staged = incoming(
+        client, "returned.txt", b"Job 24-118 Revision C\nComment 2: Trip unit."
+    )
+    assert staged["status"] == "needs_confirmation"
+    monkeypatch.setattr(intake_service, "inspect_file", inspect)
+    with Session.begin() as s:
+        replayed = reinspect_pending(s, staged["intake_id"])
+        assert (
+            replayed["status"] == "matched"
+            and replayed["order_id"] == first["order_id"]
+        )
+        assert replayed["previous_detected"]["revisions"] == ["C", "2"]
+    with Session.begin() as s:
+        assert (
+            reinspect_pending(s, staged["intake_id"])["document_id"]
+            == replayed["document_id"]
+        )
+    dismissed = incoming(client, "unclear.txt", b"Please check the attached drawing.")
+    with Session.begin() as s:
+        s.get(RecordIntake, dismissed["intake_id"]).status = "set_aside"
+    with Session.begin() as s:
+        assert reinspect_pending(s, dismissed["intake_id"])["status"] == "set_aside"
 
 
 @pytest.mark.parametrize(
@@ -193,7 +318,7 @@ def test_explicit_revision_codes_still_match(phrase, expected):
     assert identifiers(phrase)["revisions"] == [expected]
 
 
-def test_known_job_with_revision_prose_still_requires_confirmation(client):
+def test_known_job_without_revision_routes_without_inheriting_prior_revision(client):
     first = incoming(
         client,
         "original.txt",
@@ -204,8 +329,10 @@ def test_known_job_with_revision_prose_still_requires_confirmation(client):
         "returned.txt",
         b"Job 24-118\nDrawing E-10\nComment 4: Please confirm which revision contains the latest dimensions.",
     )
-    assert second["status"] == "needs_confirmation"
+    assert second["status"] == "matched"
     assert second["detected"]["revision"] == ""
+    assert second["revision_label"] == "Unspecified"
+    assert second["order_id"] == first["order_id"]
     assert second["candidates"][0]["id"] == first["order_id"]
     third = incoming(
         client,

@@ -147,7 +147,9 @@ export function RivetField() {
       visible = true,
       last = 0,
       pointerX = 0,
-      pointerY = 0;
+      pointerY = 0,
+      targetX = 0,
+      targetY = 0;
     const motion = { progress: 0 };
     const assemblyStart = performance.now();
     const mark = new Path2D(
@@ -177,7 +179,7 @@ export function RivetField() {
       c.clearRect(0, 0, width, height);
       // The field now lives in its own hero column, so its optical center is
       // local to that column on both desktop and stacked mobile layouts.
-      const px = width * 0.55,
+      const px = width * 0.52,
         py = height * 0.49;
       const scale = Math.min(width * 0.46, height * 0.44);
       const slow = media.matches ? 0 : time;
@@ -197,8 +199,8 @@ export function RivetField() {
         cz = Math.cos(rz),
         sz = Math.sin(rz);
       const glow = c.createRadialGradient(px, py, 0, px, py, scale * 1.55);
-      glow.addColorStop(0, "rgba(152,94,229,.14)");
-      glow.addColorStop(0.55, "rgba(93,51,152,.06)");
+      glow.addColorStop(0, "rgba(180,165,208,.08)");
+      glow.addColorStop(0.55, "rgba(145,135,162,.035)");
       glow.addColorStop(1, "rgba(30,16,54,0)");
       c.fillStyle = glow;
       c.fillRect(0, 0, width, height);
@@ -229,8 +231,16 @@ export function RivetField() {
         const light = 0.28 + (1 - (p.z + 1) / 2) * 0.65;
         const shimmer =
           0.9 + Math.sin(p.x * 0.027 + p.y * 0.019 - slow * 0.75) * 0.1;
-        const alpha = Math.min(0.95, light * shimmer * (p.edge ? 1.2 : 1));
-        c.fillStyle = `rgba(${p.edge ? 224 : 179},${p.edge ? 199 : 140},${p.edge ? 250 : 228},${alpha})`;
+        // A fine light sweep reveals the volume without changing the brand hue.
+        const scanPosition = ((slow * 0.16) % 2.8) - 1.4;
+        const scan = media.matches
+          ? 0
+          : Math.max(0, 1 - Math.abs((p.x - px) / scale - scanPosition) * 9);
+        const alpha = Math.min(
+          1,
+          light * shimmer * (p.edge ? 1.35 : 1.1) + scan * 0.36,
+        );
+        c.fillStyle = `rgba(${p.edge || scan > 0.4 ? 232 : 194},${p.edge || scan > 0.4 ? 225 : 182},${p.edge || scan > 0.4 ? 245 : 216},${alpha})`;
         const size = Math.max(0.75, scale * 0.0044 * p.depth);
         c.fillRect(p.x, p.y, size * (p.edge ? 1.4 : 1), size * 0.8);
       }
@@ -264,7 +274,7 @@ export function RivetField() {
       const r = el.getBoundingClientRect();
       width = r.width;
       height = r.height;
-      const dpr = Math.min(devicePixelRatio, 1.5);
+      const dpr = Math.min(devicePixelRatio, 2);
       el.width = Math.round(width * dpr);
       el.height = Math.round(height * dpr);
       c.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -279,14 +289,21 @@ export function RivetField() {
     visibility.observe(el);
     const move = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
-      pointerX = (e.clientX - r.left) / r.width - 0.5;
-      pointerY = (e.clientY - r.top) / r.height - 0.5;
+      targetX = (e.clientX - r.left) / r.width - 0.5;
+      targetY = (e.clientY - r.top) / r.height - 0.5;
+    };
+    const leave = () => {
+      targetX = 0;
+      targetY = 0;
     };
     const stage = el.parentElement!;
     stage.addEventListener("pointermove", move, { passive: true });
+    stage.addEventListener("pointerleave", leave);
     const tick = (time: number) => {
       if (media.matches || time - last < 0.033) return;
       last = time;
+      pointerX += (targetX - pointerX) * 0.08;
+      pointerY += (targetY - pointerY) * 0.08;
       draw(time);
     };
     gsap.ticker.add(tick);
@@ -306,6 +323,7 @@ export function RivetField() {
       observer.disconnect();
       visibility.disconnect();
       stage.removeEventListener("pointermove", move);
+      stage.removeEventListener("pointerleave", leave);
       media.removeEventListener("change", changed);
       gsap.ticker.remove(tick);
       trigger.kill();

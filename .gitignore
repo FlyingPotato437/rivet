@@ -1,6 +1,8 @@
 .venv/
 node_modules/
 dist/
+dist-outlook/
+dist-workspace/
 .data/
 .env
 .env.*
@@ -12,3 +14,6 @@ __pycache__/
 
 *.tsbuildinfo
 .vercel
+# Local pilot demo artifacts and temporary rendering/test data.
+/output/pilot-demo-20261019/
+/tmp/pilot-demo-20261019/

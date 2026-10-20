@@ -1,0 +1,1007 @@
+{
+  "schema_version": "rivet.reconstruction-answer-key.v1",
+  "package_id": "tctc-anderson-customer-input-development",
+  "kind": "real_public",
+  "split": "development",
+  "label_status": "assistant_source_reviewed_not_engineer_verified",
+  "label_method": "Manual inspection of original native specification pages 12\u201314 and rendered original consultant one-line E0.3A, including enlarged source crop. No model prediction or generated design used in labeling. Post-evaluation independent blind source-only reviewer re-read full circuit7 context plus circuits6/8. The original frame7 key incorrectly borrowed800A MCB from downstream panelDPA; source breaker itself prints600A F. Original key and scores retained.",
+  "scope": {
+    "requirements": "52 bounded scalar engineering requirements: 28 order/main/options plus 24 feeder current/frame values. Other generic instrumentation, finish, delivery and administrative clauses are outside this scalar score.",
+    "device_inventory": "All 13 switchboard breaker symbols on MSB one-line: one main and 12 feeder/spare positions. Downstream panel breakers are outside MSB inventory.",
+    "placement": "No physical section or mounting-position layout is specified by this customer one-line. Printed circuit numbers are identity, not section order.",
+    "complete_engineering_key": false
+  },
+  "requirements": [
+    {
+      "id": "order.service_rating_a",
+      "subject_id": "order",
+      "key": "service_rating_a",
+      "value": 2000,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Main-Bus Continuous: 2000."
+        }
+      ]
+    },
+    {
+      "id": "order.voltage_v",
+      "subject_id": "order",
+      "key": "voltage_v",
+      "value": 208,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Nominal System Voltage: 208Y/120 V, 3\u2205, 4 wire."
+        }
+      ]
+    },
+    {
+      "id": "order.voltage_to_ground_v",
+      "subject_id": "order",
+      "key": "voltage_to_ground_v",
+      "value": 120,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Nominal System Voltage: 208Y/120 V, 3\u2205, 4 wire."
+        }
+      ]
+    },
+    {
+      "id": "order.phases",
+      "subject_id": "order",
+      "key": "phases",
+      "value": 3,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "208Y/120 V, 3\u2205, 4 wire."
+        }
+      ]
+    },
+    {
+      "id": "order.wires",
+      "subject_id": "order",
+      "key": "wires",
+      "value": 4,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "208Y/120 V, 3\u2205, 4 wire."
+        }
+      ]
+    },
+    {
+      "id": "order.minimum_interrupting_ka",
+      "subject_id": "order",
+      "key": "minimum_interrupting_ka",
+      "value": 65,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "All breakers to be rated 65 KAK minimum."
+        }
+      ]
+    },
+    {
+      "id": "order.access",
+      "subject_id": "order",
+      "key": "access",
+      "value": "front",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Front Accessible Switchboards:"
+        }
+      ]
+    },
+    {
+      "id": "order.alignment",
+      "subject_id": "order",
+      "key": "alignment",
+      "value": "front_and_rear",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Section Alignment: Front and Rear aligned."
+        }
+      ]
+    },
+    {
+      "id": "order.main.mounting",
+      "subject_id": "order",
+      "key": "main.mounting",
+      "value": "fixed_individual",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Main Devices: Fixed, individually mounted."
+        }
+      ]
+    },
+    {
+      "id": "order.feeder_mounting",
+      "subject_id": "order",
+      "key": "feeder_mounting",
+      "value": "panel_mounted",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Branch Devices: Panel mounted."
+        }
+      ]
+    },
+    {
+      "id": "order.arc_energy_reduction",
+      "subject_id": "order",
+      "key": "arc_energy_reduction",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Provide reduced energy maintenance switch on main breaker"
+        }
+      ]
+    },
+    {
+      "id": "order.enclosure",
+      "subject_id": "order",
+      "key": "enclosure",
+      "value": "NEMA1",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Indoor Enclosures: Steel, UL 50E, Type 1."
+        }
+      ]
+    },
+    {
+      "id": "order.utility_metering",
+      "subject_id": "order",
+      "key": "utility_metering",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Utility metering compartment."
+        }
+      ]
+    },
+    {
+      "id": "order.customer_metering",
+      "subject_id": "order",
+      "key": "customer_metering",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Customer metering compartment."
+        }
+      ]
+    },
+    {
+      "id": "order.bus_material",
+      "subject_id": "order",
+      "key": "bus_material",
+      "value": "copper",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Phase- and Neutral-Bus Material: Hard-drawn copper of 98 percent conductivity, silverplated."
+        }
+      ]
+    },
+    {
+      "id": "order.bus_plating",
+      "subject_id": "order",
+      "key": "bus_plating",
+      "value": "silver",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "silverplated."
+        }
+      ]
+    },
+    {
+      "id": "order.neutral_bus_percent",
+      "subject_id": "order",
+      "key": "neutral_bus_percent",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Neutral Buses: 100 percent of ampacity of phase buses unless otherwise indicated"
+        }
+      ]
+    },
+    {
+      "id": "order.ground_bus_material",
+      "subject_id": "order",
+      "key": "ground_bus_material",
+      "value": "copper",
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Ground Bus: Hard-drawn copper of 98 percent conductivity"
+        }
+      ]
+    },
+    {
+      "id": "order.section_barriers",
+      "subject_id": "order",
+      "key": "section_barriers",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Barriers: Between adjacent switchboard sections."
+        }
+      ]
+    },
+    {
+      "id": "order.bus_insulation",
+      "subject_id": "order",
+      "key": "bus_insulation",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 13,
+          "text": "Insulation and isolation for main and vertical buses of feeder sections."
+        }
+      ]
+    },
+    {
+      "id": "order.ground_fault",
+      "subject_id": "order",
+      "key": "ground_fault",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 14,
+          "text": "Ground-Fault Protection: Integrally mounted relay and trip unit"
+        }
+      ]
+    },
+    {
+      "id": "order.zone_selective_interlocking",
+      "subject_id": "order",
+      "key": "zone_selective_interlocking",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 14,
+          "text": "Zone-Selective Interlocking: Integral with electronic trip unit; for interlocking ground-fault protection function."
+        }
+      ]
+    },
+    {
+      "id": "order.control_voltage_v",
+      "subject_id": "order",
+      "key": "control_voltage_v",
+      "value": 120,
+      "source_refs": [
+        {
+          "source_id": "tctc-rebid-spec",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "page": 14,
+          "text": "Control Circuits: 120 V(ac), supplied through secondary disconnecting devices from control-power transformer."
+        }
+      ]
+    },
+    {
+      "id": "order.main.trip_a",
+      "subject_id": "order",
+      "key": "main.trip_a",
+      "value": 1600,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "REPLACE 2000A PLUG IN EXISTING BREAKER WITH NEW 1600A TRIP PLUG; 1600A T / 2000A F"
+        }
+      ]
+    },
+    {
+      "id": "order.main.frame_a",
+      "subject_id": "order",
+      "key": "main.frame_a",
+      "value": 2000,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "1600A T / 2000A F"
+        }
+      ]
+    },
+    {
+      "id": "order.spd",
+      "subject_id": "order",
+      "key": "spd",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "NEW 250KA SURGE SUPPRESSOR"
+        }
+      ]
+    },
+    {
+      "id": "order.spd_surge_ka",
+      "subject_id": "order",
+      "key": "spd_surge_ka",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "NEW 250KA SURGE SUPPRESSOR"
+        }
+      ]
+    },
+    {
+      "id": "order.main.reuse_existing",
+      "subject_id": "order",
+      "key": "main.reuse_existing",
+      "value": true,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "REPLACE 2000A PLUG IN EXISTING BREAKER WITH NEW 1600A TRIP PLUG"
+        }
+      ]
+    },
+    {
+      "id": "1.trip_a",
+      "subject_id": "1",
+      "key": "trip_a",
+      "value": 60,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 1: 60A T / 100A F"
+        }
+      ]
+    },
+    {
+      "id": "1.frame_a",
+      "subject_id": "1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 1: 60A T / 100A F"
+        }
+      ]
+    },
+    {
+      "id": "2.trip_a",
+      "subject_id": "2",
+      "key": "trip_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 2: 100A T / 100A F"
+        }
+      ]
+    },
+    {
+      "id": "2.frame_a",
+      "subject_id": "2",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 2: 100A T / 100A F"
+        }
+      ]
+    },
+    {
+      "id": "3.trip_a",
+      "subject_id": "3",
+      "key": "trip_a",
+      "value": 225,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 3: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "3.frame_a",
+      "subject_id": "3",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 3: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "4.trip_a",
+      "subject_id": "4",
+      "key": "trip_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 4: 250A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "4.frame_a",
+      "subject_id": "4",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 4: 250A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "5.trip_a",
+      "subject_id": "5",
+      "key": "trip_a",
+      "value": 225,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 5: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "5.frame_a",
+      "subject_id": "5",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 5: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "6.trip_a",
+      "subject_id": "6",
+      "key": "trip_a",
+      "value": 600,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 6: 600A T / 600A F"
+        }
+      ]
+    },
+    {
+      "id": "6.frame_a",
+      "subject_id": "6",
+      "key": "frame_a",
+      "value": 600,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 6: 600A T / 600A F"
+        }
+      ]
+    },
+    {
+      "id": "7.trip_a",
+      "subject_id": "7",
+      "key": "trip_a",
+      "value": 600,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 7: 600A T / 600A F"
+        }
+      ]
+    },
+    {
+      "id": "7.frame_a",
+      "subject_id": "7",
+      "key": "frame_a",
+      "value": 600,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 7: 600A T / 600A F"
+        }
+      ]
+    },
+    {
+      "id": "8.trip_a",
+      "subject_id": "8",
+      "key": "trip_a",
+      "value": 225,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 8: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "8.frame_a",
+      "subject_id": "8",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 8: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "9.trip_a",
+      "subject_id": "9",
+      "key": "trip_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 9: 250A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "9.frame_a",
+      "subject_id": "9",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 9: 250A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "10.trip_a",
+      "subject_id": "10",
+      "key": "trip_a",
+      "value": 225,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 10: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "10.frame_a",
+      "subject_id": "10",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 10: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "11.trip_a",
+      "subject_id": "11",
+      "key": "trip_a",
+      "value": 225,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 11: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "11.frame_a",
+      "subject_id": "11",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 11: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "12.trip_a",
+      "subject_id": "12",
+      "key": "trip_a",
+      "value": 225,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 12: 225A T / 250A F"
+        }
+      ]
+    },
+    {
+      "id": "12.frame_a",
+      "subject_id": "12",
+      "key": "frame_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "text": "Breaker ID 12: 225A T / 250A F"
+        }
+      ]
+    }
+  ],
+  "customer_device_inventory": [
+    {
+      "id": "main",
+      "role": "main",
+      "features": {
+        "trip_a": 1600,
+        "frame_a": 2000
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Incoming utility vertical conductor and trip-plug replacement note"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "circuit": "1",
+      "role": "feeder",
+      "load": "TVSS",
+      "features": {
+        "trip_a": 60,
+        "frame_a": 100
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 1"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "circuit": "2",
+      "role": "feeder",
+      "load": "PANEL APPA",
+      "features": {
+        "trip_a": 100,
+        "frame_a": 100
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 2"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "circuit": "3",
+      "role": "feeder",
+      "load": "PANEL ALP",
+      "features": {
+        "trip_a": 225,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 3"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "circuit": "4",
+      "role": "feeder",
+      "load": "PANEL I AND MECH. PANEL",
+      "features": {
+        "trip_a": 250,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 4"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "circuit": "5",
+      "role": "feeder",
+      "load": "PANEL KA / PANEL KB",
+      "features": {
+        "trip_a": 225,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 5"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "circuit": "6",
+      "role": "feeder",
+      "load": "PANEL AMP",
+      "features": {
+        "trip_a": 600,
+        "frame_a": 600
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 6"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "circuit": "7",
+      "role": "feeder",
+      "load": "PANEL DPA",
+      "features": {
+        "trip_a": 600,
+        "frame_a": 600
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 7"
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "circuit": "8",
+      "role": "feeder",
+      "load": "PANEL APP",
+      "features": {
+        "trip_a": 225,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 8"
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "circuit": "9",
+      "role": "feeder",
+      "load": "PANEL AH",
+      "features": {
+        "trip_a": 250,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 9"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "circuit": "10",
+      "role": "feeder",
+      "load": "SPARE",
+      "features": {
+        "trip_a": 225,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 10"
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "circuit": "11",
+      "role": "feeder",
+      "load": "SPARE",
+      "features": {
+        "trip_a": 225,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 11"
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "circuit": "12",
+      "role": "feeder",
+      "load": "SPARE",
+      "features": {
+        "trip_a": 225,
+        "frame_a": 250
+      },
+      "source_refs": [
+        {
+          "source_id": "tctc-engineer-one-line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "page": 1,
+          "region_description": "Lower-left one-line, MSB horizontal bus, printed circled breaker ID 12"
+        }
+      ]
+    }
+  ],
+  "unknowns": [
+    {
+      "key": "main.trip_type",
+      "raw_text": "LS16",
+      "reason": "Printed specification says LS16; cannot silently read it as LSIG."
+    },
+    {
+      "key": "pole_count",
+      "reason": "No per-breaker pole count printed next to MSB device symbols; three-phase service alone is not a per-device explicit assertion."
+    },
+    {
+      "key": "main_tie_interlocking",
+      "reason": "Generic spec paragraph asks electrically interlocked main and tie breakers, while provided one-line shows one main and no tie; requires engineer clarification."
+    },
+    {
+      "key": "approved_section_positions",
+      "reason": "Manufacturer approved package was not obtained."
+    }
+  ],
+  "approved_reference": null,
+  "approved_reconstruction_eligible": false,
+  "ineligibility_reason": "Genuine customer specification and engineer procurement one-line are available; manufacturer submittal and engineer approval are not. This supports requirements/compliance testing, not an approved-design reconstruction claim.",
+  "label_revision": "post-evaluation-source-only-adjudication-v2",
+  "post_prediction_adjudication": {
+    "original_key_sha256": "43df145937d1fce33e0f44a63ed070175546ecb991112f72b5abb392ca8e55ca",
+    "record": "adjudications/tctc-circuit7-20261019.json",
+    "not_a_new_unseen_result": true,
+    "engineer_verified": false
+  }
+}

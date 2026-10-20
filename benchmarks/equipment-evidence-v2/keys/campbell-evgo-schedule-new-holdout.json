@@ -1,0 +1,253 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "campbell-evgo-schedule-new-holdout",
+  "review": {
+    "reviewer": "Codex root source-only visual transcription",
+    "reviewed_at": "2026-10-19T00:32:28.762666+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "model_predictions_seen": false,
+    "note": "New public project; full bounded schedule rows counted, selected printed core fields labelled. No installations, capacity, pole count or trip settings inferred from blanks, lug quantities, catalogue assumptions or the web search transcription. Preliminary source labels need engineer second review. Raw source crops retained; same manufacturer as Kansas, not a new-manufacturer generalization claim."
+  },
+  "source_hashes": {
+    "campbell-evgo-schedule-new-holdout": "f32c6b07a6a9fc821d716cb1d219bdf9b4d145b61ac9debd53578125c8819f9f"
+  },
+  "parent_original": {
+    "sha256": "3fbf80f11f8a6e7c4e7a75d792588052e58a22735a38e27caef629e3cdad6d3f",
+    "page": 17,
+    "url": "https://www.campbellca.gov/Archive.aspx?ADID=1639"
+  },
+  "labels": {
+    "comments": null,
+    "devices": null,
+    "bom_rows": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1
+        }
+      ],
+      "source_ids": [
+        "campbell-evgo-schedule-new-holdout"
+      ],
+      "items": [
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-1",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 1,
+          "fields": {
+            "section_no": 1,
+            "circuit_no": "UCT",
+            "device_frame": "1200A",
+            "designation": "Pacific G&E (CA)"
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "designation": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-2",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 2,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": "M1",
+            "device_frame": "PJ 1200A Plug A",
+            "trip_a": 1200,
+            "pole_count": 3
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "trip_a": "preliminary_visual",
+            "pole_count": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-3",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 3,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 1,
+            "device_frame": "LJ 600A",
+            "trip_a": 300,
+            "pole_count": 3
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "trip_a": "preliminary_visual",
+            "pole_count": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-4",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 4,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 2,
+            "device_frame": "LJ 600A",
+            "trip_a": 300,
+            "pole_count": 3
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "trip_a": "preliminary_visual",
+            "pole_count": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-5",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 5,
+          "fields": {
+            "section_no": 2,
+            "device_frame": "120kA SPD"
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "device_frame": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-6",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 6,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 3,
+            "device_frame": "BJ",
+            "trip_a": 30,
+            "pole_count": 3
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "trip_a": "preliminary_visual",
+            "pole_count": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-7",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 7,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 4,
+            "device_frame": "JJ 250A",
+            "trip_a": 175,
+            "pole_count": 3
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "trip_a": "preliminary_visual",
+            "pole_count": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-8",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 8,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 5,
+            "device_frame": "JJ 250A",
+            "trip_a": 175,
+            "pole_count": 3
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "trip_a": "preliminary_visual",
+            "pole_count": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        },
+        {
+          "id": "campbell-evgo-schedule-new-holdout-row-9",
+          "source_id": "campbell-evgo-schedule-new-holdout",
+          "page": 1,
+          "row": 9,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 6,
+            "device_frame": "BJ",
+            "trip_a": 20,
+            "pole_count": 3
+          },
+          "cell_review_confidence": {
+            "section_no": "preliminary_visual",
+            "circuit_no": "preliminary_visual",
+            "device_frame": "preliminary_visual",
+            "trip_a": "preliminary_visual",
+            "pole_count": "preliminary_visual"
+          },
+          "identity_note": "Physical source table row ordinal excluding headers; section/circuit are local position identifiers, not invented enterprise device tags."
+        }
+      ]
+    },
+    "issues": null,
+    "revision_checks": null
+  },
+  "unprinted_cells_not_in_accuracy_denominator": [
+    {
+      "row": 1,
+      "field": "trip_a",
+      "reason": "Printed blank/dash; unknown, not zero; do not infer another column."
+    },
+    {
+      "row": 1,
+      "field": "pole_count",
+      "reason": "Printed blank/dash; unknown, not zero; do not infer another column."
+    },
+    {
+      "row": 5,
+      "field": "circuit_no",
+      "reason": "Printed blank/dash; unknown, not zero; do not infer another column."
+    },
+    {
+      "row": 5,
+      "field": "trip_a",
+      "reason": "Printed blank/dash; unknown, not zero; do not infer another column."
+    },
+    {
+      "row": 5,
+      "field": "pole_count",
+      "reason": "Printed blank/dash; unknown, not zero; do not infer another column."
+    }
+  ],
+  "label_scope_limits": [
+    "This is schedule row/cell truth, not a complete drawing/device/connectivity inventory.",
+    "Device-frame strings retain the full printed field; a family/code is not decoded into an installed trip.",
+    "The Osage circuit5 (PS) and parenthesized350A describes prepared space; it is not proof of an installed breaker."
+  ]
+}

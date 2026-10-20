@@ -12,6 +12,16 @@ export type Doc = components["schemas"]["DocumentView"];
 export type Proposal = components["schemas"]["ProposalView"];
 export type Operation = components["schemas"]["Operation-Input"];
 let tokenProvider: (() => Promise<string>) | null = null;
+let outlookSession: object | null = null;
+export function setOutlookSession() {
+  if (new URL(apiUrl("/api/me"), location.href).origin !== location.origin)
+    throw new Error("Outlook requires a same-origin API proxy.");
+  const session = {};
+  outlookSession = session;
+  return () => {
+    if (outlookSession === session) outlookSession = null;
+  };
+}
 export function setTokenProvider(provider: () => Promise<string>) {
   tokenProvider = provider;
   return () => {
@@ -23,19 +33,26 @@ export async function authorizationHeaders(): Promise<Record<string, string>> {
   const token = await provider?.();
   if (provider !== tokenProvider)
     throw new Error("Your workspace changed. Try again.");
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return token
+    ? { Authorization: `Bearer ${token}` }
+    : outlookSession
+      ? { "X-Rivet-Session": "outlook" }
+      : {};
 }
 export async function apiFetch(path: string, init?: RequestInit) {
   const url = apiUrl(path);
   const provider = tokenProvider;
+  const session = outlookSession;
   const response = await fetch(url, {
     ...init,
-    credentials: "omit",
+    credentials: session ? "same-origin" : "omit",
     redirect: "error",
     headers: { ...(await authorizationHeaders()), ...init?.headers },
   });
-  if (provider !== tokenProvider)
+  if (provider !== tokenProvider || session !== outlookSession)
     throw new Error("Your workspace changed. Try again.");
+  if (session && response.status === 401)
+    window.dispatchEvent(new Event("rivet-outlook-session-expired"));
   return response;
 }
 export async function api<T>(

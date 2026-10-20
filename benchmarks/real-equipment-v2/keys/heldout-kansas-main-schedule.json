@@ -1,0 +1,308 @@
+{
+  "schema_version": "rivet.real-answer-key.v1",
+  "package_id": "heldout-kansas-main-schedule",
+  "review": {
+    "reviewer": "Codex independent validation agent visual inspection",
+    "reviewed_at": "2026-10-18T22:53:20.248837+00:00",
+    "method": "assistant_visual_review",
+    "engineering_reviewed": false,
+    "note": "Preliminary manually transcribed original page. Frozen before reader evaluation; not licensed engineer validation. All physical data rows in the bounded schedule are labelled. Selected core engineering fields are transcribed; cells not included in the key are not scored. Blanks and dashes stay unknown, never inferred."
+  },
+  "source_hashes": {
+    "heldout-kansas-main-schedule": "6019ea377b4cab0f9c8db6bae9898e195b1b95d1fab0aa89d96d4030efeaff33"
+  },
+  "parent_original": {
+    "sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+    "page": 240,
+    "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf"
+  },
+  "labels": {
+    "comments": null,
+    "devices": null,
+    "bom_rows": {
+      "scope": "complete",
+      "pages": [
+        {
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1
+        }
+      ],
+      "source_ids": [
+        "heldout-kansas-main-schedule"
+      ],
+      "items": [
+        {
+          "id": "heldout-kansas-main-schedule-row-1",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 1,
+          "fields": {
+            "section_no": 1,
+            "circuit_no": "M1",
+            "device_frame": "NW 5000A Plug A",
+            "trip_a": 5000,
+            "pole_count": 3,
+            "designation": "MAIN 1",
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-2",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 2,
+          "fields": {
+            "section_no": 1,
+            "circuit_no": "M1"
+          },
+          "source_row_kind": "accessory_continuation",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-3",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 3,
+          "fields": {
+            "section_no": 2,
+            "circuit_no": 1,
+            "device_frame": "RL2500A Plug A 100%",
+            "trip_a": 2500,
+            "pole_count": 3,
+            "designation": "2500A FUTURE BUSDUCT",
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-4",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 4,
+          "fields": {
+            "section_no": 3,
+            "circuit_no": 2,
+            "device_frame": "PL (PS)",
+            "trip_a": 1200,
+            "pole_count": 3,
+            "designation": "PREPARED I-LINE SPACE",
+            "position_state": "prepared_space"
+          },
+          "source_row_kind": "prepared_space",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-5",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 5,
+          "fields": {
+            "section_no": 4,
+            "circuit_no": 3,
+            "device_frame": "RL2000A Plug A 100%",
+            "trip_a": 2000,
+            "pole_count": 3,
+            "designation": "SWITCHBOARD SBDC 1"
+          },
+          "source_row_kind": "redlined_unknown_disposition",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-6",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 6,
+          "fields": {
+            "section_no": 5,
+            "circuit_no": "TIE",
+            "device_frame": "NW 5000A Plug A",
+            "trip_a": 5000,
+            "pole_count": 3,
+            "designation": "TIE",
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-7",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 7,
+          "fields": {
+            "section_no": 6,
+            "circuit_no": 6,
+            "device_frame": "RL2500A Plug A 100%",
+            "trip_a": 2500,
+            "pole_count": 3,
+            "designation": "SWITCHBOARD H3",
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-8",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 8,
+          "fields": {
+            "section_no": 7,
+            "circuit_no": 5,
+            "device_frame": "RL2500A Plug A 100%",
+            "trip_a": 2500,
+            "pole_count": 3,
+            "designation": "CONTROL CENTER NO. 1",
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-9",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 9,
+          "fields": {
+            "section_no": 8,
+            "circuit_no": 4,
+            "device_frame": "RL2500A Plug A 100%",
+            "trip_a": 2500,
+            "pole_count": 3,
+            "designation": "FUTURE 2500A BUSDUCT",
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-10",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 10,
+          "fields": {
+            "section_no": 9,
+            "circuit_no": "M2",
+            "device_frame": "NW 5000A Plug A",
+            "trip_a": 5000,
+            "pole_count": 3,
+            "designation": "MAIN 2",
+            "position_state": "populated_breaker"
+          },
+          "source_row_kind": "populated_breaker",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high",
+            "device_frame": "high",
+            "trip_a": "high",
+            "pole_count": "high",
+            "designation": "high",
+            "position_state": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        },
+        {
+          "id": "heldout-kansas-main-schedule-row-11",
+          "source_id": "heldout-kansas-main-schedule",
+          "page": 1,
+          "row": 11,
+          "fields": {
+            "section_no": 9,
+            "circuit_no": "M2"
+          },
+          "source_row_kind": "accessory_continuation",
+          "cell_review_confidence": {
+            "section_no": "high",
+            "circuit_no": "high"
+          },
+          "identity_note": "Row ordinal counts physical data rows excluding headers. Section/circuit and BOM reference numbers are local positions, not inferred enterprise tags."
+        }
+      ]
+    },
+    "issues": null,
+    "revision_checks": null
+  },
+  "scope_notes": [
+    "Red line crosses physical row5; text is transcribed as visible evidence but release/removal/population disposition is unknown.",
+    "Two repeated M1/M2 rows are real accessory continuation lines, not duplicate devices.",
+    "No invented frame amperage beyond printed device-frame string or trip value."
+  ]
+}

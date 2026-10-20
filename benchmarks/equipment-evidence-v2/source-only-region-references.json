@@ -1,0 +1,295 @@
+{
+  "schema_version": "rivet.source-only-region-references.v1",
+  "labelled_by": "assistant_source_visual_review_before_prediction_access_not_manufacturer_engineer",
+  "frozen_before_model_results_opened": true,
+  "sources": [
+    {
+      "id": "campbell-evgo-schedule-new-holdout",
+      "sha256": "f32c6b07a6a9fc821d716cb1d219bdf9b4d145b61ac9debd53578125c8819f9f",
+      "page": 1,
+      "package_id": "campbell-evgo-schedule-new-holdout"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout",
+      "sha256": "9870e69ab2e110c293e9c5b48cd94688f7b80d62cb8cbfac84e6c99c70d6db72",
+      "page": 1,
+      "package_id": "osage-dsg-schedule-new-holdout"
+    }
+  ],
+  "regions": [
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-1",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480608,
+        0.586899,
+        0.737436,
+        0.594309
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-2",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480611,
+        0.594275,
+        0.737422,
+        0.601519
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-3",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480614,
+        0.601506,
+        0.737409,
+        0.608736
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-4",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480617,
+        0.608728,
+        0.737395,
+        0.61611
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-5",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.48062,
+        0.61608,
+        0.737382,
+        0.623338
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-6",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480623,
+        0.623287,
+        0.737368,
+        0.630709
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-7",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480626,
+        0.630637,
+        0.737354,
+        0.637936
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-8",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480629,
+        0.637842,
+        0.737341,
+        0.645306
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "campbell-evgo-schedule-new-holdout-row-9",
+      "source_id": "campbell-evgo-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.480633,
+        0.64519,
+        0.737327,
+        0.652674
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-1",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.754453,
+        0.03407,
+        0.773199,
+        0.794799
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-2",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.736117,
+        0.03407,
+        0.754455,
+        0.794799
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-3",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.717373,
+        0.034071,
+        0.736119,
+        0.7948
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-4",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.699037,
+        0.034071,
+        0.717375,
+        0.7948
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-5",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.680293,
+        0.034071,
+        0.699038,
+        0.7948
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-6",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.661957,
+        0.034071,
+        0.680294,
+        0.7948
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-7",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.643213,
+        0.034071,
+        0.661958,
+        0.7948
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-8",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.624877,
+        0.034071,
+        0.643214,
+        0.7948
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-9",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.606133,
+        0.034071,
+        0.624877,
+        0.794801
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-10",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.587389,
+        0.034072,
+        0.606133,
+        0.794801
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-11",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.569053,
+        0.034072,
+        0.587389,
+        0.794801
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout-row-12",
+      "source_id": "osage-dsg-schedule-new-holdout",
+      "page": 1,
+      "bbox": [
+        0.550309,
+        0.034072,
+        0.569053,
+        0.794801
+      ],
+      "kind": "schedule_row",
+      "annotation": "approximate full physical printed row; source-only, before predictions"
+    }
+  ],
+  "limits": "Complete physical printed schedule rows only; manually located on source crops. Homography solely maps source crop coordinates to the original rendered page. Does not establish all-page device inventory, model misses or engineering correctness."
+}

@@ -1,0 +1,13 @@
+{
+  "created_at": "2026-10-19T08:41:18.750866+00:00",
+  "source_sha256": "579568aa8b9d3fb757e46cee596521d60a80ddaf6cf1166247cd26bb64d218e5",
+  "source_pages": [
+    8,
+    9
+  ],
+  "labelled_schedule_positions": 15,
+  "numeric_labelled_values": 24,
+  "predictions_run": false,
+  "independent_source_only_qa": "pending",
+  "key_sha256": "8469cf3ffa280b6e35633507a459658ad8158a6954bd4c843256add925ca8e8f"
+}

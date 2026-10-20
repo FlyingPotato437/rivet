@@ -14,6 +14,12 @@ export function agentRequestText(goal: string) {
 
 export function agentTaskTitle(goal: string) {
   const request = agentRequestText(goal);
+  if (
+    request ===
+    "Review new project evidence, investigate unresolved references, and prepare the next coordination steps."
+  ) {
+    return "Review returned documents";
+  }
   if (request !== DRAWING_REFERENCE_GOAL) return request;
   const comment = goal.match(/^Context: comment (.+?) \(comment id /m)?.[1];
   return `Check drawing reference${comment ? ` · Comment ${comment}` : ""}`;

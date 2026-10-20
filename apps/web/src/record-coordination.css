@@ -924,3 +924,126 @@
     flex-direction: row;
   }
 }
+
+/* A single list at a time; evidence and editing stay with the opened row. */
+.coordination-focused .coordination-intro {
+  align-items: center;
+  margin: 4px 0 28px;
+}
+.coordination-focused .coordination-intro h2 {
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.coordination-switcher {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+.coordination-switcher button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  font-size: 14px;
+}
+.coordination-switcher button[aria-pressed="true"] {
+  color: var(--text);
+  border-bottom-color: var(--violet);
+}
+.coordination-switcher button > span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.coordination-section-heading > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+.coordination-focused .coordination-row-preview {
+  display: none;
+}
+.coordination-focused .coordination-row-title strong {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.coordination-focused .coordination-review-row > summary {
+  padding: 22px 6px;
+}
+.coordination-focused .coordination-task {
+  padding: 0;
+}
+.coordination-task-disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 6px;
+  cursor: pointer;
+  list-style: none;
+}
+.coordination-task-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.coordination-task-disclosure > summary > span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.coordination-task-disclosure strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text);
+}
+.coordination-task-disclosure small {
+  display: block;
+  margin-top: 5px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.coordination-task-disclosure > summary > svg {
+  flex: none;
+  color: var(--muted);
+}
+.coordination-task-disclosure[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.coordination-task-disclosure > summary:hover {
+  background: color-mix(in srgb, var(--violet) 4%, transparent);
+}
+.coordination-task-detail {
+  padding: 2px 22px 24px;
+  max-width: 850px;
+}
+.coordination-task-detail > p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.coordination-task-detail > .text-button {
+  margin-top: 16px;
+}
+@media (max-width: 600px) {
+  .coordination-switcher {
+    gap: 18px;
+  }
+  .coordination-switcher button {
+    font-size: 13px;
+  }
+  .coordination-task-disclosure > summary {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .coordination-task-detail {
+    padding: 0 6px 22px;
+  }
+}

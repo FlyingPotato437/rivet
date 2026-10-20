@@ -1,0 +1,86 @@
+{
+  "schema_version": "rivet.sealed-fresh-schedule-selection.v1",
+  "created_at": "2026-10-19T23:22:31.165311+00:00",
+  "status": "independent_source_only_QA_complete_and_frozen_before_prediction",
+  "packages": [
+    {
+      "package_id": "official-public-schedule-a-unseen-v3",
+      "manifest_path": "benchmarks/switchboard-reconstruction-fresh-schedule-a-v3/manifest-private.qa-final-20261019.json",
+      "manifest_sha256": "6af24a9d0a103ffd6c5cbe4e1dc36e1622e61089a12f4dc02c21e42bed64ab09",
+      "key_path": "benchmarks/switchboard-reconstruction-fresh-schedule-a-v3/key-private.qa-final-20261019.json",
+      "key_sha256": "38e5c3a1e32a6017f6a4ba0f6ffa91d4002faabcbdbdc4f3d75f0fcd34a2b81e",
+      "QA_receipt_path": "benchmarks/switchboard-reconstruction-fresh-schedule-a-v3/qa-private-source-review-20261019.jsonl",
+      "QA_receipt_sha256": "8728fd00c61b6f9ca465e0455fa24bef958f7b2d6f385e633b69ec3647f6b592",
+      "source_sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+      "source_URL_and_path": "Private acquisition and source manifest; do not open source pixels or key until implementation freeze.",
+      "source_authority": "historical_reference_only",
+      "split": "unseen_test",
+      "counts": {
+        "physical_pages": 1,
+        "numeric_facts": 24,
+        "positions": 8,
+        "rated_spares": 2,
+        "empty_prepared_positions": 0,
+        "fields": [
+          "frame_a",
+          "trip_a",
+          "interrupting_ka"
+        ]
+      },
+      "approved_reconstruction_eligible": false
+    },
+    {
+      "package_id": "official-secondary-table-extraction-unseen-v3",
+      "manifest_path": "benchmarks/switchboard-reconstruction-secondary-heldout-v3-sealed-nyc/manifest-private.qa-final-scoped-20261019.json",
+      "manifest_sha256": "eeafdc5c7885678d41bad3e7ed9c740f4edaaf0021de47c573ce0833942857ea",
+      "key_path": "benchmarks/switchboard-reconstruction-secondary-heldout-v3-sealed-nyc/key-private.qa-final-scoped-20261019.json",
+      "key_sha256": "2e48462ddd0960f17534452b11243320e1d0af7d428dcd5f13d9fe106a400649",
+      "QA_receipt_path": "benchmarks/switchboard-reconstruction-secondary-heldout-v3-sealed-nyc/private-source-label-receipts.jsonl",
+      "QA_receipt_sha256": "28ad946c254015cc6c3c405ae471e17e110f3c7d3a463d2d6b519cab8464b5de",
+      "source_sha256": "b70f5f3c6424c28aeec6af1cd461780e9f07ef5c7c1ae132e1f15f98f4341260",
+      "source_URL_and_path": "Private acquisition and source manifest; do not open source pixels or key until implementation freeze.",
+      "source_authority": "historical_reference_only",
+      "split": "unseen_test",
+      "counts": {
+        "physical_pages": 1,
+        "numeric_facts": 22,
+        "positions": 16,
+        "valued_positions": 11,
+        "rated_spares": 4,
+        "empty_prepared_positions": 5,
+        "fields": [
+          "frame_a",
+          "trip_a"
+        ],
+        "panel_header_AIC_scored_as_device_interrupting": false
+      },
+      "approved_reconstruction_eligible": false
+    }
+  ],
+  "aggregate_counts": {
+    "official_packages": 2,
+    "physical_schedule_pages": 2,
+    "numeric_facts": 46,
+    "schedule_positions": 24,
+    "rated_spares": 6,
+    "empty_prepared_positions": 5
+  },
+  "execution_contract": {
+    "mode": "extract_only",
+    "source_authority": "historical_reference_only",
+    "provider_calls_during_preparation": 0,
+    "backend_parser_or_evaluator_calls_during_preparation": 0,
+    "prediction_outputs_seen": false,
+    "label_values_or_pixels_shared_with_implementers": false,
+    "requires_new_implementation_freeze_before_any_prediction": true,
+    "execution_authorized_by_this_receipt": false,
+    "numerical_transcription_corrections_in_QA": 0
+  },
+  "limits": [
+    "Both sources have explicitly printed trip current, not continuous-current columns; no current-role conversion.",
+    "Secondary per-device interrupting values are unscored because only panel-header AIC is printed.",
+    "Secondary repeats local circuit numerals in other tables on the same page; strict identity scoring may remain ambiguous and must not select by expected values.",
+    "Source-only assistant cross-QA; no engineer certification or accuracy claim.",
+    "Draft and earlier QA versions are preserved; final scope was set before any parser/predictor output."
+  ]
+}

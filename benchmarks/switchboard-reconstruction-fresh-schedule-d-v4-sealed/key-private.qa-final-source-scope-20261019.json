@@ -1,0 +1,870 @@
+{
+  "schema_version": "rivet.reconstruction-answer-key.v1",
+  "package_id": "official-public-schedule-d-unseen-v4",
+  "kind": "real_public",
+  "split": "unseen_test",
+  "created_at": "2026-10-19T23:41:34.279139+00:00",
+  "label_status": "assistant_source_reviewed_independent_QA_not_engineer_verified",
+  "label_method": "Manual source-only inspection of the complete unchanged original physical page 27, followed by enlarged original schedule inspection. Whole-page normalized outer-table scope set at initial drafting from the complete original schedule image boundary. Source was already selected and downloaded by domain-blind official-source acquisition before this inspection; no compatibility selection or replacement based on observed content. No backend parser, locator, extractor, evaluator, provider/model, or prediction used. Independent cross-QA pending. Independent second assistant review inspected the complete original page and schedule detail, saved a separate transcription before opening this draft, then agreed on all 11 bare-current values/roles, 12 literal positions, 11 logical breakers, four rated spares, one multipole continuation and zero empty/prepared positions. Complete outer scope agrees; zero numeric, identity, position-class or scope corrections. Independent receipt: ../../.data/real-document-corpus/sealed-fresh-schedules-v4-20261019/independent-qa/d-independent-transcription-before-key-20261019.json.",
+  "scope": {
+    "requirements": "11 explicitly printed branch BREAKER AMPS ratings. Bare breaker AMPS is rated_current_a; it is not renamed trip_a and is not asserted to be an explicitly continuous-current column. No branch frame or interrupting facts are printed, so neither is scored.",
+    "device_inventory": "All 12 literal circuit positions of the bounded panel schedule: 11 independent branch breaker rows, including four SPARE breakers, and one multipole continuation slot. The continuation belongs to the preceding two-pole branch and has no independent rating or installed-device assertion.",
+    "complete_engineering_key": false,
+    "complete_schedule_position_inventory": true,
+    "pages_with_labels": [
+      27
+    ],
+    "unlabelled_context_pages": [],
+    "scored_fields": [
+      "rated_current_a"
+    ],
+    "explicitly_absent_scored_field_denominators": {
+      "frame_a": 0,
+      "trip_a": 0,
+      "interrupting_ka": 0
+    },
+    "logical_branch_breakers": 11,
+    "literal_circuit_positions": 12,
+    "rated_spare_breakers": 4,
+    "multipole_continuation_slots": 1,
+    "empty_prepared_positions": 0,
+    "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+    "source_scope_bbox": [
+      0.485702614,
+      0.647727273,
+      0.859885621,
+      0.807449495
+    ],
+    "source_scope_coordinate_system": "normalized_top_left",
+    "source_scope_method": "Enclosing full original table outer border including title, header, both branch columns, totals and notes, with roughly one point outward margin. Complete source page is passed for extraction; expected scope is not a locator or parser input.",
+    "original_page_size_pdf_points": [
+      2448,
+      1584
+    ],
+    "enclosing_outer_table_bbox_pdf_points": [
+      1189,
+      1026,
+      2105,
+      1279
+    ],
+    "source_table_image_bbox_pdf_points": [
+      1190.1600341796875,
+      1027.4400634765625,
+      2103.47998046875,
+      1277.8800048828125
+    ],
+    "identity": "Compound key IDs are table/page/row coordinates, not fabricated source device tags. Literal source circuit numerals are retained separately. Multipole slot linkage is explicit from merged original breaker/description cells.",
+    "inventory_denominator_warning": "The 12-position inventory includes one feature-empty multipole continuation row; a vacuous feature match for it is not an additional complete breaker. Report 11 valued logical branch breakers separately."
+  },
+  "requirements": [
+    {
+      "id": "page27:MPZ-1:circuit-1.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-1",
+      "source_identifier": "1",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 1; POLE MTD. LIGHTS; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-3.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-3",
+      "source_identifier": "3",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 3; RECEPTACLES; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-5.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-5",
+      "source_identifier": "5",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 5; GENERATOR JACKET WATER HEATER; BREAKER AMPS/POLES 20 /2",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-9.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-9",
+      "source_identifier": "9",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 9; GENERATOR BATTERY CHARGER; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-11.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-11",
+      "source_identifier": "11",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 11; WETWELL PUMP CP (PCP/RTU-1000); BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-2.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-2",
+      "source_identifier": "2",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 2; FIT-1020; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-4.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-4",
+      "source_identifier": "4",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 4; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-6.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-6",
+      "source_identifier": "6",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 6; ALTERNATOR SPACE HEATER; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-8.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-8",
+      "source_identifier": "8",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 8; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-10.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-10",
+      "source_identifier": "10",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 10; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "id": "page27:MPZ-1:circuit-12.rated_current_a",
+      "subject_id": "page27:MPZ-1:circuit-12",
+      "source_identifier": "12",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "key": "rated_current_a",
+      "value": 20,
+      "source_current_role": "bare_breaker_amperes_not_explicit_trip_or_continuous",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 12; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    }
+  ],
+  "customer_device_inventory": [
+    {
+      "id": "page27:MPZ-1:circuit-1",
+      "source_identifier": "1",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 1; POLE MTD. LIGHTS; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "POLE MTD. LIGHTS",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-3",
+      "source_identifier": "3",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 3; RECEPTACLES; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "RECEPTACLES",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-5",
+      "source_identifier": "5",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 5; GENERATOR JACKET WATER HEATER; BREAKER AMPS/POLES 20 /2",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "GENERATOR JACKET WATER HEATER",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "occupied_source_circuit_positions": [
+        "5",
+        "7"
+      ],
+      "unscored_source_poles": 2
+    },
+    {
+      "id": "page27:MPZ-1:circuit-7",
+      "source_identifier": "7",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {},
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 7; continuation of GENERATOR JACKET WATER HEATER two-pole breaker across circuits 5 and 7, merged BREAKER AMPS/POLES cell 20 /2",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "multipole_continuation",
+      "remarks": "Continuation slot of preceding two-pole branch; not spare, empty compartment, or independent breaker.",
+      "unknown_fields": [
+        "independent_rated_current_a",
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "continuation_of_source_identifier": "5",
+      "continuation_of_id": "page27:MPZ-1:circuit-5",
+      "is_independent_device": false,
+      "is_empty_position": false
+    },
+    {
+      "id": "page27:MPZ-1:circuit-9",
+      "source_identifier": "9",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 9; GENERATOR BATTERY CHARGER; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "GENERATOR BATTERY CHARGER",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-11",
+      "source_identifier": "11",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 11; WETWELL PUMP CP (PCP/RTU-1000); BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "WETWELL PUMP CP (PCP/RTU-1000)",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-2",
+      "source_identifier": "2",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 2; FIT-1020; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "FIT-1020",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-4",
+      "source_identifier": "4",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 4; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_spare",
+      "remarks": "SPARE",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-6",
+      "source_identifier": "6",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 6; ALTERNATOR SPACE HEATER; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "ALTERNATOR SPACE HEATER",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-8",
+      "source_identifier": "8",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 8; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_spare",
+      "remarks": "SPARE",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-10",
+      "source_identifier": "10",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 10; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_spare",
+      "remarks": "SPARE",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    },
+    {
+      "id": "page27:MPZ-1:circuit-12",
+      "source_identifier": "12",
+      "source_container_identifier": "MPZ-1",
+      "identity_scope": "table_local_circuit_number",
+      "features": {
+        "rated_current_a": 20
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 12; SPARE; BREAKER AMPS/POLES 20 /1",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ],
+      "source_position_class": "scheduled_spare",
+      "remarks": "SPARE",
+      "unknown_fields": [
+        "frame_a",
+        "trip_a",
+        "interrupting_ka"
+      ],
+      "present_installation_verified": false,
+      "is_independent_device": true,
+      "is_empty_position": false,
+      "unscored_source_poles": 1
+    }
+  ],
+  "device_inventory_complete": false,
+  "approved_reconstruction_eligible": false,
+  "approved_reference": null,
+  "source_authority": "historical_reference_only",
+  "ineligibility_reason": "Official public bid-plan reference. No present customer order, verified present installation, manufacturer-approved output pair, or engineer-certified gold is established. Extraction only.",
+  "unscored_source_facts": [
+    {
+      "description": "Complete header contains transformer, primary/secondary main, assembly bus/system data and short-circuit labels. These are excluded from bounded branch-breaker scalar facts. The assembly short-circuit rating and header KA text are not assigned as per-branch interrupting capacity.",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; 7.5 KVA 1-PHASE TRANSFORMER; 480 VOLT PRIMARY; 30 AMP 2 POLE PRIMARY MAIN BREAKER; 42 KA; 40 AMP 2 POLE SECONDARY MAIN BREAKER; 40 AMP BUS RATING; 10 KA SHORT CIRCUIT RATING.",
+          "method": "manual_original_source_image_inspection",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    },
+    {
+      "description": "Circuit 7 is the second occupied slot of the merged two-pole breaker across circuits 5 and 7; its blank description/ratings cell is not an empty position, spare, or separate breaker. Pole counts are retained as source-only linkage metadata, outside scalar score.",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 5; GENERATOR JACKET WATER HEATER; BREAKER AMPS/POLES 20 /2",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        },
+        {
+          "source_id": "official-public-schedule-d-original",
+          "sha256": "f79ca7112944fcba2fab379458e2282c565081789dd3f6952e336c3f41189269",
+          "page": 27,
+          "text": "MINI POWER ZONE MPZ-1; CIRCUIT NO. 7; continuation of GENERATOR JACKET WATER HEATER two-pole breaker across circuits 5 and 7, merged BREAKER AMPS/POLES cell 20 /2",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete lower-right mini power zone panel schedule on original physical page 27, including full header, both odd/even circuit columns, totals and notes within the literal outer border. Local circuit numerals identify panel positions, not enterprise device tags.",
+          "source_scope_bbox": [
+            0.485702614,
+            0.647727273,
+            0.859885621,
+            0.807449495
+          ],
+          "source_scope_coordinate_system": "normalized_top_left"
+        }
+      ]
+    }
+  ],
+  "independent_qa_completed_at": "2026-10-19T23:43:55.524227+00:00"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "rivet.real-revision-pair-inventory.v1",
+  "inventory_method": "Published package metadata plus visual same-sheet title block inspection; matching project names or bid text alone do not establish a drawing revision pair.",
+  "confirmed_drawing_pairs": [
+    {
+      "id": "kansas-control-center-may15-may30",
+      "split": "development",
+      "original": ".data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+      "baseline_physical_page": 194,
+      "target_physical_page": 252,
+      "baseline_date": "2012-05-15",
+      "target_date": "2012-05-30",
+      "scope": "Same Control Center No.1 one-line drawing, known added transition section. Already visually inspected during prior development; cannot be reported unseen.",
+      "answer_key": "../real-packages/keys/kansas-docking-switchboard.json",
+      "complete_customer_return_and_release_cycle": false
+    }
+  ],
+  "potential_pairs_not_claimed_as_accuracy": [
+    {"package": "hopewell-hwr-switchgear", "reason": "2022 specification versus 2024 reissued bid specification, not an independently labelled same-drawing engineering revision pair."},
+    {"package": "tctc-anderson-switchboard", "reason": "Original and rebid invitation documents plus one separate drawing; no two verified drawing issues."},
+    {"package": "unc-charlotte-grid-automation", "reason": "Bid addenda contain dated sheets, but no same-sheet before/after ground truth has been independently established."},
+    {"package": "kansas-docking-switchboard", "reason": "Other repeated pages and reviewer copies occur in binder, but are not counted as independent revision pairs without same drawing/title-block confirmation and full change labels."}
+  ],
+  "unseen_labelled_revision_pairs": 0,
+  "limitation": "Do not report one known development change as general revision accuracy. Pilot request must include every dated drawing revision and returned reviewer package."
+}

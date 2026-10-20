@@ -98,6 +98,24 @@ export function usePublicMotion(root: RefObject<HTMLDivElement | null>) {
                 },
               },
             );
+            gsap.from(
+              digest.querySelectorAll(
+                ".public-digest-alert, .public-digest-attachments, .public-digest-link",
+              ),
+              {
+                y: 14,
+                opacity: 0,
+                duration: 0.7,
+                stagger: 0.12,
+                ease: "power3.out",
+                clearProps: "transform,opacity",
+                scrollTrigger: {
+                  trigger: digest,
+                  start: "top 65%",
+                  once: true,
+                },
+              },
+            );
           });
       }, container);
 

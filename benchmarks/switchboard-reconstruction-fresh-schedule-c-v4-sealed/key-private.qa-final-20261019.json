@@ -1,0 +1,365 @@
+{
+  "schema_version": "rivet.reconstruction-answer-key.v1",
+  "package_id": "official-public-schedule-c-unseen-v4",
+  "kind": "real_public",
+  "split": "unseen_test",
+  "label_status": "assistant_source_reviewed_independent_QA_not_engineer_verified",
+  "label_method": "Initial source-only manual transcription followed by independent assistant cross-QA of unchanged original physical page 179. Reviewer inspected complete original displayed page and first complete upper-left table before opening draft key, saved an independent transcription, then verified eight numeric facts, printed field roles, all four literal positions, and one rated spare. Shared header explicitly scopes KAIC to branch circuits. Original displayed-page scope after intrinsic PDF Rotate=90 independently confirmed. Zero numeric, scope, identity or semantic class corrections. One spare class metadata enum normalized to scheduled_spare for consistency. No provider/model, locator, backend parser/extractor/evaluator or prediction used. Drafts preserved. Receipt: qa-private-source-review-20261019.jsonl.",
+  "created_at": "2026-10-19T23:42:17.031242+00:00",
+  "scope": {
+    "requirements": "Eight numeric facts: four bare breaker AMP values preserved as rated_current_a, and four per-branch interrupting_ka values from the explicitly BRANCH CIRCUIT-scoped shared KAIC header. No frame or trip-current labels inferred.",
+    "device_inventory": "All four branch rows of the literal upper-left MDP schedule, including one explicitly rated spare breaker. Header main is outside branch-row identity scope; load/phase calculations, conductor data, and other same-page tables remain unscored.",
+    "complete_engineering_key": false,
+    "complete_schedule_position_inventory": true,
+    "pages_with_labels": [
+      179
+    ],
+    "unlabelled_context_pages": [],
+    "printed_current_role": "bare_breaker_amp_rating_not_explicit_trip_or_continuous"
+  },
+  "requirements": [
+    {
+      "id": "page179:MDP:circuit-1.rated_current_a",
+      "subject_id": "page179:MDP:circuit-1",
+      "source_identifier": "1",
+      "key": "rated_current_a",
+      "value": 400,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 1, AMP 400; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 1; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    },
+    {
+      "id": "page179:MDP:circuit-1.interrupting_ka",
+      "subject_id": "page179:MDP:circuit-1",
+      "source_identifier": "1",
+      "key": "interrupting_ka",
+      "value": 65,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 1, AMP 400; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 1; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    },
+    {
+      "id": "page179:MDP:circuit-2.rated_current_a",
+      "subject_id": "page179:MDP:circuit-2",
+      "source_identifier": "2",
+      "key": "rated_current_a",
+      "value": 250,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 2, AMP 250; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 2; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    },
+    {
+      "id": "page179:MDP:circuit-2.interrupting_ka",
+      "subject_id": "page179:MDP:circuit-2",
+      "source_identifier": "2",
+      "key": "interrupting_ka",
+      "value": 65,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 2, AMP 250; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 2; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    },
+    {
+      "id": "page179:MDP:circuit-3.rated_current_a",
+      "subject_id": "page179:MDP:circuit-3",
+      "source_identifier": "3",
+      "key": "rated_current_a",
+      "value": 50,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 3, AMP 50; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 3; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    },
+    {
+      "id": "page179:MDP:circuit-3.interrupting_ka",
+      "subject_id": "page179:MDP:circuit-3",
+      "source_identifier": "3",
+      "key": "interrupting_ka",
+      "value": 65,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 3, AMP 50; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 3; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    },
+    {
+      "id": "page179:MDP:circuit-4.rated_current_a",
+      "subject_id": "page179:MDP:circuit-4",
+      "source_identifier": "4",
+      "key": "rated_current_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 4, AMP 100; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 4; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    },
+    {
+      "id": "page179:MDP:circuit-4.interrupting_ka",
+      "subject_id": "page179:MDP:circuit-4",
+      "source_identifier": "4",
+      "key": "interrupting_ka",
+      "value": 65,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 4, AMP 100; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 4; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    }
+  ],
+  "customer_device_inventory": [
+    {
+      "id": "page179:MDP:circuit-1",
+      "source_identifier": "1",
+      "features": {
+        "rated_current_a": 400,
+        "interrupting_ka": 65
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 1, AMP 400; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 1; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Printed new/proposed scheduled branch breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page179:MDP:circuit-2",
+      "source_identifier": "2",
+      "features": {
+        "rated_current_a": 250,
+        "interrupting_ka": 65
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 2, AMP 250; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 2; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Printed new/proposed scheduled branch breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page179:MDP:circuit-3",
+      "source_identifier": "3",
+      "features": {
+        "rated_current_a": 50,
+        "interrupting_ka": 65
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 3, AMP 50; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 3; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Printed new/proposed scheduled branch breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page179:MDP:circuit-4",
+      "source_identifier": "4",
+      "features": {
+        "rated_current_a": 100,
+        "interrupting_ka": 65
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 4, AMP 100; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 4; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ],
+      "source_position_class": "scheduled_spare",
+      "remarks": "Printed new/proposed scheduled branch breaker; present installation and purchase scope unverified."
+    }
+  ],
+  "device_inventory_complete": false,
+  "approved_reconstruction_eligible": false,
+  "approved_reference": null,
+  "source_authority": "historical_reference_only",
+  "ineligibility_reason": "Official publicly issued historical new/proposed facility drawing used only for source extraction evaluation. It is not a customer order, current-installation evidence, manufacturer approval or engineering certification.",
+  "unscored_source_facts": [
+    {
+      "description": "Header main rating, panel voltage, load calculations, poles, conductor information, four other same-page schedules and all other pages are outside this bounded branch-breaker key. No printed branch frame or explicit trip setting is supplied.",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-c-original",
+          "sha256": "e5675e0f6dcbc87d03a233076381620c14f7de01359d1bdd9a4299f1ed5988de",
+          "page": 179,
+          "text": "DISTRIBUTION PANEL \"MDP\", CKT BKR number 1, AMP 400; header: 65 KAIC BRANCH CIRCUIT.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Whole literal upper-left MDP schedule on original physical page 179; branch circuit 1; source-local circuit number, not an enterprise tag. AMP is breaker-rated/bare current; no TRIP or FRAME heading. Branch KAIC is explicitly scoped by the shared schedule header.",
+          "source_scope_bbox": [
+            0.0727124183006536,
+            0.030934343434343436,
+            0.33905228758169936,
+            0.2518939393939394
+          ],
+          "source_scope_coordinate_system": "normalized_top_left",
+          "source_scope_page_basis": "Original PDF displayed page after native /Rotate=90 (2448 x 1584 points), before any application orientation or crop; includes complete outer table border, header, branch rows, note and load analysis."
+        }
+      ]
+    }
+  ],
+  "independent_qa_completed_at": "2026-10-19T23:44:24.467390+00:00"
+}

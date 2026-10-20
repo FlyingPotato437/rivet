@@ -1,0 +1,92 @@
+{
+  "schema_version": "rivet.real-packages.v1",
+  "packages": [
+    {
+      "id": "heldout-kansas-main-schedule",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "scope": "Single visually labelled page only; originals local and unchanged. See split registry for independence limitations.",
+      "sources": [
+        {
+          "id": "heldout-kansas-main-schedule",
+          "name": "heldout-kansas-main-schedule.pdf",
+          "path": "../../.data/real-document-corpus/equipment-v2-heldout/heldout-kansas-main-schedule.pdf",
+          "sha256": "6019ea377b4cab0f9c8db6bae9898e195b1b95d1fab0aa89d96d4030efeaff33",
+          "role": "bom",
+          "side": "target",
+          "revision": "Published binder; dated 2012 issues and July 2012 review",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              240
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        }
+      ],
+      "answer_key": "keys/heldout-kansas-main-schedule.json"
+    },
+    {
+      "id": "heldout-kansas-control-schedule",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "scope": "Single visually labelled page only; originals local and unchanged. See split registry for independence limitations.",
+      "sources": [
+        {
+          "id": "heldout-kansas-control-schedule",
+          "name": "heldout-kansas-control-schedule.pdf",
+          "path": "../../.data/real-document-corpus/equipment-v2-heldout/heldout-kansas-control-schedule.pdf",
+          "sha256": "28a88474a3f8124635b77475a00d3a1d4622b1216320aa0f75cd5c3644219bde",
+          "role": "bom",
+          "side": "target",
+          "revision": "Published binder; dated 2012 issues and July 2012 review",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+            "parent_sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+            "parent_physical_pages": [
+              253
+            ],
+            "original_page_count": 266,
+            "render_equality_checked": true
+          }
+        }
+      ],
+      "answer_key": "keys/heldout-kansas-control-schedule.json"
+    },
+    {
+      "id": "heldout-scow-panel-bom",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "scope": "Single visually labelled page only; originals local and unchanged. See split registry for independence limitations.",
+      "sources": [
+        {
+          "id": "heldout-scow-panel-bom",
+          "name": "heldout-scow-panel-bom.pdf",
+          "path": "../../.data/real-document-corpus/equipment-v2-heldout/heldout-scow-panel-bom.pdf",
+          "sha256": "a5e159848096a65d094075a8237d497e8654d7a364d07cbd9ca4d2e787bb25f9",
+          "role": "bom",
+          "side": "target",
+          "revision": "Bid package, 2025-08-22",
+          "url": "https://www.petersburgak.gov/sites/default/files/fileattachments/power_amp_light/page/18954/petersburg_borough_scow_bay_generator_2_switchgear_bid_package_8.22.25.pdf",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/new-official/petersburg-scow-bay-gen2/Scow-Bay-Switchgear-Bid.pdf",
+            "parent_sha256": "a54dc91665d5ad1096632fe59b36a61298e993f0116dfa9271f247f0e8f2df10",
+            "parent_physical_pages": [
+              35
+            ],
+            "original_page_count": 35,
+            "render_equality_checked": true
+          }
+        }
+      ],
+      "answer_key": "keys/heldout-scow-panel-bom.json"
+    }
+  ]
+}

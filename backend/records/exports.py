@@ -23,6 +23,7 @@ HEADINGS = [
     "Review",
     "Linked email",
     "Workflow",
+    "Log ID",
 ]
 
 
@@ -80,6 +81,7 @@ def rows(w, compact=False):
             c["confidence"],
             docs.get(c["linked_email_id"], {}).get("name", ""),
             workflow_status(c).replace("_", " ").capitalize(),
+            c.get("log_reference", c["number"]),
         ]
 
 
@@ -92,9 +94,9 @@ def workbook(w):
     for row in rows(w):
         sheet.append([safe_cell(v) if isinstance(v, str) else v for v in row])
     sheet.freeze_panes = "F3"
-    sheet.auto_filter.ref = f"A2:O{sheet.max_row}"
+    sheet.auto_filter.ref = f"A2:P{sheet.max_row}"
     for i, width in enumerate(
-        [12, 15, 32, 14, 40, 65, 65, 25, 28, 15, 65, 25, 20, 30, 24], 1
+        [12, 15, 32, 14, 40, 65, 65, 25, 28, 15, 65, 25, 20, 30, 24, 14], 1
     ):
         sheet.column_dimensions[sheet.cell(2, i).column_letter].width = width
     changes = book.create_sheet("Change record")

@@ -23,8 +23,10 @@ class ProposalResolve(Write):
 
 class AgentSettingsWrite(Write):
     enabled: bool
-    max_steps: int = Field(default=8, ge=2, le=12)
-    max_output_tokens: int = Field(default=1600, ge=512, le=3000)
+    max_steps: int = Field(default=40, ge=2, le=80)
+    max_output_tokens: int = Field(default=8000, ge=512, le=16000)
+    max_context_tokens: int = Field(default=64000, ge=8000, le=128000)
+    max_total_tokens: int = Field(default=2000000, ge=20000, le=5000000)
     playbook: str = Field(default="", max_length=4000)
 
 

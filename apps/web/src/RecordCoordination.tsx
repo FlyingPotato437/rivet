@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   ArrowsClockwise,
   CalendarBlank,
+  CaretDown,
   ChatText,
   Check,
   CheckCircle,
@@ -68,8 +69,12 @@ export function RecordCoordination({
     location.hash.split("?")[1] || "",
   ).get("task");
   const linkedTask = c?.tasks.find((task) => task.id === linkedTaskId);
+  const [view, setView] = useState<"suggestions" | "assignments">(
+    linkedTaskId ? "assignments" : "suggestions",
+  );
   useEffect(() => {
     if (!linkedTask) return;
+    setView("assignments");
     if (linkedTask.status === "done") setShowCompleted(true);
     const frame = requestAnimationFrame(() => {
       const element = document.getElementById(`record-task-${linkedTask.id}`);
@@ -114,10 +119,8 @@ export function RecordCoordination({
     >
       <div className="coordination-intro">
         <div>
-          <h2>Team coordination</h2>
-          <p>
-            Confirm source links, review follow-ups, and assign the next action.
-          </p>
+          <h2>Team work</h2>
+          <p>Suggested follow-ups and your team’s assignments.</p>
           {c.settings.customer_due_date && (
             <span className="coordination-due">
               <CalendarBlank size={14} />
@@ -140,109 +143,122 @@ export function RecordCoordination({
       {linkedTaskId && !linkedTask && (
         <ErrorNote message="This assignment is no longer in the record. Current team tasks are listed below." />
       )}
-      <section
-        className="coordination-work-section"
-        aria-label="Suggested actions"
+      <div
+        className="coordination-switcher"
+        role="group"
+        aria-label="Team work view"
       >
-        <div className="coordination-section-heading">
-          <div>
-            <h3>
-              Suggested actions <span>{pending.length}</span>
-            </h3>
-            <p>
-              Review each suggested change and its evidence before applying it.
-            </p>
+        <button
+          aria-pressed={view === "suggestions"}
+          onClick={() => setView("suggestions")}
+        >
+          Suggested follow-ups <span>{pending.length}</span>
+        </button>
+        <button
+          aria-pressed={view === "assignments"}
+          onClick={() => setView("assignments")}
+        >
+          Assignments <span>{tasks.length}</span>
+        </button>
+      </div>
+      {view === "suggestions" && (
+        <section
+          className="coordination-work-section"
+          aria-label="Suggested actions"
+        >
+          <div className="coordination-section-heading">
+            <p>Open a follow-up to check the evidence.</p>
+            <label className="coordination-history-toggle">
+              <input
+                type="checkbox"
+                checked={showHistory}
+                onChange={(e) => setShowHistory(e.target.checked)}
+              />
+              Include resolved
+            </label>
           </div>
-          <label className="coordination-history-toggle">
-            <input
-              type="checkbox"
-              checked={showHistory}
-              onChange={(e) => setShowHistory(e.target.checked)}
-            />
-            Include resolved
-          </label>
-        </div>
-        <div className="coordination-list">
-          {(showHistory ? c.suggestions : pending).map((s) => (
-            <Suggestion
-              key={`${s.id}:${s.status}`}
-              suggestion={s}
-              w={w}
-              busy={busy}
-              write={write}
-              openSource={openSource}
-              openComment={openComment}
-              openSharing={openSharing}
-            />
-          ))}
-          {!(showHistory ? c.suggestions : pending).length && (
-            <Empty
-              title={
-                w.documents.length
-                  ? "No suggestions to review"
-                  : "Add documents to begin"
-              }
-              icon={<CheckCircle size={25} />}
-              action={
-                !w.documents.length ? (
-                  <button className="secondary" onClick={addDocuments}>
-                    Add documents
-                  </button>
-                ) : (
-                  <button className="text-button" onClick={openSharing}>
-                    Approval & sharing <ArrowRight size={14} />
-                  </button>
-                )
-              }
-            >
-              {w.documents.some((d) => d.state === "queued")
-                ? "Your documents are processing. Suggestions appear when the record is ready."
-                : "Source links and follow-ups are prepared here. The activity feed in Rivet shows what has been recorded."}
-            </Empty>
-          )}
-        </div>
-      </section>
-      <section className="coordination-work-section" aria-label="Assigned work">
-        <div className="coordination-section-heading">
-          <div>
-            <h3>
-              Assigned work <span>{tasks.length}</span>
-            </h3>
-            <p>Responsibilities and progress for your team.</p>
+          <div className="coordination-list">
+            {(showHistory ? c.suggestions : pending).map((s) => (
+              <Suggestion
+                key={`${s.id}:${s.status}`}
+                suggestion={s}
+                w={w}
+                busy={busy}
+                write={write}
+                openSource={openSource}
+                openComment={openComment}
+                openSharing={openSharing}
+              />
+            ))}
+            {!(showHistory ? c.suggestions : pending).length && (
+              <Empty
+                title={
+                  w.documents.length
+                    ? "No suggestions to review"
+                    : "Add documents to begin"
+                }
+                icon={<CheckCircle size={25} />}
+                action={
+                  !w.documents.length ? (
+                    <button className="secondary" onClick={addDocuments}>
+                      Add documents
+                    </button>
+                  ) : (
+                    <button className="text-button" onClick={openSharing}>
+                      Approval & sharing <ArrowRight size={14} />
+                    </button>
+                  )
+                }
+              >
+                {w.documents.some((d) => d.state === "queued")
+                  ? "Your documents are processing. Suggestions appear when the record is ready."
+                  : "Source links and follow-ups are prepared here. The activity feed in Rivet shows what has been recorded."}
+              </Empty>
+            )}
           </div>
-          <label className="coordination-history-toggle">
-            <input
-              type="checkbox"
-              checked={showCompleted}
-              onChange={(e) => setShowCompleted(e.target.checked)}
-            />
-            Include completed
-          </label>
-        </div>
-        <div className="coordination-list">
-          {(showCompleted ? c.tasks : tasks).map((task) => (
-            <Task
-              key={task.id}
-              task={task}
-              selected={task.id === linkedTaskId}
-              w={w}
-              busy={busy}
-              write={write}
-              openComment={openComment}
-              openSource={openSource}
-            />
-          ))}
-          {!(showCompleted ? c.tasks : tasks).length && (
-            <Empty
-              title="No outstanding assignments"
-              icon={<Users size={25} />}
-            >
-              Assignments appear when the record identifies work for a project
-              role. Configure owners to route new work.
-            </Empty>
-          )}
-        </div>
-      </section>
+        </section>
+      )}
+      {view === "assignments" && (
+        <section
+          className="coordination-work-section"
+          aria-label="Assigned work"
+        >
+          <div className="coordination-section-heading">
+            <p>Open an assignment for its sources and status.</p>
+            <label className="coordination-history-toggle">
+              <input
+                type="checkbox"
+                checked={showCompleted}
+                onChange={(e) => setShowCompleted(e.target.checked)}
+              />
+              Include completed
+            </label>
+          </div>
+          <div className="coordination-list">
+            {(showCompleted ? c.tasks : tasks).map((task) => (
+              <Task
+                key={task.id}
+                task={task}
+                selected={task.id === linkedTaskId}
+                w={w}
+                busy={busy}
+                write={write}
+                openComment={openComment}
+                openSource={openSource}
+              />
+            ))}
+            {!(showCompleted ? c.tasks : tasks).length && (
+              <Empty
+                title="No outstanding assignments"
+                icon={<Users size={25} />}
+              >
+                Assignments appear when the record identifies work for a project
+                role. Configure owners to route new work.
+              </Empty>
+            )}
+          </div>
+        </section>
+      )}
       <div className="coordination-footnote">
         <span>
           {c.last_run_at
@@ -547,6 +563,10 @@ function Task({
 }) {
   const [editing, setEditing] = useState(false);
   const [version, setVersion] = useState(w.version);
+  const [expanded, setExpanded] = useState(selected);
+  useEffect(() => {
+    if (selected) setExpanded(true);
+  }, [selected]);
   const origin = task.origin || (task.managed ? "automatic" : "human");
   return (
     <article
@@ -555,140 +575,155 @@ function Task({
       tabIndex={-1}
       aria-label={task.title}
     >
-      <div className="coordination-task-top">
-        <span className="coordination-task-role">
-          <Users size={14} />
-          {roleNames[task.role]}
-        </span>
-        <span
-          className={`record-status ${task.status === "done" ? "closed" : "open"}`}
-        >
-          {task.status.replaceAll("_", " ")}
-        </span>
-      </div>
-      <h3>{task.title}</h3>
-      <div className="record-provenance-line">
-        <Attribution kind={origin}>
-          {origin === "ai"
-            ? "AI prepared"
-            : origin === "automatic"
-              ? "Automatic rule"
-              : "Added by team"}
-        </Attribution>
-        {task.updated_by && (
-          <Attribution kind="human">
-            Updated by <ActorName actor={task.updated_by} />
-          </Attribution>
-        )}
-      </div>
-      <p>{task.reason}</p>
-      <div className="coordination-task-owner">
-        {task.owner || "No owner assigned"}
-      </div>
-      {task.note && <p className="coordination-task-note">{task.note}</p>}
-      <EvidenceLinks
-        w={w}
-        commentId={task.comment_id}
-        sourceIds={task.source_ids}
-        openComment={openComment}
-        openSource={openSource}
-      />
-      {editing ? (
-        <form
-          className="coordination-editor"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const data = Object.fromEntries(new FormData(e.currentTarget));
-            if (
-              await write(
-                `/tasks/${task.id}`,
-                String(data.reason),
-                data,
-                version,
-              )
-            )
-              setEditing(false);
-          }}
-        >
-          <div className="form-row">
-            <label>
-              Role
-              <select name="role" defaultValue={task.role}>
-                {Object.entries(roleNames).map(([key, name]) => (
-                  <option key={key} value={key}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Owner
-              <input
-                name="owner"
-                maxLength={120}
-                defaultValue={task.owner}
-                placeholder="Name or team"
-              />
-            </label>
+      <details
+        className="coordination-task-disclosure"
+        open={expanded}
+        onToggle={(event) => setExpanded(event.currentTarget.open)}
+      >
+        <summary>
+          <span>
+            <strong>{task.title}</strong>
+            <small>
+              {task.owner || roleNames[task.role]} ·{" "}
+              {origin === "ai"
+                ? "AI prepared"
+                : origin === "automatic"
+                  ? "Automatic rule"
+                  : "Added by team"}
+            </small>
+          </span>
+          <span
+            className={`record-status ${task.status === "done" ? "closed" : "open"}`}
+          >
+            {task.status.replaceAll("_", " ")}
+          </span>
+          <CaretDown size={16} />
+        </summary>
+        <div className="coordination-task-detail">
+          <div className="record-provenance-line">
+            <Attribution kind={origin}>
+              {origin === "ai"
+                ? "AI prepared"
+                : origin === "automatic"
+                  ? "Automatic rule"
+                  : "Added by team"}
+            </Attribution>
+            {task.updated_by && (
+              <Attribution kind="human">
+                Updated by <ActorName actor={task.updated_by} />
+              </Attribution>
+            )}
           </div>
-          <label>
-            Status
-            <select name="status" defaultValue={task.status}>
-              <option value="open">Open</option>
-              <option value="in_progress">In progress</option>
-              <option value="done">Done</option>
-            </select>
-          </label>
-          <label>
-            Work note
-            <textarea
-              name="note"
-              maxLength={4000}
-              rows={3}
-              defaultValue={task.note}
-            />
-          </label>
-          <label>
-            Reason
-            <input
-              name="reason"
-              required
-              minLength={3}
-              maxLength={2000}
-              defaultValue="Update assignment and work status"
-            />
-          </label>
-          <p className="coordination-editor-note">
-            Completing an assignment does not close its comment or approve
-            engineering work.
-          </p>
-          <div className="coordination-actions">
-            <button type="submit" className="primary" disabled={busy}>
-              Save assignment
-            </button>
+          <p>{task.reason}</p>
+          <div className="coordination-task-owner">
+            {task.owner || "No owner assigned"}
+          </div>
+          {task.note && <p className="coordination-task-note">{task.note}</p>}
+          <EvidenceLinks
+            w={w}
+            commentId={task.comment_id}
+            sourceIds={task.source_ids}
+            openComment={openComment}
+            openSource={openSource}
+          />
+          {editing ? (
+            <form
+              className="coordination-editor"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const data = Object.fromEntries(new FormData(e.currentTarget));
+                if (
+                  await write(
+                    `/tasks/${task.id}`,
+                    String(data.reason),
+                    data,
+                    version,
+                  )
+                )
+                  setEditing(false);
+              }}
+            >
+              <div className="form-row">
+                <label>
+                  Role
+                  <select name="role" defaultValue={task.role}>
+                    {Object.entries(roleNames).map(([key, name]) => (
+                      <option key={key} value={key}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Owner
+                  <input
+                    name="owner"
+                    maxLength={120}
+                    defaultValue={task.owner}
+                    placeholder="Name or team"
+                  />
+                </label>
+              </div>
+              <label>
+                Status
+                <select name="status" defaultValue={task.status}>
+                  <option value="open">Open</option>
+                  <option value="in_progress">In progress</option>
+                  <option value="done">Done</option>
+                </select>
+              </label>
+              <label>
+                Work note
+                <textarea
+                  name="note"
+                  maxLength={4000}
+                  rows={3}
+                  defaultValue={task.note}
+                />
+              </label>
+              <label>
+                Reason
+                <input
+                  name="reason"
+                  required
+                  minLength={3}
+                  maxLength={2000}
+                  defaultValue="Update assignment and work status"
+                />
+              </label>
+              <p className="coordination-editor-note">
+                Completing an assignment does not close its comment or approve
+                engineering work.
+              </p>
+              <div className="coordination-actions">
+                <button type="submit" className="primary" disabled={busy}>
+                  Save assignment
+                </button>
+                <button
+                  type="button"
+                  className="text-button"
+                  disabled={busy}
+                  onClick={() => setEditing(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
             <button
-              type="button"
               className="text-button"
               disabled={busy}
-              onClick={() => setEditing(false)}
+              onClick={() => {
+                setVersion(w.version);
+                setEditing(true);
+              }}
             >
-              Cancel
+              <PencilSimple size={14} />
+              Update assignment
             </button>
-          </div>
-        </form>
-      ) : (
-        <button
-          className="text-button"
-          disabled={busy}
-          onClick={() => {
-            setVersion(w.version);
-            setEditing(true);
-          }}
-        >
-          <PencilSimple size={14} />
-          Update assignment
-        </button>
-      )}
+          )}
+        </div>
+      </details>
     </article>
   );
 }

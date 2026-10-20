@@ -1,0 +1,42 @@
+{
+  "schema_version": "rivet.reconstruction-manifest.v1",
+  "packages": [
+    {
+      "id": "tctc-anderson-customer-input-development",
+      "kind": "real_public",
+      "split": "development",
+      "sources": [
+        {
+          "id": "tctc-rebid-spec",
+          "path": "../../.data/real-document-corpus/new-official/tctc-anderson-switchboard/Rebid-Invitation-to-Bid.pdf",
+          "role": "specification",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "url": "https://www.tctc.edu/media/x2ildbwc/tctc-24-switchboard-2-revised.pdf",
+          "pages": [
+            12,
+            13,
+            14
+          ]
+        },
+        {
+          "id": "tctc-engineer-one-line",
+          "path": "../../.data/real-document-corpus/new-official/tctc-anderson-switchboard/Anderson-Switchboard-Drawing.pdf",
+          "role": "customer_one_line",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "url": "https://www.tctc.edu/media/pfhdrjnr/anderson-switchboard-drawing.pdf",
+          "pages": [
+            1
+          ]
+        }
+      ],
+      "answer_key": "keys/tctc-anderson-requirements-adjudicated-v2.json",
+      "approved_reconstruction_eligible": false,
+      "limits": [
+        "No manufacturer-approved result supplied; approved-layout metrics are not applicable.",
+        "The customer asks an existing-main trip-plug replacement, not an implicitly new main breaker.",
+        "Customer spec includes broad/generic requirements and an ambiguous trip-function token.",
+        "Frame7 gold corrected after source-only blind adjudication; old key/scores preserved. Post-evaluation rescoring is development only, not unseen accuracy."
+      ]
+    }
+  ]
+}

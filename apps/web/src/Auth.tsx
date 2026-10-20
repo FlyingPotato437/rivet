@@ -24,9 +24,10 @@ import { ui } from "@clerk/ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Mark } from "./ui";
 import { apiFetch, apiUrl, isApiUrl, setTokenProvider } from "./api";
+import { allowsAuthenticationMode } from "./auth-policy";
 import "./auth.css";
 
-type Account = {
+export type Account = {
   mode: "local" | "clerk";
   name: string;
   userId: string;
@@ -44,8 +45,17 @@ const AccountContext = createContext<Account>({
   team: "Local workspace",
 });
 export const useAccount = () => useContext(AccountContext);
+export function RestoredAccount({ account, children }: { account: Account; children: ReactNode }) {
+  return <AccountContext.Provider value={account}><SecureDownloads>{children}</SecureDownloads></AccountContext.Provider>;
+}
 
-export function Authentication({ children }: { children: ReactNode }) {
+export function Authentication({
+  children,
+  returnTo = "/#work",
+}: {
+  children: ReactNode;
+  returnTo?: string;
+}) {
   const [config, setConfig] = useState<{
     mode: string;
     publishable_key: string;
@@ -101,6 +111,15 @@ export function Authentication({ children }: { children: ReactNode }) {
         Connecting to Rivet…
       </div>
     );
+  if (!allowsAuthenticationMode(config.mode, import.meta.env.DEV))
+    return (
+      <AuthFrame title="Secure sign-in is not configured">
+        <p>
+          This deployed workspace requires Clerk authentication. Ask your
+          workspace administrator to connect the production sign-in service.
+        </p>
+      </AuthFrame>
+    );
   if (config.mode === "local")
     return <SecureDownloads>{children}</SecureDownloads>;
   if (!config.publishable_key)
@@ -114,8 +133,8 @@ export function Authentication({ children }: { children: ReactNode }) {
       ui={ui}
       publishableKey={config.publishable_key}
       afterSignOutUrl="/"
-      signInFallbackRedirectUrl="/#orders"
-      signUpFallbackRedirectUrl="/#orders"
+      signInFallbackRedirectUrl={returnTo}
+      signUpFallbackRedirectUrl={returnTo}
       appearance={{
         variables: {
           colorPrimary: "#bca5ef",
@@ -318,15 +337,27 @@ function AuthFrame({
   );
 }
 
-export function WorkspaceAccess({ children }: { children: ReactNode }) {
+export function WorkspaceAccess({
+  children,
+  returnTo = "/#work",
+}: {
+  children: ReactNode;
+  returnTo?: string;
+}) {
   return useAccount().mode === "local" ? (
     <>{children}</>
   ) : (
-    <ClerkWorkspace>{children}</ClerkWorkspace>
+    <ClerkWorkspace returnTo={returnTo}>{children}</ClerkWorkspace>
   );
 }
 
-function ClerkWorkspace({ children }: { children: ReactNode }) {
+function ClerkWorkspace({
+  children,
+  returnTo,
+}: {
+  children: ReactNode;
+  returnTo: string;
+}) {
   const { isLoaded, isSignedIn, userId, orgId } = useAuth();
   const demo = useContext(DemoContext);
   const clerk = useClerk();
@@ -358,7 +389,7 @@ function ClerkWorkspace({ children }: { children: ReactNode }) {
             <button className="secondary">Create an account</button>
           </SignUpButton>
         </div>
-        {demo && <DemoSignIn demo={demo} />}
+        {demo && <DemoSignIn demo={demo} returnTo={returnTo} />}
         <a href="#home" className="text-button">
           Back to homepage
         </a>
@@ -372,8 +403,8 @@ function ClerkWorkspace({ children }: { children: ReactNode }) {
         </p>
         <OrganizationList
           hidePersonal
-          afterCreateOrganizationUrl="/#orders"
-          afterSelectOrganizationUrl="/#orders"
+          afterCreateOrganizationUrl={returnTo}
+          afterSelectOrganizationUrl={returnTo}
         />
         {teamError && <p role="alert">{teamError}</p>}
         <div className="auth-account">
@@ -388,7 +419,13 @@ function ClerkWorkspace({ children }: { children: ReactNode }) {
   );
 }
 
-function DemoSignIn({ demo }: { demo: DemoConfig }) {
+function DemoSignIn({
+  demo,
+  returnTo,
+}: {
+  demo: DemoConfig;
+  returnTo: string;
+}) {
   const { signIn } = useSignIn();
   const clerk = useClerk();
   const [busy, setBusy] = useState(false);
@@ -414,7 +451,8 @@ function DemoSignIn({ demo }: { demo: DemoConfig }) {
         session: signIn.createdSessionId,
         organization: demo.organization_id,
       });
-      location.hash = "orders";
+      if (location.pathname + location.search + location.hash !== returnTo)
+        location.assign(returnTo);
     } catch (e) {
       setError((e as Error).message || "Unable to open the demo. Try again.");
     } finally {
@@ -486,9 +524,9 @@ export function TeamSwitcher() {
     <div className="auth-team-switch">
       <OrganizationSwitcher
         hidePersonal
-        afterCreateOrganizationUrl="/#orders"
-        afterSelectOrganizationUrl="/#orders"
-        afterLeaveOrganizationUrl="/#orders"
+        afterCreateOrganizationUrl="/#work"
+        afterSelectOrganizationUrl="/#work"
+        afterLeaveOrganizationUrl="/#work"
       />
     </div>
   ) : (

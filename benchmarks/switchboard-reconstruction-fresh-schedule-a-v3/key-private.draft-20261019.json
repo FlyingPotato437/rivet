@@ -1,0 +1,620 @@
+{
+  "schema_version": "rivet.reconstruction-answer-key.v1",
+  "package_id": "official-public-schedule-a-unseen-v3",
+  "kind": "real_public",
+  "split": "unseen_test",
+  "label_status": "assistant_source_reviewed_pending_independent_QA_not_engineer_verified",
+  "label_method": "Manual source-only transcription from the original PDF physical page 81 and its unchanged native embedded image. No reader/parser/predictor output or expected-value inference used. Independent source-only QA is pending.",
+  "created_at": "2026-10-19T23:18:53.419020+00:00",
+  "scope": {
+    "requirements": "24 printed numeric breaker schedule facts for eight branch circuit rows: frame AF, explicitly typed trip-current AT, per-breaker KAIC. No continuous-current-to-trip conversion; connected-load amperes are unscored.",
+    "device_inventory": "All eight branch circuit rows of the single PANEL PP-B (PROPOSED) schedule on physical page 81. Two rows explicitly describe spare breakers with ratings. Header main, TOTAL/main aggregate row, load/voltage-drop data and other physical pages are unscored.",
+    "complete_engineering_key": false,
+    "complete_schedule_position_inventory": true,
+    "pages_with_labels": [
+      81
+    ],
+    "unlabelled_context_pages": [],
+    "printed_current_role": "trip_current_not_continuous_current"
+  },
+  "requirements": [
+    {
+      "id": "page81:PP-B:circuit-1.frame_a",
+      "subject_id": "page81:PP-B:circuit-1",
+      "source_identifier": "1",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 1: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 1, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-1.trip_a",
+      "subject_id": "page81:PP-B:circuit-1",
+      "source_identifier": "1",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 1: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 1, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-1.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-1",
+      "source_identifier": "1",
+      "key": "interrupting_ka",
+      "value": 10,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 1: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 1, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-2.frame_a",
+      "subject_id": "page81:PP-B:circuit-2",
+      "source_identifier": "2",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 2: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 2, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-2.trip_a",
+      "subject_id": "page81:PP-B:circuit-2",
+      "source_identifier": "2",
+      "key": "trip_a",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 2: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 2, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-2.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-2",
+      "source_identifier": "2",
+      "key": "interrupting_ka",
+      "value": 10,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 2: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 2, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-3.frame_a",
+      "subject_id": "page81:PP-B:circuit-3",
+      "source_identifier": "3",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 3: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 3, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-3.trip_a",
+      "subject_id": "page81:PP-B:circuit-3",
+      "source_identifier": "3",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 3: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 3, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-3.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-3",
+      "source_identifier": "3",
+      "key": "interrupting_ka",
+      "value": 10,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 3: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 3, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-4.frame_a",
+      "subject_id": "page81:PP-B:circuit-4",
+      "source_identifier": "4",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 4: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 4, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-4.trip_a",
+      "subject_id": "page81:PP-B:circuit-4",
+      "source_identifier": "4",
+      "key": "trip_a",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 4: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 4, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-4.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-4",
+      "source_identifier": "4",
+      "key": "interrupting_ka",
+      "value": 10,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 4: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 4, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-5.frame_a",
+      "subject_id": "page81:PP-B:circuit-5",
+      "source_identifier": "5",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 5: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 5, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-5.trip_a",
+      "subject_id": "page81:PP-B:circuit-5",
+      "source_identifier": "5",
+      "key": "trip_a",
+      "value": 20,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 5: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 5, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-5.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-5",
+      "source_identifier": "5",
+      "key": "interrupting_ka",
+      "value": 10,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 5: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 5, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-6.frame_a",
+      "subject_id": "page81:PP-B:circuit-6",
+      "source_identifier": "6",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 6: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 6, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-6.trip_a",
+      "subject_id": "page81:PP-B:circuit-6",
+      "source_identifier": "6",
+      "key": "trip_a",
+      "value": 30,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 6: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 6, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-6.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-6",
+      "source_identifier": "6",
+      "key": "interrupting_ka",
+      "value": 10,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 6: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 6, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-7.frame_a",
+      "subject_id": "page81:PP-B:circuit-7",
+      "source_identifier": "7",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 7: AT 75; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 7, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-7.trip_a",
+      "subject_id": "page81:PP-B:circuit-7",
+      "source_identifier": "7",
+      "key": "trip_a",
+      "value": 75,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 7: AT 75; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 7, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-7.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-7",
+      "source_identifier": "7",
+      "key": "interrupting_ka",
+      "value": 25,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 7: AT 75; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 7, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-8.frame_a",
+      "subject_id": "page81:PP-B:circuit-8",
+      "source_identifier": "8",
+      "key": "frame_a",
+      "value": 100,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 8: AT 40; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 8, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-8.trip_a",
+      "subject_id": "page81:PP-B:circuit-8",
+      "source_identifier": "8",
+      "key": "trip_a",
+      "value": 40,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 8: AT 40; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 8, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    },
+    {
+      "id": "page81:PP-B:circuit-8.interrupting_ka",
+      "subject_id": "page81:PP-B:circuit-8",
+      "source_identifier": "8",
+      "key": "interrupting_ka",
+      "value": 25,
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 8: AT 40; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 8, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ]
+    }
+  ],
+  "customer_device_inventory": [
+    {
+      "id": "page81:PP-B:circuit-1",
+      "source_identifier": "1",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 20,
+        "interrupting_ka": 10
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 1: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 1, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Proposed scheduled breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page81:PP-B:circuit-2",
+      "source_identifier": "2",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 30,
+        "interrupting_ka": 10
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 2: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 2, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Proposed scheduled breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page81:PP-B:circuit-3",
+      "source_identifier": "3",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 20,
+        "interrupting_ka": 10
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 3: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 3, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Proposed scheduled breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page81:PP-B:circuit-4",
+      "source_identifier": "4",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 30,
+        "interrupting_ka": 10
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 4: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 4, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Proposed scheduled breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page81:PP-B:circuit-5",
+      "source_identifier": "5",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 20,
+        "interrupting_ka": 10
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 5: AT 20; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 5, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Proposed scheduled breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page81:PP-B:circuit-6",
+      "source_identifier": "6",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 30,
+        "interrupting_ka": 10
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 6: AT 30; AF 100; KAIC 10.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 6, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "scheduled_breaker",
+      "remarks": "Proposed scheduled breaker; present installation and purchase scope unverified."
+    },
+    {
+      "id": "page81:PP-B:circuit-7",
+      "source_identifier": "7",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 75,
+        "interrupting_ka": 25
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 7: AT 75; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 7, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "spare",
+      "remarks": "Proposed schedule, not present installation verification. Spare breaker has explicit ratings and is not an empty/prepared compartment."
+    },
+    {
+      "id": "page81:PP-B:circuit-8",
+      "source_identifier": "8",
+      "features": {
+        "frame_a": 100,
+        "trip_a": 40,
+        "interrupting_ka": 25
+      },
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED), CKT NO. 8: AT 40; AF 100; KAIC 25.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Original embedded load-schedule image on physical page 81 (printed page 80), branch circuit row 8, breaker size/overcurrent protection columns AT, AF, KAIC. CKT NO. is a source-local circuit identifier, not an enterprise device tag."
+        }
+      ],
+      "source_position_class": "spare",
+      "remarks": "Proposed schedule, not present installation verification. Spare breaker has explicit ratings and is not an empty/prepared compartment."
+    }
+  ],
+  "device_inventory_complete": false,
+  "approved_reconstruction_eligible": false,
+  "approved_reference": null,
+  "source_authority": "historical_reference_only",
+  "ineligibility_reason": "Official publicly issued 2023 bid/proposed design record used as a reference-only extraction source. It does not establish current installation, a present customer order, manufacturer approval, or engineering certification.",
+  "unscored_source_facts": [
+    {
+      "description": "Main/header ratings and TOTAL/main aggregate row are excluded from the bounded branch-row key; two explicitly described spare breakers must not be treated as empty compartments.",
+      "source_refs": [
+        {
+          "source_id": "official-public-schedule-a-original",
+          "sha256": "a9e2c2a8a61eaf3bb5e0295ca2641b04e3825682b09e1c1fd521c9c4a4793274",
+          "page": 81,
+          "text": "PANEL PP-B (PROPOSED); BREAKER SIZE / OVERCURRENT PROTECTION; AT; AF; KAIC; TOTAL.",
+          "method": "manual_original_source_image_inspection",
+          "region_description": "Complete embedded schedule image and page caption."
+        }
+      ]
+    }
+  ]
+}

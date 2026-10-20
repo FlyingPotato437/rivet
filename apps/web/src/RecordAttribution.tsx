@@ -53,6 +53,8 @@ export function CommentAttribution({
     "numbered text": "Imported from document text",
     "unreadable area": "Automatic flag · transcription needed",
   };
+  if (comment.origin === "ai_transcription")
+    return <Attribution kind="ai" title="AI-transcribed from the rendered page; confidence is a model estimate.">AI transcription</Attribution>;
   if (comment.origin === "manual")
     return <Attribution kind="human">Added manually</Attribution>;
   const label = origins[comment.origin || ""];

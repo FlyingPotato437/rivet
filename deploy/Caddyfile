@@ -1,7 +1,7 @@
 {$RIVET_API_HOST} {
-    # The app accepts 20 MB files; allow room for multipart/email envelopes.
+    # Authenticated pilot packages allow 400 MiB total; include multipart overhead.
     request_body {
-        max_size 30MB
+        max_size 450MB
     }
     header {
         X-Content-Type-Options nosniff

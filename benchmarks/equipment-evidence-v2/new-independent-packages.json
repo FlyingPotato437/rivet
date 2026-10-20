@@ -1,0 +1,59 @@
+{
+  "schema_version": "rivet.real-packages.v1",
+  "packages": [
+    {
+      "id": "campbell-evgo-schedule-new-holdout",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "scope": "One new independent public project source page; source-only labels frozen before version2 predictions. Same manufacturer, different project; not manufacturer-heldout generalization.",
+      "sources": [
+        {
+          "id": "campbell-evgo-schedule-new-holdout",
+          "name": "campbell-evgo-schedule-evaluation-copy.pdf",
+          "path": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/evidence-v3-new-independent/campbell-evgo-schedule-evaluation-copy.pdf",
+          "sha256": "f32c6b07a6a9fc821d716cb1d219bdf9b4d145b61ac9debd53578125c8819f9f",
+          "role": "bom",
+          "side": "target",
+          "revision": "Published public submittal",
+          "url": "https://www.campbellca.gov/Archive.aspx?ADID=1639",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/evidence-v3-new-independent/campbell-evgo.pdf",
+            "parent_sha256": "3fbf80f11f8a6e7c4e7a75d792588052e58a22735a38e27caef629e3cdad6d3f",
+            "parent_physical_pages": [
+              17
+            ]
+          }
+        }
+      ],
+      "answer_key": "keys/campbell-evgo-schedule-new-holdout.json"
+    },
+    {
+      "id": "osage-dsg-schedule-new-holdout",
+      "kind": "real_public",
+      "split": "unseen_test",
+      "scope": "One new independent public project source page; source-only labels frozen before version2 predictions. Same manufacturer, different project; not manufacturer-heldout generalization.",
+      "sources": [
+        {
+          "id": "osage-dsg-schedule-new-holdout",
+          "name": "osage-dsg-schedule-evaluation-copy.pdf",
+          "path": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/evidence-v3-new-independent/osage-dsg-schedule-evaluation-copy.pdf",
+          "sha256": "9870e69ab2e110c293e9c5b48cd94688f7b80d62cb8cbfac84e6c99c70d6db72",
+          "role": "bom",
+          "side": "target",
+          "revision": "Published public submittal",
+          "url": "https://osagebeach-mo.gov/Archive/ViewFile/Item/3846",
+          "derivation": {
+            "kind": "unchanged_page_evaluation_copy",
+            "parent_path": "/Users/srikanthsamy1/Desktop/CodeProjects/rivet/.data/real-document-corpus/evidence-v3-new-independent/osage-dsg.pdf",
+            "parent_sha256": "3020608cce0f61ec807faf2510ca0843edfd141e45900e03eca6cf74cefd69b7",
+            "parent_physical_pages": [
+              104
+            ]
+          }
+        }
+      ],
+      "answer_key": "keys/osage-dsg-schedule-new-holdout.json"
+    }
+  ]
+}

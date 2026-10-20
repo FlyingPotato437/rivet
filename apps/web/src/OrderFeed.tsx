@@ -334,7 +334,7 @@ export function OrderFeed({
               }
             >
               {search
-                ? "Search by order number, project, or customer."
+                ? "Search by order number, name, or customer."
                 : "Bring the specification, purchase order, drawings, and review comments. Rivet connects the obligations, compares revisions, and prepares decisions for your review."}
             </Empty>
           </div>
@@ -364,7 +364,7 @@ export function NewOrder({
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   return (
-    <Modal title="New order" eyebrow="Order details" onClose={onClose}>
+    <Modal title="New order" eyebrow="Job details" onClose={onClose}>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -387,8 +387,8 @@ export function NewOrder({
         }}
       >
         <p className="modal-intro">
-          Enter the order details, then upload specifications, purchase orders,
-          drawings, and review comments.
+          Give the order a name and job reference. Rivet uses the reference to
+          match incoming email and documents.
         </p>
         <label>
           Order name
@@ -397,7 +397,7 @@ export function NewOrder({
             required
             minLength={2}
             maxLength={180}
-            placeholder="Project / equipment package"
+            placeholder="Order / equipment package"
             autoFocus
           />
         </label>
@@ -477,7 +477,7 @@ export function OrderSearch({
         <input
           aria-label="Find an order"
           autoFocus
-          placeholder="Order number, customer, or project…"
+          placeholder="Order number, customer, or name…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

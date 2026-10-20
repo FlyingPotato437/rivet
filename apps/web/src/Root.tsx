@@ -2,21 +2,32 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { Landing, PublicHeader, PublicFooter } from "./Landing";
 import { ArrowUpRight } from "@phosphor-icons/react";
 import "./public-site.css";
+import "./public-material.css";
 
 // Workspace code and authentication are deliberately absent from the public build.
-// Private development remains available for demos and acceptance testing.
-const PrivateRoot = import.meta.env.DEV
-  ? lazy(() => import("./PrivateRoot"))
-  : null;
+// Production workspace hosts use an explicit, separate build mode.
+const workspaceBuild = import.meta.env.MODE === "workspace";
+const PrivateRoot =
+  import.meta.env.DEV || workspaceBuild
+    ? lazy(() => import("./PrivateRoot"))
+    : null;
 const PilotPage = lazy(() => import("./PilotPage"));
 const workspaceRoute = () =>
-  /^#(projects$|orders$|decisions$|bids$|order\/|quotes$|project\/|catalog$|activity$|settings$|guide$|shared\/)/.test(
-    location.hash,
+  /^#(today$|work$|autopilot$|projects$|orders$|review$|customers$|customer\/|decisions$|inbox$|bids$|order\/|quotes$|project\/|catalog$|activity$|settings$|guide$|shared\/)/.test(
+    location.hash.split("?")[0],
   );
 
 export default function Root() {
   const [url, setUrl] = useState(location.pathname + location.hash);
   useEffect(() => {
+    if (workspaceBuild && !workspaceRoute()) {
+      history.replaceState(
+        null,
+        "",
+        `${location.pathname}${location.search}#today`,
+      );
+      setUrl(location.pathname + location.hash);
+    }
     const change = () => setUrl(location.pathname + location.hash);
     window.addEventListener("hashchange", change);
     window.addEventListener("popstate", change);
@@ -26,9 +37,11 @@ export default function Root() {
     };
   }, []);
   const pilot =
-    location.pathname.replace(/\/$/, "") === "/pilot" ||
-    location.hash === "#pilot";
+    !workspaceBuild &&
+    (location.pathname.replace(/\/$/, "") === "/pilot" ||
+      location.hash === "#pilot");
   const privateRoute =
+    workspaceBuild ||
     workspaceRoute() ||
     /^\/(app|orders|order|projects|workspace|sign-in|sign-up|shared)(\/|$)/.test(
       location.pathname,

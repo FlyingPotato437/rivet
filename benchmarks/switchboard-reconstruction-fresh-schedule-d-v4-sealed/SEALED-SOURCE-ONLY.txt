@@ -1,0 +1,1 @@
+Private source values and pixels: author and source-only independent QA only. Whole original page is the extraction input, without any expected-value scope/locator hint. Preserve original drafts. Pending independent QA. No prediction/backend parser/provider calls authorized by these artifacts.

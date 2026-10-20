@@ -1,0 +1,775 @@
+/* A single material and type system for the private workspace.
+   Decorative texture stays on the surrounding desk, away from reading surfaces. */
+.app-shell,
+.modal-backdrop {
+  --font-sans: var(--rivet-body);
+  --font-heading: var(--rivet-body);
+  --bg: #111315;
+  --surface: #1a1d20;
+  --surface2: #202428;
+  --line: #ffffff15;
+  --text: #eceff0;
+  --copy: #c4c9ce;
+  --muted: #a7aeb6;
+  --subtle: #919aa4;
+  --violet: #c3b6df;
+  --green: #aac3b8;
+  --amber: #ceb993;
+  --hover: #ffffff06;
+  --desk-panel: #191c1f;
+  --desk-raised: #202428;
+  --desk-line: #ffffff16;
+  --desk-muted: #a7aeb6;
+  --desk-accent: #c3b6df;
+  font-family: var(--rivet-body);
+  font-variant-numeric: normal;
+  letter-spacing: -0.012em;
+}
+.app-shell .app-main {
+  position: relative;
+  isolation: isolate;
+  background: #131619;
+  min-height: 100dvh;
+}
+.app-shell .app-main::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 430px;
+  z-index: -1;
+  background: url("/images/graphite-satin.webp") left 48% / 150% auto;
+  opacity: 0.1;
+  mask-image: linear-gradient(#000, transparent);
+  pointer-events: none;
+}
+.app-shell .sidebar {
+  background: #0e1113;
+  border-right-color: #ffffff12;
+  box-shadow: 4px 0 24px #0000000a;
+  padding: 27px 16px 16px;
+}
+.app-shell .brand {
+  font-family: var(--rivet-body);
+  margin: 0 10px 30px;
+}
+.app-shell .sidebar > .nav-label {
+  font-size: 11px;
+  color: #8b949c;
+  margin-top: 26px;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+.app-shell .sidebar > nav {
+  gap: 5px;
+}
+.app-shell .sidebar nav button {
+  border-radius: 7px;
+  min-height: 43px;
+  font-size: 13px;
+  font-weight: 450;
+  padding: 11px 12px;
+  color: #aeb5bc;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+.app-shell .sidebar nav button.active {
+  background: linear-gradient(110deg, #c3b6df13, #c3b6df07);
+  border-color: #c3b6df20;
+  color: #ece9f1;
+  box-shadow: inset 0 1px #ffffff03;
+}
+.app-shell .sidebar nav button.active > svg {
+  color: #cec2e4;
+}
+.app-shell .sidebar nav button:hover:not(.active) {
+  background: #ffffff05;
+}
+.app-shell .nav-count {
+  font-size: 11px;
+  min-width: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.app-shell .recent-projects button {
+  min-height: 39px;
+  font-size: 12px;
+  padding-inline: 11px;
+  gap: 10px;
+}
+.app-shell .recent-projects button.selected {
+  background: #ffffff05;
+  color: #d8dce0;
+}
+.app-shell .project-dot {
+  width: 4px;
+  height: 4px;
+  background: #8e879b;
+}
+.app-shell .sidebar-bottom {
+  padding-top: 20px;
+}
+.app-shell .sidebar-bottom > button,
+.app-shell .companion-more summary {
+  min-height: 38px;
+  font-size: 12px;
+  color: #9ca5ad;
+}
+.app-shell .sidebar-bottom > .profile {
+  margin-top: 20px;
+  border-top: 1px solid #ffffff0e;
+  padding-top: 20px;
+}
+.app-shell .profile strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.app-shell .profile small {
+  color: #8b959e;
+  font-size: 11px;
+}
+.app-shell .topbar {
+  height: 64px;
+  padding-inline: 32px;
+  background: #131619b8;
+  backdrop-filter: blur(18px);
+  border-bottom-color: #ffffff0c;
+}
+.app-shell .topbar > div:first-child {
+  gap: 16px;
+  font-size: 12px;
+}
+.app-shell .topbar .breadcrumb {
+  color: #9ba4ad;
+}
+.app-shell .connection {
+  color: #9ca7af;
+  font-size: 11px;
+}
+.app-shell .search-trigger {
+  border: 1px solid #ffffff0c;
+  border-radius: 6px;
+  padding: 6px 9px;
+  gap: 12px;
+  background: #ffffff02;
+}
+.app-shell .search-trigger kbd {
+  border: 0;
+  background: transparent;
+  color: #8c969f;
+}
+.app-shell :is(button, a, input, select, textarea):focus-visible {
+  outline-color: #c3b6df;
+}
+.app-shell :is(input, textarea, select) {
+  border-color: #ffffff1a;
+  border-radius: 7px;
+  background-color: #101417;
+  color: #e2e7eb;
+}
+.app-shell :is(input, textarea)::placeholder {
+  color: #929aa4;
+  opacity: 1;
+}
+.app-shell :is(button.primary, a.primary) {
+  background: #e5e8e5;
+  border: 1px solid #fff3;
+  color: #202529;
+  box-shadow:
+    0 2px 6px #0002,
+    inset 0 1px #fff8;
+  font-weight: 550;
+  border-radius: 7px;
+}
+.app-shell :is(button.primary, a.primary):hover:not(:disabled) {
+  background: #fafbf8;
+  color: #151a1e;
+}
+.app-shell :is(button.secondary, a.secondary) {
+  background: #ffffff04;
+  border: 1px solid #ffffff1c;
+  border-radius: 7px;
+  color: #d5dade;
+  box-shadow: inset 0 1px #ffffff03;
+}
+.app-shell :is(button.secondary, a.secondary):hover:not(:disabled) {
+  background: #ffffff08;
+  border-color: #ffffff2c;
+}
+.app-shell .page {
+  padding-block: 46px 72px;
+}
+.app-shell
+  :is(
+    .page-heading h1,
+    .review-heading h1,
+    .ap-heading h1,
+    .record-heading h1
+  ) {
+  font-family: var(--rivet-body);
+  font-size: 32px;
+  font-weight: 550;
+  line-height: 1.25;
+  letter-spacing: -0.045em;
+  color: #edf0f1;
+}
+.app-shell :is(.page-heading, .ap-heading, .review-heading) {
+  margin-bottom: 34px;
+  gap: 24px;
+}
+.app-shell :is(.page-heading, .ap-heading, .review-heading) p {
+  font-size: 14px;
+  color: #a9b1b9;
+  line-height: 1.7;
+}
+.app-shell .autopilot-page {
+  max-width: 1136px;
+}
+.app-shell .ap-heading {
+  padding-bottom: 10px;
+}
+.app-shell .ap-heading > button {
+  min-height: 38px;
+  font-size: 12px;
+}
+.app-shell .ap-drafts {
+  background: linear-gradient(140deg, #22272a, #1b1f22 55%);
+  border: 1px solid #ffffff20;
+  border-radius: 12px;
+  box-shadow:
+    0 16px 36px #00000024,
+    0 2px 6px #0002,
+    inset 0 1px #ffffff06;
+  padding: 28px 30px 8px;
+  position: relative;
+  overflow: hidden;
+}
+.app-shell .ap-drafts::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 30px;
+  right: 30px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c3b6df66, transparent);
+  pointer-events: none;
+}
+.app-shell .ap-drafts-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.app-shell .ap-mail-symbol {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  color: #cec5dc;
+  background: #c3b6df0b;
+  border: 1px solid #c3b6df23;
+  border-radius: 10px;
+  box-shadow: inset 0 1px #ffffff06;
+}
+.app-shell .ap-section-heading {
+  margin-bottom: 24px;
+}
+.app-shell .ap-section-heading h2 {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.app-shell .ap-section-heading p {
+  font-size: 13px;
+  color: #a8b1b9;
+}
+.app-shell .ap-count {
+  border: 0;
+  background: #ffffff07;
+  border-radius: 5px;
+  color: #bdc3c9;
+  font-size: 12px;
+  min-width: 24px;
+  text-align: center;
+  padding: 2px 7px;
+}
+.app-shell .ap-list > li {
+  padding-block: 26px;
+  border-top-color: #ffffff10;
+}
+.app-shell .ap-list strong {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+.app-shell .ap-origin {
+  color: #bab2c8;
+  font-size: 11px;
+  letter-spacing: 0.015em;
+  margin-bottom: 8px;
+}
+.app-shell .ap-mail-meta {
+  color: #a3adb6;
+  font-size: 12px;
+  gap: 8px 18px;
+  margin-top: 12px;
+}
+.app-shell .ap-mail-meta > span:first-child {
+  color: #c7cdd2;
+}
+.app-shell .ap-outlook {
+  font-size: 12px;
+  min-height: 40px;
+  gap: 14px;
+  padding-inline: 15px;
+  border-color: #ffffff1a;
+}
+.app-shell .ap-drafts .ap-outlook {
+  background: #e5e8e5;
+  color: #202529;
+  box-shadow:
+    0 2px 6px #0002,
+    inset 0 1px #fff8;
+}
+.app-shell .ap-drafts .ap-outlook:hover {
+  background: #f4f6f2;
+  filter: none;
+}
+.app-shell .ap-review-link {
+  padding: 22px 3px;
+  color: #99a4ae;
+  font-size: 12px;
+}
+.app-shell .ap-review-link a {
+  color: #d0c5e1;
+}
+.app-shell .ap-activity {
+  margin-top: 36px;
+}
+.app-shell .ap-feed > li {
+  padding: 22px 0;
+  gap: 16px;
+  align-items: center;
+  border-color: #ffffff0e;
+}
+.app-shell .ap-feed > li > svg {
+  box-sizing: content-box;
+  padding: 9px;
+  color: #b6b6c3;
+  border: 1px solid #ffffff10;
+  border-radius: 8px;
+  background: #ffffff03;
+}
+.app-shell .ap-feed strong {
+  font-size: 14px;
+  font-weight: 500;
+  color: #d6dce1;
+}
+.app-shell .ap-feed li > div > span {
+  font-size: 12px;
+  color: #969fa9;
+  line-height: 1.7;
+  margin-top: 7px;
+}
+.app-shell .ap-feed time {
+  font-size: 11px;
+  color: #9aa5ae;
+}
+.app-shell .ap-summary {
+  border-color: #ffffff10;
+}
+.app-shell .ap-attention {
+  background: #1f201e;
+  border-color: #d0b58c30;
+  border-radius: 10px;
+}
+.app-shell .ap-attention h2 {
+  color: #d3c3a9;
+}
+/* Orders and the exception queue share one list treatment. */
+.app-shell .record-order-list,
+.app-shell .review-queue {
+  background: #1a1e21;
+  border: 1px solid #ffffff15;
+  border-radius: 10px;
+  padding: 0 22px;
+  box-shadow: 0 8px 22px #00000012;
+  overflow: hidden;
+}
+.app-shell .record-order-row {
+  padding: 25px 10px;
+  border-color: #ffffff0e;
+  background: transparent;
+}
+.app-shell .record-order-row:hover {
+  background: #ffffff03;
+}
+.app-shell .record-order-row strong {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.app-shell .record-order-row small {
+  font-size: 11px;
+  color: #9ca6af;
+}
+.app-shell .record-order-row:focus-visible {
+  outline-offset: -2px;
+}
+.app-shell .record-feed .order-feed-list {
+  background: #1a1e21;
+  border: 1px solid #ffffff15;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px #00000012;
+}
+.app-shell .record-feed .order-feed-toolbar {
+  background: #171b1e;
+  border-bottom: 1px solid #ffffff0c;
+}
+.app-shell .record-feed .record-order-list {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.app-shell .record-feed .order-feed-filters button.selected {
+  background: #c3b6df10;
+  color: #ded6e8;
+}
+.app-shell .review-toolbar {
+  padding-top: 18px;
+  gap: 18px;
+}
+.app-shell .review-buckets {
+  gap: 5px;
+}
+.app-shell .review-buckets button {
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 9px 13px;
+}
+.app-shell .review-buckets button.selected {
+  background: #c3b6df10;
+  color: #e0d8eb;
+}
+.app-shell .review-row {
+  padding: 24px 9px;
+  border-color: #ffffff0e;
+}
+.app-shell .review-row:hover {
+  background: #ffffff03;
+}
+.app-shell .review-row-main strong {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.app-shell .review-row-main > span {
+  color: #a1abb4;
+  font-size: 12px;
+}
+.app-shell .review-row-symbol {
+  color: #b7b0c4;
+}
+.app-shell .review-row-main small {
+  color: #b3a7c2;
+  font-size: 11px;
+}
+/* The document is the centre of the workbench; controls sit on quieter chrome. */
+.app-shell .record-studio {
+  padding: 26px;
+}
+.app-shell .record-studio .record-workspace {
+  border-color: #ffffff16;
+  background: #191c1f;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px #0002;
+}
+.app-shell .record-order-header {
+  background: transparent;
+  padding: 26px 30px 0;
+}
+.app-shell .record-studio .record-heading {
+  margin: 22px 0 26px;
+}
+.app-shell .record-studio .record-heading h1 {
+  font-family: var(--rivet-body);
+  font-size: 28px;
+  font-weight: 550;
+  letter-spacing: -0.04em;
+}
+.app-shell .record-studio .record-heading p {
+  color: #a6b0b9;
+  font-size: 13px;
+}
+.app-shell .record-studio .record-tabs {
+  background: transparent;
+  border-top: 0;
+  border-bottom-color: #ffffff12;
+  padding-inline: 30px;
+  gap: 28px;
+}
+.app-shell .record-studio .record-tabs button {
+  font-size: 13px;
+  padding-block: 15px;
+  color: #9fa9b3;
+}
+.app-shell .record-studio .record-tabs button.active {
+  color: #e2dbea;
+  border-color: #c3b6df;
+}
+.app-shell .record-center-views {
+  padding: 28px 30px 34px;
+}
+.app-shell .connected-sources {
+  background: #ffffff02;
+  border-color: #ffffff12;
+  border-radius: 8px;
+}
+.app-shell .connected-sources.connected-compact {
+  background: transparent;
+}
+.app-shell .order-prepared-reply {
+  background: linear-gradient(120deg, #23242b, #1c2023);
+  border-color: #c3b6df25;
+  box-shadow: inset 0 1px #ffffff04;
+}
+.app-shell .order-prepared-reply h2 {
+  font-size: 21px;
+  font-weight: 500;
+}
+.app-shell .order-reply-body {
+  background: #15191c;
+  color: #d8dee3;
+  line-height: 1.85;
+}
+.app-shell
+  .order-prepared-reply
+  :is(
+    footer,
+    .order-reply-sources,
+    .order-reply-open-points,
+    .order-reply-body
+  ) {
+  border-color: #ffffff10;
+}
+.app-shell .order-prepared-reply header p {
+  color: #acb4bd;
+}
+.app-shell .revision-review-heading h2 {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.app-shell .revision-log {
+  border-color: #ffffff16;
+  border-radius: 8px;
+  background: #1b2024;
+}
+.app-shell .revision-log-toolbar {
+  background: #171c20;
+  border-color: #ffffff12;
+}
+.app-shell .record-workspace .revision-log-search {
+  background: #11171b;
+  border-color: #ffffff1c;
+  border-radius: 6px;
+  color: #a7b1bb;
+}
+.app-shell .revision-table th {
+  color: #9da8b1;
+  background: #15191c;
+  font-size: 11px;
+  font-weight: 450;
+}
+.app-shell .revision-table td {
+  border-color: #ffffff0c;
+  padding-block: 21px;
+}
+.app-shell .revision-table tbody tr:hover {
+  background: #ffffff02;
+}
+.app-shell .rivet-workbench {
+  border-color: #ffffff17;
+  border-radius: 10px;
+  background: #171b1e;
+  box-shadow: 0 10px 30px #0002;
+}
+.app-shell
+  :is(.workbench-record-context, .workbench-inspector, .record-agent-panel) {
+  background: #1b2024;
+  color: #e5e9ed;
+}
+.app-shell .workbench-record-context {
+  padding: 26px;
+}
+.app-shell .workbench-record-context h2 {
+  font: 500 21px/1.4 var(--rivet-body);
+  letter-spacing: -0.025em;
+}
+.app-shell .workbench-record-context p {
+  color: #c2cad1;
+}
+.app-shell .workbench-record-context :is(textarea, select) {
+  background: #11171b;
+  font-size: 14px;
+  line-height: 1.7;
+  border-color: #ffffff19;
+}
+.app-shell .workbench-record-context label {
+  font-size: 13px;
+  color: #aab5bf;
+}
+.app-shell .record-agent-body {
+  padding: 24px;
+}
+.app-shell .agent-run-summary {
+  font-size: 14px;
+  line-height: 1.85;
+  color: #c1cbd3;
+}
+.app-shell .record-command-dock {
+  background: #14191d;
+  border-color: #ffffff16;
+  border-radius: 8px;
+}
+.app-shell .record-command-dock:hover {
+  border-color: #c3b6df40;
+}
+.app-shell .record-outputs {
+  background: transparent;
+  border-color: #ffffff10;
+}
+.modal-backdrop .modal {
+  background: #1b2024;
+  border: 1px solid #ffffff23;
+  border-radius: 14px;
+  box-shadow:
+    0 32px 100px #0009,
+    inset 0 1px #ffffff09;
+  font-family: var(--rivet-body);
+}
+.modal-backdrop .modal h2 {
+  font-family: var(--rivet-body);
+  font-size: 23px;
+  font-weight: 550;
+  letter-spacing: -0.035em;
+}
+.modal-backdrop .modal .ap-settings label {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding-top: 24px;
+  margin-top: 24px;
+}
+.modal-backdrop .modal .ap-settings input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+.modal-backdrop .modal input,
+.modal-backdrop .modal textarea,
+.modal-backdrop .modal select {
+  background: #12171b;
+  border-color: #ffffff20;
+  border-radius: 7px;
+}
+@media (min-width: 1101px) {
+  .app-shell .sidebar {
+    width: 228px;
+  }
+  .app-shell .app-main {
+    margin-left: 228px;
+    width: calc(100% - 228px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .app-shell .ap-drafts,
+  .app-shell .review-queue,
+  .app-shell .record-order-list {
+    animation: rivet-surface-enter 0.45s var(--rivet-ease) both;
+  }
+  .app-shell .ap-outlook {
+    transition:
+      background 0.18s,
+      box-shadow 0.18s,
+      transform 0.18s var(--rivet-ease);
+  }
+  .app-shell .ap-outlook:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px #0003;
+  }
+  @keyframes rivet-surface-enter {
+    from {
+      opacity: 0.2;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+@media (max-width: 760px) {
+  .app-shell .page {
+    padding: 30px 20px 56px;
+  }
+  .app-shell .topbar {
+    padding-inline: 20px;
+    height: 58px;
+  }
+  .app-shell :is(.ap-heading, .review-heading) {
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .app-shell :is(.ap-heading h1, .review-heading h1, .page-heading h1) {
+    font-size: 28px;
+  }
+  .app-shell .ap-drafts {
+    padding: 24px 20px 4px;
+  }
+  .app-shell .ap-list > li {
+    gap: 20px;
+  }
+  .app-shell .ap-section-heading h2 {
+    font-size: 18px;
+  }
+  .app-shell .ap-drafts-heading {
+    gap: 12px;
+  }
+  .app-shell .ap-mail-symbol {
+    width: 38px;
+    height: 38px;
+  }
+  .app-shell .ap-section-heading p {
+    font-size: 12px;
+  }
+  .app-shell .ap-feed > li {
+    gap: 12px;
+  }
+  .app-shell .record-order-list,
+  .app-shell .review-queue {
+    padding-inline: 12px;
+  }
+  .app-shell .record-studio {
+    padding: 12px;
+  }
+  .app-shell .record-order-header {
+    padding: 20px 18px 0;
+  }
+  .app-shell .record-studio .record-heading h1 {
+    font-size: 24px;
+  }
+  .app-shell .record-studio .record-tabs {
+    padding-inline: 18px;
+  }
+  .app-shell .record-center-views {
+    padding: 22px 18px 28px;
+  }
+  .app-shell .workbench-record-context,
+  .app-shell .record-agent-body {
+    padding: 22px;
+  }
+}

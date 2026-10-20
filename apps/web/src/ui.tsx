@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode, type SVGProps } from "react";
+import { createPortal } from "react-dom";
 import {
   X,
   ArrowRight,
@@ -154,12 +155,14 @@ export function Modal({
   children,
   onClose,
   wide = false,
+  className = "",
 }: {
   title: string;
   eyebrow?: string;
   children: ReactNode;
   onClose: () => void;
   wide?: boolean;
+  className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
@@ -201,7 +204,7 @@ export function Modal({
       previous?.focus();
     };
   }, []);
-  return (
+  return createPortal(
     <div
       className="modal-backdrop"
       onMouseDown={(e) => {
@@ -210,7 +213,7 @@ export function Modal({
     >
       <div
         ref={ref}
-        className={"modal " + (wide ? "wide" : "")}
+        className={`modal ${wide ? "wide" : ""} ${className}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -230,7 +233,8 @@ export function Modal({
         </header>
         {children}
       </div>
-    </div>
+    </div>,
+    document.querySelector(".app-shell") || document.body,
   );
 }
 export function ErrorNote({ message }: { message: string }) {

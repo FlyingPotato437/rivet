@@ -1,0 +1,683 @@
+{
+  "schema_version": "rivet.real-acquisition-catalog.v1",
+  "collected_at": "2026-10-18T22:08:48.280981+00:00",
+  "packages": [
+    {
+      "id": "hopewell-hwr-switchgear",
+      "title": "Hopewell Water Renewal medium-voltage switchgear replacement",
+      "publisher": "City of Hopewell, Virginia",
+      "package_type": "bid_specifications_and_reissue",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Medium-Voltage-Switchgear-2022.pdf",
+          "url": "https://hopewellva.gov/DocumentCenter/View/719/Medium-Voltage-Switchgear-PDF?bidId=",
+          "revision": "Issued May 2022",
+          "role": "specification",
+          "side": "baseline",
+          "id": "hopewell-hwr-switchgear:1",
+          "path": "../../.data/real-document-corpus/new-official/hopewell-hwr-switchgear/Medium-Voltage-Switchgear-2022.pdf",
+          "sha256": "9f569e1d4deb395848bb0827927390fca5bfa145afa8579d9d58c1994354a10c",
+          "bytes": 2046300,
+          "pages": 121,
+          "native_annotation_objects": 0,
+          "final_url": "https://hopewellva.gov/DocumentCenter/View/719/Medium-Voltage-Switchgear-PDF?bidId=",
+          "original_unchanged": true
+        },
+        {
+          "name": "Medium-Voltage-Switchgear-Reissue.pdf",
+          "url": "https://hopewellva.gov/DocumentCenter/View/1305/Reissue-05-24-HWR---Medium-Voltage-Switchgear-Replacement---Bid-Specs?bidId=",
+          "revision": "Reissue IFB 05-24",
+          "role": "specification",
+          "side": "target",
+          "id": "hopewell-hwr-switchgear:2",
+          "path": "../../.data/real-document-corpus/new-official/hopewell-hwr-switchgear/Medium-Voltage-Switchgear-Reissue.pdf",
+          "sha256": "0e3026897f5b62e8e98255d4ff3a16c92784dc028e5882671eb943adc995dc05",
+          "bytes": 5165218,
+          "pages": 509,
+          "native_annotation_objects": 1,
+          "final_url": "https://hopewellva.gov/DocumentCenter/View/1305/Reissue-05-24-HWR---Medium-Voltage-Switchgear-Replacement---Bid-Specs?bidId=",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 2,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "idea-school-switchgear-2024",
+      "title": "IDEA Public Schools electrical switchgear upgrades at multiple campuses",
+      "publisher": "IDEA Public Schools",
+      "package_type": "bid_specifications",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "IDEA-Switchgear-Specifications.pdf",
+          "url": "https://ideapublicschools.org/wp-content/uploads/2024/03/2024-03-15-Electrical-Switchgear-Upg-CSP22-ESGU-0424-SS-Specs-Binder.pdf",
+          "revision": "Bid specifications, 2024-03-15",
+          "role": "specification",
+          "side": "requirements",
+          "id": "idea-school-switchgear-2024:1",
+          "path": "../../.data/real-document-corpus/new-official/idea-school-switchgear-2024/IDEA-Switchgear-Specifications.pdf",
+          "sha256": "12f7f5017ec0fa43f657e5c94dfc40216526933e185b4d3ae821e2232467ad2d",
+          "bytes": 12704372,
+          "pages": 334,
+          "native_annotation_objects": 0,
+          "final_url": "https://ideapublicschools.org/wp-content/uploads/2024/03/2024-03-15-Electrical-Switchgear-Upg-CSP22-ESGU-0424-SS-Specs-Binder.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "jea-arlington-east-wrf",
+      "title": "Arlington East water reclamation facility switchgear replacement",
+      "publisher": "JEA municipal utility",
+      "package_type": "bid_specifications",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "JEA-Arlington-East-Switchgear.pdf",
+          "url": "https://www.jea.com/Pdf/Download/12884922795",
+          "revision": "Technical specifications, 2017",
+          "role": "specification",
+          "side": "requirements",
+          "id": "jea-arlington-east-wrf:1",
+          "path": "../../.data/real-document-corpus/new-official/jea-arlington-east-wrf/JEA-Arlington-East-Switchgear.pdf",
+          "sha256": "348e286de20995188f17093d3a60fe9df746ea3aeae3c15ead9083c509f64e11",
+          "bytes": 3907330,
+          "pages": 414,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.jea.com/Pdf/Download/12884922795",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "fremont-metal-enclosed-switchgear",
+      "title": "Metal-enclosed switchgear purchase contract",
+      "publisher": "City of Fremont, Nebraska",
+      "package_type": "bid_specifications",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Fremont-Switchgear-Bid.pdf",
+          "url": "https://www.fremontne.gov/DocumentCenter/View/4744/Contract-for-Purchase-of-Metal-Enclosed-Switchgear---January-2018---Bid-Documents?bidId=",
+          "revision": "Bid documents, January 2018",
+          "role": "specification",
+          "side": "requirements",
+          "id": "fremont-metal-enclosed-switchgear:1",
+          "path": "../../.data/real-document-corpus/new-official/fremont-metal-enclosed-switchgear/Fremont-Switchgear-Bid.pdf",
+          "sha256": "936b719f0b5de088cf9b00617bcf445abf452aa437e38ebd28f67fe994a8a37b",
+          "bytes": 312249,
+          "pages": 73,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.fremontne.gov/DocumentCenter/View/4744/Contract-for-Purchase-of-Metal-Enclosed-Switchgear---January-2018---Bid-Documents?bidId=",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "san-marcos-rattler-transformer",
+      "title": "Rattler Substation transformer T1 purchase",
+      "publisher": "City of San Marcos, Texas",
+      "package_type": "bid_specifications",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Rattler-T1-Transformer-IFB.pdf",
+          "url": "https://www.sanmarcostx.gov/DocumentCenter/View/15932/220-057-Rattler-Substation-Transformer-IFB?bidId=",
+          "revision": "IFB 220-057",
+          "role": "specification",
+          "side": "requirements",
+          "id": "san-marcos-rattler-transformer:1",
+          "path": "../../.data/real-document-corpus/new-official/san-marcos-rattler-transformer/Rattler-T1-Transformer-IFB.pdf",
+          "sha256": "3008ee94d74e3b85e2988a17d93219b783dd20b4a069e8b4af36ffdbccef8b7f",
+          "bytes": 1459656,
+          "pages": 77,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.sanmarcostx.gov/DocumentCenter/View/15932/220-057-Rattler-Substation-Transformer-IFB?bidId=",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "hanford-a6-feeders",
+      "title": "A6 feeders to new HLW switchgear building study",
+      "publisher": "Hanford Mission Integration Solutions, US DOE site contractor",
+      "package_type": "engineering_study_rfp",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Hanford-A6-Switchgear-SOW.pdf",
+          "url": "https://hmis.hanford.gov/files.cfm/Attach_1_SOW_A6_Feeders_to_New_HLW_Switchgear_Building_Study.pdf",
+          "revision": "RFP 00372979, Rev 00, 2024-04-08",
+          "role": "specification",
+          "side": "requirements",
+          "id": "hanford-a6-feeders:1",
+          "path": "../../.data/real-document-corpus/new-official/hanford-a6-feeders/Hanford-A6-Switchgear-SOW.pdf",
+          "sha256": "d30c7cb64166f04ed3d2e1f118b34d1fd5881568e34dbc4c9ff52cd0f1fc0b72",
+          "bytes": 5134690,
+          "pages": 23,
+          "native_annotation_objects": 0,
+          "final_url": "https://hmis.hanford.gov/files.cfm/Attach_1_SOW_A6_Feeders_to_New_HLW_Switchgear_Building_Study.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "nyogs-altona-44750",
+      "title": "Altona Correctional Facility switchgear replacement addendum",
+      "publisher": "New York State Office of General Services",
+      "package_type": "bid_addendum",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Altona-Switchgear-Addendum-1.pdf",
+          "url": "https://online.ogs.ny.gov/dncaddenda/44750/Addendum%2001%20E.pdf",
+          "revision": "Project 44750-E, Addendum 1, 2017-10-06",
+          "role": "specification",
+          "side": "requirements",
+          "id": "nyogs-altona-44750:1",
+          "path": "../../.data/real-document-corpus/new-official/nyogs-altona-44750/Altona-Switchgear-Addendum-1.pdf",
+          "sha256": "f19d4b3f9b13c34883a15d404300f552cc93e2589c91b0b9c8c8c6fc35f32dd0",
+          "bytes": 6776484,
+          "pages": 25,
+          "native_annotation_objects": 0,
+          "final_url": "https://online.ogs.ny.gov/dncaddenda/44750/Addendum%2001%20E.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "unc-charlotte-grid-automation",
+      "title": "Electrical Grid Automation Phase I — main substation switchgear",
+      "publisher": "University of North Carolina at Charlotte",
+      "source_page": "https://facilities.charlotte.edu/2026/04/14/electrical-grid-automation-phase-i/",
+      "package_type": "bid_addendum_series",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Notice-to-Bidders.pdf",
+          "url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/04/Notice-to-Bidders-Elec-Grid-Automation-Phase-1.pdf",
+          "revision": "Notice, April 2026",
+          "role": "specification",
+          "side": "baseline",
+          "id": "unc-charlotte-grid-automation:1",
+          "path": "../../.data/real-document-corpus/new-official/unc-charlotte-grid-automation/Notice-to-Bidders.pdf",
+          "sha256": "1fc86e0d1a39fda020e0fe0e8277022776ad172b8b595a6879d1691478bdf420",
+          "bytes": 1606524,
+          "pages": 3,
+          "native_annotation_objects": 0,
+          "final_url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/04/Notice-to-Bidders-Elec-Grid-Automation-Phase-1.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Addendum-1.pdf",
+          "url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/04/2026.05.06-Addendum-1-1.pdf",
+          "revision": "Addendum 1",
+          "role": "specification",
+          "side": "target",
+          "id": "unc-charlotte-grid-automation:2",
+          "path": "../../.data/real-document-corpus/new-official/unc-charlotte-grid-automation/Addendum-1.pdf",
+          "sha256": "b090afc37a8fdff15a0a7acbb0e4946f1bfc0e74becd02bee2b1f75f34674c78",
+          "bytes": 756515,
+          "pages": 8,
+          "native_annotation_objects": 0,
+          "final_url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/04/2026.05.06-Addendum-1-1.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Addendum-2.pdf",
+          "url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.06-Addendum-2-Final.pdf",
+          "revision": "Addendum 2",
+          "role": "specification",
+          "side": "target",
+          "id": "unc-charlotte-grid-automation:3",
+          "path": "../../.data/real-document-corpus/new-official/unc-charlotte-grid-automation/Addendum-2.pdf",
+          "sha256": "8a036266765dd08dc8f92abc4d37c6c0c2ac7afa73d092b3b86b0c7ad9320916",
+          "bytes": 405645,
+          "pages": 7,
+          "native_annotation_objects": 0,
+          "final_url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.06-Addendum-2-Final.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Addendum-3.pdf",
+          "url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.07-Addendum-3.pdf",
+          "revision": "Addendum 3",
+          "role": "specification",
+          "side": "target",
+          "id": "unc-charlotte-grid-automation:4",
+          "path": "../../.data/real-document-corpus/new-official/unc-charlotte-grid-automation/Addendum-3.pdf",
+          "sha256": "6dfe735457b388d05da5533dffa0b22c51abaaecdc2001083c191dca1bf5bbb4",
+          "bytes": 2034207,
+          "pages": 11,
+          "native_annotation_objects": 0,
+          "final_url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.07-Addendum-3.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Addendum-4.pdf",
+          "url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.20-Addendum-4.pdf",
+          "revision": "Addendum 4",
+          "role": "specification",
+          "side": "target",
+          "id": "unc-charlotte-grid-automation:5",
+          "path": "../../.data/real-document-corpus/new-official/unc-charlotte-grid-automation/Addendum-4.pdf",
+          "sha256": "200a1b1946cb33da78967a1574b5934379ffad00841e914e5d114f6bf63373f7",
+          "bytes": 194931,
+          "pages": 4,
+          "native_annotation_objects": 0,
+          "final_url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.20-Addendum-4.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Addendum-5.pdf",
+          "url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.28-Addendum-5.pdf",
+          "revision": "Addendum 5",
+          "role": "specification",
+          "side": "target",
+          "id": "unc-charlotte-grid-automation:6",
+          "path": "../../.data/real-document-corpus/new-official/unc-charlotte-grid-automation/Addendum-5.pdf",
+          "sha256": "6080ab79f58373d939c79f97fbcf56fb9a912e21dc792c47186959bed50c2714",
+          "bytes": 1667252,
+          "pages": 4,
+          "native_annotation_objects": 0,
+          "final_url": "https://facilities.charlotte.edu/wp-content/uploads/sites/1297/2026/05/2026.05.28-Addendum-5.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 6,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "tctc-anderson-switchboard",
+      "title": "Anderson Campus switchboard procurement and rebid",
+      "publisher": "Tri-County Technical College",
+      "source_page": "https://www.tctc.edu/about-us/accountability/purchasing/solicitation-postings/",
+      "package_type": "bid_and_rebid_with_drawing",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Original-Invitation-to-Bid.pdf",
+          "url": "https://www.tctc.edu/media/ruopkbza/tctc-24-switchboard.pdf",
+          "revision": "TCTC-24 original bid",
+          "role": "specification",
+          "side": "baseline",
+          "id": "tctc-anderson-switchboard:1",
+          "path": "../../.data/real-document-corpus/new-official/tctc-anderson-switchboard/Original-Invitation-to-Bid.pdf",
+          "sha256": "71f82e1dd59688ee08299eed36f91a363df6e31208e8302afb73be2afab86496",
+          "bytes": 535268,
+          "pages": 29,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.tctc.edu/media/ruopkbza/tctc-24-switchboard.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Rebid-Invitation-to-Bid.pdf",
+          "url": "https://www.tctc.edu/media/x2ildbwc/tctc-24-switchboard-2-revised.pdf",
+          "revision": "TCTC-24 rebid 2",
+          "role": "specification",
+          "side": "target",
+          "id": "tctc-anderson-switchboard:2",
+          "path": "../../.data/real-document-corpus/new-official/tctc-anderson-switchboard/Rebid-Invitation-to-Bid.pdf",
+          "sha256": "9c9755d2f3ee986614ab58742e33b9a7e6f031586bf6c181d0f088965601d364",
+          "bytes": 526391,
+          "pages": 29,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.tctc.edu/media/x2ildbwc/tctc-24-switchboard-2-revised.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Anderson-Switchboard-Drawing.pdf",
+          "url": "https://www.tctc.edu/media/pfhdrjnr/anderson-switchboard-drawing.pdf",
+          "revision": "Attachment 1 to rebid",
+          "role": "drawing",
+          "side": "target",
+          "id": "tctc-anderson-switchboard:3",
+          "path": "../../.data/real-document-corpus/new-official/tctc-anderson-switchboard/Anderson-Switchboard-Drawing.pdf",
+          "sha256": "e98624ce769ba8f909ad004a2093c14aa29527b0c59d54a255b708f332a61493",
+          "bytes": 352105,
+          "pages": 1,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.tctc.edu/media/pfhdrjnr/anderson-switchboard-drawing.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 3,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "austin-power-transformers-eal3030",
+      "title": "Austin Energy power distribution transformer procurement",
+      "publisher": "City of Austin, Texas",
+      "source_page": "https://financeonline.austintexas.gov/afo/account_services/solicitation/solicitation_details.cfm?sid=143886",
+      "package_type": "bid_specification_and_addenda",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Transformer-Specification.pdf",
+          "url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/RFP_1100_EAL3030/RFP_1100_EAL3030_ATT_1_v1.pdf",
+          "revision": "Attachment 1, 2026-03-30",
+          "role": "specification",
+          "side": "baseline",
+          "id": "austin-power-transformers-eal3030:1",
+          "path": "../../.data/real-document-corpus/new-official/austin-power-transformers-eal3030/Transformer-Specification.pdf",
+          "sha256": "b5a60861c5ee5e153d1de3db4b9b27e9c1206a7fc597b32e5fbdb039f02ef13f",
+          "bytes": 1450517,
+          "pages": 19,
+          "native_annotation_objects": 0,
+          "final_url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/RFP_1100_EAL3030/RFP_1100_EAL3030_ATT_1_v1.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Addendum-1.pdf",
+          "url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/RFP_1100_EAL3030/RFP_1100_EAL3030_ADD_1_v1.pdf",
+          "revision": "Addendum 1, 2026-04-02",
+          "role": "specification",
+          "side": "target",
+          "id": "austin-power-transformers-eal3030:2",
+          "path": "../../.data/real-document-corpus/new-official/austin-power-transformers-eal3030/Addendum-1.pdf",
+          "sha256": "98bf4f933b421f666d7d05e1b9427db00a122838742f7da054abaeff0656bae5",
+          "bytes": 406506,
+          "pages": 3,
+          "native_annotation_objects": 0,
+          "final_url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/RFP_1100_EAL3030/RFP_1100_EAL3030_ADD_1_v1.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Addendum-2.pdf",
+          "url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/RFP_1100_EAL3030/RFP_1100_EAL3030_ADD_2_v1.pdf",
+          "revision": "Addendum 2, 2026-04-16",
+          "role": "specification",
+          "side": "target",
+          "id": "austin-power-transformers-eal3030:3",
+          "path": "../../.data/real-document-corpus/new-official/austin-power-transformers-eal3030/Addendum-2.pdf",
+          "sha256": "87bcacfb579b1ce08a57172c24ff91c315806d5ee1e50efa9dfe400c5aa025c6",
+          "bytes": 207720,
+          "pages": 1,
+          "native_annotation_objects": 0,
+          "final_url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/RFP_1100_EAL3030/RFP_1100_EAL3030_ADD_2_v1.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 3,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "austin-multitap-transformer-mlj1026",
+      "title": "Austin Water 2500/2800 kVA multi-tap transformer procurement",
+      "publisher": "City of Austin, Texas",
+      "source_page": "https://financeonline.austintexas.gov/afo/account_services/solicitation/solicitation_details.cfm?sid=141770",
+      "package_type": "bid_with_transformer_drawing",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Multi-Tap-Transformer-Scope.pdf",
+          "url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/IFB_2200_MLJ1026/IFB_2200_MLJ1026_0500_v2.pdf",
+          "revision": "Scope v2, 2024-11-07",
+          "role": "specification",
+          "side": "requirements",
+          "id": "austin-multitap-transformer-mlj1026:1",
+          "path": "../../.data/real-document-corpus/new-official/austin-multitap-transformer-mlj1026/Multi-Tap-Transformer-Scope.pdf",
+          "sha256": "f8ea0356229028eb1ec71f425e74b7e7c56a0a10e4ae325e3ca67fb57c694a34",
+          "bytes": 1465038,
+          "pages": 5,
+          "native_annotation_objects": 0,
+          "final_url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/IFB_2200_MLJ1026/IFB_2200_MLJ1026_0500_v2.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Multi-Tap-Transformer-Bid.pdf",
+          "url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/IFB_2200_MLJ1026/IFB_2200_MLJ1026_BID_DOC_v1.pdf",
+          "revision": "Bid v1, 2024-11-04",
+          "role": "specification",
+          "side": "requirements",
+          "id": "austin-multitap-transformer-mlj1026:2",
+          "path": "../../.data/real-document-corpus/new-official/austin-multitap-transformer-mlj1026/Multi-Tap-Transformer-Bid.pdf",
+          "sha256": "109bfa2563fa1af172132ff2c6c884fbcc4536a1a8039f5fbcc06ad86122860f",
+          "bytes": 468683,
+          "pages": 30,
+          "native_annotation_objects": 0,
+          "final_url": "https://assets.austintexas.gov/financeonline/downloads/vc_files/IFB_2200_MLJ1026/IFB_2200_MLJ1026_BID_DOC_v1.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 2,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "petersburg-scow-bay-gen2",
+      "title": "Scow Bay Generator No. 2 switchgear procurement",
+      "publisher": "Petersburg Borough, Alaska",
+      "source_page": "https://www.petersburgak.gov/power-light/page/invitation-bid-scow-bay-2-switchgear-bid",
+      "package_type": "bid_specifications_and_addendum",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Scow-Bay-Switchgear-Bid.pdf",
+          "url": "https://www.petersburgak.gov/sites/default/files/fileattachments/power_amp_light/page/18954/petersburg_borough_scow_bay_generator_2_switchgear_bid_package_8.22.25.pdf",
+          "revision": "Bid package, 2025-08-22",
+          "role": "specification",
+          "side": "baseline",
+          "id": "petersburg-scow-bay-gen2:1",
+          "path": "../../.data/real-document-corpus/new-official/petersburg-scow-bay-gen2/Scow-Bay-Switchgear-Bid.pdf",
+          "sha256": "a54dc91665d5ad1096632fe59b36a61298e993f0116dfa9271f247f0e8f2df10",
+          "bytes": 1595442,
+          "pages": 35,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.petersburgak.gov/sites/default/files/fileattachments/power_amp_light/page/18954/petersburg_borough_scow_bay_generator_2_switchgear_bid_package_8.22.25.pdf",
+          "original_unchanged": true
+        },
+        {
+          "name": "Scow-Bay-Switchgear-Addendum-1.pdf",
+          "url": "https://www.petersburgak.gov/sites/default/files/fileattachments/power_amp_light/page/18954/addendum_1_scow_bay_gen_2_switchgear.pdf",
+          "revision": "Addendum 1",
+          "role": "specification",
+          "side": "target",
+          "id": "petersburg-scow-bay-gen2:2",
+          "path": "../../.data/real-document-corpus/new-official/petersburg-scow-bay-gen2/Scow-Bay-Switchgear-Addendum-1.pdf",
+          "sha256": "68e000787066e2fefa8138694261bb961a48045489ae3f0d3d560762763b8b23",
+          "bytes": 105496,
+          "pages": 1,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.petersburgak.gov/sites/default/files/fileattachments/power_amp_light/page/18954/addendum_1_scow_bay_gen_2_switchgear.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 2,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "danville-pole-transformers-2526075",
+      "title": "Single-phase pole-mount transformers — bid and questions/answers",
+      "publisher": "City of Danville, Virginia",
+      "source_page": "https://www.danville-va.gov/bids.aspx?bidid=4098",
+      "package_type": "bid_specifications_and_addendum",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Pole-Mount-Transformer-Bid.pdf",
+          "url": "https://www.danville-va.gov/DocumentCenter/View/39156",
+          "revision": "QB 25-26-075, May 2026",
+          "role": "specification",
+          "side": "baseline",
+          "id": "danville-pole-transformers-2526075:1",
+          "path": "../../.data/real-document-corpus/new-official/danville-pole-transformers-2526075/Pole-Mount-Transformer-Bid.pdf",
+          "sha256": "815f7b5c296c4164851bbb1d93d04e1842c7801a6634b301055ac55760449c24",
+          "bytes": 2839390,
+          "pages": 6,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.danville-va.gov/DocumentCenter/View/39156",
+          "original_unchanged": true
+        },
+        {
+          "name": "Pole-Mount-Transformer-QA.pdf",
+          "url": "https://www.danville-va.gov/DocumentCenter/View/39213",
+          "revision": "Addendum 1, questions and answers",
+          "role": "specification",
+          "side": "target",
+          "id": "danville-pole-transformers-2526075:2",
+          "path": "../../.data/real-document-corpus/new-official/danville-pole-transformers-2526075/Pole-Mount-Transformer-QA.pdf",
+          "sha256": "a1eca2478f0167815196c89b374a5fb870bafd9f621dc97dcd7e0dd9d4bab811",
+          "bytes": 381263,
+          "pages": 2,
+          "native_annotation_objects": 0,
+          "final_url": "https://www.danville-va.gov/DocumentCenter/View/39213",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 2,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "kansas-docking-switchboard",
+      "title": "Docking State Office Building — Square D approval and returned review drawings",
+      "publisher": "Kansas Legislature, published committee testimony archive",
+      "manufacturer": "Schneider Electric / Square D",
+      "package_type": "actual_manufacturer_approval_and_returned_review_binder",
+      "returned_customer_review_established": true,
+      "paired_corrected_post_review_release_established": false,
+      "observed_scope": "One project: approval material, drawings and actual returned Locher review stamps. Physical pages 241–246 contain the complete H3 subpackage; pages 194 and252 contain dated issues of the same Control Center No.1 one-line. No completed corrected manufacture release is inferred.",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Docking-SquareD-Approval-Drawings.pdf",
+          "url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "revision": "Published binder; dated 2012 issues and July 2012 review",
+          "role": "drawing",
+          "side": "target",
+          "id": "kansas-docking-switchboard:1",
+          "path": "../../.data/real-document-corpus/new-official/kansas-docking-switchboard/Docking-SquareD-Approval-Drawings.pdf",
+          "sha256": "3c3a61b0d8715880272813295f24df64350fe3033f5765bb71b4be4d466afc4d",
+          "bytes": 14005423,
+          "pages": 266,
+          "native_annotation_objects": 64,
+          "final_url": "https://kslegislature.gov/li_2016/b2015_16/committees/ctte_jt_bldg_constr_1/documents/testimony/20160202_51.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    },
+    {
+      "id": "nydec-dollinger-ge-record",
+      "title": "Dollinger post-remedial operation and maintenance plan with GE supplier record appendix",
+      "publisher": "New York State Department of Environmental Conservation",
+      "package_type": "operations_record_with_supplier_submittal_appendix",
+      "observed_scope": "Mixed operation/environmental record; GE electrical supplier transmittal is physical page188. Not a complete modern switchgear customer-review package.",
+      "kind": "real_public",
+      "sources": [
+        {
+          "name": "Dollinger-Post-Remedial-OM.pdf",
+          "url": "https://extapps.dec.ny.gov/data/DecDocs/828078/Work%20Plan.HW.828078.1994-11-30.POST-REMEDIAL%20O%20AND%20M%20.pdf",
+          "revision": "November 1994 record",
+          "role": "drawing",
+          "side": "target",
+          "id": "nydec-dollinger-ge-record:1",
+          "path": "../../.data/real-document-corpus/new-official/nydec-dollinger-ge-record/Dollinger-Post-Remedial-OM.pdf",
+          "sha256": "df0b2221ac1d7b89822c072eeffe4aca7f5bc05c22811ee8dffa69bd4e07161e",
+          "bytes": 31850263,
+          "pages": 251,
+          "native_annotation_objects": 0,
+          "final_url": "https://extapps.dec.ny.gov/data/DecDocs/828078/Work%20Plan.HW.828078.1994-11-30.POST-REMEDIAL%20O%20AND%20M%20.pdf",
+          "original_unchanged": true
+        }
+      ],
+      "original_source_count": 1,
+      "project_package_count": 1,
+      "independently_labeled": false,
+      "completed_customer_return_cycle_established": false,
+      "provenance": "Unchanged original published by the project owner or authorized government-site contractor. Public bid changes are not relabeled as customer-returned manufacturing revisions."
+    }
+  ],
+  "acquisition_failures": [
+    {
+      "package_id": "durham-26-1047",
+      "url": "https://www.durhamnc.gov/DocumentCenter/View/68515/26-1047-Switchboard-Addendum-1?bidId=",
+      "error": "Client error '403 Forbidden' for url 'https://www.durhamnc.gov/DocumentCenter/View/68515/26-1047-Switchboard-Addendum-1?bidId='\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+    },
+    {
+      "package_id": "maine-cmcc-generator",
+      "url": "https://www.maine.gov/dafs/bgs/sites/maine.gov.dafs.bgs/files/inline-files/2972%2020190523CMCCGenAdd1.pdf",
+      "error": "Client error '403 Forbidden' for url 'https://www.maine.gov/dafs/bgs/sites/maine.gov.dafs.bgs/files/inline-files/2972%2020190523CMCCGenAdd1.pdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+    },
+    {
+      "package_id": "maine-nmcc-transformer",
+      "url": "https://www.maine.gov/dafs/bgs/sites/maine.gov.dafs.bgs/files/inline-files/3618%20Addendum1%20NMCC.pdf",
+      "error": "Client error '403 Forbidden' for url 'https://www.maine.gov/dafs/bgs/sites/maine.gov.dafs.bgs/files/inline-files/3618%20Addendum1%20NMCC.pdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+    },
+    {
+      "package_id": "va-birmingham-switchgear-phase3",
+      "url": "https://www.vendorportal.ecms.va.gov/FBODocumentServer/DocumentServer.aspx?DocumentId=4571696&FileName=36C24718B0635-0001007.pdf",
+      "error": "Client error '404 Not Found' for url 'https://www.vendorportal.ecms.va.gov/FBODocumentServer/DocumentServer.aspx?DocumentId=4571696&FileName=36C24718B0635-0001007.pdf'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+    }
+  ],
+  "rights": "Original publishers retain their rights. Public access is not treated as a redistribution licence; originals are local research data outside Git.",
+  "limits": [
+    "One real project is one package even when it has multiple addenda or bid revisions.",
+    "No synthetic circuit or manufacturer datasheet page is counted as a real project package.",
+    "Acquisition and valid PDF parsing do not establish extraction accuracy, engineering correctness, or readiness.",
+    "Independent human answer keys and actual completed review-cycle evidence are separate requirements."
+  ],
+  "purpose": "Reproducible publisher provenance only; not an accuracy report or a redistribution licence. Originals stay in the ignored local data folder.",
+  "counts": {
+    "distinct_project_or_record_packages": 15,
+    "unchanged_original_pdfs": 28,
+    "physical_pages": 2291,
+    "completed_manufacturer_revision_cycles_established": 0
+  }
+}
