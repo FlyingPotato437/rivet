@@ -98,7 +98,7 @@ ENGINEER = [
     ),
     (
         re.compile(
-            r"\bwir(e|ing)\b|\bAWG\b|\bkcmil\b|\bconductor|\brewire|\breroute|\bterminal",
+            r"\bwir(e|ing)\b|\bAWG\b|\bkcmil\b|\bconductor|\brewire|\breroute",
             re.IGNORECASE,
         ),
         "wiring change",
@@ -112,6 +112,13 @@ ENGINEER = [
             r"\barc[- ]flash\b|\bgrounding\b|\bbonding\b|\bclearance", re.IGNORECASE
         ),
         "safety clearance or grounding",
+    ),
+    (
+        re.compile(
+            r"\b\d+(\.\d+)?\s?HP\b|\bhorsepower\b|\bVFD\b|\bdrive\b|\bmotor\b",
+            re.IGNORECASE,
+        ),
+        "drive or motor sizing",
     ),
 ]
 QUESTION = re.compile(
