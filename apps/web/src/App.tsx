@@ -49,6 +49,9 @@ import "./workspace-material.css";
 import { ProjectNavigation, ProjectsDashboard } from "./ProjectHub";
 import { Today } from "./Today";
 import { OrderActivity } from "./OrderActivity";
+import "@fontsource-variable/geist/wght.css";
+import "@fontsource-variable/geist-mono/wght.css";
+import "./redesign.css";
 
 type Health = {
   status: string;
@@ -177,7 +180,7 @@ export default function App() {
   );
   return (
     <div
-      className={`app-shell${route.startsWith("order/") ? " order-workbench-shell" : ""}`}
+      className={`app-shell rv6${route.startsWith("order/") ? " order-workbench-shell" : ""}`}
     >
       <aside
         id="workspace-navigation"

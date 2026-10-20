@@ -18,7 +18,13 @@ import {
 import { ApprovalEvidence } from "./ApprovalReview";
 import type { ActionExecutionView } from "./action-execution";
 
-export function ReplyAction({ order }: { order: ProjectFlow }) {
+export function ReplyAction({
+  order,
+  label,
+}: {
+  order: ProjectFlow;
+  label?: string;
+}) {
   const data = useQuery({
     queryKey: ["project-work", order.id],
     queryFn: () => api<ProjectFlow>(`/project-work/${order.id}`),
@@ -32,6 +38,7 @@ export function ReplyAction({ order }: { order: ProjectFlow }) {
         messageId={p.outlook.internet_message_id}
         url={p.outlook.url}
         native={p.outlook.native}
+        label={label}
       />
     );
   if (p.reply_preparation?.prepared_reply)
@@ -48,17 +55,17 @@ export function ReplyAction({ order }: { order: ProjectFlow }) {
   );
 }
 
-export function DecisionCard({
-  item,
-  seeWhy,
-  onDecided,
-  compact = false,
-}: {
-  item: DecisionItem;
-  seeWhy: () => void;
-  onDecided?: () => void;
-  compact?: boolean;
-}) {
+export function decisionLabel(item: DecisionItem) {
+  return item.gate === "money"
+    ? "Approve price"
+    : item.gate === "scope"
+      ? "Approve scope"
+      : item.gate === "engineering"
+        ? "Approve drawing changes"
+        : "Approve response";
+}
+
+export function useDecision(item: DecisionItem, onDecided?: () => void) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [result, setResult] = useState("");
@@ -86,14 +93,22 @@ export function DecisionCard({
       setBusy(false);
     }
   }
-  const label =
-    item.gate === "money"
-      ? "Approve price"
-      : item.gate === "scope"
-        ? "Approve scope"
-        : item.gate === "engineering"
-          ? "Approve drawing changes"
-          : "Approve response";
+  return { busy, error, result, decide };
+}
+
+export function DecisionCard({
+  item,
+  seeWhy,
+  onDecided,
+  compact = false,
+}: {
+  item: DecisionItem;
+  seeWhy: () => void;
+  onDecided?: () => void;
+  compact?: boolean;
+}) {
+  const { busy, error, result, decide } = useDecision(item, onDecided);
+  const label = decisionLabel(item);
   return (
     <article className={`today-decision${compact ? " is-compact" : ""}`}>
       <span className="decision-symbol">

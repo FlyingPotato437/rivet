@@ -26,6 +26,7 @@ import {
   type ProjectFlow,
 } from "./project-flow";
 import "./project-hub.css";
+import { StatusIcon, statusKind } from "./StatusIcon";
 
 export function useProjectWork() {
   return useQuery({
@@ -72,12 +73,12 @@ export function ProjectNavigation({
       {q.data.projects.slice(0, 4).map((p) => (
         <button
           key={p.id}
-          title={p.name}
+          title={`${p.number} · ${p.customer || p.name}`}
           className={p.id === activeId ? "active" : ""}
           onClick={() => navigate(`order/${p.id}`)}
         >
-          <span className={`project-state-dot is-${p.status}`} />
-          <span>{p.name}</span>
+          <StatusIcon kind={statusKind(p.status)} title={p.status_label} />
+          <span className="recent-number">{p.number}</span>
         </button>
       ))}
     </div>

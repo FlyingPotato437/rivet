@@ -42,6 +42,14 @@ import {
 import "./today-story.css";
 import { orderOutcome, replyPreview } from "./workspace-outcomes";
 import "./workspace-refinement.css";
+import {
+  CorrectedFiles,
+  OrderStatusLine,
+  RevisionCheck,
+  TitleBlock,
+  TwoToneTitle,
+  useEquipmentView,
+} from "./OrderPanels";
 
 type Drawer =
   | { kind: "event"; event: StoryEvent }
@@ -114,6 +122,7 @@ export function OrderStory({
     [asking, setAsking] = useState(false),
     [askError, setAskError] = useState("");
   const [showHistory, setShowHistory] = useState(false);
+  const equipment = useEquipmentView(id);
   const p = q.data,
     focus = new URLSearchParams(location.hash.split("?")[1] || "").get("event");
   const story = p
@@ -275,7 +284,9 @@ export function OrderStory({
             </form>
           ) : (
             <div className="story-name">
-              <h1>{p.name}</h1>
+              <h1>
+                <TwoToneTitle name={p.name} />
+              </h1>
               {["org:admin", "org:member"].includes(account.role) && (
                 <button
                   className="story-icon-button"
@@ -340,65 +351,83 @@ export function OrderStory({
           </div>
         </section>
       )}
-      <section
-        className={`order-outcome is-${outcome.tone}`}
-        aria-label="Current order outcome"
-      >
-        <div className="order-outcome-symbol">
-          <RivetIcon
-            name={
-              outcome.tone === "ready"
-                ? "handoff"
-                : outcome.tone === "working"
-                  ? "agent"
-                  : "review"
-            }
-            size={25}
-          />
-        </div>
-        <div className="order-outcome-copy">
-          <span className={`work-state is-${outcome.tone}`}>
-            <span />
-            {outcome.label}
-          </span>
-          <h2>{outcome.title}</h2>
-          <p>{pmSentence(p.explanation, outcome.detail)}</p>
-          {preview && ["ready", "prepared"].includes(p.status) && (
-            <blockquote>{preview}</blockquote>
-          )}
-        </div>
-        <div className="order-outcome-actions">
-          {outcome.tone === "ready" ? (
-            <ReplyAction order={p} />
-          ) : latestReply && outcome.tone === "prepared" ? (
-            <button
-              className="primary"
-              onClick={() => setDrawer({ kind: "event", event: latestReply })}
-            >
-              Read response
-            </button>
-          ) : null}
-          {latestReply && outcome.tone === "ready" && (
-            <button
-              className="text-button"
-              onClick={() => setDrawer({ kind: "event", event: latestReply })}
-            >
-              {p.equipment_correction
-                ? "View corrected files"
-                : "Read response here"}
-            </button>
-          )}
-        </div>
-      </section>
+      <TitleBlock order={p} revision={revision} />
       <div className="order-workspace-grid">
         <div className="order-workspace-main">
+          <RevisionCheck
+            order={p}
+            openReview={() => setDrawer({ kind: "equipment" })}
+          />
+          <section
+            className={`order-outcome is-${outcome.tone}`}
+            aria-label="Current order outcome"
+          >
+            <div className="order-outcome-symbol">
+              <RivetIcon
+                name={
+                  outcome.tone === "ready"
+                    ? "handoff"
+                    : outcome.tone === "working"
+                      ? "agent"
+                      : "review"
+                }
+                size={25}
+              />
+            </div>
+            <div className="order-outcome-copy">
+              <span className={`work-state is-${outcome.tone}`}>
+                <span />
+                {outcome.label}
+              </span>
+              {["ready", "prepared"].includes(outcome.tone) && (
+                <span className="rivet-chip">Prepared by Rivet</span>
+              )}
+              <h2>{outcome.title}</h2>
+              <p>{pmSentence(p.explanation, outcome.detail)}</p>
+              {preview && ["ready", "prepared"].includes(p.status) && (
+                <blockquote>{preview}</blockquote>
+              )}
+              {["ready", "prepared"].includes(p.status) && (
+                <CorrectedFiles order={p} />
+              )}
+            </div>
+            <div className="order-outcome-actions">
+              {outcome.tone === "ready" ? (
+                <span className="rivet-output">
+                  <ReplyAction order={p} />
+                </span>
+              ) : latestReply && outcome.tone === "prepared" ? (
+                <button
+                  className="primary"
+                  onClick={() =>
+                    setDrawer({ kind: "event", event: latestReply })
+                  }
+                >
+                  Read response
+                </button>
+              ) : null}
+              {latestReply && outcome.tone === "ready" && (
+                <button
+                  className="text-button"
+                  onClick={() =>
+                    setDrawer({ kind: "event", event: latestReply })
+                  }
+                >
+                  {p.equipment_correction
+                    ? "View corrected files"
+                    : "Read response here"}
+                </button>
+              )}
+            </div>
+          </section>
           {(!p.equipment_correction ||
-            p.equipment_correction.current === false) && (
-            <EquipmentEntry
-              id={id}
-              open={() => setDrawer({ kind: "equipment" })}
-            />
-          )}
+            p.equipment_correction.current === false) &&
+            !equipment.data?.comparison?.checks.length && (
+              <EquipmentEntry
+                id={id}
+                open={() => setDrawer({ kind: "equipment" })}
+              />
+            )}
           <div className="story-section-heading">
             <h2>Order timeline</h2>
             <span>
@@ -518,9 +547,15 @@ export function OrderStory({
             )}
         </div>
         <aside className="order-context-rail" aria-label="Order context">
-          <section>
-            <span className="section-eyebrow">At a glance</span>
+          <section className="order-properties">
+            <span className="section-eyebrow">Properties</span>
             <dl>
+              <dt>Status</dt>
+              <dd>
+                <OrderStatusLine order={p} />
+              </dd>
+              <dt>Job</dt>
+              <dd className="mono">{p.number}</dd>
               <dt>Customer</dt>
               <dd>{p.customer || "Not linked"}</dd>
               <dt>Revision</dt>
