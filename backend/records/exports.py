@@ -44,8 +44,14 @@ def impact_cells(c):
     if impact.get("kind") != "scope":
         money_text = ""
     elif cost.get("status") == "estimated":
+        amount = f"{float(cost['estimate']):,.0f}"
+        amount = (
+            f"${amount}"
+            if cost["currency"] == "USD"
+            else f"{cost['currency']} {amount}"
+        )
         money_text = (
-            f"About {cost['currency']} {cost['estimate']} ({cost['quantity']} x {cost['tag']});"
+            f"About {amount} ({cost['quantity']} x {cost['tag']});"
             f" billable {cost['billable']}; confirm before quoting"
         )
     else:
@@ -334,7 +340,7 @@ def pdf(w):
         f"<p><b>D{i}</b> {e(d['name'])}</p>" for i, d in enumerate(w["documents"], 1)
     )
     body = "".join(
-        f"<tr><td>{e(r[0])}</td><td>{e(r[2])} · Page {e(r[3])}<br>Revision: {e(r[1])}<br>Target: {e(r[4])}</td><td>{e(r[5])}<p>{e(r[7])} · {e(r[8])}</p></td><td>{e(r[9])}<br>{e(r[12])}<p>{e(r[16])}{" · Engineer decision" if r[17] else ""}</p><p>{e(r[18])}</p></td><td>{e(r[10])}<p>{e(r[11])}</p></td></tr>"
+        f"<tr><td>{e(r[0])}</td><td>{e(r[2])} · Page {e(r[3])}<br>Revision: {e(r[1])}<br>Target: {e(r[4])}</td><td>{e(r[5])}<p>{e(r[7])} · {e(r[8])}</p></td><td>{e(r[9])}<br>{e(r[12])}<p>{e(r[16])}{' · Engineer decision' if r[17] else ''}</p><p>{e(r[18])}</p></td><td>{e(r[10])}<p>{e(r[11])}</p></td></tr>"
         for r in rows(w, compact=True)
     )
     html = f"""<html><head><title>{e(w["order"]["title"])} - comment log</title><style>@page{{size:A4 landscape;margin:16mm}}body{{font:11px/1.45 Arial;color:#25232b}}h1{{font-size:24px}}table{{border-collapse:collapse;width:100%;table-layout:fixed}}td,th{{border-bottom:1px solid #ddd;padding:8px;vertical-align:top;text-align:left;overflow-wrap:anywhere;white-space:pre-wrap}}th{{background:#eee}}tr{{break-inside:avoid}}p{{color:#5c5864}}</style></head><body><h1>{e(w["order"]["title"])}</h1><p>{e(w["order"]["number"])} · Comment response matrix · {e(w["order"]["customer"])}</p><table><colgroup><col style="width:7%"><col style="width:19%"><col style="width:32%"><col style="width:12%"><col style="width:30%"></colgroup><thead><tr><th>No.</th><th>Source and location</th><th>Comment / author / date</th><th>Status</th><th>Response / author</th></tr></thead><tbody>{body}</tbody></table><h3>Source files</h3>{source_key}<p>Recorded responses and review status. This record does not certify equipment compliance or authorize production.</p></body></html>"""

@@ -116,16 +116,19 @@ export function ChangeOrderPanel({
         )}
         <div className="comment-counts">
           <span>
-            <b className="mono">{summary.counts.change}</b> changes
+            <b className="mono">{summary.counts.change}</b>{" "}
+            {summary.counts.change === 1 ? "change" : "changes"}
           </span>
           <span>
-            <b className="mono">{summary.counts.question}</b> questions
+            <b className="mono">{summary.counts.question}</b>{" "}
+            {summary.counts.question === 1 ? "question" : "questions"}
           </span>
           <span>
             <b className="mono">{summary.counts.scope}</b> add scope
           </span>
           <span>
-            <b className="mono">{summary.engineer.length}</b> need an engineer
+            <b className="mono">{summary.engineer.length}</b>{" "}
+            {summary.engineer.length === 1 ? "needs" : "need"} an engineer
           </span>
           {summary.counts.review > 0 && (
             <span>
