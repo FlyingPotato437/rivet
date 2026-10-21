@@ -16,7 +16,11 @@ import { useAccount } from "./Auth";
 import { Busy, ErrorNote, RivetIcon } from "./ui";
 import type { ProjectFlow } from "./project-flow";
 import type { RecordView } from "./record-types";
-import type { RecordAgentRun, RecordAgentAnswer } from "./record-agent-types";
+import type {
+  RecordAgentRun,
+  RecordAgentAnswer,
+  RecordConversation,
+} from "./record-agent-types";
 import type { LifecycleView } from "./lifecycle-work";
 import type { ActionExecutionView } from "./action-execution";
 import { WorkDrawer } from "./WorkDrawer";
@@ -92,6 +96,11 @@ export function OrderStory({
     queryKey: ["record", id],
     queryFn: () => api<RecordView>(`/orders/${id}/record`),
     refetchInterval: 15000,
+  });
+  const conversation = useQuery({
+    queryKey: ["record-conversation", id],
+    queryFn: () => api<RecordConversation>(`/orders/${id}/record/conversation`),
+    refetchOnWindowFocus: true,
   });
   const lifecycle = useQuery({
     queryKey: ["order-lifecycle", id],
@@ -177,6 +186,7 @@ export function OrderStory({
       });
       setDrawer({ kind: "answer", question: text, answer });
       setQuestion("");
+      void qc.invalidateQueries({ queryKey: ["record-conversation", id] });
     } catch (e) {
       setAskError((e as Error).message);
     } finally {
@@ -216,6 +226,10 @@ export function OrderStory({
   const visibleStory =
     !showHistory && !focus && story.length > 8 ? story.slice(-8) : story;
   const recentDocuments = (record.data?.documents || []).slice(-4).reverse();
+  const savedAnswer =
+    conversation.data?.order_id === id
+      ? conversation.data.messages.at(-1)
+      : undefined;
   function sourceLabel(sourceId: string) {
     const source = record.data?.sources.find((s) => s.id === sourceId);
     const doc = record.data?.documents.find(
@@ -622,6 +636,20 @@ export function OrderStory({
           <button disabled={asking || !question.trim()} type="submit">
             {asking ? "Looking…" : "Ask Rivet"}
           </button>
+          {savedAnswer && (
+            <button
+              type="button"
+              onClick={() =>
+                setDrawer({
+                  kind: "answer",
+                  question: savedAnswer.question,
+                  answer: savedAnswer.result,
+                })
+              }
+            >
+              Saved answer
+            </button>
+          )}
         </form>
         {askError && <ErrorNote message={askError} />}
       </div>
