@@ -103,6 +103,26 @@ export type RecordApproval = {
   version: number;
 };
 export type RecordView = {
+  response_log?: {
+    comments: Record<
+      string,
+      {
+        response: string;
+        author: string;
+        status: "checked" | "remaining" | "clarification" | "correspondence";
+        label: string;
+        references: string[];
+        reviewed: false;
+      }
+    >;
+    counts: Partial<
+      Record<
+        "checked" | "remaining" | "clarification" | "correspondence",
+        number
+      >
+    >;
+    note: string;
+  };
   comment_impact?: CommentImpactSummary;
   email_context?: RecordComment[];
   revision_review?: RevisionReview;

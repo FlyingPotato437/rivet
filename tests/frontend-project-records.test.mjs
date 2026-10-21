@@ -28,3 +28,9 @@ test("saving a response note preserves review, workflow, source identity and con
   assert.equal(write.responder, "Project manager");
   assert.deepEqual(c, original);
 });
+
+test("prepared response text is searchable without replacing a recorded response", () => {
+  const w = { ...record, response_log: { comments: { b: { response: "Checked draft revision B-R1, 125 A" } } } };
+  assert.deepEqual(visibleProjectComments(w, "125 A", "all").map(c => c.id), ["b"]);
+  assert.equal(w.comments[1].response, "Please confirm TU-3000");
+});

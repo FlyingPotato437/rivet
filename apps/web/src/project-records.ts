@@ -11,7 +11,7 @@ export function visibleProjectComments(
       (revision === "all" ||
         !latest ||
         c.revision === (revision === "latest" ? latest : revision)) &&
-      `${c.log_reference || ""} ${c.number} ${c.text} ${c.response} ${c.author}`
+      `${c.log_reference || ""} ${c.number} ${c.text} ${c.response} ${c.author} ${w.response_log?.comments[c.id]?.response || ""}`
         .toLowerCase()
         .includes(search.trim().toLowerCase()),
   );

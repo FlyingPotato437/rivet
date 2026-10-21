@@ -169,7 +169,8 @@ def matrix_docx(w):
         + _para(
             _run(
                 "Types are automatic labels from the comment text and costs come only from trusted ERP prices. "
-                "Responses are as recorded; an engineer confirms technical content, scope and pricing. "
+                "Rivet responses are prepared drafts, separate from recorded engineer decisions. "
+                "An engineer confirms technical content, scope and pricing. "
                 "This document does not certify compliance or authorize production.",
                 size=14,
                 color="777777",

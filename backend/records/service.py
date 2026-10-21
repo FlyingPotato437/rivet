@@ -553,6 +553,9 @@ def view(s, order, record=None):
 
     result["comment_impact"] = annotate(s, order, result["comments"])
     result["revision_review"] = review_summary(result)
+    from .response_log import for_order
+
+    result["response_log"] = for_order(s, order, result)
     return result
 
 

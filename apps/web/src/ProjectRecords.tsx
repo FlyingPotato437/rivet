@@ -52,7 +52,7 @@ export function ProjectRecords({
     refetchInterval: 10000,
   });
   const [search, setSearch] = useState("");
-  const [revision, setRevision] = useState("latest");
+  const [revisionFilter, setRevision] = useState<string | null>(null);
   const [filtering, setFiltering] = useState(false);
   const [dirty, setDirty] = useState(false);
   function navigate(to: string) {
@@ -78,6 +78,9 @@ export function ProjectRecords({
         )}
       </main>
     );
+  const revision =
+    revisionFilter ??
+    (Object.keys(w.response_log?.comments || {}).length ? "all" : "latest");
   const comments = visibleProjectComments(w, search, revision);
   const requested = params.get("comment");
   const selected =
@@ -131,6 +134,15 @@ export function ProjectRecords({
           Files <span>{w.documents.length}</span>
         </button>
       </nav>
+      {!files && !!Object.keys(w.response_log?.comments || {}).length && (
+        <p className="project-records-note">
+          {w.response_log?.counts.checked || 0} checked in draft ·{" "}
+          {w.response_log?.counts.clarification || 0} need clarification ·{" "}
+          {w.response_log?.counts.remaining || 0} changes remaining ·{" "}
+          {w.response_log?.counts.correspondence || 0} correspondence. Prepared
+          responses require engineer review.
+        </p>
+      )}
       {q.isError && (
         <ErrorNote message="Updates are delayed. Showing saved records." />
       )}
@@ -184,7 +196,7 @@ export function ProjectRecords({
           <button
             className="text-button"
             onClick={() => {
-              setRevision("latest");
+              setRevision(null);
               setSearch("");
               setFiltering(false);
             }}
@@ -251,7 +263,8 @@ export function ProjectRecords({
                           ? "Resolved"
                           : c.response
                             ? "Response recorded"
-                            : "Captured from source"}
+                            : w.response_log?.comments[c.id]?.label ||
+                              "Captured from source"}
                         {flag ? ` · ${flags[flag.kind]}` : ""}
                       </small>
                     </span>
@@ -399,6 +412,7 @@ function CommentReading({
     return () => setDirty(false);
   }, [!!edit, correctingTranscription, setDirty]);
   const source = w.sources.find((s) => c.source_ids.includes(s.id));
+  const prepared = !c.response ? w.response_log?.comments[c.id] : undefined;
   const doc = w.documents.find(
     (d) => d.id === (source?.document_id || c.document_id),
   );
@@ -458,7 +472,9 @@ function CommentReading({
           </p>
         ))}
         <div className="project-response-heading">
-          <h3>Recorded response</h3>
+          <h3>
+            {prepared ? "Prepared response · Rivet" : "Recorded response"}
+          </h3>
           {["org:admin", "org:member"].includes(account.role) && !edit && (
             <button
               className="text-button"
@@ -466,11 +482,15 @@ function CommentReading({
                 setEdit({
                   original: structuredClone(c),
                   version: w.version,
-                  text: c.response,
+                  text: c.response || prepared?.response || "",
                 })
               }
             >
-              {c.response ? "Edit note" : "Add note"}
+              {c.response
+                ? "Edit note"
+                : prepared
+                  ? "Edit response"
+                  : "Add note"}
             </button>
           )}
         </div>
@@ -514,6 +534,29 @@ function CommentReading({
           </form>
         ) : c.response ? (
           <p className="project-response-text">{c.response}</p>
+        ) : prepared ? (
+          <div>
+            <p className="project-comment-finding">
+              <strong>{prepared.label}</strong>
+            </p>
+            <p className="project-response-text">{prepared.response}</p>
+            {!!prepared.references.length && (
+              <details className="project-comment-source">
+                <summary>
+                  Response evidence · {prepared.references.length} references
+                </summary>
+                <ul>
+                  {prepared.references.map((ref) => (
+                    <li key={ref}>{ref}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
+            <p className="project-records-note">
+              Prepared from current file checks. No engineer approval or
+              customer acceptance is recorded.
+            </p>
+          </div>
         ) : (
           <div className="project-records-note">
             <p>No separate response note is recorded for this comment.</p>

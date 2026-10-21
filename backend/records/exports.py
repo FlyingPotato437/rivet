@@ -64,6 +64,7 @@ def impact_cells(c):
 
 
 def rows(w, compact=False):
+    from .response_log import export_response
     from .revision_review import workflow_status
 
     docs = {d["id"]: d for d in w["documents"]}
@@ -99,6 +100,7 @@ def rows(w, compact=False):
             if target
             else "Not linked"
         )
+        response, responder, disposition = export_response(w, c)
         yield [
             c["number"],
             c["revision"],
@@ -111,14 +113,15 @@ def rows(w, compact=False):
             c["original_text"],
             c["author"] or "Not stated",
             c["authored_at"] or "Not stated",
-            c["status"],
-            c["response"],
-            c["responder"],
+            disposition,
+            response,
+            responder,
             c["confidence"],
             docs.get(c["linked_email_id"], {}).get("name", ""),
             workflow_status(c).replace("_", " ").capitalize(),
             c.get("log_reference", c["number"]),
             *impact_cells(c),
+            *([c["status"]] if w.get("response_log", {}).get("comments") else []),
         ]
 
 
@@ -127,15 +130,40 @@ def workbook(w):
     sheet = book.active
     sheet.title = "Comment log"
     sheet.append([safe_cell(w["order"]["title"]), safe_cell(w["order"]["number"])])
-    sheet.append(HEADINGS)
+    headings = HEADINGS + (
+        ["Recorded status"] if w.get("response_log", {}).get("comments") else []
+    )
+    sheet.append(headings)
     for row in rows(w):
         sheet.append([safe_cell(v) if isinstance(v, str) else v for v in row])
     sheet.freeze_panes = "F3"
     sheet.auto_filter.ref = (
-        f"A2:{sheet.cell(2, len(HEADINGS)).column_letter}{sheet.max_row}"
+        f"A2:{sheet.cell(2, len(headings)).column_letter}{sheet.max_row}"
     )
     for i, width in enumerate(
-        [12, 15, 32, 14, 40, 65, 65, 25, 28, 15, 65, 25, 20, 30, 24, 14, 18, 16, 48], 1
+        [
+            12,
+            15,
+            32,
+            14,
+            40,
+            65,
+            65,
+            25,
+            28,
+            28,
+            65,
+            25,
+            20,
+            30,
+            24,
+            14,
+            18,
+            16,
+            48,
+            18,
+        ][: len(headings)],
+        1,
     ):
         sheet.column_dimensions[sheet.cell(2, i).column_letter].width = width
     changes = book.create_sheet("Change record")
