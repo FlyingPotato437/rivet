@@ -18,7 +18,10 @@ import {
   newestCorrectedBundle,
   type CorrectedBundle,
 } from "./equipment-correction-types";
-import { useEquipmentCorrections } from "./EquipmentCorrections";
+import {
+  CorrectionFile,
+  useEquipmentCorrections,
+} from "./EquipmentCorrections";
 import { decisionLabel, useDecision } from "./WorkDetails";
 import { pmSentence, type DecisionItem } from "./work-presentation";
 import {
@@ -271,9 +274,6 @@ export function RevisionCheck({
   );
 }
 
-const extension = (name: string) =>
-  (name.split(".").pop() || "").slice(0, 4).toUpperCase();
-
 /** Corrected files Rivet saved, each with the result of re-checking it. */
 export function CorrectedFiles({ order }: { order: ProjectFlow }) {
   const corrections = useEquipmentCorrections(order.id);
@@ -286,25 +286,21 @@ export function CorrectedFiles({ order }: { order: ProjectFlow }) {
     ? summary.remaining + summary.cannot_verify + (summary.source_issues || 0)
     : 0;
   const checked = correctedBundleReady(bundle)
-    ? "Re-checked · 0 issues"
+    ? "Supported fields re-checked · 0 open"
     : summary
-      ? `Re-checked · ${open} open`
+      ? `Supported fields re-checked · ${open} open`
       : "Saved";
   return (
-    <div className="corrected-files">
+    <div className="corrected-files correction-file-list">
       {files.map((file) => (
-        <a
-          key={file.sha256 || file.name}
-          href={file.url}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <span className="file-tile">{extension(file.name)}</span>
-          <span>
-            <span className="mono">{file.name}</span>
-            <small>{checked}</small>
-          </span>
-        </a>
+        <div key={file.sha256 || file.name}>
+          <CorrectionFile
+            orderId={order.id}
+            bundleId={bundle.id}
+            artifact={file}
+          />
+          <small>{checked}</small>
+        </div>
       ))}
     </div>
   );

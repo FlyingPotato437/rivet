@@ -345,7 +345,7 @@ export function EquipmentCorrections({
                     <span />
                   </div>
                   {correctedChecks(bundle).map((check) => (
-                    <div key={check.id}>
+                    <div key={check.id || `${check.device_tag}:${check.field}`}>
                       <span>
                         <strong>{check.device_tag}</strong>
                         <small>{check.field.replaceAll("_", " ")}</small>
@@ -430,7 +430,7 @@ export function EquipmentCorrections({
   );
 }
 
-function CorrectionFile({
+export function CorrectionFile({
   orderId,
   bundleId,
   artifact,
