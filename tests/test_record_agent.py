@@ -16,6 +16,11 @@ from backend.storage.models import (
 from backend.worker import claim, process
 
 
+def record_fields(w):
+    """Prepared display responses do not mutate the recorded order fields."""
+    return {key: value for key, value in w.items() if key != "response_log"}
+
+
 def write(w, **kw):
     return {
         "expected_version": w["version"],
@@ -71,7 +76,10 @@ def test_rule_drafts_save_automatically_without_sending_or_closing(client, monke
     assert done["proposals"][0]["status"] == "prepared"
     assert done["steps"][0]["name"] == "inspect_record"
     assert "No model was used" in done["proposals"][0]["summary"]
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
+    prepared = view(client, o)["response_log"]["comments"]
+    assert prepared[w["comments"][0]["id"]]["response"]
+    assert prepared[w["comments"][0]["id"]]["reviewed"] is False
     p = done["proposals"][0]
     accepted = post(
         client,
@@ -196,7 +204,7 @@ def test_ai_runs_pause_resume_and_retain_real_steps(client, monkeypatch):
     assert paused["status"] == "waiting_for_input"
     assert paused["result"]["question"] == "Which revision should be used?"
     assert paused["usage"]["model_calls"] == 3
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
     resumed = post(
         client,
         f"/orders/{o['id']}/record/agent/runs/{run['id']}/resume",
@@ -265,7 +273,7 @@ def test_tool_validation_blocks_cross_order_sources_and_technical_mutations(
     assert final["status"] == "failed"
     assert "No drafts were saved" in final["result"]["summary"]
     assert len([s for s in final["steps"] if s["status"] == "failed"]) == 4
-    assert not final["proposals"] and view(client, o) == w
+    assert not final["proposals"] and record_fields(view(client, o)) == record_fields(w)
     assert (
         client.get(
             f"/api/orders/{other['id']}/record/agent/runs/{run['id']}"
@@ -294,7 +302,7 @@ def test_cancel_prevents_late_model_result_from_staging_work(client, monkeypatch
     assert cancelled.status_code == 200 and cancelled.json()["status"] == "cancelled"
     agent.process_run(run["id"])
     assert fetched(client, o, run)["status"] == "cancelled"
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_automatic_event_work_deduplicates_and_respects_disabled_setting(
@@ -354,7 +362,7 @@ def test_new_order_prepares_work_without_a_user_prompt(client, monkeypatch):
     assert result["proposals"]
     assert all(p["status"] == "prepared" for p in result["proposals"])
     assert result["runs"][0]["status"] == "completed"
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
     with Session() as s:
         assert not list(s.scalars(select(NoticeDelivery)))
 
@@ -427,7 +435,7 @@ def test_budget_stops_repeated_model_reads_without_faking_completion(
         and "budget" in result["result"]["summary"]
     )
     assert result["usage"]["model_calls"] == 2
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_old_queued_generation_and_late_response_cannot_run_after_retry(
@@ -731,7 +739,7 @@ def test_repeated_evidence_reads_are_cached_then_stopped_without_fake_steps(
     assert cached["cached"] is True and cached["observation"]["id"] == source
     assert "Do not repeat" in cached["next_action"]
     assert "Retry" in result["result"]["error"] and not result["result"].get("question")
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_retry_drops_old_protocol_and_read_cache(client, monkeypatch):
@@ -823,7 +831,7 @@ def test_malformed_model_batches_roll_back_every_operation_and_can_recover(
     assert "No drafts were saved" in result["result"]["summary"]
     assert not result["proposals"]
     assert len([step for step in result["steps"] if step["status"] == "failed"]) == 1
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_hostile_document_and_playbook_cannot_grant_send_or_approval_capabilities(
@@ -874,7 +882,7 @@ def test_hostile_document_and_playbook_cannot_grant_send_or_approval_capabilitie
     observed = next(step for step in result["steps"] if step["name"] == "read_source")
     assert "attacker@example.com" in observed["result"]["text"]
     assert not result["proposals"] and not view(client, o)["approvals"]
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
     with Session() as s:
         assert not list(s.scalars(select(NoticeDelivery)))
 
@@ -928,7 +936,7 @@ def test_same_order_unrelated_source_cannot_substitute_for_comment_evidence(
     assert not result["proposals"]
     failed = next(step for step in result["steps"] if step["status"] == "failed")
     assert "original source" in failed["result"]["error"]
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_new_document_during_model_call_discards_old_proposal_and_resumes_current_inputs(
@@ -1048,7 +1056,7 @@ def test_reference_ambiguity_prepares_questions_without_picking_a_drawing(
     assert len(operations) == 1 and operations[0]["type"] == "draft_clarification"
     assert set(c["source_ids"]) <= set(operations[0]["evidence_ids"])
     assert "confirm" in operations[0]["text"].lower()
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_accepted_task_is_not_recreated_by_a_second_agent_run(client, monkeypatch):
@@ -1081,7 +1089,9 @@ def test_accepted_task_is_not_recreated_by_a_second_agent_run(client, monkeypatc
     assert first_result["status"] == "waiting_for_review"
     proposal = first_result["proposals"][0]
     assert proposal["status"] == "pending"
-    assert view(client, o) == w, "A human assignment must not be silently committed"
+    assert record_fields(view(client, o)) == record_fields(w), (
+        "A human assignment must not be silently committed"
+    )
     accepted = post(
         client,
         f"/orders/{o['id']}/record/agent/proposals/{proposal['id']}/resolve",
@@ -1242,7 +1252,7 @@ def test_annotation_only_search_repeat_finalizes_into_specific_reviewable_draft(
     assert proposal["evidence_ids"] == [source]
     assert len([s for s in result["steps"] if s["name"] == "search_evidence"]) == 1
     assert not result["result"].get("question")
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_annotation_id_error_recovers_then_review_commits_real_draft(
@@ -1305,7 +1315,7 @@ def test_annotation_id_error_recovers_then_review_commits_real_draft(
     assert final["status"] == "completed"
     assert len(final["proposals"]) == 1
     assert len([step for step in final["steps"] if step["status"] == "failed"]) == 1
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
     proposal = final["proposals"][0]
     accepted = post(
         client,
@@ -1345,7 +1355,7 @@ def test_current_legacy_draft_is_available_without_a_review_migration(
     assert proposal["prepared_automatically"] is True
     assert proposal["prepared_outputs"] == 1
     assert fetched(client, o, run)["status"] == "completed"
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_saved_draft_does_not_hide_incomplete_work(client, monkeypatch):
@@ -1389,7 +1399,7 @@ def test_saved_draft_does_not_hide_incomplete_work(client, monkeypatch):
         i for i in items if i.get("kind") == "run" and i.get("run_id") == run["id"]
     )
     assert blocker["status"] == "needs_review" and blocker["review_required"]
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_repeated_preparation_does_not_duplicate_saved_drafts(client, monkeypatch):
@@ -1406,7 +1416,7 @@ def test_repeated_preparation_does_not_duplicate_saved_drafts(client, monkeypatc
     assert [p["id"] for p in aggregate["proposals"] if p["status"] == "prepared"] == [
         pid
     ]
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_legacy_budget_stop_is_not_presented_as_a_human_question(client, monkeypatch):
@@ -1423,7 +1433,7 @@ def test_legacy_budget_stop_is_not_presented_as_a_human_question(client, monkeyp
     assert result["status"] == "failed"
     assert result["result"]["incomplete"]
     assert not result["result"]["question"]
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)
 
 
 def test_agent_reserves_budget_to_write_the_result_instead_of_more_reads(
@@ -1477,4 +1487,4 @@ def test_agent_reserves_budget_to_write_the_result_instead_of_more_reads(
     assert calls == ["investigate", "finalize", "finish"]
     assert result["status"] == "completed"
     assert result["proposals"][0]["status"] == "prepared"
-    assert view(client, o) == w
+    assert record_fields(view(client, o)) == record_fields(w)

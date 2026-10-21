@@ -547,6 +547,11 @@ def view(s, order, record=None):
     result["comments"], result["email_context"] = comment_presentation(
         result["comments"], docs
     )
+    from .supporting_markup import separate
+
+    result["comments"], result["supporting_marks"] = separate(
+        result["comments"], docs, sources
+    )
     for comment in result["comments"]:
         comment["workflow_status"] = workflow_status(comment)
     from .comment_impact import annotate

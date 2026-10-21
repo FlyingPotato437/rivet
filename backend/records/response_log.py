@@ -14,6 +14,7 @@ from backend.equipment.tags import TAG_RE
 
 log = logging.getLogger(__name__)
 LABELS = {
+    "prepared": "Response prepared · engineer review required",
     "checked": "Checked in draft · engineer review required",
     "remaining": "Change still required",
     "clarification": "Needs clarification",
@@ -206,10 +207,13 @@ def build(comments, documents, comparison=None, corrected=None):
 
 
 def for_order(s, order, workspace):
+    saved = _saved_responses(s, order, workspace)
     if not order.state.get("equipment_check") and not order.state.get(
         "equipment_corrections", {}
     ).get("bundles"):
-        return {"comments": {}, "counts": {}, "note": ""}
+        if not saved:
+            return {"comments": {}, "counts": {}, "note": ""}
+        return _merge_saved(build(workspace["comments"], workspace["documents"]), saved)
     from backend.equipment import service, workflow
 
     comparison, corrected = None, None
@@ -227,7 +231,103 @@ def for_order(s, order, workspace):
         log.warning("Comment response evidence unavailable for order %s", order.id)
         corrected = None
         comparison = None
-    return build(workspace["comments"], workspace["documents"], comparison, corrected)
+    return _merge_saved(
+        build(workspace["comments"], workspace["documents"], comparison, corrected),
+        saved,
+    )
+
+
+def _merge_saved(result, saved):
+    for cid, proposed in saved.items():
+        if result["comments"].get(cid, {}).get("status") != "checked":
+            result["comments"][cid] = proposed
+    result["counts"] = {
+        key: sum(e["status"] == key for e in result["comments"].values())
+        for key in LABELS
+    }
+    return result
+
+
+def _saved_responses(s, order, workspace):
+    """Reuse only current, finished, validated per-comment preparation."""
+
+    from backend.domain.service import scoped
+    from backend.storage.models import RecordAgentProposal, RecordAgentRun
+
+    from . import agent_service
+
+    comments = {c["id"]: c for c in workspace["comments"]}
+    sources = {sp["id"]: sp for sp in workspace["sources"]}
+    documents = {d["id"]: d for d in workspace["documents"]}
+    saved = {}
+    signature = None
+    proposals = list(
+        s.scalars(
+            scoped(RecordAgentProposal)
+            .where(
+                RecordAgentProposal.order_id == order.id,
+                RecordAgentProposal.status == "prepared",
+            )
+            .order_by(RecordAgentProposal.created_at.desc())
+        )
+    )
+    for proposal in proposals:
+        signature = signature or agent_service.input_hash(workspace)
+        if (
+            proposal.base_version != workspace["version"]
+            or proposal.input_hash != signature
+        ):
+            continue
+        run = s.scalar(
+            scoped(RecordAgentRun).where(
+                RecordAgentRun.id == proposal.run_id,
+                RecordAgentRun.order_id == order.id,
+            )
+        )
+        if (
+            not run
+            or run.status not in {"completed", "waiting_for_review"}
+            or agent_service.company_context_changed(s, order, run)
+        ):
+            continue
+        for op in proposal.operations:
+            cid = op.get("comment_id")
+            comment = comments.get(cid)
+            ids = op.get("evidence_ids", [])
+            if (
+                not comment
+                or comment.get("response")
+                or cid in saved
+                or op.get("type") not in {"draft_summary", "draft_clarification"}
+                or not op.get("text", "").strip()
+                or not ids
+                or set(ids) - sources.keys()
+                or not set(ids).intersection(comment.get("source_ids", []))
+            ):
+                continue
+            references = []
+            for sid in ids:
+                source = sources[sid]
+                doc = documents.get(source["document_id"], {})
+                page = source.get("location", {}).get("page")
+                label = doc.get("name", "Source") + (f" · p. {page}" if page else "")
+                if label not in references:
+                    references.append(label)
+            status = (
+                "clarification"
+                if not comment.get("original_text")
+                and comment.get("origin") != "manual"
+                else "prepared"
+            )
+            saved[cid] = {
+                "response": op["text"],
+                "author": "Rivet · prepared response",
+                "status": status,
+                "label": LABELS[status],
+                "references": references,
+                "reviewed": False,
+            }
+    return saved
 
 
 def entry(workspace, comment):

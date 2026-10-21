@@ -32,6 +32,15 @@ export function ReplyAction({
     staleTime: 5000,
   });
   const p = data.data || order;
+  // File-only responses have no internet message ID. Their existing native
+  // draft is reopened through the document endpoint, which preserves edits.
+  if (!p.outlook.internet_message_id && p.reply_preparation?.prepared_reply)
+    return (
+      <DocumentOutlookDraftButton
+        orderId={p.id}
+        replyId={p.reply_preparation.prepared_reply.id}
+      />
+    );
   if (p.outlook.native || p.outlook.url)
     return (
       <OutlookDraftButton

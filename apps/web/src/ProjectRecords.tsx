@@ -136,12 +136,38 @@ export function ProjectRecords({
       </nav>
       {!files && !!Object.keys(w.response_log?.comments || {}).length && (
         <p className="project-records-note">
+          {w.response_log?.counts.prepared || 0} responses prepared ·{" "}
           {w.response_log?.counts.checked || 0} checked in draft ·{" "}
           {w.response_log?.counts.clarification || 0} need clarification ·{" "}
           {w.response_log?.counts.remaining || 0} changes remaining ·{" "}
           {w.response_log?.counts.correspondence || 0} correspondence. Prepared
           responses require engineer review.
         </p>
+      )}
+      {!files && !!w.supporting_marks?.length && (
+        <details className="project-connected-details">
+          <summary>
+            {w.supporting_marks.length} supporting marks and drawing text
+            retained as evidence
+          </summary>
+          <ul>
+            {w.supporting_marks.map((mark) => (
+              <li key={mark.id}>
+                <button
+                  className="text-button"
+                  onClick={() =>
+                    navigate(
+                      `order/${id}?view=tools&tab=documents&source=${encodeURIComponent(mark.source_ids[0] || mark.document_id)}`,
+                    )
+                  }
+                >
+                  {mark.log_reference} · page {mark.source_page || "not stated"}
+                </button>{" "}
+                {mark.context_only_reason}
+              </li>
+            ))}
+          </ul>
+        </details>
       )}
       {q.isError && (
         <ErrorNote message="Updates are delayed. Showing saved records." />

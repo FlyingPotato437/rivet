@@ -32,6 +32,21 @@ def test_comment_kinds_follow_what_the_customer_asked():
     }
 
 
+def test_documentation_additions_do_not_establish_added_equipment_scope():
+    for text in (
+        "Add transformer weights and gallons of oil",
+        "Add tap positions for tertiary winding. Add details of internal connections.",
+        "Add symbols for HV & TV tap changer locations. Add additional info for CTs.",
+        "Add notation that the transformer must be de-energized.",
+        'Add: "automatically controlled by contacts on the hot-spot temperature gauge."',
+        "Add TV tap changer location",
+        "Missing additional BCT: 1000/2000:5 ampere, C800 accuracy",
+    ):
+        assert classify(text)["kind"] == "change", text
+    # A mixed request must still retain its distinct equipment addition.
+    assert classify("Add a safety note and add one spare breaker.")["kind"] == "scope"
+
+
 BOOK = {
     "prices": [
         {"tag": "CB-12", "unit_cost": "1200.00", "gross_margin_percent": "25.00", "currency": "USD", "source_id": "p1", "document": "ERP-price-CB-12.json"},

@@ -101,6 +101,13 @@ def rows(w, compact=False):
             else "Not linked"
         )
         response, responder, disposition = export_response(w, c)
+        if compact:
+            # The source key already gives full filenames. Repeating a long
+            # manufacturer drawing number in every citation can consume most
+            # of a PDF row and make a short log dozens of pages long.
+            for did, document in docs.items():
+                if document.get("name"):
+                    response = response.replace(document["name"], refs[did])
         yield [
             c["number"],
             c["revision"],

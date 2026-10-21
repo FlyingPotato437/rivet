@@ -103,13 +103,19 @@ export type RecordApproval = {
   version: number;
 };
 export type RecordView = {
+  supporting_marks?: (RecordComment & { context_only_reason: string })[];
   response_log?: {
     comments: Record<
       string,
       {
         response: string;
         author: string;
-        status: "checked" | "remaining" | "clarification" | "correspondence";
+        status:
+          | "checked"
+          | "prepared"
+          | "remaining"
+          | "clarification"
+          | "correspondence";
         label: string;
         references: string[];
         reviewed: false;
@@ -117,7 +123,11 @@ export type RecordView = {
     >;
     counts: Partial<
       Record<
-        "checked" | "remaining" | "clarification" | "correspondence",
+        | "checked"
+        | "prepared"
+        | "remaining"
+        | "clarification"
+        | "correspondence",
         number
       >
     >;

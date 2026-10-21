@@ -36,11 +36,21 @@ UNREADABLE = re.compile(
 )
 SCOPE = [
     (
-        re.compile(r"\badd(ing|ed)?\b(?! (to|the note|note))", re.IGNORECASE),
+        re.compile(
+            r"\badd(ing|ed)?\b(?!\s*:|\s+(?:to\b|(?:the\s+)?"
+            r"(?:(?:additional\s+)?(?:info(?:rmation)?|details?)|notes?|notations?|symbols?|labels?|"
+            r"locations?|tap positions?|weights?|transformer weights?|dimensions?|"
+            r"ratings?|values?|text|wording|references?)\b|(?:HV|TV) tap changer location\b))",
+            re.IGNORECASE,
+        ),
         "adds equipment",
     ),
     (
-        re.compile(r"\b(additional|extra|spare)\b", re.IGNORECASE),
+        re.compile(
+            r"(?<!missing )\b(additional|extra|spare)\b"
+            r"(?!\s+(?:info(?:rmation)?|details?|notes?|symbols?|text|wording)\b)",
+            re.IGNORECASE,
+        ),
         "asks for additional equipment",
     ),
     (
@@ -127,7 +137,7 @@ QUESTION = re.compile(
     re.IGNORECASE,
 )
 CHANGE = re.compile(
-    r"\b(must|shall|change|update|revise|correct|replace|relocate|move|show|provide|"
+    r"\b(add|missing|must|shall|change|update|revise|correct|replace|relocate|move|show|provide|"
     r"furnish|delete|remove|rename|label|match|substitute|swap|use)\b",
     re.IGNORECASE,
 )

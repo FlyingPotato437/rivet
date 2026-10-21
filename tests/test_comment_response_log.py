@@ -184,3 +184,67 @@ def test_saved_files_drive_log_and_exports_without_record_or_reply_mutation(
     )
     assert written.status_code == 200, written.text
     assert c["id"] not in written.json()["response_log"]["comments"]
+
+
+def test_current_saved_agent_answers_reach_log_without_becoming_human_decisions(client):
+    from test_records import create, upload
+
+    from backend.domain.service import get
+    from backend.records import agent_service
+    from backend.records.agent_schemas import RunWrite
+    from backend.storage.models import RecordAgentRun
+
+    o = create(client)
+    w = upload(client, o, "return.txt", b"Comment 1: Confirm enclosure rating.")
+    c = w["comments"][0]
+    with Session.begin() as s:
+        order = get(s, Order, o["id"])
+        run = agent_service.create_run(
+            s,
+            order,
+            RunWrite(
+                expected_version=w["version"],
+                actor="Test PM",
+                reason="Prepare cited responses",
+                goal="Answer the returned comment",
+            ),
+        )
+        agent_service.stage(
+            s,
+            order,
+            run,
+            w,
+            [
+                {
+                    "type": "draft_summary",
+                    "comment_id": c["id"],
+                    "title": "Enclosure clarification",
+                    "text": "Please confirm the required enclosure rating; no specification was supplied.",
+                    "evidence_ids": c["source_ids"],
+                }
+            ],
+            "Prepared response",
+            "Draft for review",
+        )
+        run.status = "completed"
+        rid = run.id
+    current = client.get(f"/api/orders/{o['id']}/record").json()
+    saved = current["response_log"]["comments"][c["id"]]
+    assert saved["status"] == "prepared" and "enclosure rating" in saved["response"]
+    assert (
+        current["comments"][0]["response"] == ""
+        and not current["comments"][0]["reviewed"]
+    )
+    from backend.records.exports import rows
+
+    compact = next(rows(current, compact=True))
+    full = next(rows(current))
+    assert "Sources: D1" in compact[10] and "return.txt" not in compact[10]
+    assert "Sources: return.txt" in full[10]
+    # New source evidence invalidates the old draft instead of silently reusing it.
+    later = upload(
+        client, o, "spec.txt", b"Enclosure: NEMA 4", role="specification", rev="02"
+    )
+    assert not later["response_log"]["comments"]
+    with Session() as s:
+        assert get(s, RecordAgentRun, rid).status == "completed"
