@@ -14,6 +14,7 @@ from pathlib import Path
 
 import ezdxf
 
+from backend.engineering.terminal_graph import audit as audit_terminal_graph
 from backend.equipment.native_model import entity_signature, xdata
 
 
@@ -26,6 +27,7 @@ def verify(drawing, bom, wiring, catalog, request, *, preserved=None):
     doc = ezdxf.readfile(drawing)
     check("units", doc.units == 4, "Native geometry retains explicit millimetre units.")
     devices, pins, attrs_by_tag, internal = {}, {}, {}, {}
+    graph_edges = []
     for insert in doc.modelspace().query("INSERT"):
         if not insert.has_attrib("EQUIPMENT_TAG"):
             continue
@@ -68,6 +70,14 @@ def verify(drawing, bom, wiring, catalog, request, *, preserved=None):
                         and math.dist(b, (end.x, end.y)) < 0.001
                     )
                 links.append((native[1], native[2]))
+                graph_edges.append(
+                    {
+                        "a": (tag, native[1]),
+                        "b": (tag, native[2]),
+                        "source": "cad:" + entity.dxf.handle,
+                        "geometry_verified": bool(good),
+                    }
+                )
             check(
                 "internal_geometry:" + entity.dxf.handle,
                 good,
@@ -196,6 +206,14 @@ def verify(drawing, bom, wiring, catalog, request, *, preserved=None):
             good,
             f"{wire_id} physically lands on its two actual CAD terminals.",
         )
+        graph_edges.append(
+            {
+                "a": (a, ap),
+                "b": (b, bp),
+                "source": "cad:" + ent.dxf.handle,
+                "geometry_verified": bool(good),
+            }
+        )
         if net == "PE":
             check(
                 "pe:" + wire_id,
@@ -216,6 +234,43 @@ def verify(drawing, bom, wiring, catalog, request, *, preserved=None):
         r["wire_id"]: (r["from_tag"], r["from_pin"], r["to_tag"], r["to_pin"], r["net"])
         for r in exported
     }
+    graph_rules = [
+        {
+            "id": f"phases_separate:{a}:{b}",
+            "operator": "isolated",
+            "a": ("PNL-1", a),
+            "b": ("PNL-1", b),
+        }
+        for a, b in (("L1", "L2"), ("L1", "L3"), ("L2", "L3"))
+    ]
+    for load in request["loads"]:
+        for line in load["lines"]:
+            graph_rules.append(
+                {
+                    "id": f"phase_path:{load['id']}:{line}",
+                    "operator": "connected",
+                    "a": ("PNL-1", f"L{'ABC'.index(line) + 1}"),
+                    "b": ("PNL-1", f"C{load['id'][1:]}_{line}"),
+                }
+            )
+    graph = audit_terminal_graph(
+        pins,
+        graph_edges,
+        graph_rules,
+        coverage_complete=all(
+            c["passed"]
+            for c in checks
+            if c["id"].startswith(
+                ("wire_schema:", "internal_geometry:", "terminal_set:", "incidence:")
+            )
+        ),
+        source_sha256=hashlib.sha256(Path(drawing).read_bytes()).hexdigest(),
+    )
+    check(
+        "terminal_graph",
+        graph["all_rules_passed"],
+        "Actual conductor graph retains distinct phases and each requested circuit phase path. Grounding design is not established by this check.",
+    )
     check(
         "connection_export",
         len(report_map) == len(exported) and report_map == wire_map,
@@ -286,12 +341,14 @@ def verify(drawing, bom, wiring, catalog, request, *, preserved=None):
         "The actual visible CAD nameplate has the new phase, voltage, conductors and revision.",
     )
     for tag in wanted:
+        actual_part = catalog["parts"][wanted[tag]]["part_number"]
         check(
             "visible_part:" + tag,
-            any(
-                text.startswith(tag + " | ")
-                and catalog["parts"][wanted[tag]]["part_number"] in text
-                for text in labels
+            any(text.startswith(tag + " | ") and actual_part in text for text in labels)
+            or any(
+                xdata(e) == ["pdu_owned", "table", tag, "part_number"]
+                and e.dxf.text == actual_part
+                for e in doc.modelspace().query("TEXT")
             ),
             f"Visible CAD schedule for {tag} matches its candidate part.",
         )
@@ -317,6 +374,7 @@ def verify(drawing, bom, wiring, catalog, request, *, preserved=None):
         "phase_load_va": phase_va,
         "calculations": currents,
         "power_flow": power_flow,
+        "terminal_graph": graph,
         "engineering_approved": False,
         "released": False,
         "claim": "Supported sample-file consistency checks only; manufacturer CAD and electrical design validation remain unproven.",

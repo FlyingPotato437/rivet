@@ -104,8 +104,6 @@ def transcribe(image, *, model=None):
         or os.getenv("RIVET_VISION_MODEL")
         or os.getenv("RIVET_AGENT_MODEL", "gpt-6-luna")
     )
-    if "astra" in model.lower():
-        raise ValueError("Use the configured economical vision model.")
     schema = PageTranscript.model_json_schema()
     # Strict schemas require every field and no open property dictionaries.
     request = {
@@ -135,6 +133,9 @@ def transcribe(image, *, model=None):
             }
         },
     }
+    from backend.agents.model_policy import reasoning_options
+
+    request.update(reasoning_options(model))
     with httpx.Client(timeout=120) as client:
         response = client.post(
             "https://api.openai.com/v1/responses",

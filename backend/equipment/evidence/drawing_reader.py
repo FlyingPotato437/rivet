@@ -715,6 +715,9 @@ def transcribe_drawing(images, *, model, timeout_seconds=180, max_output_tokens=
             }
         },
     }
+    from backend.agents.model_policy import reasoning_options
+
+    request.update(reasoning_options(model, technical=True))
     request_settings = {
         "max_output_tokens": allowance,
         "timeout_seconds": timeout,
@@ -722,6 +725,7 @@ def transcribe_drawing(images, *, model, timeout_seconds=180, max_output_tokens=
             json.dumps(
                 {
                     "model": model,
+                    "reasoning": request.get("reasoning"),
                     "max_output_tokens": allowance,
                     "timeout_seconds": timeout,
                     "instructions": INSTRUCTIONS,

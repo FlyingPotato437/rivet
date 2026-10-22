@@ -66,6 +66,79 @@ def example(client, monkeypatch, ai=False):
     return o, w
 
 
+def test_explicit_technical_route_is_pinned_and_does_not_add_permissions(
+    client, monkeypatch
+):
+    o, w = example(client, monkeypatch, ai=True)
+    monkeypatch.setenv("RIVET_AGENT_MODEL", "gpt-6-luna")
+    monkeypatch.setenv("RIVET_TECHNICAL_REVIEW_MODEL", "gpt-6-astra")
+    started = start(client, o, w, model_profile="technical_review")
+    assert started["model"] == "gpt-6-astra"
+    assert started["model_route"]["reasoning"] == {"effort": "high"}
+    monkeypatch.setenv("RIVET_TECHNICAL_REVIEW_MODEL", "different-model")
+    with Session() as s:
+        saved = s.get(RecordAgentRun, started["id"])
+        data = {
+            key: deepcopy(getattr(saved, key))
+            for key in (
+                "goal",
+                "model",
+                "steps",
+                "state",
+                "budget",
+            )
+        }
+    captured = []
+
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            pass
+
+        def post(self, url, **kwargs):
+            assert url == "https://api.openai.com/v1/responses"
+            captured.append(kwargs["json"])
+            return type(
+                "Response",
+                (),
+                {
+                    "status_code": 200,
+                    "json": lambda _: {
+                        "output": [
+                            {
+                                "type": "function_call",
+                                "call_id": "call_done",
+                                "name": "complete",
+                                "arguments": '{"summary":"No technical determination","source_ids":[]}',
+                            }
+                        ],
+                        "usage": {
+                            "input_tokens": 100,
+                            "output_tokens": 20,
+                            "total_tokens": 120,
+                        },
+                    },
+                },
+            )()
+
+    monkeypatch.setattr(agent.httpx, "Client", Client)
+    result = agent.provider_call(data, w)
+    assert len(captured) == 1
+    assert captured[0]["model"] == "gpt-6-astra"
+    assert captured[0]["reasoning"] == {"effort": "high"}
+    assert captured[0]["store"] is False
+    assert result[2]["total_tokens"] == 120
+    assert all(
+        tool["name"] not in {"send_email", "approve", "close_comment"}
+        for tool in captured[0]["tools"]
+    )
+
+
 def test_rule_drafts_save_automatically_without_sending_or_closing(client, monkeypatch):
     o, w = example(client, monkeypatch)
     r = start(client, o, w)

@@ -159,8 +159,6 @@ def configured_model(model=None):
         or os.getenv("RIVET_VISION_MODEL")
         or "gpt-6-luna"
     )
-    if "astra" in model.casefold():
-        raise ValueError("Use the configured economical vision model")
     return model
 
 
@@ -293,6 +291,9 @@ def transcribe_equipment(images, *, model, visible_text=None):
             }
         },
     }
+    from backend.agents.model_policy import reasoning_options
+
+    request.update(reasoning_options(model))
     with httpx.Client(timeout=180) as client:
         response = client.post(
             "https://api.openai.com/v1/responses",

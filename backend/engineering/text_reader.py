@@ -228,6 +228,9 @@ def provider(spans, *, model, max_output_tokens=None):
             }
         },
     }
+    from backend.agents.model_policy import reasoning_options
+
+    request.update(reasoning_options(model, technical=True))
     request_settings = {
         "max_output_tokens": allowance,
         "timeout_seconds": timeout,

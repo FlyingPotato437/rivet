@@ -163,6 +163,9 @@ def transcribe_schedule_regions(images, *, model):
             }
         },
     }
+    from backend.agents.model_policy import reasoning_options
+
+    request.update(reasoning_options(model, technical=True))
     settings = {
         "max_output_tokens": MAX_OUTPUT_TOKENS,
         "timeout_seconds": TIMEOUT_SECONDS,

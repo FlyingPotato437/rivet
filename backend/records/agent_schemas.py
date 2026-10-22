@@ -11,6 +11,7 @@ from .schemas import Write
 
 class RunWrite(Write):
     goal: str = Field(min_length=3, max_length=3000)
+    model_profile: Literal["routine", "technical_review"] | None = None
 
 
 class RunContinue(Write):

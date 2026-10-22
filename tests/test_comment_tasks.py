@@ -156,3 +156,27 @@ def test_unrelated_citation_cannot_be_merged(client, monkeypatch):
     process(claim(kinds=("record_agent",)))
     done = fetched(client, order, run)
     assert done["status"] == "failed" and not done["proposals"]
+
+
+def test_technical_coordinator_keeps_routine_comment_children_on_pinned_model(
+    client, monkeypatch
+):
+    monkeypatch.setenv("RIVET_AGENT_PROFILE", "technical_review")
+    monkeypatch.setenv("RIVET_AGENT_MODEL", "gpt-6-luna")
+    monkeypatch.setenv("RIVET_TECHNICAL_REVIEW_MODEL", "gpt-6-astra")
+    order, run = setup(client, monkeypatch, count=6)
+    assert run["model"] == "gpt-6-astra"
+    assert run["model_route"]["comment_model"] == "gpt-6-luna"
+    monkeypatch.setenv("RIVET_AGENT_MODEL", "changed-after-start")
+    original, models = agent_tasks.generate, []
+
+    def capture(data, model):
+        models.append(model)
+        return original(data, model)
+
+    monkeypatch.setattr(agent_tasks, "generate", capture)
+    while task := claim(kinds=("comment_prepare",)):
+        process(task)
+    process(claim(kinds=("record_agent",)))
+    assert models == ["gpt-6-luna"] * 6
+    assert fetched(client, order, run)["status"] == "completed"

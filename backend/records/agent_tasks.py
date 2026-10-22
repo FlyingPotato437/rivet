@@ -12,6 +12,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from backend.agents.context_budget import token_count
+from backend.agents.model_policy import reasoning_options
 from backend.domain.service import digest, get, scoped
 from backend.orders.service import lock_order
 from backend.storage.db import Session
@@ -322,6 +323,7 @@ def generate(data, model):
             }
         },
     }
+    request.update(reasoning_options(model))
     if token_count(request, model) > 16000:
         raise ValueError(
             "This comment's evidence exceeds the sub-task window; split its sources."
@@ -376,7 +378,8 @@ def process(task_id, leased=lambda: True):
             task.status = "superseded"
             return
         task.status = "running"
-        data, model = deepcopy(task.snapshot), run.model
+        data = deepcopy(task.snapshot)
+        model = (run.state.get("model_route") or {}).get("comment_model") or run.model
     usage = {}
     try:
         result, usage = generate(data, model)

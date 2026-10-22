@@ -24,6 +24,7 @@ import httpx
 import pymupdf
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from backend.agents.model_policy import reasoning_options
 from backend.equipment.evidence.drawing_reader import (
     DrawingObject,
     _original_box,
@@ -231,6 +232,7 @@ def transcribe_value_batch(batch, *, model, timeout_seconds):
             }
         },
     }
+    request.update(reasoning_options(request["model"], technical=True))
     with httpx.Client(timeout=timeout_seconds) as client:
         response = client.post(
             "https://api.openai.com/v1/responses",

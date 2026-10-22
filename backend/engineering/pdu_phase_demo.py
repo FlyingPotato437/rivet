@@ -11,7 +11,7 @@ import pymupdf
 from ezdxf.addons.drawing import Frontend, RenderContext, config, layout
 from ezdxf.addons.drawing.pymupdf import PyMuPdfBackend
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import (
     Paragraph,
@@ -38,7 +38,7 @@ SOURCES = {
         "title": "Beyond Pixels: A Vector-to-Graph Framework for Reliable Schematic Auditing (ICASSP 2026)",
         "url": "https://arxiv.org/abs/2602.11678",
         "locator": "abstract and approach",
-        "use": "Research reference for explicit connectivity graphs and independent auditing; no paper code or claimed benchmark result is incorporated",
+        "use": "Research reference for explicit connectivity graphs and independent auditing; independently implemented, no author code or claimed benchmark result incorporated. Code: https://github.com/gm-embodied/V2G-Audit",
     },
     "R1": {
         "title": "Larson 30 kVA single-phase portable transformer",
@@ -264,24 +264,66 @@ def update_owned_tables(doc, parts, loads, revision):
         9,
         "E01_TABLES",
     )
-    for i, (tag, part) in enumerate(parts.items()):
-        text = f"{tag} | {part['part_number']} | {part['description']} | {part['terminals']}"
-        _text(doc, text, (2630, 650 - i * 24), 7.0)
-    _text(
-        doc,
-        "CIRCUIT   LOAD VA   VOLTAGE   PHASE(S)   CANDIDATE CB",
-        (1330, 650),
-        9,
-        "E02_TABLES",
+
+    def grid(x, top, widths, headers, rows, layer, row_height=24):
+        columns = [x]
+        for width in widths:
+            columns.append(columns[-1] + width)
+        bottom = top - row_height * (len(rows) + 1)
+        for xx in columns:
+            ent = doc.modelspace().add_line(
+                (xx, top), (xx, bottom), dxfattribs={"layer": layer}
+            )
+            set_xdata(ent, ["pdu_owned", "table_grid"])
+        for row in range(len(rows) + 2):
+            yy = top - row * row_height
+            ent = doc.modelspace().add_line(
+                (x, yy), (columns[-1], yy), dxfattribs={"layer": layer}
+            )
+            set_xdata(ent, ["pdu_owned", "table_grid"])
+        for i, values in enumerate([headers, *rows]):
+            for col, value in enumerate(values):
+                ent = _text(
+                    doc,
+                    value,
+                    (columns[col] + 8, top - i * row_height - 16),
+                    7.4,
+                    layer,
+                )
+                if layer == "E03_TABLES" and i and col == 1:
+                    set_xdata(
+                        ent, ["pdu_owned", "table", rows[i - 1][0], "part_number"]
+                    )
+
+    grid(
+        2630,
+        667,
+        [95, 250, 420, 345],
+        ["TAG", "CANDIDATE PART", "DESCRIPTION", "TERMINALS"],
+        [
+            [tag, p["part_number"], p["description"], p["terminals"]]
+            for tag, p in parts.items()
+        ],
+        "E03_TABLES",
     )
-    for i, load in enumerate(loads):
-        _text(
-            doc,
-            f"{load['id']}      {load['va']:>6}      {load['voltage_v']:>3} V       {','.join(load['lines']):<8}    30 A / {len(load['lines'])}P",
-            (1330, 615 - i * 28),
-            8,
-            "E02_TABLES",
-        )
+    grid(
+        1330,
+        667,
+        [100, 150, 150, 220, 220],
+        ["CIRCUIT", "LOAD (VA)", "VOLTAGE (V)", "PHASE(S)", "CANDIDATE CB"],
+        [
+            [
+                p["id"],
+                str(p["va"]),
+                str(p["voltage_v"]),
+                ",".join(p["lines"]),
+                f"30 A / {len(p['lines'])}P",
+            ]
+            for p in loads
+        ],
+        "E02_TABLES",
+        28,
+    )
     wires = connections(parts, loads)
     _text(
         doc,
@@ -461,143 +503,269 @@ def drawing_pdf(dxf, out):
         pdf.save(out)
 
 
-def brief_pdf(path, request):
+def _report_styles():
     styles = getSampleStyleSheet()
-    loads_text = "; ".join(
-        f"{load['id']}: {load['va']:g} VA at {load['voltage_v']:g} V on {','.join(load['lines'])}"
-        for load in request["loads"]
+    for name, size, leading, color in (
+        ("BodyText", 10, 15, "#30343a"),
+        ("Title", 26, 29, "#15181b"),
+        ("Heading2", 11, 15, "#15181b"),
+    ):
+        styles[name].fontName = "Helvetica-Bold" if name != "BodyText" else "Helvetica"
+        styles[name].fontSize, styles[name].leading = size, leading
+        styles[name].textColor = colors.HexColor(color)
+        styles[name].alignment = 0
+        styles[name].spaceAfter = 10
+    styles.add(
+        ParagraphStyle(
+            "Meta",
+            fontName="Helvetica",
+            fontSize=8,
+            leading=12,
+            textColor=colors.HexColor("#626b73"),
+            spaceAfter=10,
+        )
     )
-    story = [
-        Paragraph("Rivet / fictional engineering change", styles["Title"]),
-        Paragraph("PDU-30: single-phase to three-phase assembly", styles["Heading2"]),
-        Paragraph(escape(request["instruction"]), styles["BodyText"]),
-        Spacer(1, 14),
-    ]
-    for text in [
-        "Original: 30 kVA, 480 V single-phase input, 120/240 V single-phase output. Target: replace the assembly with a 30 kVA, 480 V three-phase input and 208Y/120 V three-phase output. Three-phase supply availability is an explicit fictional assumption.",
-        "Explicit target loads: "
-        + loads_text
-        + ". C7's original 240 V equipment and L14-30R outlet are replaced with compatible 208 V three-phase equipment and an L21-30R outlet.",
-        "Candidate primary, secondary and branch breakers are specified in the catalog and component schedule. These are invented scenario choices, not code-based sizing, an approved bill of materials or actual Larson components.",
-        f"Expected arithmetic: original primary 62.50 A, secondary 125.00 A at rated 30 kVA. Target primary 36.08 A, secondary 83.27 A. Target connected load is {sum(load['va'] for load in request['loads']) / 1000:.2f} kVA. No conductor gauge, interrupting capacity or grounding design is selected.",
-        "The prototype may prepare editable draft copies and recheck the supported fields and terminal connections. It may not approve, release, manufacture, energize or send the proposal.",
-    ]:
-        story += [Paragraph(escape(text), styles["BodyText"]), Spacer(1, 12)]
-    story += [Paragraph("Public references", styles["Heading2"])]
-    for key, ref in SOURCES.items():
-        if ref["url"]:
-            story += [
-                Paragraph(
-                    f"{key}. {escape(ref['title'])}: <link href='{escape(ref['url'], quote=True)}' color='#655284'>reference</link>. {escape(ref['use'])}",
-                    styles["BodyText"],
-                ),
-                Spacer(1, 6),
-            ]
-    SimpleDocTemplate(
-        str(path),
-        pagesize=(8.5 * inch, 11 * inch),
-        rightMargin=44,
-        leftMargin=44,
-        topMargin=40,
-        bottomMargin=40,
-    ).build(story)
+    styles.add(
+        ParagraphStyle(
+            "Cell",
+            fontName="Helvetica",
+            fontSize=9,
+            leading=13,
+            textColor=colors.HexColor("#30343a"),
+        )
+    )
+    styles.add(
+        ParagraphStyle("HeadCell", parent=styles["Cell"], fontName="Helvetica-Bold")
+    )
+    return styles
 
 
-def summary_pdf(path, result, plan, fault_results):
-    styles = getSampleStyleSheet()
-    story = [
-        Paragraph("rivet. / Engineering prototype", styles["Title"]),
-        Paragraph("A phase change that produces editable files", styles["Heading2"]),
-        Paragraph(
-            "FICTIONAL PDU ASSEMBLY / DRAFT FOR ENGINEER REVIEW", styles["BodyText"]
-        ),
-        Spacer(1, 15),
+def _report_table(rows, widths, styles, padding=8):
+    cells = [
+        [
+            Paragraph(escape(str(value)), styles["HeadCell" if index == 0 else "Cell"])
+            for value in row
+        ]
+        for index, row in enumerate(rows)
     ]
-    rows = [
-        ["Parameter", "Original A", "Proposed B"],
-        ["Transformer", "30 kVA / 1 phase", "30 kVA / 3 phase"],
-        ["Primary supply", "480 V / 1 phase", "480 V / 3 phase (assumed available)"],
-        ["Secondary", "120/240 V", "208Y/120 V"],
-        [
-            "Full-load primary",
-            "62.50 A",
-            f"{result['calculations']['primary_full_load_a']:.2f} A",
-        ],
-        [
-            "Full-load secondary",
-            "125.00 A",
-            f"{result['calculations']['secondary_full_load_a']:.2f} A",
-        ],
-        ["C7 outlet and load", "240 V single-phase", "208 V three-phase replacements"],
-        [
-            "Connected load",
-            "20.40 kVA (sample)",
-            f"{plan['calculations']['total_load_va'] / 1000:.2f} kVA total; see phase results",
-        ],
-    ]
-    table = Table(rows, colWidths=[135, 165, 225])
+    table = Table(cells, colWidths=widths, repeatRows=1, hAlign="LEFT")
     table.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#262135")),
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, -1), 9),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eff1f2")),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("TOPPADDING", (0, 0), (-1, -1), 9),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 9),
-                ("LINEBELOW", (0, 0), (-1, -1), 0.4, colors.HexColor("#dedbe4")),
+                ("TOPPADDING", (0, 0), (-1, -1), padding),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), padding),
+                ("LEFTPADDING", (0, 0), (-1, -1), 9),
+                ("LINEBELOW", (0, 0), (-1, -1), 0.4, colors.HexColor("#dce0e3")),
             ]
         )
     )
-    story += [table, Spacer(1, 18), Paragraph("What actually ran", styles["Heading2"])]
+    return table
+
+
+def _report_build(path, story, code):
+    def furniture(canvas, document):
+        width, height = document.pagesize
+        canvas.setFillColor(colors.HexColor("#171a1f"))
+        canvas.setFont("Helvetica-Bold", 16)
+        canvas.drawString(44, height - 34, "rivet.")
+        canvas.setFont("Helvetica", 8)
+        canvas.drawRightString(
+            width - 44, height - 31, code + "  /  ENGINEERING REVIEW"
+        )
+        canvas.setStrokeColor(colors.HexColor("#a6adb4"))
+        canvas.setLineWidth(0.5)
+        canvas.line(44, height - 45, width - 44, height - 45)
+        canvas.line(44, 38, width - 44, 38)
+        canvas.setFont("Helvetica", 7)
+        canvas.drawString(44, 25, "FICTIONAL DEMO  /  DRAFT  /  NOT FOR FABRICATION")
+        canvas.drawRightString(width - 44, 25, str(document.page))
+
+    SimpleDocTemplate(
+        str(path),
+        pagesize=(8.5 * inch, 11 * inch),
+        leftMargin=44,
+        rightMargin=44,
+        topMargin=68,
+        bottomMargin=54,
+        title=code + " | PDU phase assembly",
+        author="Rivet",
+    ).build(story, onFirstPage=furniture, onLaterPages=furniture)
+
+
+def brief_pdf(path, request):
+    styles = _report_styles()
+    styles["Meta"].spaceAfter = 4
+    styles["BodyText"].spaceAfter = 8
+    styles["Heading2"].spaceAfter = 8
+    p = lambda value: Paragraph(escape(value), styles["BodyText"])
+    story = [
+        Paragraph("DESIGN INPUT  /  RVT-PDU-30", styles["Meta"]),
+        Paragraph("Phase assembly replacement", styles["Title"]),
+        p(request["instruction"]),
+        Spacer(1, 8),
+    ]
     story += [
-        Paragraph(
-            f"The adapter reopened the original DXF and BOM, replaced the explicit devices and terminals, rewrote conductor geometry, updated the visible schedules and saved new draft files. An independent reader checked {result['devices_checked']} saved devices and {result['connections_checked']} terminal connections, the connection export, visible nameplate and preserved source geometry. {len(plan['changes'])} component records changed. Original source hashes remained unchanged.",
-            styles["BodyText"],
+        _report_table(
+            [
+                ["Design basis", "Original A", "Target B"],
+                ["Transformer", "30 kVA / single-phase", "30 kVA / three-phase"],
+                [
+                    "Input",
+                    "480 V / single-phase",
+                    "480 V / three-phase; supply assumed available",
+                ],
+                ["Output", "120/240 V / 60 Hz", "208Y/120 V / 60 Hz"],
+                [
+                    "Rated full-load current",
+                    "Primary 62.50 A; secondary 125.00 A",
+                    "Primary 36.08 A; secondary 83.27 A",
+                ],
+            ],
+            [120, 170, 234],
+            styles,
+            padding=4,
+        ),
+        Spacer(1, 10),
+        Paragraph("Circuit loads and phase allocation", styles["Heading2"]),
+    ]
+    story += [
+        _report_table(
+            [["Circuit", "Load (VA)", "Voltage (V)", "Phase(s)"]]
+            + [
+                [
+                    load["id"],
+                    str(load["va"]),
+                    str(load["voltage_v"]),
+                    ", ".join(load["lines"]),
+                ]
+                for load in request["loads"]
+            ],
+            [100, 140, 140, 144],
+            styles,
+            padding=4,
+        ),
+        Spacer(1, 10),
+        p(
+            "C7 requires replacement of the old 240 V load and outlet with explicitly compatible 208 V three-phase equipment. All candidate parts, loads and terminal mappings are fictional; public product ratings provide reference points only."
+        ),
+        p(
+            "Engineer review remains required for protection, conductors, grounding, mechanical fit and assembly suitability. No winding or core redesign is included."
+        ),
+        Paragraph("References", styles["Heading2"]),
+    ]
+    for key, ref in SOURCES.items():
+        if ref["url"]:
+            story.append(
+                Paragraph(
+                    f"{key} / <link href='{escape(ref['url'], quote=True)}' color='#3c4960'>{escape(ref['title'])}</link>",
+                    styles["Meta"],
+                )
+            )
+    _report_build(path, story, "BASIS-001")
+
+
+def summary_pdf(path, result, plan, fault_results):
+    from reportlab.platypus import PageBreak
+
+    styles = _report_styles()
+    p = lambda value: Paragraph(escape(value), styles["BodyText"])
+    story = [
+        Paragraph("CHANGE REVIEW  /  RVT-PDU-30  /  REVISION A TO B", styles["Meta"]),
+        Paragraph("Single-phase to three-phase", styles["Title"]),
+        p(
+            "Draft assembly replacement with native drawing, BOM and connection exports. The following results apply to the supported fictional sample."
         ),
         Spacer(1, 12),
     ]
     story += [
-        Paragraph(
-            f"Fault injection: {sum(x['detected'] for x in fault_results)}/{len(fault_results)} deliberately corrupted outputs were rejected. These are synthetic software controls, not real-document extraction accuracy or proof of engineering correctness.",
-            styles["BodyText"],
+        _report_table(
+            [
+                ["Parameter", "Original A", "Proposed B"],
+                ["Transformer", "30 kVA / 1 phase", "30 kVA / 3 phase"],
+                [
+                    "Primary supply",
+                    "480 V / 1 phase",
+                    "480 V / 3 phase (assumed available)",
+                ],
+                ["Secondary", "120/240 V", "208Y/120 V"],
+                [
+                    "Full-load primary",
+                    "62.50 A",
+                    f"{result['calculations']['primary_full_load_a']:.2f} A",
+                ],
+                [
+                    "Full-load secondary",
+                    "125.00 A",
+                    f"{result['calculations']['secondary_full_load_a']:.2f} A",
+                ],
+                [
+                    "C7 outlet and load",
+                    "240 V single-phase",
+                    "208 V three-phase replacements",
+                ],
+                [
+                    "Connected load",
+                    "20.40 kVA (sample)",
+                    f"{plan['calculations']['total_load_va'] / 1000:.2f} kVA",
+                ],
+            ],
+            [136, 160, 228],
+            styles,
         ),
-        Spacer(1, 12),
-    ]
-    story += [
+        Spacer(1, 20),
+        Paragraph("Saved-file verification", styles["Heading2"]),
+        p(
+            f"Reopened and checked {result['devices_checked']} saved devices and {result['connections_checked']} terminal connections. Native block attributes, actual conductor endpoints, the visible schedule and the exported BOM were checked against the explicit change request. Original files remain unchanged."
+        ),
+        p(
+            f"{len(plan['changes'])} component records changed. The independent terminal graph checks phase separation and each requested panel bus path; visual line crossings are not treated as electrical junctions."
+        ),
         Paragraph("Ideal AC recheck", styles["Heading2"]),
-        Paragraph(
+        p(
             "; ".join(
                 f"{leg}: {va / 1000:.2f} kVA, {result['power_flow']['phase_current_a'][leg]:.2f} A"
                 for leg, va in result["power_flow"]["phase_load_va"].items()
             )
-            + f". Fundamental neutral current: {result['power_flow']['fundamental_neutral_a']:.3f} A. Assumes unity power factor and zero line impedance. Harmonics and inrush are unverified.",
-            styles["BodyText"],
+            + f". Fundamental neutral current: {result['power_flow']['fundamental_neutral_a']:.3f} A."
         ),
-        Spacer(1, 10),
-        Paragraph("What is still unproven", styles["Heading2"]),
         Paragraph(
-            "This is assembly replacement using a supported fictional CAD convention. It does not redesign transformer windings or a 50 MVA transformer, interpret arbitrary manufacturer CAD, size cables, validate protection, certify the assembly or release files. Public product ratings informed the scenario. The circuit, part identifiers and loads are invented.",
-            styles["BodyText"],
+            "Unity power factor, nominal balanced voltage and zero line impedance. This does not establish inrush, harmonic performance, protection coordination or code compliance.",
+            styles["Meta"],
         ),
-        Spacer(1, 12),
-    ]
-    story += [
-        Paragraph("Next manufacturer inputs", styles["Heading2"]),
+        PageBreak(),
         Paragraph(
-            "Original CAD with references; matching BOM and connection reports; exact requested configuration and compatible loads; connection diagrams and engineering design rules. One engineer-completed change and calculations provide a useful held-back benchmark. Manufacturer adapters and independent validation still need implementation.",
-            styles["BodyText"],
+            "VERIFICATION RECORD  /  SYNTHETIC SOFTWARE CONTROLS", styles["Meta"]
+        ),
+        Paragraph("Checks and remaining holds", styles["Title"]),
+        _report_table(
+            [["Deliberate defect", "Saved-file result"]]
+            + [
+                [r["name"], "Rejected" if r["detected"] else "MISSED"]
+                for r in fault_results
+            ],
+            [374, 150],
+            styles,
+        ),
+        Spacer(1, 14),
+        p(
+            f"{sum(r['detected'] for r in fault_results)}/{len(fault_results)} injected defects were rejected. These controls measure software behavior on the fictional sample; they are not real-manufacturer accuracy results."
+        ),
+        Paragraph("Manufacturer validation still required", styles["Heading2"]),
+        p(
+            "The writer supports this sample CAD convention only. Larson's 50 MVA drawing is a separate, read-only intake. An actual redesign needs the manufacturer's circuit model, approved parts, connection reports, load requirements and engineering rules; a matching BOM is still missing."
+        ),
+        p(
+            "Protection, SCCR, conductors, bonding, thermal and mechanical constraints remain unverified. Files are drafts and carry no engineering approval or release."
+        ),
+        Paragraph("Research attribution", styles["Heading2"]),
+        Paragraph(
+            "Inspired by <link href='https://arxiv.org/abs/2602.11678' color='#3c4960'>Beyond Pixels: A Vector-to-Graph Framework for Reliable Schematic Auditing</link> and <link href='https://github.com/gm-embodied/V2G-Audit' color='#3c4960'>V2G-Audit</link>. Rivet's terminal graph is independently implemented. No author code, training data or benchmark accuracy is incorporated.",
+            styles["Meta"],
         ),
     ]
-    SimpleDocTemplate(
-        str(path),
-        pagesize=(8.5 * inch, 11 * inch),
-        leftMargin=42,
-        rightMargin=42,
-        topMargin=36,
-        bottomMargin=36,
-    ).build(story)
+    _report_build(path, story, "CHANGE-001")
 
 
 def preview_html(root, result, plan, faults):

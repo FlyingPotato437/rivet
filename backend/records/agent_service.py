@@ -20,6 +20,7 @@ from backend.agents.context_budget import (
     compact_observation,
     token_count,
 )
+from backend.agents.model_policy import reasoning_options, select_route
 from backend.company_context.service import assemble_context
 from backend.domain.service import digest, fail, get, scoped
 from backend.identity import Identity, auth_mode, current_actor, identity_scope
@@ -266,6 +267,7 @@ def run_view(s, run):
             "model",
         )
     } | {
+        "model_route": deepcopy(run.state.get("model_route")),
         "created_at": run.created_at.isoformat(),
         "updated_at": run.updated_at.isoformat(),
         "comment_progress": {
@@ -399,6 +401,7 @@ def create_run(s, order, body=None, trigger_key=None):
         )
     cfg = settings(record)
     has_model = bool(os.getenv("OPENAI_API_KEY"))
+    route = select_route(getattr(body, "model_profile", None)) if has_model else None
     goal = (
         body.goal
         if body
@@ -412,9 +415,10 @@ def create_run(s, order, body=None, trigger_key=None):
         base_version=record.version,
         input_hash=input_hash(w),
         trigger_key=trigger_key or "user:" + uid(),
-        model=(os.getenv("RIVET_AGENT_MODEL") or "gpt-6-luna") if has_model else "",
+        model=route["model"] if route else "",
         actor=actor(body) if body else "Rivet event coordinator",
         state={
+            "model_route": route,
             "answers": [],
             "generation": 0,
             "playbook": cfg["playbook"],
@@ -448,9 +452,6 @@ def create_run(s, order, body=None, trigger_key=None):
         events=[],
         result={},
     )
-    # No expensive/default frontier model is selected implicitly.
-    if "astra" in run.model.lower():
-        fail("Use a supported economical model for the Rivet agent; Astra is disabled.")
     s.add(run)
     s.flush()
     event(
@@ -1622,8 +1623,13 @@ def provider_call(run_data, w):
         "parallel_tool_calls": False,
         "max_output_tokens": run_data["budget"]["max_output_tokens"],
     }
-    if run_data["model"].startswith("gpt-6"):
-        payload["reasoning"] = {"effort": "low"}
+    # Persist the selected effort with the run. Configuration changes cannot
+    # silently change a resumed run's model or reasoning setting.
+    route = run_data["state"].get("model_route") or {}
+    if route.get("model") == run_data["model"] and route.get("reasoning"):
+        payload["reasoning"] = deepcopy(route["reasoning"])
+    else:
+        payload.update(reasoning_options(run_data["model"]))
     combined_usage = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}
     result = {}
     for attempt in range(3):

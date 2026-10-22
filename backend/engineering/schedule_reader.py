@@ -577,6 +577,9 @@ def transcribe_schedule(images, *, model):
             }
         },
     }
+    from backend.agents.model_policy import reasoning_options
+
+    request.update(reasoning_options(model, technical=True))
     settings = {
         "max_output_tokens": 20000,
         "timeout_seconds": 900,

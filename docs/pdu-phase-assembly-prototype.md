@@ -55,6 +55,11 @@ No manufacturer approval, assembly listing or certification is inferred.
   candidate attributes, terminal sets, visible nameplate and connection report.
 - Conductors must physically land on their named terminals. Actual internal panel
   bus geometry is checked against requested phase assignments.
+- A separate typed terminal-graph auditor checks phase isolation and each required
+  circuit phase path. It returns evidence handles, connected-component count,
+  Laplacian rank and cycle rank. A cycle alone is not an electrical fault.
+  Incomplete incidence cannot earn a passing audit. Grounding design is not
+  inferred from repeated earth symbols.
 - An independent ideal AC phasor model uses the observed bus mapping to calculate
   phase loads/currents, fundamental neutral current and VA conservation.
 - Excel exports are reopened and compared row-for-row to verified data. The PDF
@@ -71,6 +76,8 @@ Synthetic controls are not manufacturer accuracy or superiority to engineers.
 
 [Beyond Pixels, ICASSP 2026](https://arxiv.org/abs/2602.11678) motivates explicit
 vector-to-graph representations for schematic auditing.
+[V2G-Audit](https://github.com/gm-embodied/V2G-Audit), source reviewed at commit
+`70a18683d5f2635f25d8b8761a483233179f2986`, is credited alongside the paper.
 [SketchGraphs](https://arxiv.org/abs/2007.08506) represents CAD with relational
 constraints. [FunSearch](https://www.nature.com/articles/s41586-023-06924-6)
 illustrates separating a candidate generator from its evaluator.
@@ -78,6 +85,9 @@ illustrates separating a candidate generator from its evaluator.
 The prototype uses the general design-graph/writer/independent-evaluator pattern.
 It does not reproduce these models, import their code, claim their benchmark
 results or introduce a novel algorithm. No fine-tuning was performed.
+
+See [the implementation notes](cad-graph-and-model-routing.md) for the actual
+large-DXF import limitations and optional Astra API configuration.
 
 ## Manufacturer validation
 
