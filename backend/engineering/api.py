@@ -15,12 +15,50 @@ from backend.storage.db import Session
 from backend.storage.models import Order
 
 from . import service
+from .phase_change import PhaseScenario
 
 router = APIRouter(prefix="/api/orders", tags=["Switchboard engineering"])
 
 
 class SourceRoles(OrderVersion):
     source_roles: dict[str, str] = Field(max_length=100)
+
+
+class PhaseChangeRequest(PhaseScenario):
+    expected_version: int = Field(ge=1)
+
+
+@router.get("/{id}/engineering/phase-change")
+def phase_change(id: str):
+    from backend.domain.service import fail
+
+    from .phase_change_service import for_order
+
+    with Session() as s:
+        order = get(s, Order, id)
+        try:
+            return for_order(s, order)
+        except ValueError as exc:
+            fail(str(exc), 409)
+
+
+@router.post("/{id}/engineering/phase-change/analyze")
+def phase_change_scenario(id: str, body: PhaseChangeRequest):
+    from backend.company_context.service import require_writer
+    from backend.domain.service import fail
+
+    from .phase_change_service import for_order
+
+    require_writer()
+    with Session() as s:
+        order = get(s, Order, id)
+        orders.check_version(order, body.expected_version)
+        try:
+            return for_order(
+                s, order, PhaseScenario(**body.model_dump(exclude={"expected_version"}))
+            )
+        except ValueError as exc:
+            fail(str(exc), 409)
 
 
 class RequirementDecision(StrictModel):
