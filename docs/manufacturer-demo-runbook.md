@@ -45,8 +45,12 @@ example; it is not validation on either company's production files.
    open even when its naming clause is changed.
 5. Show the independent preservation/re-read result and the open request
    register. Ask the engineer to select one recurring change family to build and
-   validate next. The saved Outlook draft is an earlier PDF-response draft;
-   verify its content and attachments before presenting it as current.
+   validate next. The current, unaddressed Outlook review draft contains the
+   refreshed Excel/Word/PDF logs and native text-change review report. The
+   evaluation operator prepared this delivery and verified the attachments;
+   it is not an unattended attachment-selection demonstration. The earlier
+   PDF-only message is preserved separately. Download the full native DXF from
+   the private order; it is too large for an inline attachment in this path.
 
 Do not open Requirements, Configure, Release, the general agent or phase-conversion
 experiments. No actual Rev B or manufacturer BOM has been supplied for this
