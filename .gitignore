@@ -17,3 +17,8 @@ __pycache__/
 # Local pilot demo artifacts and temporary rendering/test data.
 /output/pilot-demo-20261019/
 /tmp/pilot-demo-20261019/
+
+.projects/cache
+.projects/vault
+.projects/state.test.json
+.projects/state.local.test.json

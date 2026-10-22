@@ -183,7 +183,7 @@ def test_uncertain_order_email_still_requests_confirmation(mail):  # noqa: F811
 def test_sending_unchanged_is_the_approval_and_is_learned(ready):
     graph = FakeMailbox()
     service.deliver(client_factory=graph)
-    graph.draft().update({"isDraft": False, "sentDateTime": "2026-10-14T09:00:00Z"})
+    graph.draft().update({"isDraft": False, "sentDateTime": now().isoformat()})
     checked = service.sync_sent(client_factory=graph)
     assert checked[0]["status"] == "sent" and checked[0]["outcome"] == "accepted"
     assert checked[0]["learning_status"] == "approved"
@@ -292,7 +292,7 @@ def test_edits_before_sending_are_recorded_as_the_correction(ready):
     graph.draft().update(
         {
             "isDraft": False,
-            "sentDateTime": "2026-10-14T09:00:00Z",
+            "sentDateTime": now().isoformat(),
             "body": {"contentType": "html", "content": f"<div>{edited}</div>" + QUOTED},
         }
     )

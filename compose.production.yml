@@ -9,6 +9,7 @@ x-app: &app
     RIVET_AUTH_MODE: clerk
     RIVET_LOCAL_ONLY: "false"
     RIVET_DEMO_ENABLED: "false"
+    RIVET_WORKSPACE_ENABLED: ${RIVET_WORKSPACE_ENABLED:-false}
     RIVET_DATA_DIR: /var/lib/rivet
     RIVET_COMPOSE_DATABASE: "true"
     RIVET_DATABASE_URL: postgresql+psycopg://rivet:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}@postgres:5432/rivet

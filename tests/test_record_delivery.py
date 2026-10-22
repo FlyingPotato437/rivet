@@ -193,9 +193,10 @@ def test_brief_includes_only_current_pending_prepared_work_and_escapes_titles():
 
 
 def test_brief_reports_completed_background_work_and_drops_it_when_evidence_changes(client, monkeypatch):
+    from test_records import edit_body, post
+
     from backend.records import agent_service as agent
     from backend.worker import claim, process
-    from test_records import edit_body, post
 
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     order = create(client)
@@ -208,7 +209,13 @@ def test_brief_reports_completed_background_work_and_drops_it_when_evidence_chan
     result = client.get(f"/api/orders/{order['id']}/record/digest").json()
     assert result["prepared_count"] > 0
     assert result["prepared_work"][0]["origin"] == "rules"
-    assert view(client, order) == w
+    after = view(client, order)
+    # Completed preparation enriches the derived response log, while the
+    # recorded comments, decisions, evidence and version remain unchanged.
+    assert after["response_log"]["comments"]
+    assert {k: v for k, v in after.items() if k != "response_log"} == {
+        k: v for k, v in w.items() if k != "response_log"
+    }
     comment = w["comments"][0]
     changed = post(client, f"/orders/{order['id']}/record/comments/{comment['id']}",
                    edit_body(w, comment, author="Confirmed reviewer"))
