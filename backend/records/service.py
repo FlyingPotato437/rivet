@@ -125,6 +125,23 @@ def ensure(s, order):
         )
     )
     added = False
+
+    def source_identity(document_id, source_ids, text):
+        return (
+            document_id,
+            tuple(sorted(source_ids)),
+            " ".join(text.split()).casefold(),
+        )
+
+    existing_source_comments = {
+        source_identity(
+            c.get("document_id"),
+            c.get("source_ids", []),
+            c.get("original_text") or c.get("text", ""),
+        )
+        for c in data["comments"]
+        if c.get("source_ids")
+    }
     for doc in documents:
         # Include original metadata in the identity: reclassifying a source can reveal comments.
         signature = f"{doc.id}:{doc.meta.get('order_role', doc.kind)}:{doc.meta.get('revision_label', '')}"
@@ -208,11 +225,15 @@ def ensure(s, order):
             source = next((sp for sp in docspans if sp.id in raw["source_ids"]), None)
             if not source:
                 continue
+            key = source_identity(doc.id, raw["source_ids"], raw["text"])
+            if key in existing_source_comments:
+                continue
             identity = sha256(
                 f"{doc.id}:{raw['number']}:{raw['text']}".encode()
             ).hexdigest()[:24]
             if any(c["id"] == identity for c in data["comments"]):
                 continue
+            existing_source_comments.add(key)
             location = raw.get("location") or source.location
             metadata = doc.meta.get("email") or {}
             author = location.get("author") or metadata.get("from", "")

@@ -396,7 +396,7 @@ BU
 2
 UNUSED
 0
-LWPOLYLINE
+SPLINE
 5
 P1
 90
@@ -444,7 +444,7 @@ EOF
     assert out["omissions"] == {}
     assert out["unsupported_counts_by_scope"]["TABLES:LAYER"] == 1
     assert out["unsupported_counts_by_scope"]["OBJECTS:DICTIONARY"] == 1
-    assert out["unused_block_unsupported_counts"]["UNUSED:unsupported:LWPOLYLINE"] == 1
+    assert out["unused_block_unsupported_counts"]["UNUSED:unsupported:SPLINE"] == 1
     assert out["device_inventory_verified"] is False
     assert out["electrical_connectivity_verified"] is False
     assert out["engineering_validation"] == "not_performed"

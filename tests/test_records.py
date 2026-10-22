@@ -9,6 +9,31 @@ from backend.storage.models import Document
 from backend.worker import claim, process
 
 
+def test_completed_visual_pass_does_not_reimport_an_existing_source_comment(client):
+    from copy import deepcopy
+
+    from backend.storage.models import OrderRecord
+
+    order = create(client)
+    before = upload(client, order, "review.txt", b"Comment 1: Confirm paint finish.")
+    assert len(before["comments"]) == 1
+    with Session.begin() as s:
+        record = s.query(OrderRecord).filter_by(order_id=order["id"]).one()
+        data = deepcopy(record.data)
+        data["comments"][0]["id"] = str(uuid4())
+        original_id = data["comments"][0]["id"]
+        record.data = data
+        document = s.get(Document, before["documents"][0]["id"])
+        document.meta = {
+            **document.meta,
+            "vision": {"pages": {"1": {"status": "transcribed"}}},
+        }
+    after = view(client, order)
+    assert len(after["comments"]) == 1
+    assert after["comments"][0]["id"] == original_id
+    assert after["comments"][0]["source_ids"] == before["comments"][0]["source_ids"]
+
+
 def test_rivet_questions_are_read_only_and_reject_unscoped_citations(
     client, monkeypatch
 ):

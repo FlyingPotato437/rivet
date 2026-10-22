@@ -18,6 +18,8 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
+from .cad_geometry import GeometryBudgetError, transform_curve
+
 DEFAULT_LIMITS = {
     "max_seconds": 120.0,
     "max_records_per_scope": 2_000_000,
@@ -29,8 +31,10 @@ DEFAULT_LIMITS = {
     "max_record_chars": 2_000_000,
     "max_line_chars": 1_000_000,
     "max_output_bytes": 32_000_000,
+    "max_geometry_points": 200_000,
+    "max_path_points": 4096,
 }
-SUPPORTED = {"TEXT", "MTEXT", "ATTRIB", "INSERT", "LINE"}
+SUPPORTED = {"TEXT", "MTEXT", "ATTRIB", "INSERT", "LINE", "ARC", "CIRCLE", "LWPOLYLINE"}
 IDENTITY = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 UNICODE_ESCAPE = re.compile(r"\\U\+([0-9A-Fa-f]{4})")
 
@@ -248,6 +252,7 @@ def snapshot_dxf(
     block: dict[str, Any] | None = None
     record_type: str | None = None
     record: dict[str, list[str]] = {}
+    vertex_pairs: list[tuple[str, str]] = []
     record_pairs = 0
     record_chars = 0
     record_truncated = False
@@ -339,6 +344,11 @@ def snapshot_dxf(
                 x=_number(record, "10"),
                 y=_number(record, "20"),
                 z=_number(record, "30"),
+                text_height=_number(record, "40"),
+                text_rotation=_number(record, "50"),
+                text_attachment=_integer(record, "71", 1)
+                if record_type == "MTEXT"
+                else 7,
             )
         elif record_type == "LINE":
             item.update(
@@ -348,6 +358,48 @@ def snapshot_dxf(
                 x2=_number(record, "11"),
                 y2=_number(record, "21"),
                 z2=_number(record, "31"),
+            )
+        elif record_type in {"ARC", "CIRCLE"}:
+            item.update(
+                x=_number(record, "10"),
+                y=_number(record, "20"),
+                z=_number(record, "30"),
+                radius=_number(record, "40"),
+                start_angle=_number(record, "50"),
+                end_angle=_number(record, "51"),
+                unsupported_extrusion=_unsupported_extrusion(record),
+            )
+            if item["radius"] <= 0:
+                raise SnapshotError("A native curve has a nonpositive radius")
+        elif record_type == "LWPOLYLINE":
+            vertices = []
+            for code, value in vertex_pairs:
+                if code == "10":
+                    vertices.append({"x": _number({code: [value]}, code), "bulge": 0.0})
+                elif code in {"20", "42", "40", "41"}:
+                    if not vertices:
+                        raise SnapshotError(
+                            "Polyline vertex values precede its X coordinate"
+                        )
+                    key = {
+                        "20": "y",
+                        "42": "bulge",
+                        "40": "start_width",
+                        "41": "end_width",
+                    }[code]
+                    vertices[-1][key] = _number({code: [value]}, code)
+            if any("y" not in v for v in vertices) or len(vertices) < 2:
+                raise SnapshotError("A native polyline has incomplete vertices")
+            if _integer(record, "90", len(vertices)) != len(vertices):
+                raise SnapshotError(
+                    "Polyline vertex count does not match its native data"
+                )
+            item.update(
+                vertices=vertices,
+                closed=bool(_integer(record, "70") & 1),
+                z=_number(record, "38"),
+                constant_width=_number(record, "43"),
+                unsupported_extrusion=_unsupported_extrusion(record),
             )
         elif record_type == "INSERT":
             item.update(
@@ -362,8 +414,9 @@ def snapshot_dxf(
                 columns=_integer(record, "70", 1),
                 rows=_integer(record, "71", 1),
                 unsupported_extrusion=_unsupported_extrusion(record),
-                unsupported_z_transform=abs(_number(record, "30")) > 1e-10
-                or abs(_number(record, "43", 1) - 1) > 1e-10,
+                # Scaling Z cannot move planar child geometry at Z=0. Nonzero
+                # insertion/base/child elevations are still explicitly omitted.
+                unsupported_z_transform=abs(_number(record, "30")) > 1e-10,
             )
         if record_type in {"TEXT", "MTEXT", "ATTRIB"}:
             item["unsupported_extrusion"] = _unsupported_extrusion(record)
@@ -390,6 +443,7 @@ def snapshot_dxf(
                     0,
                     False,
                 )
+                vertex_pairs = []
                 types[f"{scope}:{value}"] += 1
                 if value == "SECTION":
                     section = ""
@@ -420,6 +474,8 @@ def snapshot_dxf(
                 elif current_var:
                     header[current_var] = value
             record.setdefault(code, []).append(value)
+            if record_type == "LWPOLYLINE" and code in {"10", "20", "42", "40", "41"}:
+                vertex_pairs.append((code, value))
         save_record()
     except SnapshotError:
         raise
@@ -440,6 +496,8 @@ def snapshot_dxf(
     placed_text: list[dict[str, Any]] = []
     placed_lines: list[dict[str, Any]] = []
     placed_inserts: list[dict[str, Any]] = []
+    placed_paths: list[dict[str, Any]] = []
+    geometry_points = 0
     reachable_blocks: set[str] = set()
     reachable_block_unsupported: Counter[str] = Counter()
     emitted = 0
@@ -463,7 +521,7 @@ def snapshot_dxf(
         inherited_layer: str,
         root_context: dict[str, Any],
     ) -> None:
-        nonlocal limits_hit
+        nonlocal limits_hit, geometry_points
         if limits_hit:
             return
         if time.monotonic() - started > float(cfg["max_seconds"]):
@@ -489,6 +547,8 @@ def snapshot_dxf(
                 omissions["nonplanar_text"] += 1
                 return
             x, y = _point(transform, item["x"], item["y"])
+            angle = math.radians(item["text_rotation"])
+            cosine, sine = math.cos(angle), math.sin(angle)
             put(
                 placed_text,
                 {
@@ -497,6 +557,18 @@ def snapshot_dxf(
                     "x": x,
                     "y": y,
                     "z": item["z"],
+                    "text_height": abs(item["text_height"])
+                    * math.hypot(
+                        -transform[0] * sine + transform[1] * cosine,
+                        -transform[2] * sine + transform[3] * cosine,
+                    ),
+                    "text_rotation": math.degrees(
+                        math.atan2(
+                            transform[2] * cosine + transform[3] * sine,
+                            transform[0] * cosine + transform[1] * sine,
+                        )
+                    ),
+                    "text_attachment": item["text_attachment"],
                     "handle": item["handle"],
                     "source_handle": source_handle,
                     **common,
@@ -521,6 +593,48 @@ def snapshot_dxf(
                     **common,
                     "block_path": list(path_names),
                     "locator": loc,
+                },
+            )
+        elif kind in {"ARC", "CIRCLE", "LWPOLYLINE"}:
+            if item["unsupported_extrusion"] or abs(item["z"]) > 1e-10:
+                omissions["nonplanar_or_ocs_curve"] += 1
+                return
+            available = min(
+                int(cfg["max_path_points"]),
+                int(cfg["max_geometry_points"]) - geometry_points,
+            )
+            try:
+                geometry = transform_curve(item, transform, available)
+            except GeometryBudgetError:
+                omissions["curve_point_budget"] += 1
+                return
+            except ValueError as exc:
+                raise SnapshotError(str(exc)) from exc
+            geometry_points += len(geometry["points"])
+            put(
+                placed_paths,
+                {
+                    "kind": kind,
+                    "handle": item["handle"],
+                    "source_handle": source_handle,
+                    **common,
+                    "block_path": list(path_names),
+                    "locator": loc,
+                    "native": {
+                        k: v
+                        for k, v in item.items()
+                        if k
+                        not in {
+                            "kind",
+                            "handle",
+                            "layer",
+                            "layout",
+                            "paper_space",
+                            "unsupported_extrusion",
+                        }
+                    },
+                    "placement_matrix": list(transform),
+                    **geometry,
                 },
             )
         elif kind == "INSERT":
@@ -633,7 +747,7 @@ def snapshot_dxf(
         "source": str(source),
         "source_sha256": digest.hexdigest(),
         "source_bytes": size,
-        "parser_version": 1,
+        "parser_version": 2,
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "header": {
             "acadver": header.get("$ACADVER"),
@@ -643,10 +757,12 @@ def snapshot_dxf(
         "counts_by_scope_and_type": dict(types),
         "indexed_blocks": len(blocks),
         "indexed_supported_records": supported_seen,
-        "coverage_scope": "supported model-space TEXT/MTEXT/ATTRIB/INSERT/LINE records",
+        "coverage_scope": "supported model-space TEXT/MTEXT/ATTRIB/INSERT/LINE/ARC/CIRCLE/LWPOLYLINE records; sampled curves retain chord-error bounds",
         "placed_text": placed_text,
         "placed_lines": placed_lines,
         "placed_inserts": placed_inserts,
+        "placed_paths": placed_paths,
+        "geometry_points": geometry_points,
         "omissions": dict(omissions),
         "unsupported_counts_by_scope": dict(unsupported_by_scope),
         "non_model_entity_counts": dict(non_model_counts),

@@ -3,6 +3,7 @@
 import base64
 import hashlib
 import os
+import re
 from copy import deepcopy
 
 import httpx
@@ -49,6 +50,51 @@ class PageTranscript(BaseModel):
 def pending(document):
     info = document.get("vision", {})
     return len(info.get("pages", {})) < info.get("pages_total", 0)
+
+
+def native_duplicate(finding, native, page):
+    """Match a repeated transcription or a sticky-note icon to its native note.
+
+    A zero-padded printed comment number may prefix the same exact instruction.
+    Unreadable handwriting is never suppressed merely because it is nearby. Only
+    a uniquely overlapping small native Text annotation can identify a note icon.
+    """
+    normalized = lambda text: " ".join(text.split()).casefold()
+    text = normalized(finding.text)
+    without_number = re.sub(r"^(?:0[1-9]\d*|\d{1,3}[.)])\s+", "", text)
+    candidates = [
+        sp
+        for sp in native
+        if sp.location.get("page") == page
+        and sp.location.get("annotation_id")
+        and sp.location.get("extraction_method") != "vision"
+        and sp.text.strip()
+    ]
+    exact = [sp for sp in candidates if normalized(sp.text) in {text, without_number}]
+    if len(exact) == 1:
+        return exact[0]
+    if finding.kind != "ambiguous_mark":
+        return None
+    matches = []
+    a = finding.bbox
+    for sp in candidates:
+        b = sp.location.get("bbox")
+        if (
+            str(sp.location.get("annotation_type", "")).casefold() != "text"
+            or not b
+            or len(b) != 4
+        ):
+            continue
+        area = max(0, b[2] - b[0]) * max(0, b[3] - b[1])
+        if not 0 < area <= 0.005:
+            continue
+        intersection = max(0, min(a[2], b[2]) - max(a[0], b[0])) * max(
+            0, min(a[3], b[3]) - max(a[1], b[1])
+        )
+        union = area + (a[2] - a[0]) * (a[3] - a[1]) - intersection
+        if union > 0 and intersection / union >= 0.6:
+            matches.append(sp)
+    return matches[0] if len(matches) == 1 else None
 
 
 def mark_failed(s, payload):
@@ -270,13 +316,7 @@ def process(payload, leased=lambda: True, *, reader=None):
             )
             # A visual pass can encounter a native comment again. Keep its
             # original, exact anchor rather than duplicating the same text.
-            if any(
-                sp.location.get("page") == payload["page"]
-                and sp.location.get("annotation_id")
-                and " ".join(sp.text.split()).casefold()
-                == " ".join(finding.text.split()).casefold()
-                for sp in native
-            ):
+            if native_duplicate(finding, native, payload["page"]):
                 continue
             anchor = f"vision:{payload['page']}:{i}"
             s.add(

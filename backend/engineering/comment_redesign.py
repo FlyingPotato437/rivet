@@ -19,6 +19,7 @@ from pathlib import Path
 import pymupdf
 from ezdxf.tools.text import plain_mtext
 
+from .cad_geometry import render_region
 from .cad_snapshot import snapshot_dxf
 from .dxf_patch import inspect_text_records, patch_dxf
 
@@ -259,44 +260,24 @@ def propose(comments, snapshot):
 def _comparison_svg(snapshot, edit, after, path, edits):
     """Same-scale vector evidence from located saved CAD; explicit scope caption."""
     x, y = edit["x"], edit["y"]
-    # Nearby table/diagram linework provides source context; no pixel mockup.
-    width, height = 360, 150
-    left, top = x - 60, y + 60
     replacements = {e["handle"].upper(): e["replacement_text"] for e in edits}
-    parts = [
-        '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560">',
-        '<rect width="1200" height="560" fill="#fff"/>',
-        '<text x="28" y="32" font-family="Arial,sans-serif" font-size="16" fill="#555">Located CAD excerpt · text and straight-line scope · other geometry may be omitted</text>',
-        '<g transform="translate(20 55) scale(3.15)">',
-    ]
-    for line in snapshot["placed_lines"]:
-        a, b = line["start"], line["end"]
-        if all(
-            left <= p[0] <= left + width and top - height <= p[1] <= top for p in (a, b)
-        ):
-            parts.append(
-                f'<line x1="{a[0] - left:.4f}" y1="{top - a[1]:.4f}" x2="{b[0] - left:.4f}" y2="{top - b[1]:.4f}" stroke="#777" stroke-width="0.25"/>'
-            )
-    for item in snapshot["placed_text"]:
-        if left <= item["x"] <= left + width and top - height <= item["y"] <= top:
-            selected = item["locator"] == edit["source_locator"]
-            label = plain(
-                replacements.get(item["handle"].upper(), item["text"])
-                if after
-                else item["text"]
-            )
-            if len(label) > 180:
-                continue
-            xx, yy = item["x"] - left, top - item["y"]
-            if selected:
-                parts.append(
-                    f'<rect x="{xx - 2:.4f}" y="{yy - 5:.4f}" width="{min(290, max(35, len(label) * 2.1))}" height="9" fill="#edf0f8" stroke="#75658f" stroke-width="0.5"/>'
-                )
-            parts.append(
-                f'<text x="{xx:.4f}" y="{yy:.4f}" font-family="Arial,sans-serif" font-size="4" fill="{"#35204d" if selected else "#222"}">{escape(label)}</text>'
-            )
-    parts.append("</g></svg>")
-    path.write_text("".join(parts))
+    view = snapshot
+    if after:
+        view = {
+            **snapshot,
+            "placed_text": [
+                {**item, "text": replacements.get(item["handle"].upper(), item["text"])}
+                for item in snapshot["placed_text"]
+            ],
+        }
+    svg, _ = render_region(
+        view,
+        [x - 60, y - 90, x + 300, y + 60],
+        width=1200,
+        height=560,
+        highlight_handles=(edit["handle"],),
+    )
+    path.write_text(svg)
 
 
 def _report_pdf(path, report):
@@ -462,7 +443,7 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         )
     if not snapshot["coverage_complete"] and counts["needs_information"]:
         issues.append(
-            "Native CAD extraction is partial. The full output DXF preserves all original geometry, but the browser excerpts show only located text and straight lines."
+            "Native CAD extraction is partial. The full output DXF preserves all original geometry. Browser excerpts show supported lines, sampled curves and located text with fallback fonts; omitted CAD types remain unverified."
         )
     if not any(s.get("role") == "bom" for s in sources) and counts["needs_information"]:
         issues.append(

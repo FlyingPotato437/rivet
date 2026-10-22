@@ -26,6 +26,7 @@ def _implementation():
             "comment_redesign.py",
             "dxf_patch.py",
             "cad_snapshot.py",
+            "cad_geometry.py",
             "redesign_service.py",
         )
     ]

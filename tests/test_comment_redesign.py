@@ -139,3 +139,19 @@ def test_after_preview_includes_neighboring_saved_changes(tmp_path):
         assert after.count(">DETC</text>") == 2
         assert "NLTC" not in after
         assert before.count(">NLTC</text>") == 2
+
+
+def test_comparison_preserves_curved_context_from_the_native_drawing(tmp_path):
+    sources, cad = inputs(tmp_path)
+    drawing = ezdxf.readfile(cad["path"])
+    drawing.modelspace().add_circle((20, 15), 8)
+    drawing.saveas(cad["path"])
+    cad["sha256"] = file_hash(cad["path"])
+    result = build_package(sources, cad, tmp_path / "out")
+    pair = result["changes"][0]["comparison"]
+    for side in ("before_name", "after_name"):
+        svg = (tmp_path / "out" / pair[side]).read_text()
+        assert "<polyline" in svg
+        assert "omitted CAD types remain unverified" in svg
+    saved = ezdxf.readfile(tmp_path / "out/Proposed-drawing.dxf")
+    assert len(saved.modelspace().query("CIRCLE")) == 1

@@ -35,7 +35,11 @@ records and follows placed block references with base-point, translation,
 rotation and planar scaling. Unused block-library text is not located drawing
 evidence. Handles, effective layers and root placement are retained.
 
-The supported snapshot covers LINE, TEXT, MTEXT, ATTRIB and planar INSERT records.
+The supported snapshot covers LINE, ARC, CIRCLE, LWPOLYLINE, TEXT, MTEXT, ATTRIB
+and planar INSERT records. Curves retain their native parameters and are sampled
+within a bounded geometric error for reference views. A Z scale other than one
+does not invalidate a block whose geometry lies at Z=0. Nonplanar content remains
+explicitly unsupported.
 Unsupported geometry, paper-space content, external references, arrays, nonplanar
 transforms, text OCS, caps and malformed input are explicit. It does not identify
 devices from loose labels or turn mechanical lines into electrical wires. A
@@ -43,13 +47,22 @@ complete supported-record snapshot would still not establish electrical coverage
 This command does not bypass the bounded native editing adapter or automatically
 upload data, create a BOM or modify a manufacturer file.
 
-The supplied 202,791,677-byte Larson DXF was processed locally in 8.702 seconds:
-252 block definitions; 29,394 supported indexed records; 1,234 located text items,
-8,046 placed lines and 37 INSERT locators. Coverage is partial: 240 unsupported Z
-transforms, 1,059 model-space LWPOLYLINEs and other arcs, hatches, circles, images
-and reachable block geometry are omitted. Counts are extraction observations,
+The supplied 202,791,677-byte Larson DXF was processed locally in 9.726 seconds
+with parser version 2: 1,234 located text items, 9,216 placed lines, 277 INSERT
+locators and 9,766 sampled paths (178,308 points). Coverage remains partial:
+hatches, splines, ellipses, dimensions, legacy polylines, images and other
+unsupported records remain explicit. Counts are extraction observations,
 not labelled accuracy. The private snapshot records full counts and omissions;
 no manufacturer electrical audit or automatic correction is claimed.
+
+The actual Larson comment-redesign adapter is separate from the graph verifier.
+Its current real-file result is seven tap-changer terminology replacements,
+two documentation requests already present and 26 of 28 requests still open.
+The graph verifier is exercised by the fictional PDU path, not an established
+Larson electrical graph. No research benchmark result transfers to this package.
+Manufacturer-specific component mapping, design constraints and independently
+verified edit operators remain necessary for physical/electrical changes. See
+`manufacturer-demo-runbook.md` for the current demonstration boundaries.
 
 ## Astra belongs in Rivet's API workflow
 
