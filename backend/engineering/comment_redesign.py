@@ -256,12 +256,13 @@ def propose(comments, snapshot):
     }
 
 
-def _comparison_svg(snapshot, edit, after, path):
+def _comparison_svg(snapshot, edit, after, path, edits):
     """Same-scale vector evidence from located saved CAD; explicit scope caption."""
     x, y = edit["x"], edit["y"]
     # Nearby table/diagram linework provides source context; no pixel mockup.
     width, height = 360, 150
     left, top = x - 60, y + 60
+    replacements = {e["handle"].upper(): e["replacement_text"] for e in edits}
     parts = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560">',
         '<rect width="1200" height="560" fill="#fff"/>',
@@ -280,7 +281,9 @@ def _comparison_svg(snapshot, edit, after, path):
         if left <= item["x"] <= left + width and top - height <= item["y"] <= top:
             selected = item["locator"] == edit["source_locator"]
             label = plain(
-                edit["replacement_text"] if after and selected else item["text"]
+                replacements.get(item["handle"].upper(), item["text"])
+                if after
+                else item["text"]
             )
             if len(label) > 180:
                 continue
@@ -425,8 +428,8 @@ def build_package(sources, cad_source, output, *, snapshot=None):
     )
     changes = []
     for edit in edits:
-        _comparison_svg(snapshot, edit, False, root / f"{edit['id']}-before.svg")
-        _comparison_svg(snapshot, edit, True, root / f"{edit['id']}-after.svg")
+        _comparison_svg(snapshot, edit, False, root / f"{edit['id']}-before.svg", edits)
+        _comparison_svg(snapshot, edit, True, root / f"{edit['id']}-after.svg", edits)
         changes.append(
             {
                 k: edit[k]

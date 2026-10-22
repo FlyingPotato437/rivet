@@ -123,3 +123,19 @@ def test_exported_request_cannot_execute_as_a_spreadsheet_formula(tmp_path):
     assert row["request"] == "'" + request
     original = json.loads((tmp_path / "out/verification.json").read_text())
     assert original["comments"][0]["text"] == request
+
+
+def test_after_preview_includes_neighboring_saved_changes(tmp_path):
+    sources, cad = inputs(tmp_path)
+    drawing = ezdxf.readfile(cad["path"])
+    drawing.modelspace().add_text("NLTC", dxfattribs={"height": 3, "insert": (35, 15)})
+    drawing.saveas(cad["path"])
+    cad["sha256"] = file_hash(cad["path"])
+    result = build_package(sources, cad, tmp_path / "out")
+    assert len(result["changes"]) == 2
+    for change in result["changes"]:
+        after = (tmp_path / "out" / change["comparison"]["after_name"]).read_text()
+        before = (tmp_path / "out" / change["comparison"]["before_name"]).read_text()
+        assert after.count(">DETC</text>") == 2
+        assert "NLTC" not in after
+        assert before.count(">NLTC</text>") == 2
