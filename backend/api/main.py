@@ -1127,8 +1127,10 @@ from backend.equipment.api import router as equipment_router
 
 app.include_router(equipment_router)
 from backend.engineering.api import router as engineering_router
+from backend.engineering.redesign_api import router as redesign_router
 
 app.include_router(engineering_router)
+app.include_router(redesign_router)
 from backend.equipment.profile_api import router as equipment_profile_router
 
 app.include_router(equipment_profile_router)

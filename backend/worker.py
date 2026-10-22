@@ -76,6 +76,10 @@ def claim(*, kinds=None, exclude_kinds=()):
                     from backend.reply_assistant.service import mark_exhausted
 
                     mark_exhausted(s, dead.payload["draft_id"], dead.error)
+                elif dead.kind == "engineering_redesign":
+                    from backend.engineering.redesign_service import mark_failed
+
+                    mark_failed(s, dead.payload, dead.error)
                 s.flush()
         eligible = select(Job).where(
             or_(
@@ -164,6 +168,10 @@ def process_scoped(task):
             from backend.equipment.workflow import process as correct_equipment
 
             correct_equipment(payload, leased)
+        elif kind == "engineering_redesign":
+            from backend.engineering.redesign_service import process as redesign
+
+            redesign(payload, leased)
         elif kind == "enterprise_publication":
             from backend.workflow_actions.publication import process as publish
             publish(payload["publication_id"],leased)
@@ -263,6 +271,10 @@ def process_scoped(task):
                     from backend.records.agent_tasks import mark_failed
 
                     mark_failed(s, payload["task_id"], "Comment preparation stopped unexpectedly; saved evidence is retained.")
+                if kind == "engineering_redesign":
+                    from backend.engineering.redesign_service import mark_failed
+
+                    mark_failed(s, payload, "Drawing preparation stopped; saved files and original documents are retained.")
                 if kind == "record_agent":
                     from backend.storage.models import RecordAgentRun
 

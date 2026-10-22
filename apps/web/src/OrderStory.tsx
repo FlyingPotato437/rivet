@@ -33,6 +33,7 @@ import {
 import { ReviewOutputs } from "./RevisionReview";
 import { EquipmentEntry, EquipmentReview } from "./EquipmentReview";
 import { EquipmentCorrections } from "./EquipmentCorrections";
+import { DrawingRedesignReview } from "./DrawingRedesignReview";
 import {
   decisionItems,
   liveWork,
@@ -367,6 +368,7 @@ export function OrderStory({
         </section>
       )}
       <TitleBlock order={p} revision={revision} />
+      <DrawingRedesignReview id={id} />
       <div className="order-workspace-grid">
         <div className="order-workspace-main">
           <NeedsYouPanel
