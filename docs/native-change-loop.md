@@ -112,9 +112,47 @@ one recurring change family and measure requested changes caught, missed,
 incorrect changes and collateral edits independently of extraction coverage.
 
 The supplied manufacturer package does not yet establish all those inputs. The
-real-data run verifies terminology edits, bounded current-table arithmetic and
-a partial schedule; it does not validate physical layout, bushing relocation,
+earlier real-data run verifies terminology edits, bounded current-table arithmetic
+and a partial schedule. The physical trial below verifies an actual cabinet
+geometry edit in two mapped views; it does not validate physical layout, bushing relocation,
 CT selection, grounding, tap connections, enclosure compliance, corrected BOMs
 or production release. Some requested physical changes are already visible in
 the supplied native file; they remain unverified engineering outcomes.
 The existing fictional native editing tests remain software controls only.
+
+## Bounded physical relocation trials
+
+`backend/engineering/physical_move.py` implements a separate unapproved
+mechanical projection trial on actual source objects. A private case mapping
+binds a specific PDF comment to the CAD hash, assembly handles, native tank
+reference rectangles, affected views and existing obstacle envelopes. It does
+not assume that a fan count or a missing shape must be changed merely because
+an older PDF asks for it.
+
+The initial supported operation mirrors selected top-level LINE/ARC/CIRCLE
+geometry onto the opposite tank face in multiple mapped views. It preserves
+native handles and changes only selected X coordinates and arc angles. The
+saved file is then read with the independent ezdxf streaming reader to verify
+positions, lengths, radii, arc endpoints/sweeps and entity count. All remaining
+file bytes are checked for preservation. Native reference crops show actual
+saved geometry. Projected envelope overlaps are reported separately from
+successful file editing.
+
+Persistent reactors are not silently stripped. Unknown associations prevent
+the edit. A source-bound, explicitly deferred DIMASSOC/DIMENSION dependency can
+remain in an engineering trial: its original references and display override
+are read again from the saved file and reported as a stale dimension, never a
+passed annotation check. This matters when a dimension connects the moved
+assembly to a tank edge that remains stationary. CAD regeneration may update
+the associated dimension; this pipeline does not certify regeneration in AutoCAD.
+
+Use `python -m scripts.run_physical_move_trial CASE.json --output NEW_DIRECTORY`.
+Case files and manufacturer drawings remain private. This is an engineering
+trial: component grouping and view orientation are manually mapped, clearances
+and units are not inferred, and approval/release remain false even when geometry
+checks pass. A missing BOM is explicit; a supplied BOM is not marked verified
+by a mechanical-only operation. Physical acceptance requires the manufacturer's
+approved location, mounting/clearance rules, routing and completed revision.
+The trial command is an operator workflow, not automatic editing from an incoming
+email. It does not register a completed customer comment, attach its candidate
+to an Outlook reply or make that candidate eligible for production release.

@@ -237,8 +237,9 @@ def _replace_text_pairs(
 
 
 def _scan(
-    path: Path, encoding: str, wanted: set[str]
+    path: Path, encoding: str, wanted: set[str], *, retained_types=None
 ) -> tuple[list[_Entity], dict[str, int]]:
+    retained_types = _TEXT_TYPES if retained_types is None else set(retained_types)
     if len(wanted) > _MAX_WANTED_HANDLES:
         raise DxfPatchError(f"at most {_MAX_WANTED_HANDLES} handles can be inspected at once")
     entities: list[_Entity] = []
@@ -258,7 +259,7 @@ def _scan(
         if current is not None:
             if current.handle in wanted:
                 handle_counts[current.handle] = handle_counts.get(current.handle, 0) + 1
-                if current.kind in _TEXT_TYPES:
+                if current.kind in retained_types:
                     retained_pairs += current_pairs
                     retained_chars += current_chars
                     if retained_pairs > _MAX_RETAINED_PAIRS:
@@ -298,7 +299,7 @@ def _scan(
             elif pair.number == 0:
                 pass
             elif current is not None:
-                if current.kind in _TEXT_TYPES:
+                if current.kind in retained_types:
                     current.pairs.append(pair)
                     current_pairs += 1
                     current_chars += len(pair.code) + len(pair.value)
@@ -317,7 +318,7 @@ def _scan(
                     kind = ""
                 if kind:
                     current = _Entity(kind=kind, handle="", scope=section, pairs=[pair])
-                    if kind in _TEXT_TYPES:
+                    if kind in retained_types:
                         current_pairs = 1
                         current_chars = len(pair.code) + len(pair.value)
         finish()
