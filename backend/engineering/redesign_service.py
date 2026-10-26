@@ -27,6 +27,7 @@ def _implementation():
             "dxf_patch.py",
             "cad_snapshot.py",
             "cad_geometry.py",
+            "cad_evidence.py",
             "redesign_service.py",
         )
     ]
@@ -152,6 +153,11 @@ def view(s, order):
                 + "_url": f"/api/orders/{order.id}/engineering/redesign/{latest['id']}/files/{quote(pair[key + '_name'])}"
                 for key in ("before", "after")
             }
+            for placement in change.get("affected_placements", []):
+                for key in ("before", "after"):
+                    placement[key + "_url"] = (
+                        f"/api/orders/{order.id}/engineering/redesign/{latest['id']}/files/{quote(placement.pop(key + '_name'))}"
+                    )
         latest.pop("output_directory", None)
     return {
         "order_id": order.id,
@@ -284,6 +290,9 @@ def process(payload, leased=lambda: True):
                         "approval_eligible",
                         "engineering_approved",
                         "production_released",
+                        "equipment_evidence",
+                        "saved_drawing_check",
+                        "unread_graphical_annotations",
                     )
                 }
             )

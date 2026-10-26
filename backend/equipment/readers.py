@@ -1174,6 +1174,35 @@ def read_source(source, *, requested_changes=False):
         return result, []
     try:
         path = Path(source.path)
+        if (
+            suffix == ".dxf"
+            and source.role == "drawing"
+            and not requested_changes
+            and path.is_file()
+            and MAX_BYTES < path.stat().st_size <= 512 * 1024 * 1024
+        ):
+            # Large manufacturer CAD must not be loaded into the small native
+            # attribute editor. Its streaming reader exposes only evidenced
+            # schedule cells and tag candidates, with incomplete coverage.
+            from backend.engineering.cad_evidence import read_streamed_schedule
+
+            native, rows = read_streamed_schedule(source)
+            result.update(
+                status="partial",
+                observed_device_tags=sorted(
+                    {d["tag"] for d in native["device_candidates"]}
+                ),
+                observed_bom_rows=rows,
+                native_cad_evidence=native,
+                warnings=[
+                    {
+                        "code": "partial_streamed_cad_schedule",
+                        "source_id": source.id,
+                        "message": "Read placed component schedule cells from large CAD. Unlabelled columns, device identity, ratings and connections remain unverified; this is not a production BOM.",
+                    }
+                ],
+            )
+            return result, []
         if not path.is_file() or path.stat().st_size > (
             PDF_MAX_BYTES if suffix == ".pdf" else MAX_BYTES
         ):

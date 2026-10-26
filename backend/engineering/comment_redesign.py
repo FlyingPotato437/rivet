@@ -19,11 +19,12 @@ from pathlib import Path
 import pymupdf
 from ezdxf.tools.text import plain_mtext
 
+from .cad_evidence import equipment_evidence, verify_saved_drawing
 from .cad_geometry import render_region
 from .cad_snapshot import snapshot_dxf
 from .dxf_patch import inspect_text_records, patch_dxf
 
-VERSION = "rivet.comment-native-redesign.v1"
+VERSION = "rivet.comment-native-redesign.v2"
 
 
 def file_hash(path):
@@ -81,6 +82,37 @@ def comments_from_pdfs(sources):
                         }
                     )
     return comments
+
+
+def graphical_annotations(sources):
+    """Preserve non-text markup coverage separately from readable requests."""
+    unresolved = []
+    for source in sources:
+        if Path(source["path"]).suffix.lower() != ".pdf":
+            continue
+        if file_hash(source["path"]) != source["sha256"]:
+            raise ValueError("A comment original changed before redesign")
+        with pymupdf.open(source["path"]) as pdf:
+            for page_number, page in enumerate(pdf, 1):
+                for annotation in page.annots() or []:
+                    if annotation.info.get("content", "").strip() or annotation.type[
+                        1
+                    ] in {"Popup", "Link", "Widget"}:
+                        continue
+                    unresolved.append(
+                        {
+                            "source_document_id": source["id"],
+                            "source_sha256": source["sha256"],
+                            "page": page_number,
+                            "annotation_id": annotation.info.get("id")
+                            or str(annotation.xref),
+                            "annotation_type": annotation.type[1],
+                            "bbox": list(annotation.rect),
+                            "status": "needs_visual_review",
+                            "detail": "Graphical markup retained; it may support a text comment or contain an additional request. Not automatically resolved.",
+                        }
+                    )
+    return unresolved
 
 
 def propose(comments, snapshot):
@@ -246,7 +278,7 @@ def propose(comments, snapshot):
                 )
             elif re.search(r"weights|gallons", text, re.IGNORECASE):
                 comment["explanation"] = (
-                    "Weight/oil values are present in CAD, but totals differ between views. The governing manufacturer mass and oil-volume records are needed; no value is invented or silently selected."
+                    "The governing manufacturer mass and oil-volume records and their drawing locations must be confirmed before editing these values; word matches alone do not establish a discrepancy."
                 )
     return {
         "version": VERSION,
@@ -257,21 +289,11 @@ def propose(comments, snapshot):
     }
 
 
-def _comparison_svg(snapshot, edit, after, path, edits):
+def _comparison_svg(snapshot, edit, path):
     """Same-scale vector evidence from located saved CAD; explicit scope caption."""
     x, y = edit["x"], edit["y"]
-    replacements = {e["handle"].upper(): e["replacement_text"] for e in edits}
-    view = snapshot
-    if after:
-        view = {
-            **snapshot,
-            "placed_text": [
-                {**item, "text": replacements.get(item["handle"].upper(), item["text"])}
-                for item in snapshot["placed_text"]
-            ],
-        }
     svg, _ = render_region(
-        view,
+        snapshot,
         [x - 60, y - 90, x + 300, y + 60],
         width=1200,
         height=560,
@@ -370,6 +392,7 @@ def build_package(sources, cad_source, output, *, snapshot=None):
     if snapshot["source_sha256"] != cad_source["sha256"]:
         raise ValueError("CAD snapshot is not bound to this original")
     comments = comments_from_pdfs(sources)
+    graphics = graphical_annotations(sources)
     if not comments:
         raise ValueError(
             "No native PDF reviewer comments were found; retain the marked originals for visual reading"
@@ -407,10 +430,79 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         if edits
         else None
     )
+    # A separate parser rereads the actual saved drawing. Neither the preview
+    # nor the placement audit is built by substituting the intended values.
+    saved = snapshot_dxf(root / "Proposed-drawing.dxf") if edits else snapshot
+    recheck = verify_saved_drawing(snapshot, saved, edits)
+    if not recheck["passed"]:
+        (root / "failed-independent-check.json").write_text(
+            json.dumps(recheck, indent=2)
+        )
+        raise ValueError(
+            "Independent saved drawing check failed; output retained for inspection"
+        )
+    if edits and saved["source_sha256"] != verification["output_sha256"]:
+        raise ValueError("Saved drawing changed after patch verification")
+    if verification:
+        verification["independent_saved_check"] = recheck
+    evidence = equipment_evidence(saved)
+    (root / "Equipment-evidence.json").write_text(
+        json.dumps(evidence, indent=2, ensure_ascii=False)
+    )
+    with (root / "Drawing-component-schedule.csv").open("w", newline="") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(
+            [
+                "table",
+                "row",
+                "column",
+                "printed_header",
+                "value",
+                "status",
+                "source_sha256",
+                "native_locators",
+            ]
+        )
+        for table in evidence["schedules"]:
+            for row in table["rows"]:
+                for column in table["columns"]:
+                    cell = row["cells"][column["field"]]
+                    writer.writerow(
+                        [
+                            _csv_cell(v)
+                            for v in [
+                                table["id"],
+                                row["row"],
+                                column["field"],
+                                column["header"]["value"],
+                                cell["value"],
+                                cell["status"],
+                                evidence["source_sha256"],
+                                ";".join(e["locator"] for e in cell["evidence"]),
+                            ]
+                        ]
+                    )
     changes = []
     for edit in edits:
-        _comparison_svg(snapshot, edit, False, root / f"{edit['id']}-before.svg", edits)
-        _comparison_svg(snapshot, edit, True, root / f"{edit['id']}-after.svg", edits)
+        placements = [p for p in recheck["placements"] if p["edit_id"] == edit["id"]]
+        comparisons = []
+        for index, placement in enumerate(placements):
+            suffix = "" if index == 0 else f"-placement-{index + 1}"
+            name = edit["id"] + suffix
+            actual = {
+                **edit,
+                "x": placement["source"]["point"][0],
+                "y": placement["source"]["point"][1],
+            }
+            _comparison_svg(snapshot, actual, root / f"{name}-before.svg")
+            _comparison_svg(saved, actual, root / f"{name}-after.svg")
+            comparisons.append(
+                {
+                    "locator": placement["locator"],
+                    "before_name": f"{name}-before.svg",
+                    "after_name": f"{name}-after.svg",
+                }
+            )
         changes.append(
             {
                 k: edit[k]
@@ -427,8 +519,11 @@ def build_package(sources, cad_source, output, *, snapshot=None):
                 "before": plain(edit["expected_text"]),
                 "after": plain(edit["replacement_text"]),
                 "verified": bool(
-                    verification and verification["preservation_verified"]
+                    verification
+                    and verification["preservation_verified"]
+                    and recheck["passed"]
                 ),
+                "affected_placements": comparisons,
                 "comparison": {
                     "before_name": f"{edit['id']}-before.svg",
                     "after_name": f"{edit['id']}-after.svg",
@@ -437,6 +532,10 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         )
     counts = Counter(c["status"] for c in plan["comments"])
     issues = []
+    if graphics:
+        issues.append(
+            f"{len(graphics)} graphical annotations without text are retained for visual review; they are not counted as answered comments."
+        )
     if counts["needs_information"]:
         issues.append(
             f"{counts['needs_information']} of {len(comments)} comments still require verified engineering inputs or unsupported geometry/circuit work. They are not marked completed."
@@ -452,6 +551,7 @@ def build_package(sources, cad_source, output, *, snapshot=None):
     report = {
         "schema": VERSION,
         "comments": plan["comments"],
+        "unread_graphical_annotations": graphics,
         "changes": changes,
         "totals": {
             "comments": len(comments),
@@ -464,6 +564,13 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         "approval_eligible": not issues,
         "status": "needs_information" if issues else "ready_for_review",
         "verification": verification,
+        "saved_drawing_check": recheck,
+        "equipment_evidence": {
+            "counts": evidence["counts"],
+            "artifact": "Equipment-evidence.json",
+            "production_bom_verified": False,
+            "electrical_connectivity_verified": False,
+        },
         "source_manifest": [
             {k: s[k] for k in ("id", "name", "sha256", "role")}
             for s in [*sources, cad_source]
@@ -471,6 +578,10 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         "engineering_approved": False,
         "production_released": False,
     }
+    # Recheck all originals at the end, including PDFs, before publishing a
+    # review package that claims to be bound to their hashes.
+    if any(file_hash(s["path"]) != s["sha256"] for s in [*sources, cad_source]):
+        raise ValueError("A source changed while the review package was prepared")
     with (root / "Drawing-change-register.csv").open("w", newline="") as stream:
         writer = csv.DictWriter(
             stream,

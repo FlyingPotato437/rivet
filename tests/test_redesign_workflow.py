@@ -93,12 +93,21 @@ def test_single_request_edits_rechecks_exports_and_leaves_only_final_approval(
     assert run["status"] == "ready_for_review", run
     assert run["current"] and run["approval_eligible"]
     assert run["totals"]["changed"] == 1
+    assert run["saved_drawing_check"]["passed"]
+    assert not run["saved_drawing_check"]["engineering_correctness_verified"]
+    assert not run["equipment_evidence"]["production_bom_verified"]
+    evidence = next(
+        a for a in run["artifacts"] if a["name"] == "Equipment-evidence.json"
+    )
+    assert client.get(evidence["url"]).status_code == 200
     dxf = next(a for a in run["artifacts"] if a["name"].endswith(".dxf"))
     returned = client.get(dxf["url"])
     assert returned.status_code == 200
     assert b"DETC" in returned.content and b"NLTC" in drawing.read_bytes()
     pair = run["changes"][0]["comparison"]
     assert client.get(pair["after_url"]).status_code == 200
+    placement = run["changes"][0]["affected_placements"][0]
+    assert client.get(placement["after_url"]).status_code == 200
     approved = post(
         client,
         root + f"/{runid}/decision",
