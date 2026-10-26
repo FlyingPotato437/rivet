@@ -102,6 +102,10 @@ def evaluate(manifest_path, output, key_path=None):
         },
         "checking": {
             "native_text_edits": len(report["changes"]),
+            "drawing_arithmetic_edits": sum(
+                c["kind"] == "cad_calculation" for c in report["changes"]
+            ),
+            "saved_calculation_check": report["saved_calculation_check"],
             "saved_check": report["saved_drawing_check"],
             "comments": report["totals"],
             "fully_addressed_comments": report["totals"]["changed"],

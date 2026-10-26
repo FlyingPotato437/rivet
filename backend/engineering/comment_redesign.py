@@ -22,9 +22,10 @@ from ezdxf.tools.text import plain_mtext
 from .cad_evidence import equipment_evidence, verify_saved_drawing
 from .cad_geometry import render_region
 from .cad_snapshot import snapshot_dxf
+from .drawing_calculations import propose_current_corrections, verify_saved_calculations
 from .dxf_patch import inspect_text_records, patch_dxf
 
-VERSION = "rivet.comment-native-redesign.v2"
+VERSION = "rivet.comment-native-redesign.v3"
 
 
 def file_hash(path):
@@ -116,7 +117,7 @@ def graphical_annotations(sources):
 
 
 def propose(comments, snapshot):
-    """Execute only explicit, equivalent terminology; retain all other requests.
+    """Prepare bounded terminology and source-bound drawing arithmetic.
 
     The adapter is deliberately narrower than the engineering objective. Physical
     layout and electrical changes remain open until their actual geometry and
@@ -280,12 +281,17 @@ def propose(comments, snapshot):
                 comment["explanation"] = (
                     "The governing manufacturer mass and oil-volume records and their drawing locations must be confirmed before editing these values; word matches alone do not establish a discrepancy."
                 )
+    numeric_edits, calculations = propose_current_corrections(comments, snapshot)
+    if any(e["handle"] in used for e in numeric_edits):
+        raise ValueError("Conflicting edits target the same native object")
+    edits.extend(numeric_edits)
     return {
         "version": VERSION,
         "comments": comments,
         "edits": edits,
         "source_sha256": snapshot["source_sha256"],
         "cad_coverage_complete": snapshot["coverage_complete"],
+        "calculations": calculations,
     }
 
 
@@ -294,7 +300,7 @@ def _comparison_svg(snapshot, edit, path):
     x, y = edit["x"], edit["y"]
     svg, _ = render_region(
         snapshot,
-        [x - 60, y - 90, x + 300, y + 60],
+        edit.get("review_bbox", [x - 60, y - 90, x + 300, y + 60]),
         width=1200,
         height=560,
         highlight_handles=(edit["handle"],),
@@ -332,6 +338,19 @@ def _report_pdf(path, report):
             ]
         )
     story.append(Spacer(1, 8))
+    if report.get("calculation_audits"):
+        story.append(
+            Paragraph("Drawing arithmetic - engineer review", styles["Heading2"])
+        )
+        for audit in report["calculation_audits"]:
+            if audit.get("reason"):
+                story.append(Paragraph(escape(audit["reason"]), styles["BodyText"]))
+            for cell in audit.get("calculations", []):
+                statement = f"{cell['rating']['text']} / {cell['voltage']['text']} V: {cell['before']} A to {cell['replacement']} A. Single phase; nearest whole ampere."
+                story.append(Paragraph(escape(statement), styles["BodyText"]))
+            for blocked in audit.get("blocked_columns", []):
+                story.append(Paragraph(escape(blocked["detail"]), styles["BodyText"]))
+        story.append(Spacer(1, 10))
     for issue in report["remaining_issues"]:
         story.extend([Paragraph(escape(issue), styles["BodyText"]), Spacer(1, 5)])
     story += [Spacer(1, 12), Paragraph("Every supplied comment", styles["Heading2"])]
@@ -414,6 +433,13 @@ def build_package(sources, cad_source, output, *, snapshot=None):
     for edit in edits:
         native = raw[edit["handle"]]
         before = native["text"]
+        if edit["kind"] == "cad_calculation":
+            if before != plain(edit["expected_text"]):
+                raise ValueError(
+                    "Formatted or changed numeric CAD cell needs an explicit native mapping"
+                )
+            edit["expected_text"] = before
+            continue
         edit["expected_text"] = before
         edit["replacement_text"] = (
             re.sub("No-load tap changer", "DETC", before, flags=re.IGNORECASE)
@@ -434,6 +460,12 @@ def build_package(sources, cad_source, output, *, snapshot=None):
     # nor the placement audit is built by substituting the intended values.
     saved = snapshot_dxf(root / "Proposed-drawing.dxf") if edits else snapshot
     recheck = verify_saved_drawing(snapshot, saved, edits)
+    calculation_check = verify_saved_calculations(saved, plan["calculations"])
+    if not calculation_check["passed"]:
+        (root / "failed-arithmetic-check.json").write_text(
+            json.dumps(calculation_check, indent=2)
+        )
+        raise ValueError("Independent saved arithmetic check failed")
     if not recheck["passed"]:
         (root / "failed-independent-check.json").write_text(
             json.dumps(recheck, indent=2)
@@ -528,10 +560,22 @@ def build_package(sources, cad_source, output, *, snapshot=None):
                     "before_name": f"{edit['id']}-before.svg",
                     "after_name": f"{edit['id']}-after.svg",
                 },
+                **(
+                    {"calculation": edit["calculation"]}
+                    if "calculation" in edit
+                    else {}
+                ),
             }
         )
     counts = Counter(c["status"] for c in plan["comments"])
     issues = []
+    if plan["calculations"]:
+        issues.append(
+            "Drawing arithmetic uses printed source values only. Rating selection, winding design and protection remain subject to engineer approval."
+        )
+        for audit in plan["calculations"]:
+            for blocked in audit.get("blocked_columns", []):
+                issues.append(blocked["detail"])
     if graphics:
         issues.append(
             f"{len(graphics)} graphical annotations without text are retained for visual review; they are not counted as answered comments."
@@ -559,12 +603,14 @@ def build_package(sources, cad_source, output, *, snapshot=None):
             "already_present": counts["already_present"],
             "needs_information": counts["needs_information"],
         },
-        "summary": f"Prepared {len(changes)} verified native text changes from the supplied customer comments. {counts['already_present']} requests are already documented in the supplied CAD; {counts['needs_information']} remain open.",
+        "summary": f"Prepared {len(changes)} saved drawing changes ({sum(e['kind'] == 'cad_calculation' for e in edits)} numerical corrections). {counts['already_present']} requests are already documented in the supplied CAD; {counts['needs_information']} remain open. No physical redesign or production release is approved.",
         "remaining_issues": issues,
         "approval_eligible": not issues,
         "status": "needs_information" if issues else "ready_for_review",
         "verification": verification,
         "saved_drawing_check": recheck,
+        "calculation_audits": plan["calculations"],
+        "saved_calculation_check": calculation_check,
         "equipment_evidence": {
             "counts": evidence["counts"],
             "artifact": "Equipment-evidence.json",

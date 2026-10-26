@@ -73,6 +73,59 @@ def post(client, path, data):
     return client.post(path, json=data, headers={"Idempotency-Key": str(uuid4())})
 
 
+def test_saved_arithmetic_and_conflict_survive_background_job(client, tmp_path):
+    from shutil import copyfile
+
+    from test_drawing_calculations import fixture
+
+    sources, cad, _, _ = fixture(tmp_path, upper="10.01")
+    order = create(client)
+    with Session.begin() as s:
+        owned = get(s, Order, order["id"])
+        for source in [*sources, cad]:
+            suffix = ".dxf" if source["role"] == "drawing" else ".pdf"
+            blob = str(uuid4()) + suffix
+            copyfile(source["path"], db.BLOBS / blob)
+            s.add(
+                Document(
+                    project_id=owned.project_id,
+                    name=source["name"],
+                    kind=source["role"],
+                    blob=blob,
+                    sha256=source["sha256"],
+                    state="parsed",
+                    meta={"order_role": source["role"]},
+                )
+            )
+    root = f"/api/orders/{order['id']}/engineering/redesign"
+    before = client.get(root).json()
+    assert (
+        post(
+            client, root + "/prepare", {"expected_version": before["order_version"]}
+        ).status_code
+        == 200
+    )
+    process(claim(kinds=("engineering_redesign",)))
+    result = client.get(root).json()
+    run = result["latest"]
+    assert run["status"] == "needs_information"
+    assert run["saved_calculation_check"]["cells_checked"] == 3
+    assert run["saved_calculation_check"]["passed"]
+    assert (
+        run["calculation_audits"][0]["blocked_columns"][0]["code"]
+        == "capacity_conflict"
+    )
+    assert not run["approval_eligible"]
+    artifact = next(a for a in run["artifacts"] if a["name"] == "Proposed-drawing.dxf")
+    assert client.get(artifact["url"]).status_code == 200
+    rejected = post(
+        client,
+        root + f"/{run['id']}/decision",
+        {"expected_version": result["order_version"], "decision": "approve"},
+    )
+    assert rejected.status_code == 409
+
+
 def test_single_request_edits_rechecks_exports_and_leaves_only_final_approval(
     client, tmp_path
 ):

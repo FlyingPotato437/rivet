@@ -46,6 +46,42 @@ A prepared naming clause does not close the other clauses of a comment.
 A generic weight-related request no longer causes an unevidenced assertion
 that drawing totals disagree.
 
+## Drawing calculations in the native job
+
+The next bounded operator corrects whole-ampere values in an explicitly
+single-phase tertiary current table. It requires the customer's current-update
+request and a voltage list on the same source page, exact native cell boundaries,
+voltage/current unit headers, an explicit phase count, and MVA headers that
+agree with the nameplate capacity stages. Conflicting capacity columns remain
+unchanged. Duplicate values, ambiguous cells, missing boundaries, shared numeric
+definitions and unsupported phase/unit conventions stop the calculation.
+
+This is intentionally narrow: the recognized request is “Update amp values to
+reflect correct voltages,” paired with a list of voltages. It is not a general
+electrical design planner. It neither infers transformer ratings nor changes
+windings, protective devices, connections or physical geometry.
+
+The writer changes only the selected native text fields in a copy. The second
+parser reopens that copy, and a separate exact-fraction calculation recomputes
+each result from the saved inputs. Incorrect saved arithmetic withholds the
+review ZIP even if the text writer reports success. The background job retains
+the input evidence, capacity conflicts and saved checks. Numerical success does
+not mark the engineering request approved or the drawing released.
+
+Before editing, compare the supplied native file with the marked drawing: a
+manufacturer may already have incorporated some comments. Existing changes
+must not be redone or attributed to Rivet. An observed placement in a partial
+reference render is not proof of clearance, mounting, connections or compliance.
+
+## BOMs remain part of the normal workflow
+
+A project BOM is an expected input when available, alongside native drawings
+and returned comments. The existing drawing/BOM correction and independent
+readback paths remain supported and regression-tested. One package without a
+BOM does not change the product's data model or imply the manufacturer does not
+normally maintain one. An embedded drawing schedule remains source evidence;
+it is not promoted to a production BOM or used to invent parts and quantities.
+
 ## Private evaluation
 
 Create a private manifest containing `sources` with `id`, `name`, `path`,
@@ -75,8 +111,10 @@ Use an engineer-completed next revision as a held-out expected result. Agree
 one recurring change family and measure requested changes caught, missed,
 incorrect changes and collateral edits independently of extraction coverage.
 
-The supplied manufacturer package does not yet establish those inputs. The
-real-data run verifies terminology edits and extracts a partial schedule; it
-does not validate physical layout, bushing relocation, CT selection, grounding,
-tap connections, enclosure compliance, corrected BOMs or production release.
+The supplied manufacturer package does not yet establish all those inputs. The
+real-data run verifies terminology edits, bounded current-table arithmetic and
+a partial schedule; it does not validate physical layout, bushing relocation,
+CT selection, grounding, tap connections, enclosure compliance, corrected BOMs
+or production release. Some requested physical changes are already visible in
+the supplied native file; they remain unverified engineering outcomes.
 The existing fictional native editing tests remain software controls only.

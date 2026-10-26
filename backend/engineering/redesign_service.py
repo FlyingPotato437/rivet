@@ -28,6 +28,7 @@ def _implementation():
             "cad_snapshot.py",
             "cad_geometry.py",
             "cad_evidence.py",
+            "drawing_calculations.py",
             "redesign_service.py",
         )
     ]
@@ -293,6 +294,8 @@ def process(payload, leased=lambda: True):
                         "equipment_evidence",
                         "saved_drawing_check",
                         "unread_graphical_annotations",
+                        "calculation_audits",
+                        "saved_calculation_check",
                     )
                 }
             )
