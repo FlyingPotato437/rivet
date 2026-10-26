@@ -18,6 +18,39 @@ def database():
     yield
 
 
+def test_native_invisible_text_and_nested_geometry_are_not_drawn(tmp_path):
+    from backend.engineering.cad_geometry import render_region
+
+    d = ezdxf.new()
+    b = d.blocks.new("manufacturer-hidden-data")
+    b.add_text("HIDDEN MANUFACTURER TITLE", dxfattribs={"height": 1, "invisible": 1})
+    b.add_text("VISIBLE TAG", dxfattribs={"height": 1})
+    b.add_circle((2, 2), 1)
+    d.modelspace().add_blockref(b.name, (2, 2))
+    d.modelspace().add_blockref(b.name, (10, 10), dxfattribs={"invisible": 1})
+    d.modelspace().add_line((0, 0), (4, 4), dxfattribs={"invisible": 1})
+    source = tmp_path / "visibility.dxf"
+    d.saveas(source)
+    snapshot = snapshot_dxf(source)
+    svg, counts = render_region(snapshot, [-1, -1, 20, 20])
+    assert "HIDDEN MANUFACTURER TITLE" not in svg
+    assert svg.count("VISIBLE TAG") == 1
+    assert counts["text"] == 1 and counts["paths"] == 1
+    assert counts["lines"] == 0
+    # Hidden source evidence remains available, explicitly tagged, not deleted.
+    assert len(snapshot["placed_text"]) == 4
+    assert sum(t["invisible"] for t in snapshot["placed_text"]) == 3
+    assert sum(t["invisible"] for t in snapshot["placed_paths"]) == 1
+
+
+def test_native_crop_clips_diagonal_and_vertical_segments():
+    from backend.engineering.cad_geometry import _clip_segment
+
+    assert _clip_segment((-10, -10), (20, 20), (0, 0, 10, 10)) == ((0, 0), (10, 10))
+    assert _clip_segment((5, -100), (5, 100), (0, 0, 10, 10)) == ((5, 0), (5, 10))
+    assert _clip_segment((-1, -100), (-1, 100), (0, 0, 10, 10)) is None
+
+
 def test_planar_scaled_block_is_located_but_nonplanar_children_are_not(tmp_path):
     doc = ezdxf.new()
     block = doc.blocks.new("body")

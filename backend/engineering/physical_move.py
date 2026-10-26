@@ -103,6 +103,7 @@ def _mapping(snapshot, plan):
         if (
             not frame
             or frame.get("block_path")
+            or frame.get("invisible")
             or frame["kind"] != "LWPOLYLINE"
             or not frame["closed"]
         ):
@@ -128,7 +129,12 @@ def _mapping(snapshot, plan):
         seen.update(handles)
         for h in handles:
             item = items.get(h)
-            if not item or item.get("block_path") or item["kind"] not in TYPES:
+            if (
+                not item
+                or item.get("block_path")
+                or item.get("invisible")
+                or item["kind"] not in TYPES
+            ):
                 raise ValueError("Assembly must use supported top-level native objects")
             axes[h] = axis
         if len(seen) > 500:
@@ -249,8 +255,11 @@ def _dimension_dependencies(source, encoding, records, declarations):
     return findings
 
 
-def _write_mirror(source, output, axes, expected_hash, deferred_dimensions=()):
-    """Change only X values and arc direction angles; preserve every other byte."""
+def _write_mirror(
+    source, output, axes, expected_hash, deferred_dimensions=(), offsets=None
+):
+    """Reflect and optionally translate Y; preserve every other source byte."""
+    offsets = offsets or {}
     source, output = Path(source), Path(output)
     if output.exists() or output.resolve() == source.resolve():
         raise ValueError("Physical edit output must be a new file")
@@ -282,10 +291,17 @@ def _write_mirror(source, output, axes, expected_hash, deferred_dimensions=()):
         ):
             raise ValueError("Only planar unthickened world-XY geometry is supported")
         changes = {10: 2 * axis - _number(p, 10)}
-        _number(p, 20)
+        dy = offsets.get(h, 0)
+        if not math.isfinite(dy):
+            raise ValueError("Non-finite placement offset")
+        y = _number(p, 20)
+        if dy:
+            changes[20] = y + dy
         if r.kind == "LINE":
             changes[11] = 2 * axis - _number(p, 11)
-            _number(p, 21)
+            y = _number(p, 21)
+            if dy:
+                changes[21] = y + dy
         else:
             if _number(p, 40) <= 0:
                 raise ValueError("Invalid native radius")
@@ -352,11 +368,12 @@ def _read_native(path, wanted):
     return result, count
 
 
-def verify_geometry(source, saved, axes):
+def verify_geometry(source, saved, axes, offsets=None):
     """Independent library read; compare geometry invariants, not writer receipts."""
     before, n = _read_native(source, axes)
     after, m = _read_native(saved, axes)
     errors = []
+    offsets = offsets or {}
 
     def close(a, b):
         return math.isclose(a, b, rel_tol=0, abs_tol=1e-7)
@@ -389,7 +406,11 @@ def verify_geometry(source, saved, axes):
                 ):
                     errors.append(h + ": arc sweep changed")
         for p, q in pairs:
-            if not (close(p.x + q.x, 2 * axis) and close(p.y, q.y) and close(p.z, q.z)):
+            if not (
+                close(p.x + q.x, 2 * axis)
+                and close(p.y + offsets.get(h, 0), q.y)
+                and close(p.z, q.z)
+            ):
                 errors.append(h + ": reflection/position mismatch")
     if n != m:
         errors.append("Model-space primitive count changed")
@@ -475,6 +496,11 @@ def build_trial(source, plan, sources, output):
         raise ValueError("Comment text differs from mapping")
     before = snapshot_dxf(source)
     axes = _mapping(before, plan)
+    offsets = {
+        h: float(v.get("translation_y", 0)) for v in plan["views"] for h in v["handles"]
+    }
+    if not all(math.isfinite(v) for v in offsets.values()):
+        raise ValueError("Non-finite placement offset")
     root.mkdir(parents=True, mode=0o700)
     saved = root / "Cabinet-relocation-UNAPPROVED.dxf"
     receipt = _write_mirror(
@@ -483,8 +509,9 @@ def build_trial(source, plan, sources, output):
         axes,
         plan["source_sha256"],
         plan.get("deferred_dimension_associations", []),
+        offsets,
     )
-    independent = verify_geometry(source, saved, axes)
+    independent = verify_geometry(source, saved, axes, offsets)
     if not independent["passed"]:
         (root / "failed-check.json").write_text(json.dumps(independent, indent=2))
         raise ValueError("Independent saved geometry check failed")

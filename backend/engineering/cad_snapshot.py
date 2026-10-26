@@ -334,6 +334,7 @@ def snapshot_dxf(
             "layer": _decode(_first(record, "8", "0")),
             "layout": layout,
             "paper_space": _paper_space(record),
+            "invisible": bool(_integer(record, "60", 0)),
         }
         if record_type in {"TEXT", "MTEXT", "ATTRIB"}:
             text = "".join(
@@ -520,6 +521,7 @@ def snapshot_dxf(
         loc: str,
         inherited_layer: str,
         root_context: dict[str, Any],
+        inherited_invisible: bool = False,
     ) -> None:
         nonlocal limits_hit, geometry_points
         if limits_hit:
@@ -538,6 +540,7 @@ def snapshot_dxf(
             "layout": root_context["layout"],
             "root_handle": root_context["handle"],
             "root_location": root_context["location"],
+            "invisible": inherited_invisible or item["invisible"],
         }
         if kind in {"TEXT", "MTEXT", "ATTRIB"}:
             if item["unsupported_extrusion"]:
@@ -698,6 +701,7 @@ def snapshot_dxf(
                     loc + "/" + (child["handle"] or child["kind"]),
                     effective_layer,
                     root_context,
+                    common["invisible"],
                 )
 
     for item in entities:
@@ -747,7 +751,7 @@ def snapshot_dxf(
         "source": str(source),
         "source_sha256": digest.hexdigest(),
         "source_bytes": size,
-        "parser_version": 2,
+        "parser_version": 3,
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "header": {
             "acadver": header.get("$ACADVER"),

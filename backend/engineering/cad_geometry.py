@@ -106,6 +106,27 @@ def transform_curve(item, matrix, max_points=4096):
     }
 
 
+def _clip_segment(a, b, box):
+    """Clip geometry before SVG output; some reference renderers ignore clipPath."""
+    low, high = 0.0, 1.0
+    for axis in (0, 1):
+        delta = b[axis] - a[axis]
+        if abs(delta) < 1e-12:
+            if not box[axis] <= a[axis] <= box[axis + 2]:
+                return None
+            continue
+        u, v = sorted(
+            ((box[axis] - a[axis]) / delta, (box[axis + 2] - a[axis]) / delta)
+        )
+        low, high = max(low, u), min(high, v)
+        if low > high:
+            return None
+    return tuple(
+        tuple(min(box[i + 2], max(box[i], a[i] + t * (b[i] - a[i]))) for i in (0, 1))
+        for t in (low, high)
+    )
+
+
 def render_region(snapshot, bbox, *, width=1600, height=1200, highlight_handles=()):
     """Render actual located geometry for review, with omitted types explicit.
 
@@ -134,30 +155,54 @@ def render_region(snapshot, bbox, *, width=1600, height=1200, highlight_handles=
         '<text x="20" y="24" font-family="Arial,sans-serif" font-size="13" fill="#555">Native CAD reference · sampled curves, lines and located text · fallback fonts · omitted CAD types remain unverified</text>',
         f'<defs><clipPath id="region"><rect x="20" y="45" width="{width - 40}" height="{height - 60}"/></clipPath></defs><g clip-path="url(#region)">',
     ]
-    counts = {"lines": 0, "paths": 0, "text": 0}
+    counts = {"lines": 0, "paths": 0, "text": 0, "invisible_skipped": 0}
     for line in snapshot["placed_lines"]:
+        if line.get("invisible"):
+            counts["invisible_skipped"] += 1
+            continue
         a, b = line["start"], line["end"]
         if not intersects(
             [min(a[0], b[0]), min(a[1], b[1]), max(a[0], b[0]), max(a[1], b[1])]
         ):
             continue
-        ax, ay = point(a)
-        bx, by = point(b)
+        clipped = _clip_segment(a, b, bbox)
+        if clipped is None:
+            continue
+        ax, ay = point(clipped[0])
+        bx, by = point(clipped[1])
         content.append(
             f'<path d="M{ax:.3f},{ay:.3f}L{bx:.3f},{by:.3f}" fill="none" stroke="{color(line["handle"])}" stroke-width=".5"/>'
         )
         counts["lines"] += 1
     for path in snapshot.get("placed_paths", []):
+        if path.get("invisible"):
+            counts["invisible_skipped"] += 1
+            continue
         if not intersects(path["bbox_with_chord_error"]):
             continue
-        points = " ".join(f"{a:.3f},{b:.3f}" for a, b in map(point, path["points"]))
+        if all(x0 <= p[0] <= x1 and y0 <= p[1] <= y1 for p in path["points"]):
+            points = " ".join(f"{a:.3f},{b:.3f}" for a, b in map(point, path["points"]))
+            content.append(
+                f'<polyline points="{points}" fill="none" stroke="{color(path["handle"])}" stroke-width=".5"/>'
+            )
+            counts["paths"] += 1
+            continue
+        segments = []
+        for a, b in pairwise(path["points"]):
+            clipped = _clip_segment(a, b, bbox)
+            if clipped is not None:
+                (ax, ay), (bx, by) = map(point, clipped)
+                segments.append(f"M{ax:.3f},{ay:.3f}L{bx:.3f},{by:.3f}")
         content.append(
-            f'<polyline points="{points}" fill="none" stroke="{color(path["handle"])}" stroke-width=".5"/>'
+            f'<path d="{" ".join(segments)}" fill="none" stroke="{color(path["handle"])}" stroke-width=".5"/>'
         )
         counts["paths"] += 1
     from ezdxf.tools.text import plain_mtext
 
     for item in snapshot["placed_text"]:
+        if item.get("invisible"):
+            counts["invisible_skipped"] += 1
+            continue
         if not (x0 <= item["x"] <= x1 and y0 <= item["y"] <= y1):
             continue
         label = plain_mtext(item["text"]).replace("^J", " ")

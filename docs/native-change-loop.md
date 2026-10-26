@@ -156,3 +156,42 @@ approved location, mounting/clearance rules, routing and completed revision.
 The trial command is an operator workflow, not automatic editing from an incoming
 email. It does not register a completed customer comment, attach its candidate
 to an Outlook reply or make that candidate eligible for production release.
+
+## Bounded placement search and the engineer stopping point
+
+`python -m scripts.search_physical_placements CASE.json --output NEW_DIRECTORY`
+uses the same private source-bound mapping. Each view declares its independent
+projection coordinate (`face_lateral` or `height`). The cabinet stays at the
+reflected native mounting depth; only the coordinate along the face changes.
+The conservative trial policy keeps existing accessories stationary and the
+assembly envelope inside the native tank projection. These are trial assumptions,
+not manufacturer-approved mounting rules or a confirmed millimetre scale.
+
+Interval subtraction solves the complete continuous overlap constraints rather
+than sampling a grid. Up to three separated interior positions are ranked by
+minimum mapped edge gap, then travel. Every selected candidate is written to a
+new DXF and checked for the exact translation, source-byte preservation and saved
+envelope containment/overlap. Stale dimensions and unverified third views stay
+open. A zero-result search emits evidence and no new candidate DXFs; it never
+substitutes a least-bad conflicting location.
+
+The Larson development case has no position passing both mapped projections
+under this policy. In plan, the cabinet spans 830 native units; even considering
+only the two mapped accessory envelopes, the largest remaining interval is
+685.65 (144.35 short). The front projection has a narrow available height range,
+but that does not resolve the plan obstruction. These are conservative 2D envelope
+checks, not a proof that every possible 3D mounting arrangement is impossible.
+Stop here for the engineer's permitted accessory movement, overhang/offset,
+stacking and clearance rules. Do not repeatedly loosen bounds to obtain an option.
+
+Native DXF group-60 invisibility is now retained in snapshots and inherited through
+block instances. Reference renders skip those invisible objects while keeping
+them in the source evidence. This fixes the overlapping hidden manufacturer labels
+without deleting or moving drawing text. Geometry is clipped numerically to the
+review region for renderers that do not honor SVG clipping. The preview remains
+a reference, not AutoCAD output.
+
+Placement mapping remains manual. Software controls demonstrate three saved
+placements on synthetic geometry; there are zero accepted manufacturer placement
+examples. Engineer choices must not become approved rules until confirmed and
+bound to the source revision. No email or autonomy behavior changes in this trial.
