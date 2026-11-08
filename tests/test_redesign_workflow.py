@@ -224,3 +224,51 @@ def test_source_or_output_drift_blocks_final_signoff(client, tmp_path):
         {"expected_version": result["order_version"], "decision": "approve"},
     )
     assert rejected.status_code == 409
+
+
+def test_unsupported_layout_withholds_completion_and_stays_out_of_review_pdf(
+    client, tmp_path
+):
+    order, drawing, _ = package(client, tmp_path)
+    doc = ezdxf.readfile(drawing)
+    sheet = doc.layouts.new("Customer Sheet")
+    sheet.add_text(
+        "PRIVATE SHEET DETAIL", dxfattribs={"insert": (10, 10), "height": 2}
+    )
+    sheet.add_spline([(0, 0), (10, 12), (20, 0)])
+    doc.saveas(drawing)
+    with Session.begin() as s:
+        source = s.query(Document).filter(Document.blob == drawing.name).one()
+        source.sha256 = file_hash(drawing)
+
+    root = f"/api/orders/{order['id']}/engineering/redesign"
+    before = client.get(root).json()
+    started = post(
+        client, root + "/prepare", {"expected_version": before["order_version"]}
+    )
+    assert started.status_code == 200
+    runid = started.json()["latest"]["id"]
+    process(claim(kinds=("engineering_redesign",)))
+    response = client.get(root).json()
+    run = response["latest"]
+    assert run["status"] == "needs_information"
+    assert not run["approval_eligible"]
+    assert not run["saved_drawing_check"]["paper_space_coverage_complete"]
+    assert any(
+        "unsupported or unlocated CAD entities" in issue
+        for issue in run["remaining_issues"]
+    )
+
+    review = next(a for a in run["artifacts"] if a["name"] == "Drawing-change-review.pdf")
+    pdf_bytes = client.get(review["url"]).content
+    with pymupdf.open(stream=pdf_bytes, filetype="pdf") as pdf:
+        report_text = "\n".join(page.get_text() for page in pdf)
+    assert "unsupported or unlocated CAD entities" in report_text
+    assert "PRIVATE SHEET DETAIL" not in report_text
+
+    rejected = post(
+        client,
+        root + f"/{runid}/decision",
+        {"expected_version": response["order_version"], "decision": "approve"},
+    )
+    assert rejected.status_code == 409

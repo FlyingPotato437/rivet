@@ -127,6 +127,16 @@ def root():
     return directory
 
 
+def _unique_json_object(pairs):
+    """Reject ambiguous metadata objects with duplicate JSON keys."""
+    value = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError("Duplicate metadata key.")
+        value[key] = item
+    return value
+
+
 def package_path(package_id):
     try:
         value = str(uuid.UUID(package_id))
@@ -144,6 +154,8 @@ def checklist():
         "redaction_checklist": CHECKLIST,
         "uploads_are_private": True,
         "automatic_processing": False,
+        "external_ai_authorized_by_default": False,
+        "external_ai_authorization_required": True,
     }
 
 
@@ -152,15 +164,24 @@ async def upload_package(
     files: Annotated[list[UploadFile], File()],
     file_metadata: str = Form(),
     redaction_confirmed: bool = Form(False),
+    external_ai_authorized: bool = Form(False),
+    processing_authorization_reference: str = Form(""),
 ):
     if not redaction_confirmed:
         fail("Review the redaction checklist and confirm permission before uploading.")
+    reference = processing_authorization_reference.strip()
+    if len(reference) > 500 or any(c in reference for c in ("\x00", "\r", "\n")):
+        fail("Use a single-line authorization reference of at most 500 characters.")
+    if external_ai_authorized and not reference:
+        fail(
+            "Record the customer's external AI processing authorization reference first."
+        )
     if not 1 <= len(files) <= 20:
         fail("Upload between one and twenty files per pilot package.")
     try:
         if len(file_metadata) > 64_000:
             raise ValueError
-        entries = json.loads(file_metadata)
+        entries = json.loads(file_metadata, object_pairs_hook=_unique_json_object)
         if not isinstance(entries, list) or len(entries) != len(files):
             raise ValueError
         for entry in entries:
@@ -169,7 +190,8 @@ async def upload_package(
             if (
                 not isinstance(entry["name"], str)
                 or not 1 <= len(entry["name"]) <= 255
-                or any(c in entry["name"] for c in ("\x00", "\r", "\n"))
+                or any(c in entry["name"] for c in ("\x00", "\r", "\n", "/", "\\"))
+                or entry["name"].strip() in {".", ".."}
             ):
                 raise ValueError
             if entry["role"] not in {
@@ -247,7 +269,18 @@ async def upload_package(
                 "checklist": CHECKLIST,
             },
             "packages": [
-                {"id": package_id, "kind": "real_private", "sources": sources}
+                {
+                    "id": package_id,
+                    "kind": "real_private",
+                    "sources": sources,
+                    "model_processing": {
+                        "external_ai_allowed": external_ai_authorized,
+                        "authorization_reference": reference,
+                        "recorded_by": current_actor(),
+                        "recorded_at": now().isoformat(),
+                        "source_hashes": {s["id"]: s["sha256"] for s in sources},
+                    },
+                }
             ],
         }
         manifest_file = pending / "package.json"
@@ -265,6 +298,7 @@ async def upload_package(
         ],
         "manifest_url": f"/api/pilot-packages/{package_id}/manifest",
         "processing_started": False,
+        "external_ai_authorized": external_ai_authorized,
     }
 
 

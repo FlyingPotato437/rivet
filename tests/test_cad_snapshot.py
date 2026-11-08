@@ -306,7 +306,7 @@ def test_unterminated_pair_fails_closed_and_output_is_private_new_dir(tmp_path):
         write_snapshot(good, outdir)
 
 
-def test_oversized_polyline_is_skipped_and_paperspace_is_not_located(tmp_path):
+def test_oversized_polyline_is_skipped_and_paperspace_is_separate(tmp_path):
     p = dxf(
         tmp_path,
         """0
@@ -359,8 +359,12 @@ EOF
     )
     out = snapshot_dxf(p, {"max_record_pairs": 5})
     assert out["omissions"]["oversized_record:ENTITIES:LWPOLYLINE"] == 1
-    assert out["non_model_entity_counts"]["TEXT"] == 1
+    assert out["paper_space_entity_counts"]["TEXT"] == 1
     assert [item["text"] for item in out["placed_text"]] == ["model text"]
+    assert [item["text"] for item in out["paper_space_placed_text"]] == [
+        "paper text"
+    ]
+    assert out["paper_space_placed_text"][0]["layout"] == "Layout1"
     assert out["coverage_complete"] is False
 
 

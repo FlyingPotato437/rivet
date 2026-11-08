@@ -27,6 +27,45 @@ from scripts.evaluate_real_packages import _run
 PRIVATE_DATA_ROOT = (Path(__file__).resolve().parents[1] / ".data").resolve()
 
 
+def validate_remote_processing(package, *, requested):
+    """A redaction receipt alone does not authorize a private API upload.
+
+    This checks the operator's recorded customer authorization, not the legal
+    sufficiency of that authorization. Bind it to this exact source set so an
+    old approval cannot silently extend to later files. Local reads and cached
+    scoring do not require new remote-processing permission.
+    """
+    if not requested or package.get("kind") != "real_private":
+        return
+    receipt = package.get("model_processing")
+    source_ids = [source["id"] for source in package["sources"]]
+    valid = isinstance(receipt, dict) and len(source_ids) == len(set(source_ids))
+    if valid:
+        valid = (
+            receipt.get("external_ai_allowed") is True
+            and isinstance(receipt.get("authorization_reference"), str)
+            and bool(receipt["authorization_reference"].strip())
+            and isinstance(receipt.get("recorded_by"), str)
+            and bool(receipt["recorded_by"].strip())
+            and receipt.get("source_hashes")
+            == {source["id"]: source["sha256"] for source in package["sources"]}
+        )
+        try:
+            recorded = datetime.fromisoformat(receipt.get("recorded_at", ""))
+            valid = (
+                valid and recorded.tzinfo is not None and recorded.utcoffset() is not None
+            )
+        except (ValueError, TypeError):
+            valid = False
+    if not valid:
+        raise ValueError(
+            "Private package external AI processing is not authorized for these sources. "
+            "Record the customer's authorization reference, operator, timestamp and exact "
+            "source hashes in model_processing before using --vision or --drawing-vision. "
+            "Redaction confirmation alone is insufficient. No package was sent to a model."
+        )
+
+
 def prepare_output(path, *, private):
     destination = Path(path).resolve()
     if private:
@@ -248,6 +287,8 @@ def main():
         help="Versioned source-cell correspondence; use none for an explicit v1-policy replay.",
     )
     args = parser.parse_args()
+    if args.vision and args.predictions:
+        raise ValueError("Use saved predictions or a fresh vision pass, not both.")
     if args.timeout_seconds <= 0 or args.timeout_seconds > 86400:
         raise ValueError("Use a positive processing budget of at most 24 hours.")
     if not 1 <= args.drawing_page_budget <= 500:
@@ -291,6 +332,7 @@ def main():
         raise ValueError(
             "Confirm redaction and sharing permission in the private intake receipt first."
         )
+    validate_remote_processing(package, requested=args.vision or args.drawing_vision)
     destination = prepare_output(args.output_dir, private=private)
     from backend.engineering.intake import run_customer_intake
     from backend.equipment.package_reading import _call_with_budget
@@ -301,8 +343,6 @@ def main():
         max_drawing_pages=min(args.drawing_page_budget, 50), deadline=deadline) if package.get("engineering_inputs") else {
             "status": "not_run", "reason": "No customer engineering inputs classified; manufacturer outputs were not promoted to requirements"}
     predictions = str(args.predictions.resolve()) if args.predictions else None
-    if args.vision and predictions:
-        raise ValueError("Use saved predictions or a fresh vision pass, not both.")
     from backend.equipment.package_reading import (
         _call_with_budget,
         read_package_equipment,
@@ -572,6 +612,10 @@ def main():
         "elapsed_seconds": round(time.perf_counter() - started, 3),
         "report_status": report["status"],
         "customer_mail_sent": False,
+        "external_ai_requested": bool(args.vision or args.drawing_vision),
+        "processing_authorization_recorded": bool(
+            private and package.get("model_processing", {}).get("external_ai_allowed") is True
+        ),
         "evidence_archive_receipt": report.get("evidence_reconciliation", {}).get(
             "archive_receipt"
         ),

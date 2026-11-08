@@ -11,7 +11,9 @@ ENV PYTHONUNBUFFERED=1 \
     RIVET_ENV=production \
     RIVET_DATA_DIR=/var/lib/rivet
 COPY pyproject.toml uv.lock ./
-RUN uv sync --locked --no-dev --no-install-project && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng && \
+    uv sync --locked --no-dev --no-install-project && \
     python -m playwright install --with-deps chromium && \
     rm -rf /var/lib/apt/lists/* /root/.cache
 RUN groupadd --gid 10001 rivet && \

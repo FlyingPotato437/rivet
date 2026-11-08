@@ -295,6 +295,8 @@ def equipment_evidence(snapshot):
             ),
         },
         "drawing_coverage_complete": snapshot["coverage_complete"],
+        "paper_space_coverage_complete": snapshot.get("layout_coverage_complete", True),
+        "paper_space_entity_counts": snapshot.get("paper_space_entity_counts", {}),
         "omissions": snapshot["omissions"],
         "production_bom_verified": False,
         "electrical_connectivity_verified": False,
@@ -415,12 +417,26 @@ def verify_saved_drawing(before, after, edits):
     for key in ("placed_lines", "placed_paths", "placed_inserts"):
         if index(before, key) != index(after, key):
             errors.append(f"Unplanned native geometry change: {key}")
+    for key in (
+        "paper_space_placed_text",
+        "paper_space_placed_lines",
+        "paper_space_placed_paths",
+        "paper_space_placed_inserts",
+    ):
+        if index(before, key) != index(after, key):
+            errors.append(f"Unplanned paper-space change: {key}")
     if (
         before["header"] != after["header"]
         or before["omissions"] != after["omissions"]
         or before["coverage_complete"] != after["coverage_complete"]
+        or before.get("paper_space_entity_counts", {})
+        != after.get("paper_space_entity_counts", {})
+        or before.get("non_model_entity_counts", {})
+        != after.get("non_model_entity_counts", {})
+        or before.get("layout_coverage_complete", True)
+        != after.get("layout_coverage_complete", True)
     ):
-        errors.append("Native units or extraction coverage changed")
+        errors.append("Native units or layout extraction coverage changed")
     placement_gaps = {
         k: v
         for k, v in before["omissions"].items()
@@ -459,6 +475,10 @@ def verify_saved_drawing(before, after, edits):
         "errors": errors,
         "supported_geometry_unchanged": not any("geometry" in e for e in errors),
         "coverage_complete": after["coverage_complete"],
+        "paper_space_coverage_complete": after.get("layout_coverage_complete", True),
+        "paper_space_entities_preserved": not any(
+            "paper-space" in error for error in errors
+        ),
         "shared_definition_placement_coverage_verified": placement_complete,
         "engineering_correctness_verified": False,
     }

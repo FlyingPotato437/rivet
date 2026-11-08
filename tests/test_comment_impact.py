@@ -100,9 +100,19 @@ def test_record_view_and_exports_carry_comment_types(client):
 
     excel = client.get(f"/api/orders/{o['id']}/record/export")
     rows = list(load_workbook(BytesIO(excel.content)).active.values)
-    assert rows[1][-3:] == ("Type", "Engineer decision", "Cost impact")
+    assert rows[1][-4:] == (
+        "Type",
+        "Engineer review required",
+        "Cost impact",
+        "Recorded status",
+    )
     spare = next(r for r in rows if r[0] == "2")
-    assert spare[-3:] == ("Added scope", None, "Adds scope; needs pricing")
+    assert spare[-4:] == (
+        "Added scope",
+        None,
+        "Adds scope; needs pricing",
+        "open",
+    )
 
     word = client.get(f"/api/orders/{o['id']}/record/export?format=docx")
     assert word.status_code == 200

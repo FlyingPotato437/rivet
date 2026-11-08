@@ -25,7 +25,7 @@ HEADINGS = [
     "Workflow",
     "Log ID",
     "Type",
-    "Engineer decision",
+    "Engineer review required",
     "Cost impact",
 ]
 KIND_LABELS = {
@@ -128,7 +128,7 @@ def rows(w, compact=False):
             workflow_status(c).replace("_", " ").capitalize(),
             c.get("log_reference", c["number"]),
             *impact_cells(c),
-            *([c["status"]] if w.get("response_log", {}).get("comments") else []),
+            c["status"],
         ]
 
 
@@ -137,9 +137,7 @@ def workbook(w):
     sheet = book.active
     sheet.title = "Comment log"
     sheet.append([safe_cell(w["order"]["title"]), safe_cell(w["order"]["number"])])
-    headings = HEADINGS + (
-        ["Recorded status"] if w.get("response_log", {}).get("comments") else []
-    )
+    headings = HEADINGS + ["Recorded status"]
     sheet.append(headings)
     for row in rows(w):
         sheet.append([safe_cell(v) if isinstance(v, str) else v for v in row])
@@ -340,11 +338,43 @@ def response_letter_html(w):
         f'<p class="source">Response recorded by {e(c["responder"])} · Status: {e(c["status"])}</p></section>'
         for c in included
     )
-    return f"""<html><head><title>Draft comment response letter</title><style>@page{{size:A4;margin:20mm}}body{{font:12px/1.55 Arial;color:#25232b}}h1{{font-size:26px}}h2{{font-size:15px}}section{{border-top:1px solid #ddd;padding-top:12px;margin-top:24px;break-inside:avoid}}p{{white-space:pre-wrap;overflow-wrap:anywhere}}.source{{color:#625d6b;font-size:10px}}.draft{{font-weight:bold;letter-spacing:1px}}</style></head><body><p class="draft">DRAFT · REVIEW BEFORE SENDING</p><h1>Submittal comment responses</h1><p>{e(w["order"]["number"])} · {e(w["order"]["title"])}<br>Customer: {e(w["order"]["customer"])}</p><p>{len(included)} reviewed responses included. {unresolved} comments do not yet have a reviewed response and are omitted from this letter. Check the complete comment log before issuing.</p>{body}<p class="source">Prepared from the saved record. Downloading does not send this letter, establish customer approval, or authorize production.</p></body></html>"""
+    return f"""<html><head><title>Draft comment response letter</title><style>@page{{size:A4;margin:20mm}}body{{font:12px/1.55 Arial;color:#25232b}}h1{{font-size:26px}}h2{{font-size:15px;break-after:avoid}}section{{border-top:1px solid #ddd;padding-top:12px;margin-top:24px;break-inside:auto}}p{{white-space:pre-wrap;overflow-wrap:anywhere}}.source{{color:#625d6b;font-size:10px}}.draft{{font-weight:bold;letter-spacing:1px}}</style></head><body><p class="draft">DRAFT · REVIEW BEFORE SENDING</p><h1>Submittal comment responses</h1><p>{e(w["order"]["number"])} · {e(w["order"]["title"])}<br>Customer: {e(w["order"]["customer"])}</p><p>{len(included)} reviewed responses included. {unresolved} comments do not yet have a reviewed response and are omitted from this letter. Check the complete comment log before issuing.</p>{body}<p class="source">Prepared from the saved record. Downloading does not send this letter, establish customer approval, or authorize production.</p></body></html>"""
 
 
 def response_letter(w):
     return render_pdf(response_letter_html(w))
+
+
+def _pdf_text_chunks(value, width, max_lines=8):
+    """Split long PDF cell text by estimated wrapped lines, preserving characters."""
+    text = str(value or "")
+    if not text:
+        return [""]
+    chunks = []
+    start = 0
+    index = 0
+    lines = 1
+    column = 0
+    while index < len(text):
+        char = text[index]
+        if char in "\r\n":
+            lines += 1
+            column = 0
+        else:
+            advance = 4 if char == "\t" else 1
+            if column + advance > width:
+                lines += 1
+                column = 0
+            column += advance
+        if lines > max_lines and index > start:
+            chunks.append(text[start:index])
+            start = index
+            lines = 1
+            column = 0
+            continue
+        index += 1
+    chunks.append(text[start:])
+    return chunks
 
 
 def render_pdf(html, landscape=False):
@@ -374,11 +404,42 @@ def pdf(w):
     source_key = "".join(
         f"<p><b>D{i}</b> {e(d['name'])}</p>" for i, d in enumerate(w["documents"], 1)
     )
-    body = "".join(
-        f"<tr><td>{e(r[0])}</td><td>{e(r[2])} · Page {e(r[3])}<br>Revision: {e(r[1])}<br>Target: {e(r[4])}</td><td>{e(r[5])}<p>{e(r[7])} · {e(r[8])}</p></td><td>{e(r[9])}<br>{e(r[12])}<p>{e(r[16])}{' · Engineer decision' if r[17] else ''}</p><p>{e(r[18])}</p></td><td>{e(r[10])}<p>{e(r[11])}</p></td></tr>"
-        for r in rows(w, compact=True)
-    )
-    html = f"""<html><head><title>{e(w["order"]["title"])} - comment log</title><style>@page{{size:A4 landscape;margin:16mm}}body{{font:11px/1.45 Arial;color:#25232b}}h1{{font-size:24px}}table{{border-collapse:collapse;width:100%;table-layout:fixed}}td,th{{border-bottom:1px solid #ddd;padding:8px;vertical-align:top;text-align:left;overflow-wrap:anywhere;white-space:pre-wrap}}th{{background:#eee}}tr{{break-inside:avoid}}p{{color:#5c5864}}</style></head><body><h1>{e(w["order"]["title"])}</h1><p>{e(w["order"]["number"])} · Comment response matrix · {e(w["order"]["customer"])}</p><table><colgroup><col style="width:7%"><col style="width:19%"><col style="width:32%"><col style="width:12%"><col style="width:30%"></colgroup><thead><tr><th>No.</th><th>Source and location</th><th>Comment / author / date</th><th>Status</th><th>Response / author</th></tr></thead><tbody>{body}</tbody></table><h3>Source files</h3>{source_key}<p>Recorded responses and review status. This record does not certify equipment compliance or authorize production.</p></body></html>"""
+    body_rows = []
+    for row in rows(w, compact=True):
+        narrow_comment_overflow = len(
+            _pdf_text_chunks(row[5], width=34, max_lines=14)
+        ) > 1
+        narrow_response_overflow = len(
+            _pdf_text_chunks(row[10], width=34, max_lines=14)
+        ) > 1
+        comment_parts = _pdf_text_chunks(row[5], width=105, max_lines=20)
+        response_parts = _pdf_text_chunks(row[10], width=105, max_lines=20)
+        if not narrow_comment_overflow and not narrow_response_overflow:
+            body_rows.append(
+                f"<tr><td>{e(row[0])}</td><td>{e(row[2])} · Page {e(row[3])}<br>Revision: {e(row[1])}<br>Target: {e(row[4])}</td><td>{e(row[5])}<p>{e(row[7])} · {e(row[8])}</p></td><td><b>Response</b><br>{e(row[9])}<p><b>Recorded</b> · {e(row[19])}</p><p>Review: {e(row[12])}</p><p>{e(row[16])}{' · Engineer review required' if row[17] else ''}</p><p>{e(row[18])}</p></td><td>{e(row[10])}<p>{e(row[11])}</p></td></tr>"
+            )
+            continue
+
+        context = (
+            f"<b>Comment {e(row[0])} · continued</b> · {e(row[2])} · Page {e(row[3])} · "
+            f"Revision: {e(row[1])} · Target: {e(row[4])}<br>"
+            f"Response: {e(row[9])} · Recorded: {e(row[19])} · Review: {e(row[12])} · "
+            f"{e(row[16])}{' · Engineer review required' if row[17] else ''} · {e(row[18])}"
+        )
+        for part, comment in enumerate(comment_parts, 1):
+            body_rows.append(
+                f'<tr class="continuation"><td colspan="5">{context}'
+                f"<p><b>Customer comment, part {part}/{len(comment_parts)}</b><br>{e(comment)}</p>"
+                f"<p>{e(row[7])} · {e(row[8])}</p></td></tr>"
+            )
+        for part, response in enumerate(response_parts, 1):
+            body_rows.append(
+                f'<tr class="continuation"><td colspan="5">{context}'
+                f"<p><b>Response text, part {part}/{len(response_parts)}</b><br>{e(response)}</p>"
+                f"<p>{e(row[11])}</p></td></tr>"
+            )
+    body = "".join(body_rows)
+    html = f"""<html><head><title>{e(w["order"]["title"])} - comment log</title><style>@page{{size:A4 landscape;margin:16mm}}body{{font:11px/1.45 Arial;color:#25232b}}h1{{font-size:24px}}table{{border-collapse:collapse;width:100%;table-layout:fixed}}thead{{display:table-header-group}}td,th{{border-bottom:1px solid #ddd;padding:8px;vertical-align:top;text-align:left;overflow-wrap:anywhere;white-space:pre-wrap}}th{{background:#eee}}tr{{break-inside:avoid;page-break-inside:avoid}}.continuation td{{padding:10px 12px}}.continuation p{{margin:8px 0 0}}p{{color:#5c5864;overflow-wrap:anywhere}}</style></head><body><h1>{e(w["order"]["title"])}</h1><p>{e(w["order"]["number"])} · Comment response matrix · {e(w["order"]["customer"])}</p><table><colgroup><col style="width:7%"><col style="width:19%"><col style="width:29%"><col style="width:15%"><col style="width:30%"></colgroup><thead><tr><th>No.</th><th>Source and location</th><th>Comment / author / date</th><th>Response status / recorded status</th><th>Response / author</th></tr></thead><tbody>{body}</tbody></table><h3>Source files</h3>{source_key}<p>Recorded responses and review status. This record does not certify equipment compliance or authorize production.</p></body></html>"""
     with sync_playwright() as pw:
         chrome = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
         browser = pw.chromium.launch(

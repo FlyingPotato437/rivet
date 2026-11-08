@@ -358,11 +358,18 @@ def test_pending_revision_defers_generic_reply_then_approvals_queue_one_commerci
     assert autopilot.deliver(client_factory=graph)[0]["status"] == "created"
     assert graph.draft()["attachments"] == ["response-letter.pdf", "change-order.pdf"]
     with Session.begin() as s:
-        assert (
-            automatic.reconcile_receipt(s, s.get(MailboxReceipt, rid))["status"]
-            == "ready"
-        )
+        final = automatic.reconcile_receipt(s, s.get(MailboxReceipt, rid))
+        assert final["status"] == "ready", final
         assert not autopilot.activity(s)["needs_you"]
+        repeated = automatic.reconcile_receipt(s, s.get(MailboxReceipt, rid))
+        assert repeated["status"] == "ready"
+        assert len(list(s.scalars(select(ReplyDraft)))) == 1
+    assert sum(path.endswith("/createReply") for _, path in graph.calls) == 1
+    with Session.begin() as s:
+        s.get(Span, sid).text += " changed after Outlook draft placement"
+        stale = automatic.reconcile_receipt(s, s.get(MailboxReceipt, rid))
+        assert stale["status"] == "blocked"
+        assert stale["reason"] == "lifecycle_handoff_changed"
 
 
 @pytest.mark.parametrize(

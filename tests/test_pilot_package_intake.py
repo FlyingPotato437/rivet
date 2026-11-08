@@ -66,11 +66,51 @@ def test_upload_requires_redaction_and_does_not_queue_work(upload_client):
     manifest = package.json()
     assert manifest["redaction_review"]["confirmed"]
     assert manifest["packages"][0]["kind"] == "real_private"
+    assert manifest["packages"][0]["model_processing"]["external_ai_allowed"] is False
+    assert record["external_ai_authorized"] is False
     assert next(root.rglob("01.pdf")).stat().st_mode & 0o777 == 0o600
     downloaded = client.get(
         f"/api/pilot-packages/{record['package_id']}/sources/source-01"
     ).content
     assert hashlib.sha256(downloaded).hexdigest() == record["files"][0]["sha256"]
+
+
+def test_external_ai_authorization_is_separate_from_redaction_and_records_exact_sources(
+    upload_client,
+):
+    client, root = upload_client
+    denied = submit(client, external_ai_authorized="true")
+    assert denied.status_code == 422
+    assert not list(root.rglob("package.json"))
+    result = submit(
+        client,
+        external_ai_authorized="true",
+        processing_authorization_reference="Approved redacted evaluation - synthetic reference",
+    )
+    assert result.status_code == 201, result.text
+    record = result.json()
+    package = client.get(record["manifest_url"]).json()["packages"][0]
+    receipt = package["model_processing"]
+    assert receipt["external_ai_allowed"] is True
+    assert (
+        receipt["authorization_reference"]
+        == "Approved redacted evaluation - synthetic reference"
+    )
+    assert receipt["recorded_by"] and receipt["recorded_at"]
+    assert receipt["source_hashes"] == {
+        s["id"]: s["sha256"] for s in package["sources"]
+    }
+    assert record["processing_started"] is False
+
+
+@pytest.mark.parametrize("reference", ["x" * 501, "email\nbody", "email\x00body"])
+def test_invalid_authorization_reference_is_rejected_before_storage(
+    upload_client, reference
+):
+    client, root = upload_client
+    response = submit(client, processing_authorization_reference=reference)
+    assert response.status_code == 422
+    assert not list(root.rglob("package.json"))
 
 
 def test_other_tenant_cannot_read_manifest_or_original(upload_client, monkeypatch):
@@ -109,6 +149,60 @@ def test_malformed_metadata_name_returns_validation_error_not_server_error(
     client, root = upload_client
     metadata = [{"name": [], "role": "drawing", "revision": "A", "side": "target"}]
     assert submit(client, file_metadata=json.dumps(metadata)).status_code == 422
+    assert not list(root.rglob("package.json"))
+
+
+@pytest.mark.parametrize("name", ["../drawing.pdf", r"..\drawing.pdf"])
+def test_path_like_metadata_filename_is_rejected_before_storage(upload_client, name):
+    client, root = upload_client
+    metadata = [{"name": name, "role": "drawing", "revision": "A", "side": "target"}]
+    response = client.post(
+        "/api/pilot-packages",
+        data={
+            "redaction_confirmed": "true",
+            "file_metadata": json.dumps(metadata),
+        },
+        files=[("files", (name, BytesIO(pdf_bytes()), "application/pdf"))],
+    )
+    assert response.status_code == 422
+    assert not list(root.rglob("package.json"))
+
+
+def test_duplicate_json_metadata_keys_are_rejected(upload_client):
+    client, root = upload_client
+    duplicate = (
+        '[{"name":"drawing.pdf","name":"other.pdf","role":"drawing",'
+        '"revision":"A","side":"baseline"}]'
+    )
+    assert submit(client, file_metadata=duplicate).status_code == 422
+    assert not list(root.rglob("package.json"))
+
+
+def test_unsupported_cad_format_has_clear_export_path(upload_client):
+    client, root = upload_client
+    response = client.post(
+        "/api/pilot-packages",
+        data={
+            "redaction_confirmed": "true",
+            "file_metadata": json.dumps(
+                [
+                    {
+                        "name": "drawing.dwg",
+                        "role": "drawing",
+                        "revision": "A",
+                        "side": "baseline",
+                    }
+                ]
+            ),
+        },
+        files=[("files", ("drawing.dwg", BytesIO(b"DWG"), "application/octet-stream"))],
+    )
+    assert response.status_code == 422
+    assert "Native DWG conversion is not configured" in response.json()["detail"]
+    assert (
+        "DXF" in response.json()["detail"]
+        and "matching PDF" in response.json()["detail"]
+    )
     assert not list(root.rglob("package.json"))
 
 

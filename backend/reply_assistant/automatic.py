@@ -165,6 +165,71 @@ def completed_outlook_reply(s, receipt):
     return None
 
 
+def existing_lifecycle_draft(s, order, receipt):
+    """Reconcile an already placed lifecycle handoff without preparing anew."""
+    from backend.autopilot.models import OutlookDraft
+    from backend.lifecycle.outlook_handoff import validate as validate_handoff
+
+    if not receipt.internet_message_id:
+        return None
+    replies = s.scalars(
+        scoped(ReplyDraft)
+        .where(
+            ReplyDraft.order_id == order.id,
+            ReplyDraft.internet_message_id == receipt.internet_message_id,
+            ReplyDraft.request_key.like("lifecycle-mail:%"),
+        )
+        .order_by(ReplyDraft.created_at.desc())
+        .limit(5)
+    )
+    for reply in replies:
+        handoff = reply.context.get("lifecycle_handoff", {})
+        if handoff.get("receipt_id") != receipt.id:
+            continue
+        native = s.scalar(
+            scoped(OutlookDraft)
+            .where(OutlookDraft.reply_draft_id == reply.id)
+            .limit(1)
+        )
+        if not native or not native.graph_draft_id:
+            continue
+        if native.status == "superseded":
+            return _state(
+                "superseded",
+                "A newer customer email replaced this proposal. The existing Outlook draft was preserved for review.",
+                reason="lifecycle_handoff_superseded",
+                draft_id=reply.id,
+            )
+        if native.status not in {"created", "existing_draft"}:
+            continue
+        from backend.autopilot.service import _newer_in_thread
+
+        if _newer_in_thread(s, receipt):
+            return _state(
+                "superseded",
+                "A newer customer email replaced this proposal. The existing Outlook draft was preserved for review.",
+                reason="newer_customer_email",
+                draft_id=reply.id,
+            )
+        try:
+            validate_handoff(s, order, reply)
+        except HTTPException:
+            return _state(
+                "blocked",
+                "The existing Outlook draft is no longer backed by current approved work. Review the package and draft before continuing.",
+                reason="lifecycle_handoff_changed",
+                draft_id=reply.id,
+            )
+        return _state(
+            "ready",
+            "The current approved proposal is already in Outlook Drafts for human review.",
+            reason="lifecycle_handoff_in_outlook",
+            draft_id=reply.id,
+            package_id=handoff["package_id"],
+        )
+    return None
+
+
 def reconcile_receipt(s, receipt):
     """Stage one idempotent proposal after all required evidence is available."""
     from backend.project_flow.service import answered, is_sent_copy, set_aside_sent_copy
@@ -270,6 +335,8 @@ def reconcile_receipt(s, receipt):
 
     if native := native_work(s, order, receipt):
         return _save(receipt, native)
+    if existing := existing_lifecycle_draft(s, order, receipt):
+        return _save(receipt, existing)
     from backend.lifecycle import outlook_handoff
 
     commercial = outlook_handoff.commercial_work_for_receipt(s, order, receipt)

@@ -124,14 +124,24 @@ def test_saved_recheck_sees_shared_block_fanout(tmp_path):
     doc.blocks.new("TAP").add_text("NLTC", dxfattribs={"height": 3})
     doc.modelspace().add_blockref("TAP", (100, 100))
     doc.modelspace().add_blockref("TAP", (900, 900))
+    sheet = doc.layouts.new("Customer Sheet")
+    sheet.add_text("ORIGINAL SHEET TITLE", dxfattribs={"insert": (10, 10), "height": 2})
     doc.saveas(cad["path"])
     cad["sha256"] = file_hash(cad["path"])
+    original_bytes = Path(cad["path"]).read_bytes()
     result = build_package(sources, cad, tmp_path / "out")
     check = result["saved_drawing_check"]
     assert check["passed"] and check["expected_edits"] == 2
     assert check["placements_checked"] == 3
     assert not check["engineering_correctness_verified"]
     assert sorted(len(c["affected_placements"]) for c in result["changes"]) == [1, 2]
+    assert Path(cad["path"]).read_bytes() == original_bytes
+    after = snapshot_dxf(tmp_path / "out/Proposed-drawing.dxf")
+    assert any(
+        t["text"] == "ORIGINAL SHEET TITLE"
+        for t in after["paper_space_placed_text"]
+    )
+    assert result["saved_drawing_check"]["paper_space_entities_preserved"]
     assert all(
         (tmp_path / "out" / p["after_name"]).exists()
         for c in result["changes"]
@@ -160,6 +170,27 @@ def test_independent_check_rejects_wrong_value_geometry_and_missing_placement(tm
     changed = deepcopy(before)
     changed["placed_paths"][0]["points"][0][0] += 1
     assert not verify_saved_drawing(before, changed, [])["passed"]
+
+
+def test_saved_check_rejects_unplanned_paper_space_layout_change(tmp_path):
+    # A deterministic second-sheet control: this remains outside model-space
+    # correction targets, while the independent saved-file check still covers it.
+    schedule(tmp_path)
+    doc = ezdxf.readfile(tmp_path / "schedule.dxf")
+    layout = doc.layouts.new("Sheet 2")
+    layout.add_text("TITLE BLOCK", dxfattribs={"insert": (10, 10), "height": 2})
+    doc.saveas(tmp_path / "schedule.dxf")
+    before = snapshot_dxf(tmp_path / "schedule.dxf")
+    assert before["coverage_complete"]
+    assert before["layout_coverage_complete"]
+    assert before["paper_space_placed_text"][0]["layout"].startswith(
+        "Paper space ["
+    )
+    changed = deepcopy(before)
+    changed["paper_space_placed_text"][0]["text"] = "ALTERED TITLE BLOCK"
+    check = verify_saved_drawing(before, changed, [])
+    assert not check["passed"]
+    assert any("paper-space" in error for error in check["errors"])
 
 
 def test_a_lying_writer_cannot_publish_an_after_preview(tmp_path, monkeypatch):

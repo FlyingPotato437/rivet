@@ -291,6 +291,7 @@ def propose(comments, snapshot):
         "edits": edits,
         "source_sha256": snapshot["source_sha256"],
         "cad_coverage_complete": snapshot["coverage_complete"],
+        "paper_space_coverage_complete": snapshot.get("layout_coverage_complete", True),
         "calculations": calculations,
     }
 
@@ -569,6 +570,10 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         )
     counts = Counter(c["status"] for c in plan["comments"])
     issues = []
+    if not snapshot.get("layout_coverage_complete", True):
+        issues.append(
+            "One or more layouts contain unsupported or unlocated CAD entities. The saved DXF preserves the original bytes outside approved edits, but the review excerpts do not represent a complete multi-layout drawing."
+        )
     if plan["calculations"]:
         issues.append(
             "Drawing arithmetic uses printed source values only. Rating selection, winding design and protection remain subject to engineer approval."
@@ -609,6 +614,8 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         "status": "needs_information" if issues else "ready_for_review",
         "verification": verification,
         "saved_drawing_check": recheck,
+        "cad_model_space_coverage_complete": snapshot["coverage_complete"],
+        "cad_layout_coverage_complete": snapshot.get("layout_coverage_complete", True),
         "calculation_audits": plan["calculations"],
         "saved_calculation_check": calculation_check,
         "equipment_evidence": {

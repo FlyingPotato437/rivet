@@ -244,6 +244,7 @@ def snapshot_dxf(
     omissions: Counter[str] = Counter()
     unsupported_by_scope: Counter[str] = Counter()
     non_model_counts: Counter[str] = Counter()
+    paper_space_counts: Counter[str] = Counter()
     header: dict[str, str] = {}
     section = ""
     expect_section_name = False
@@ -286,6 +287,7 @@ def snapshot_dxf(
                 "flags": _integer(record, "70"),
                 "unsupported_counts": Counter(),
                 "index_incomplete": False,
+                "paper_space": name.startswith("*Paper_Space"),
             }
             if len(blocks) >= int(cfg["max_block_count"]):
                 unsupported_by_scope["block_definition_cap"] += 1
@@ -308,9 +310,7 @@ def snapshot_dxf(
                     non_model_counts,
                 )
             return
-        if scope == "ENTITIES" and _paper_space(record):
-            non_model_counts[record_type] += 1
-            return
+        paper_space = scope == "ENTITIES" and _paper_space(record)
         if scopes[scope] >= int(cfg["max_records_per_scope"]):
             if scope == "BLOCKS" and block is not None:
                 block["index_incomplete"] = True
@@ -328,6 +328,12 @@ def snapshot_dxf(
             return
         retained_records += 1
         layout = _decode(_first(record, "410")).strip()
+        if paper_space and not layout:
+            # Some writers omit group 410 but retain the owning BLOCK_RECORD
+            # handle in group 330. Keep those sheets separate even when the
+            # human-readable layout name is unavailable in this stream pass.
+            owner = _first(record, "330").strip()
+            layout = f"Paper space [{owner}]" if owner else "Paper space [unknown]"
         item = {
             "kind": record_type,
             "handle": _first(record, "5"),
@@ -426,6 +432,8 @@ def snapshot_dxf(
                 blocks[block["name"]]["items"].append(item)
             return
         if scope == "ENTITIES":
+            if paper_space:
+                paper_space_counts[record_type] += 1
             entities.append(item)
 
     try:
@@ -498,6 +506,10 @@ def snapshot_dxf(
     placed_lines: list[dict[str, Any]] = []
     placed_inserts: list[dict[str, Any]] = []
     placed_paths: list[dict[str, Any]] = []
+    paper_space_text: list[dict[str, Any]] = []
+    paper_space_lines: list[dict[str, Any]] = []
+    paper_space_inserts: list[dict[str, Any]] = []
+    paper_space_paths: list[dict[str, Any]] = []
     geometry_points = 0
     reachable_blocks: set[str] = set()
     reachable_block_unsupported: Counter[str] = Counter()
@@ -553,7 +565,7 @@ def snapshot_dxf(
             angle = math.radians(item["text_rotation"])
             cosine, sine = math.cos(angle), math.sin(angle)
             put(
-                placed_text,
+                paper_space_text if root_context["paper_space"] else placed_text,
                 {
                     "kind": kind,
                     "text": item["text"],
@@ -586,7 +598,7 @@ def snapshot_dxf(
             p1 = _point(transform, item["x1"], item["y1"])
             p2 = _point(transform, item["x2"], item["y2"])
             put(
-                placed_lines,
+                paper_space_lines if root_context["paper_space"] else placed_lines,
                 {
                     "kind": "LINE",
                     "start": [*p1, item["z1"]],
@@ -615,7 +627,7 @@ def snapshot_dxf(
                 raise SnapshotError(str(exc)) from exc
             geometry_points += len(geometry["points"])
             put(
-                placed_paths,
+                paper_space_paths if root_context["paper_space"] else placed_paths,
                 {
                     "kind": kind,
                     "handle": item["handle"],
@@ -642,9 +654,6 @@ def snapshot_dxf(
             )
         elif kind == "INSERT":
             name = item["block"]
-            if item["paper_space"]:
-                omissions["paperspace_insert"] += 1
-                return
             if item["unsupported_extrusion"]:
                 omissions["unsupported_insert_extrusion"] += 1
                 return
@@ -691,7 +700,10 @@ def snapshot_dxf(
                 "block_path": [*path_names, name],
                 "locator": loc,
             }
-            put(placed_inserts, here)
+            put(
+                paper_space_inserts if root_context["paper_space"] else placed_inserts,
+                here,
+            )
             for child in b["items"]:
                 walk(
                     child,
@@ -705,9 +717,6 @@ def snapshot_dxf(
                 )
 
     for item in entities:
-        if item["paper_space"]:
-            non_model_counts[item["kind"]] += 1
-            continue
         if item["kind"] == "INSERT" and item["unsupported_extrusion"]:
             omissions["unsupported_insert_extrusion"] += 1
             continue
@@ -720,6 +729,7 @@ def snapshot_dxf(
         root_context = {
             "handle": item["handle"],
             "layout": item["layout"] or "Model",
+            "paper_space": item["paper_space"],
             "location": [item["x"], item["y"]] if item["kind"] == "INSERT" else None,
         }
         walk(
@@ -731,6 +741,36 @@ def snapshot_dxf(
             item["layer"],
             root_context,
         )
+
+    # Layout contents are commonly serialized as BLOCKS definitions rather
+    # than top-level ENTITIES. Treat each paper-space block as a distinct sheet
+    # root; never merge its placements into model-space correction targets.
+    for name, definition in blocks.items():
+        if not definition.get("paper_space"):
+            continue
+        layout_name = f"Paper space [{name}]"
+        for item in definition["items"]:
+            paper_space_counts[item["kind"]] += 1
+            root_context = {
+                "handle": item["handle"],
+                "layout": layout_name,
+                "paper_space": True,
+                "location": [item["x"], item["y"]] if item["kind"] == "INSERT" else None,
+            }
+            walk(
+                item,
+                IDENTITY,
+                (),
+                item["handle"],
+                layout_name + "/" + (item["handle"] or item["kind"]),
+                item["layer"],
+                root_context,
+            )
+        for label, count in definition["unsupported_counts"].items():
+            kind = label.rsplit(":", 1)[-1]
+            non_model_counts[kind] += count
+        if definition["index_incomplete"]:
+            non_model_counts["incomplete_paper_space_block"] += 1
 
     if len(entities) >= int(cfg["max_records_per_scope"]):
         warnings.append("top-level entity cap reached")
@@ -766,6 +806,13 @@ def snapshot_dxf(
         "placed_lines": placed_lines,
         "placed_inserts": placed_inserts,
         "placed_paths": placed_paths,
+        "paper_space_placed_text": paper_space_text,
+        "paper_space_placed_lines": paper_space_lines,
+        "paper_space_placed_inserts": paper_space_inserts,
+        "paper_space_placed_paths": paper_space_paths,
+        "paper_space_entity_counts": dict(paper_space_counts),
+        "layout_coverage_scope": "supported paper-space TEXT/MTEXT/ATTRIB/INSERT/LINE/ARC/CIRCLE/LWPOLYLINE records, separated from model-space correction targets",
+        "layout_coverage_complete": not non_model_counts and not omissions and eof_seen and not limits_hit,
         "geometry_points": geometry_points,
         "omissions": dict(omissions),
         "unsupported_counts_by_scope": dict(unsupported_by_scope),

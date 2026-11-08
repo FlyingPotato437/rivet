@@ -248,3 +248,121 @@ def test_current_saved_agent_answers_reach_log_without_becoming_human_decisions(
     assert not later["response_log"]["comments"]
     with Session() as s:
         assert get(s, RecordAgentRun, rid).status == "completed"
+
+
+def test_pdf_continuation_chunks_preserve_newlines_and_long_tokens():
+    from backend.records.exports import _pdf_text_chunks
+
+    value = "first line\nsecond line\n" + ("X" * 83) + " end"
+    chunks = _pdf_text_chunks(value, width=10, max_lines=2)
+
+    assert len(chunks) > 3
+    assert "".join(chunks) == value
+    assert all(
+        sum(max(1, (len(line) + 9) // 10) for line in chunk.splitlines()) <= 2
+        for chunk in chunks
+    )
+
+
+def test_moderate_unbroken_pdf_comment_gets_attributed_continuation(client):
+    import pdfplumber
+    from test_records import create, upload
+
+    order = create(client)
+    w = upload(client, order, "review.txt", b"Comment 1: Confirm the returned cable route.")
+    c = w["comments"][0]
+    text = "X" * 1500
+    saved = client.post(
+        f"/api/orders/{order['id']}/record/comments/{c['id']}",
+        headers={"Idempotency-Key": str(uuid4())},
+        json=edit_body(w, c, revision="R-17", text=text),
+    )
+    assert saved.status_code == 200, saved.text
+
+    response = client.get(f"/api/orders/{order['id']}/record/export?format=pdf")
+    assert response.status_code == 200
+    with pdfplumber.open(BytesIO(response.content)) as pdf:
+        page_texts = [page.extract_text() or "" for page in pdf.pages]
+    continued = [page for page in page_texts if "continued" in page]
+    assert continued
+    assert "X" * 1500 in "".join("".join(page.split()) for page in continued)
+    assert all(
+        "Revision: R-17" in page and "Recorded: open" in page
+        for page in continued
+    )
+
+    excel = client.get(f"/api/orders/{order['id']}/record/export?format=xlsx")
+    workbook = load_workbook(BytesIO(excel.content), read_only=True, data_only=True)
+    comment_rows = list(workbook["Comment log"].iter_rows(min_row=3, values_only=True))
+    assert len(comment_rows) == 1 and comment_rows[0][0] == "1"
+    assert comment_rows[0][5] == text
+    workbook.close()
+
+
+def test_long_comment_and_response_pdfs_keep_all_text_and_recorded_status(client):
+    import pdfplumber
+    from test_records import create, upload
+
+    order = create(client)
+    long_comment = (
+        "Confirm the returned cable route. " + ("DETAIL " * 1700) + "COMMENT_ENDMARKER"
+    )
+    w = upload(
+        client, order, "long-review.txt", b"Comment 1: Confirm the returned cable route."
+    )
+    c = w["comments"][0]
+    body = edit_body(w, c, revision="R-17", text=long_comment)
+    saved = client.post(
+        f"/api/orders/{order['id']}/record/comments/{c['id']}",
+        headers={"Idempotency-Key": str(uuid4())},
+        json=body,
+    )
+    assert saved.status_code == 200, saved.text
+
+    matrix = client.get(f"/api/orders/{order['id']}/record/export?format=pdf")
+    assert matrix.status_code == 200 and matrix.content.startswith(b"%PDF")
+    with pdfplumber.open(BytesIO(matrix.content)) as pdf:
+        matrix_pages = [page.extract_text() or "" for page in pdf.pages]
+        matrix_text = "\n".join(matrix_pages)
+        assert len(pdf.pages) > 1
+    from backend.records.exports import rows
+
+    assert next(rows(saved.json()))[-1] == "open"
+    assert "COMMENT_ENDMARKER" in matrix_text
+    assert "R-17" in matrix_text and "Not stated" in matrix_text, matrix_text[:3000]
+    assert "Recorded" in matrix_text and "open" in matrix_text
+    assert "Resolved" not in matrix_text and "Approved" not in matrix_text
+    continued_pages = [page for page in matrix_pages if "continued" in page]
+    assert continued_pages, matrix_text[:2500]
+    for page in continued_pages:
+        assert "R-17" in page and "Page Not stated" in page
+        assert "Recorded" in page and "open" in page
+
+    response_text = "Please verify the route against the field markup. " + (
+        "REVIEW_DETAIL " * 900
+    ) + "RESPONSE_ENDMARKER"
+    updated = client.post(
+        f"/api/orders/{order['id']}/record/comments/{c['id']}",
+        headers={"Idempotency-Key": str(uuid4())},
+        json=edit_body(
+            saved.json(),
+            c,
+            revision="R-17",
+            text=long_comment,
+            reviewed=True,
+            status="responded",
+            response=response_text,
+            responder="Casey Engineer",
+        ),
+    )
+    assert updated.status_code == 200, updated.text
+    letter = client.get(
+        f"/api/orders/{order['id']}/record/export?format=response_pdf"
+    )
+    assert letter.status_code == 200 and letter.content.startswith(b"%PDF")
+    with pdfplumber.open(BytesIO(letter.content)) as pdf:
+        letter_text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+        assert len(pdf.pages) > 1
+    assert "COMMENT_ENDMARKER" in letter_text
+    assert "RESPONSE_ENDMARKER" in letter_text
+    assert "DRAFT" in letter_text and "does not" in letter_text

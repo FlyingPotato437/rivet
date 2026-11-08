@@ -16,6 +16,12 @@ A live interim [Microsoft 365 intake folder](https://rivetusa.sharepoint.com/sit
 
 `GET /api/pilot-packages/checklist` returns the checklist. The public pilot-booking form is not a document-upload route.
 
+### External AI authorization is separate from upload permission
+
+Private intake defaults `external_ai_authorized=false`. To record customer permission, the operator supplies `external_ai_authorized=true` and a nonempty `processing_authorization_reference` (at most 500 characters; a reference to the agreed policy/approval, not a pasted email body). The API records operator, time and the exact source hashes in that package's `model_processing` receipt. This records a permission decision; it does not itself establish that an NDA or customer contract permits processing.
+
+The first-day runner rejects `--vision` and `--drawing-vision` on private packages without that receipt, before creating output or invoking any reader. Added or changed source files require a new receipt covering the new exact set. Existing private manifests with only a redaction confirmation must be updated by the authorized operator after permission is established; do not silently enable them. Local extraction and replay/scoring of saved predictions remain available without a new model request. This gate covers the private pilot path, not every legacy workspace or mailbox ingestion route; use this path for the initial SCC evaluation.
+
 ## Redaction checklist
 
 - Remove company/customer names, site addresses, personal names, phone numbers and email addresses, including title blocks, comments, document properties and hidden spreadsheet sheets.
