@@ -136,12 +136,19 @@ export function ProjectRecords({
       </nav>
       {!files && !!Object.keys(w.response_log?.comments || {}).length && (
         <p className="project-records-note">
-          {w.response_log?.counts.prepared || 0} responses prepared ·{" "}
-          {w.response_log?.counts.checked || 0} checked in draft ·{" "}
-          {w.response_log?.counts.clarification || 0} need clarification ·{" "}
-          {w.response_log?.counts.remaining || 0} changes remaining ·{" "}
-          {w.response_log?.counts.correspondence || 0} correspondence. Prepared
-          responses require engineer review.
+          {(
+            [
+              [w.response_log?.counts.prepared, "responses prepared"],
+              [w.response_log?.counts.checked, "checked in draft"],
+              [w.response_log?.counts.clarification, "need clarification"],
+              [w.response_log?.counts.remaining, "changes remaining"],
+              [w.response_log?.counts.correspondence, "correspondence"],
+            ] as const
+          )
+            .filter(([count]) => !!count)
+            .map(([count, label]) => `${count} ${label}`)
+            .join(" · ")}
+          . Engineer review required.
         </p>
       )}
       {!files && !!w.supporting_marks?.length && (
@@ -289,8 +296,10 @@ export function ProjectRecords({
                           ? "Resolved"
                           : c.response
                             ? "Response recorded"
-                            : w.response_log?.comments[c.id]?.label ||
-                              "Captured from source"}
+                            : (
+                                w.response_log?.comments[c.id]?.label ||
+                                "Captured from source"
+                              ).replace(" · engineer review required", "")}
                         {flag ? ` · ${flags[flag.kind]}` : ""}
                       </small>
                     </span>

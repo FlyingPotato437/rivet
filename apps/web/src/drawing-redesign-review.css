@@ -149,6 +149,16 @@
   border-left: 2px solid #9484b5;
   background: #b5a5dc0b;
 }
+.drr-comparison figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.drr-comparison figcaption strong {
+  font: 500 13px/1.5 var(--font-sans, sans-serif);
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+}
 .drr-summary > p {
   margin: 0;
   color: #d8d4dc;

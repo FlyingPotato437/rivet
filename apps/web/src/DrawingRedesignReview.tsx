@@ -8,6 +8,8 @@ import {
   ArrowSquareOut,
   Check,
   CircleNotch,
+  CaretDown,
+  FileText,
   MagnifyingGlassPlus,
   WarningCircle,
   X,
@@ -103,7 +105,10 @@ function Comparison({ change }: { change: DrawingRedesignChange }) {
       >
         {(["before", "after"] as const).map((side) => (
           <figure key={side}>
-            <figcaption>{side === "before" ? "Before" : "After"}</figcaption>
+            <figcaption>
+              <span>{side === "before" ? "Before" : "After"}</span>
+              <strong>{change[side]}</strong>
+            </figcaption>
             {images[side] ? (
               <button
                 className="drr-image-button"
@@ -204,11 +209,13 @@ export function DrawingRedesignReview({
   initialOpen = false,
   screen = "all",
   onViewChanges,
+  onOpenSource,
 }: {
   id: string;
   initialOpen?: boolean;
   screen?: "all" | "requests" | "changes";
   onViewChanges?: (changeId: string) => void;
+  onOpenSource?: (documentId: string, page?: number | null) => void;
 }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(initialOpen);
@@ -217,6 +224,9 @@ export function DrawingRedesignReview({
   const [note, setNote] = useState("");
   const [downloadError, setDownloadError] = useState("");
   const [changeIndex, setChangeIndex] = useState(0);
+  const [requestFilter, setRequestFilter] = useState<"all" | "open" | "edits">(
+    "all",
+  );
   const query = useQuery({
     queryKey: ["drawing-redesign", id],
     queryFn: () =>
@@ -397,7 +407,22 @@ export function DrawingRedesignReview({
           )}
           {run && (
             <>
-              {screen !== "requests" && (
+              {screen === "changes" && (
+                <details className="drr-run-detail">
+                  <summary>
+                    <span>
+                      <strong>{run.changes.length}</strong> saved edits
+                    </span>
+                    <span>
+                      {run.totals.needs_information} requests need input
+                    </span>
+                    {!run.current && <span>Prior revision</span>}
+                    <CaretDown size={13} />
+                  </summary>
+                  <p>{run.summary}</p>
+                </details>
+              )}
+              {screen === "all" && (
                 <div className="drr-summary">
                   <p>{run.summary}</p>
                   <div className="drr-totals" aria-label="Comment totals">
@@ -420,10 +445,6 @@ export function DrawingRedesignReview({
                 <div className="drr-exports">
                   <div>
                     <strong>Revision files</strong>
-                    <p>
-                      Download the proposed DXF to open and edit in your CAD
-                      app.
-                    </p>
                   </div>
                   <div className="drr-downloads">
                     {dxf && (
@@ -493,7 +514,7 @@ export function DrawingRedesignReview({
                 >
                   <div className="drr-viewer-heading">
                     <div>
-                      <span className="drr-eyebrow">SAVED DRAWING CHANGES</span>
+                      <span className="drr-eyebrow">Drawing comparison</span>
                       <h3>{selectedChange.label}</h3>
                     </div>
                     <div className="drr-viewer-nav">
@@ -524,16 +545,6 @@ export function DrawingRedesignReview({
                       {selectedComment.text}
                     </blockquote>
                   )}
-                  <div className="drr-values">
-                    <div>
-                      <span>Before</span>
-                      <p>{selectedChange.before}</p>
-                    </div>
-                    <div>
-                      <span>After</span>
-                      <p>{selectedChange.after}</p>
-                    </div>
-                  </div>
                   <Comparison change={selectedChange} />
                   <p className="drr-viewer-caption">
                     {selectedChange.verified
@@ -546,81 +557,173 @@ export function DrawingRedesignReview({
                 </section>
               )}
               {screen !== "changes" && run.comments.length > 0 && (
-                <details className="drr-comment-register" open={initialOpen}>
-                  <summary>
-                    Customer request register{" "}
-                    <span>
-                      {run.comments.length} requests ·{" "}
-                      {run.totals.needs_information} still open
-                    </span>
-                  </summary>
+                <section
+                  className="drr-request-list"
+                  aria-label="Customer request register"
+                >
+                  <div
+                    className="drr-register-toolbar"
+                    role="group"
+                    aria-label="Filter customer requests"
+                  >
+                    {(
+                      [
+                        ["all", "All requests", run.comments.length],
+                        [
+                          "open",
+                          "Needs input",
+                          run.comments.filter(
+                            (c) => c.status === "needs_information",
+                          ).length,
+                        ],
+                        [
+                          "edits",
+                          "With edits",
+                          run.comments.filter((c) => changesByComment.has(c.id))
+                            .length,
+                        ],
+                      ] as const
+                    ).map(([key, label, count]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        aria-pressed={requestFilter === key}
+                        onClick={() => setRequestFilter(key)}
+                      >
+                        {label}
+                        <span>{count}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="drr-request-columns" aria-hidden="true">
+                    <span>Ref.</span>
+                    <span>Customer request</span>
+                    <span>Outcome</span>
+                  </div>
                   <div className="drr-comments">
                     {run.comments.map((comment, index) => {
                       const changes = changesByComment.get(comment.id) || [];
+                      if (
+                        requestFilter === "open" &&
+                        comment.status !== "needs_information"
+                      )
+                        return null;
+                      if (requestFilter === "edits" && !changes.length)
+                        return null;
+                      const state =
+                        changes.length && comment.status === "needs_information"
+                          ? "Partly applied"
+                          : comment.status === "needs_information"
+                            ? "Needs input"
+                            : commentStatus(comment.status);
                       return (
-                        <article className="drr-comment" key={comment.id}>
-                          <div className="drr-comment-head">
-                            <span className="drr-comment-number">
+                        <details className="drr-request-row" key={comment.id}>
+                          <summary>
+                            <span className="drr-request-ref">
                               {String(index + 1).padStart(2, "0")}
                             </span>
                             <span
-                              className={`drr-comment-state is-${comment.status}`}
+                              className="drr-request-title"
+                              title={comment.text}
                             >
-                              {changes.length &&
-                              comment.status === "needs_information"
-                                ? "Partly applied · still open"
-                                : commentStatus(comment.status)}
+                              {comment.text}
                             </span>
-                          </div>
-                          <blockquote>{comment.text}</blockquote>
-                          <p className="drr-comment-source">
-                            {comment.source_name || "Source document"} · page{" "}
-                            {comment.page ?? "—"}
-                          </p>
-                          <p className="drr-explanation">
-                            {comment.explanation}
-                          </p>
-                          {!!changes.length && (
-                            <button
-                              className="drr-jump"
-                              type="button"
-                              onClick={() => {
-                                if (screen === "requests" && onViewChanges) {
-                                  onViewChanges(changes[0].id);
-                                  return;
-                                }
-                                setChangeIndex(
-                                  run.changes.findIndex(
-                                    (c) => c.id === changes[0].id,
-                                  ),
-                                );
-                                document
-                                  .querySelector(".drr-viewer")
-                                  ?.scrollIntoView({
-                                    block: "center",
-                                    behavior: "smooth",
-                                  });
-                              }}
+                            <span
+                              className={`drr-request-state is-${comment.status}`}
                             >
-                              <Check size={13} /> View {changes.length} saved
-                              edits
-                            </button>
-                          )}
-                        </article>
+                              <span />
+                              {state}
+                            </span>
+                            <CaretDown
+                              size={14}
+                              className="drr-request-chevron"
+                            />
+                          </summary>
+                          <div className="drr-request-detail">
+                            <blockquote>{comment.text}</blockquote>
+                            <p>{comment.explanation}</p>
+                            <div className="drr-request-actions">
+                              {onOpenSource ? (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onOpenSource(
+                                      comment.source_document_id,
+                                      comment.page,
+                                    )
+                                  }
+                                  title={comment.source_name}
+                                >
+                                  <FileText size={15} />
+                                  {/spec/i.test(comment.source_name || "")
+                                    ? "Specification"
+                                    : "Drawing"}{" "}
+                                  · p. {comment.page ?? "—"}
+                                  <ArrowSquareOut size={13} />
+                                </button>
+                              ) : (
+                                <span className="drr-source-label">
+                                  {comment.source_name || "Source document"} ·
+                                  p. {comment.page ?? "—"}
+                                </span>
+                              )}
+                              {!!changes.length && (
+                                <button
+                                  className="drr-jump"
+                                  type="button"
+                                  onClick={() => {
+                                    if (
+                                      screen === "requests" &&
+                                      onViewChanges
+                                    ) {
+                                      onViewChanges(changes[0].id);
+                                      return;
+                                    }
+                                    setChangeIndex(
+                                      run.changes.findIndex(
+                                        (c) => c.id === changes[0].id,
+                                      ),
+                                    );
+                                    document
+                                      .querySelector(".drr-viewer")
+                                      ?.scrollIntoView({
+                                        block: "center",
+                                        behavior: "smooth",
+                                      });
+                                  }}
+                                >
+                                  <Check size={14} />
+                                  View {changes.length} saved edits
+                                  <ArrowSquareOut size={13} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </details>
                       );
                     })}
                   </div>
-                </details>
+                  {requestFilter === "edits" && !run.changes.length && (
+                    <p className="drr-filter-empty">
+                      No saved edits in this review. Original requests remain in
+                      All requests.
+                    </p>
+                  )}
+                </section>
               )}
               {screen !== "requests" && run.remaining_issues.length > 0 && (
-                <div className="drr-issues">
-                  <strong>Items needing attention</strong>
+                <details className="drr-issues">
+                  <summary>
+                    Engineering limitations{" "}
+                    <span>{run.remaining_issues.length} notes</span>
+                    <CaretDown size={14} />
+                  </summary>
                   <ul>
                     {run.remaining_issues.map((issue, index) => (
                       <li key={`${index}-${issue}`}>{issue}</li>
                     ))}
                   </ul>
-                </div>
+                </details>
               )}
               {screen !== "requests" && run.status === "ready_for_review" && (
                 <div className="drr-decision">

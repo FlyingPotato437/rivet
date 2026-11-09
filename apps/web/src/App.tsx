@@ -52,6 +52,7 @@ import { OrderActivity } from "./OrderActivity";
 import "@fontsource-variable/geist/wght.css";
 import "@fontsource-variable/geist-mono/wght.css";
 import "./redesign.css";
+import "./workspace-design.css";
 
 type Health = {
   status: string;
@@ -65,6 +66,8 @@ export default function App() {
   const qc = useQueryClient();
   const [route, setRoute] = useState(() => location.hash.slice(1) || "today");
   const routeBase = route.split("?")[0];
+  const routeParams = new URLSearchParams(route.split("?")[1] || "");
+  const readingSurface = `${routeBase}:${routeParams.get("tab") || "overview"}:${routeParams.get("review") || "requests"}`;
   const workRoute = [
     "today",
     "work",
@@ -111,11 +114,11 @@ export default function App() {
     document.documentElement.classList.add("rv6");
     return () => document.documentElement.classList.remove("rv6");
   }, []);
-  // Top-level navigation starts at the page heading. In-order deep links keep
-  // their own source/comment positioning.
+  // A new reading surface starts at its heading. Selecting a comment or source
+  // inside that surface preserves the user's place in the list.
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [routeBase]);
+  }, [readingSurface]);
   useEffect(() => {
     const f = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMobileNav(false);
@@ -185,7 +188,7 @@ export default function App() {
   );
   return (
     <div
-      className={`app-shell rv6${route.startsWith("order/") ? " order-workbench-shell" : ""}`}
+      className={`app-shell rv6 rivet-studio${route.startsWith("order/") ? " order-workbench-shell" : ""}`}
     >
       <aside
         id="workspace-navigation"
@@ -202,6 +205,7 @@ export default function App() {
           </span>
         </button>
         <TeamSwitcher />
+        <span className="nav-section-label">Workspace</span>
         <nav className="simple-workspace-nav" aria-label="Workspace">
           <button
             className={workRoute ? "active" : ""}
@@ -219,21 +223,21 @@ export default function App() {
             }
             onClick={() => navigate("orders")}
           >
-            <FolderSimple size={19} />
+            <FolderSimple size={19} weight="duotone" />
             Orders
           </button>
           <button
             className={routeBase === "activity" ? "active" : ""}
             onClick={() => navigate("activity")}
           >
-            <Clock size={19} />
+            <Clock size={19} weight="duotone" />
             Activity
           </button>
           <button
             className={routeBase === "settings" ? "active" : ""}
             onClick={() => navigate("settings")}
           >
-            <SlidersHorizontal size={19} />
+            <SlidersHorizontal size={19} weight="duotone" />
             Settings
           </button>
         </nav>
@@ -248,18 +252,12 @@ export default function App() {
         <div className="sidebar-bottom">
           <div className="workspace-profile-tools">
             <button
-              aria-label="Workspace settings"
-              title="Workspace settings"
-              onClick={() => navigate("settings")}
-            >
-              <SlidersHorizontal size={18} />
-            </button>
-            <button
               aria-label="Getting started"
               title="Getting started"
               onClick={() => navigate("guide")}
             >
               <BookOpen size={18} />
+              <span>Help & getting started</span>
             </button>
           </div>
           <AccountControl />

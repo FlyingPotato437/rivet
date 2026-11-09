@@ -1,0 +1,1131 @@
+/* Rivet workspace language: a quiet desk, one reading surface, progressive detail.
+   Scoped to the private app. Public pages and the Outlook add-in keep their themes. */
+.app-shell.rv6.rivet-studio {
+  --rv-bg: #15161a;
+  --rv-side: #101114;
+  --rv-card: #1b1c21;
+  --rv-hover: #222329;
+  --rv-sel: #27262e;
+  --rv-line: #ffffff0d;
+  --rv-line2: #ffffff17;
+  --rv-text: #efeff2;
+  --rv-text2: #b1b2bc;
+  --rv-text3: #9698a5;
+  --rv-need: #c1b6d9;
+  --rv-sans: "Onest", "Helvetica Neue", sans-serif;
+  --rv-display: var(--rv-sans);
+  --rivet-body: var(--rv-sans);
+  --rivet-display: var(--rv-sans);
+  --font-sans: var(--rv-sans);
+  --font-heading: var(--rv-sans);
+  background: var(--rv-side);
+  font-family: var(--rv-sans);
+  letter-spacing: -0.015em;
+}
+.app-shell.rv6.rivet-studio::after {
+  display: none;
+}
+.app-shell.rv6.rivet-studio .app-main {
+  width: calc(100% - 240px);
+  margin: 12px 12px 12px 228px;
+  min-height: calc(100dvh - 24px);
+  border: 1px solid #ffffff10;
+  border-radius: 14px;
+  background: var(--rv-bg);
+  box-shadow: 0 8px 32px #00000012;
+}
+.app-shell.rv6.rivet-studio .app-main::before {
+  height: 340px;
+  border-radius: 14px 14px 0 0;
+  background: radial-gradient(ellipse at 15% -30%, #b9a7d610, transparent 70%);
+  opacity: 1;
+  mask-image: none;
+}
+.app-shell.rv6.rivet-studio .sidebar {
+  width: 228px;
+  padding: 23px 14px 18px;
+  border: 0;
+  background: transparent;
+}
+.app-shell.rv6.rivet-studio .brand {
+  margin: 0 10px 26px;
+  padding: 0;
+  gap: 9px;
+  font-family: var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .brand > span {
+  font-size: 28px;
+  letter-spacing: -1.6px;
+  font-weight: 650;
+}
+.app-shell.rv6.rivet-studio .brand svg {
+  width: 21px;
+  height: 21px;
+  filter: none;
+}
+.app-shell.rv6.rivet-studio .auth-team-switch {
+  margin: 0 0 27px;
+  padding: 8px 7px;
+  border: 1px solid #ffffff0b;
+  border-radius: 9px;
+  background: #ffffff03;
+}
+.app-shell.rv6.rivet-studio .auth-team-switch button {
+  max-width: 100%;
+  min-height: 28px;
+}
+.app-shell.rv6.rivet-studio .nav-section-label,
+.app-shell.rv6.rivet-studio .project-recent > span {
+  padding: 0 11px;
+  margin: 0 0 9px;
+  color: #8e919b;
+  font: 500 11px var(--rv-sans);
+  letter-spacing: 0.015em;
+  text-transform: none;
+}
+.app-shell.rv6.rivet-studio .sidebar > nav {
+  gap: 3px;
+  margin: 0;
+}
+.app-shell.rv6.rivet-studio .sidebar nav button {
+  min-height: 38px;
+  height: auto;
+  padding: 9px 12px;
+  border-radius: 7px;
+  gap: 11px;
+  color: #a6a8b2;
+  font: 450 13px var(--rv-sans);
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+.app-shell.rv6.rivet-studio .sidebar nav button svg {
+  width: 17px;
+  height: 17px;
+  color: #9693a3;
+}
+.app-shell.rv6.rivet-studio .sidebar nav button.active {
+  background: linear-gradient(100deg, #c1b6d914, #c1b6d90a);
+  box-shadow: inset 0 1px #ffffff05;
+  color: #eeebf5;
+  font-weight: 550;
+}
+.app-shell.rv6.rivet-studio .sidebar nav button.active::before {
+  display: none;
+}
+.app-shell.rv6.rivet-studio .sidebar nav button.active svg {
+  color: #c8bcdf;
+}
+.app-shell.rv6.rivet-studio .sidebar nav button:hover:not(.active) {
+  background: #ffffff05;
+  color: #eeebf5;
+}
+.app-shell.rv6.rivet-studio .project-recent {
+  margin-top: 34px;
+  gap: 3px;
+}
+.app-shell.rv6.rivet-studio .project-recent button {
+  height: auto;
+  min-height: 55px;
+  padding: 10px 10px;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 7px;
+}
+.app-shell.rv6.rivet-studio .project-recent button.active {
+  background: #ffffff04;
+}
+.app-shell.rv6.rivet-studio .recent-order-mark {
+  color: #908c9c;
+  padding-top: 2px;
+}
+.app-shell.rv6.rivet-studio .recent-order-copy {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+.app-shell.rv6.rivet-studio .project-recent .recent-name {
+  color: #b3b2bd;
+  font: 450 12px var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .project-recent button.active .recent-name {
+  color: #e7e3ee;
+}
+.app-shell.rv6.rivet-studio .project-recent .recent-number {
+  color: #83858f;
+  font: 400 10px var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .sidebar-bottom {
+  border: 0;
+  padding-top: 18px;
+}
+.app-shell.rv6.rivet-studio .workspace-profile-tools {
+  margin: 0 0 15px;
+  padding: 0;
+}
+.app-shell.rv6.rivet-studio .workspace-profile-tools button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  color: #92949f;
+  font: 400 11px var(--rv-sans);
+  text-align: left;
+}
+.app-shell.rv6.rivet-studio .auth-account {
+  padding: 16px 9px 0;
+  border-top: 1px solid #ffffff0c;
+  gap: 10px;
+}
+.app-shell.rv6.rivet-studio .auth-account strong {
+  font: 500 12px var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .auth-account small {
+  font-size: 10px;
+  color: #8e909a;
+  margin-top: 3px;
+}
+.app-shell.rv6.rivet-studio .topbar {
+  min-height: 52px;
+  height: 52px;
+  border-radius: 14px 14px 0 0;
+  background: #16171b90;
+  border-bottom: 1px solid #ffffff08;
+  padding: 0 28px;
+}
+.app-shell.rv6.rivet-studio .topbar > div:first-child {
+  font-size: 11px;
+  gap: 13px;
+}
+.app-shell.rv6.rivet-studio .topbar > div:first-child > span:last-child {
+  color: #c0bec8;
+  font-weight: 450;
+}
+.app-shell.rv6.rivet-studio .topbar .connection {
+  font-size: 10px;
+  color: #979aa4;
+}
+.app-shell.rv6.rivet-studio .search-trigger {
+  width: 30px;
+  height: 29px;
+  padding: 5px;
+  border-color: transparent;
+  background: transparent;
+}
+.app-shell.rv6.rivet-studio .search-trigger kbd {
+  display: none;
+}
+.app-shell.rv6.rivet-studio
+  :is(.order-story-page, .today-board, .projects-hub) {
+  max-width: 1180px;
+  padding: 36px clamp(24px, 3.2vw, 52px) 64px;
+  margin: 0 auto;
+}
+.app-shell.rv6.rivet-studio
+  :is(.order-story-heading h1, .today-hero h1, .project-page-header h1) {
+  font: 500 clamp(25px, 2.4vw, 32px)/1.3 var(--rv-sans);
+  letter-spacing: -0.045em;
+}
+.app-shell.rv6.rivet-studio .order-story-heading {
+  margin: 0 0 27px;
+  gap: 16px;
+  align-items: center;
+}
+.app-shell.rv6.rivet-studio .order-story-heading h1 {
+  margin: 9px 0 11px;
+}
+.app-shell.rv6.rivet-studio .order-story-heading h1 .title-muted {
+  color: #bcb3cd;
+}
+.app-shell.rv6.rivet-studio .order-story-heading p {
+  margin: 0;
+  font-size: 12px;
+  color: #9698a5;
+}
+.app-shell.rv6.rivet-studio .story-overline {
+  font: 400 11px var(--rv-sans);
+  color: #8f929d;
+  letter-spacing: 0.025em;
+}
+.app-shell.rv6.rivet-studio .story-back {
+  margin-bottom: 25px;
+  color: #9b9ca8;
+  font-size: 12px;
+}
+.app-shell.rv6.rivet-studio .order-review-workbench {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+.app-shell.rv6.rivet-studio .order-review-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 34px;
+  padding: 0 0 18px;
+  border: 0;
+}
+.rivet-studio .order-status-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b3b2bf;
+  font-size: 12px;
+}
+.rivet-studio .order-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9698a5;
+  flex-shrink: 0;
+}
+.rivet-studio .order-status-dot.needs-input {
+  background: #baaccc;
+}
+.rivet-studio .order-status-dot:is(.is-ready, .is-sent, .is-done) {
+  background: #9ab7ab;
+}
+.rivet-studio .order-status-dot:is(.is-attention, .is-prepared) {
+  background: #baaccc;
+}
+.rivet-studio .order-status-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 0 5px 10px;
+  color: #b7b1c4;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.app-shell.rv6.rivet-studio .order-review-tabs {
+  display: flex;
+  gap: 28px;
+  border: 0;
+  border-bottom: 1px solid #ffffff10;
+  padding: 0;
+  margin: 0 0 26px;
+}
+.app-shell.rv6.rivet-studio .order-review-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 43px;
+  padding: 0 0 13px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #9799a6;
+}
+.app-shell.rv6.rivet-studio .order-review-tabs button > span {
+  font: 450 13px var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .order-review-tabs button.is-active {
+  border-bottom-color: #c5b8dc;
+  color: #f0ecf6;
+  background: none;
+}
+.app-shell.rv6.rivet-studio .order-review-tabs button.is-active > span {
+  font-weight: 550;
+}
+.rivet-studio .reply-tab-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #6c6e79;
+}
+.rivet-studio .reply-tab-dot.is-ready {
+  background: #9ab7ab;
+}
+.app-shell.rv6.rivet-studio .order-review-panel {
+  padding: 0;
+}
+.app-shell.rv6.rivet-studio .order-review-panel-heading {
+  margin-bottom: 17px;
+}
+.app-shell.rv6.rivet-studio .order-review-panel-heading h2 {
+  font: 500 18px var(--rv-sans);
+  letter-spacing: -0.025em;
+  margin: 0 0 6px;
+}
+.app-shell.rv6.rivet-studio .order-review-panel-heading p {
+  color: #999ba7;
+  font-size: 12px;
+}
+.app-shell.rv6.rivet-studio .order-review-sources {
+  margin-bottom: 26px;
+  gap: 8px;
+}
+.app-shell.rv6.rivet-studio .order-review-sources button {
+  min-height: 32px;
+  border-color: #ffffff12;
+  background: #ffffff03;
+  color: #bcbac6;
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .order-review-sources .order-view-all-files {
+  background: none;
+  border-color: transparent;
+  color: #a5a0b2;
+}
+.app-shell.rv6.rivet-studio .order-review-workbench .drr-entry {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.app-shell.rv6.rivet-studio .order-review-workbench .drr-panel {
+  padding: 0;
+  border: 0;
+}
+.app-shell.rv6.rivet-studio .drr-register-toolbar {
+  display: flex;
+  gap: 7px;
+  margin: 0 0 16px;
+  padding: 0;
+}
+.app-shell.rv6.rivet-studio .drr-register-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 31px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #a2a1ae;
+}
+.app-shell.rv6.rivet-studio .drr-register-toolbar button[aria-pressed="true"] {
+  background: #ffffff06;
+  color: #e0dce8;
+  border-color: #ffffff0c;
+}
+.app-shell.rv6.rivet-studio .drr-register-toolbar button span {
+  font-size: 10px;
+  color: #9995a5;
+  font-variant-numeric: tabular-nums;
+}
+.app-shell.rv6.rivet-studio .drr-request-columns,
+.app-shell.rv6.rivet-studio .drr-request-row > summary {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 106px 14px;
+  gap: 14px;
+  align-items: center;
+}
+.app-shell.rv6.rivet-studio .drr-request-columns {
+  padding: 0 12px 11px;
+  font-size: 10px;
+  color: #858893;
+  letter-spacing: 0.015em;
+}
+.app-shell.rv6.rivet-studio .drr-comments {
+  padding: 0;
+  gap: 0;
+  border-top: 1px solid #ffffff0e;
+}
+.app-shell.rv6.rivet-studio
+  :is(.drr-request-row, .drr-issues, .drr-run-detail)
+  > summary::before {
+  content: none;
+  display: none;
+}
+.app-shell.rv6.rivet-studio .drr-request-row {
+  border-bottom: 1px solid #ffffff0b;
+  background: transparent;
+}
+.app-shell.rv6.rivet-studio .drr-request-row > summary {
+  min-height: 62px;
+  padding: 13px 12px;
+  cursor: pointer;
+  list-style: none;
+  transition: background 160ms ease;
+}
+.app-shell.rv6.rivet-studio .drr-request-row > summary::-webkit-details-marker {
+  display: none;
+}
+.app-shell.rv6.rivet-studio .drr-request-row > summary:hover {
+  background: #ffffff03;
+}
+.app-shell.rv6.rivet-studio .drr-request-row[open] {
+  background: #ffffff03;
+}
+.rivet-studio .drr-request-ref {
+  color: #858391;
+  font: 400 10px var(--rv-mono);
+  font-variant-numeric: tabular-nums;
+}
+.rivet-studio .drr-request-title {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #d9d8e0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.rivet-studio .drr-request-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #a6a1b6;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.rivet-studio .drr-request-state > span {
+  width: 4px;
+  height: 4px;
+  flex-shrink: 0;
+  border: 1px solid #a49bb6;
+  border-radius: 50%;
+}
+.rivet-studio .drr-request-state.is-already_present > span,
+.rivet-studio .drr-request-state.is-changed > span {
+  background: #97b4a8;
+  border-color: #97b4a8;
+}
+.rivet-studio .drr-request-chevron {
+  color: #73717e;
+  transition: transform 160ms ease;
+}
+.rivet-studio .drr-request-row[open] .drr-request-chevron {
+  transform: rotate(180deg);
+}
+.rivet-studio .drr-request-detail {
+  padding: 0 42px 21px 58px;
+  animation: rivet-detail-in 180ms ease;
+}
+.rivet-studio .drr-request-detail blockquote {
+  margin: 0 0 13px;
+  color: #e2dfe9;
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 75ch;
+}
+.rivet-studio .drr-request-detail > p {
+  color: #a6a3b1;
+  font-size: 12px;
+  line-height: 1.75;
+  max-width: 76ch;
+}
+.rivet-studio .drr-request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+.app-shell.rv6.rivet-studio .drr-request-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 6px 9px;
+  min-height: 31px;
+  background: #ffffff04;
+  border: 1px solid #ffffff10;
+  border-radius: 6px;
+  color: #c6bfd4;
+  font-size: 11px;
+}
+.rivet-studio .drr-source-label,
+.rivet-studio .drr-filter-empty {
+  color: #9692a3;
+  font-size: 12px;
+  padding: 14px 0;
+}
+.app-shell.rv6.rivet-studio .order-markup-log {
+  margin-top: 19px;
+  background: none;
+  border-color: transparent;
+  padding-left: 0;
+  color: #ada7bb;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .order-more-tools {
+  margin-top: 35px;
+  border: 0;
+  border-top: 1px solid #ffffff0d;
+  border-radius: 0;
+  background: transparent;
+}
+.app-shell.rv6.rivet-studio .order-more-tools > summary {
+  padding: 18px 0;
+  color: #95939f;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .order-more-tools-content {
+  padding: 0 0 20px;
+}
+.app-shell.rv6.rivet-studio .drr-summary {
+  display: block;
+  padding: 0 0 20px;
+  background: none;
+  border: 0;
+  margin: 0;
+}
+.app-shell.rv6.rivet-studio .drr-summary > p {
+  border: 0;
+  padding: 0;
+  color: #a9a6b4;
+  font-size: 12px;
+  line-height: 1.7;
+  max-width: 76ch;
+}
+.app-shell.rv6.rivet-studio .drr-totals {
+  display: none;
+}
+.app-shell.rv6.rivet-studio .drr-exports {
+  margin: 0 0 24px;
+  padding: 12px 0;
+  border-color: #ffffff10;
+}
+.app-shell.rv6.rivet-studio .drr-run-detail {
+  margin: 0 0 10px;
+}
+.app-shell.rv6.rivet-studio .drr-run-detail > summary {
+  display: flex;
+  gap: 20px;
+  min-height: 28px;
+  list-style: none;
+  color: #a29eae;
+  font-size: 11px;
+}
+.rivet-studio .drr-run-detail strong {
+  color: #e3dfeb;
+  font-weight: 500;
+}
+.rivet-studio .drr-run-detail > p {
+  max-width: 76ch;
+  padding: 10px 0;
+  color: #a9a6b4;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.app-shell.rv6.rivet-studio .drr-exports p {
+  color: #96929f;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .drr-exports strong {
+  font-size: 12px;
+}
+.app-shell.rv6.rivet-studio .drr-downloads button {
+  background: #24232a;
+  border-color: #ffffff14;
+  border-radius: 6px;
+  color: #d6d0e0;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .drr-viewer {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.app-shell.rv6.rivet-studio .drr-viewer-heading h3 {
+  font-size: 18px;
+  letter-spacing: -0.025em;
+  margin-top: 5px;
+  font-weight: 500;
+}
+.app-shell.rv6.rivet-studio .drr-eyebrow {
+  font: 400 11px var(--rv-sans);
+  letter-spacing: 0;
+  text-transform: none;
+  color: #9d97ab;
+}
+.app-shell.rv6.rivet-studio .drr-viewer-request {
+  margin: 18px 0;
+  padding: 0;
+  border: 0;
+  color: #aaa5b7;
+  font-size: 12px;
+  max-width: 76ch;
+  line-height: 1.7;
+}
+.app-shell.rv6.rivet-studio .drr-values > div {
+  background: #ffffff03;
+  border: 1px solid #ffffff0b;
+  border-radius: 7px;
+  padding: 12px 14px;
+}
+.app-shell.rv6.rivet-studio .drr-values span {
+  color: #8f8a9e;
+  text-transform: none;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .drr-values p {
+  font-size: 14px;
+  margin-top: 6px;
+}
+.app-shell.rv6.rivet-studio .drr-comparison figure {
+  border-color: #ffffff12;
+  background: #101115;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.app-shell.rv6.rivet-studio .drr-comparison figcaption {
+  padding: 12px 14px;
+  background: #ffffff03;
+  color: #a29aaa;
+}
+.app-shell.rv6.rivet-studio .drr-comparison figcaption strong {
+  color: #ded9e6;
+  font-family: var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .drr-viewer-caption {
+  font-size: 11px;
+  color: #95909f;
+  line-height: 1.7;
+  max-width: 84ch;
+}
+.app-shell.rv6.rivet-studio .drr-issues {
+  margin-top: 24px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid #ffffff12;
+  border-radius: 0;
+  background: none;
+  color: #bcb4ce;
+}
+.app-shell.rv6.rivet-studio .drr-issues summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 17px 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+}
+.rivet-studio .drr-issues summary::-webkit-details-marker {
+  display: none;
+}
+.rivet-studio .drr-issues summary > span {
+  color: #8f899e;
+  font-size: 10px;
+}
+.rivet-studio .drr-issues summary > svg {
+  margin-left: auto;
+}
+.app-shell.rv6.rivet-studio .drr-issues ul {
+  color: #aaa4b6;
+  font-size: 12px;
+  margin: 0 0 14px;
+  line-height: 1.8;
+}
+.app-shell.rv6.rivet-studio .drr-honest-note {
+  color: #a7a0b8;
+  font-size: 11px;
+  margin: 0;
+}
+.app-shell.rv6.rivet-studio .drr-reprepare button {
+  border: 0;
+  background: none;
+  color: #918b9e;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .order-outcome {
+  padding: 27px;
+  border: 1px solid #ffffff10;
+  border-radius: 10px;
+  background: #1b1b2180;
+  box-shadow: none;
+}
+.app-shell.rv6.rivet-studio .order-outcome h2 {
+  font: 500 23px var(--rv-sans);
+  letter-spacing: -0.035em;
+}
+.app-shell.rv6.rivet-studio .order-outcome-actions {
+  justify-content: flex-start;
+  padding-top: 5px;
+}
+.app-shell.rv6.rivet-studio .order-outcome-copy > p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.app-shell.rv6.rivet-studio .order-outcome-copy > blockquote {
+  padding: 20px 0 0;
+  border: 0;
+  color: #bcb7c8;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.app-shell.rv6.rivet-studio .order-outcome .rivet-chip {
+  color: #b2a9c4;
+  background: transparent;
+  border: 0;
+}
+/* Home and order index share the same scale and rhythm. */
+.app-shell.rv6.rivet-studio .project-records {
+  max-width: 1180px;
+  padding: 36px clamp(24px, 3.2vw, 52px) 64px;
+}
+.app-shell.rv6.rivet-studio .project-records-heading h1 {
+  font: 500 30px/1.3 var(--rv-sans);
+  letter-spacing: -0.045em;
+}
+.app-shell.rv6.rivet-studio .project-records-heading p {
+  color: #9995a4;
+  font-size: 12px;
+}
+.app-shell.rv6.rivet-studio .project-records-note {
+  background: transparent;
+  border: 0;
+  padding: 17px 0 0;
+  color: #a49dac;
+  font-size: 12px;
+}
+.app-shell.rv6.rivet-studio .project-records-desk {
+  background: #191a1f;
+  border-color: #ffffff10;
+  border-radius: 8px;
+}
+.app-shell.rv6.rivet-studio .project-records-list > button {
+  padding: 17px 16px;
+}
+.app-shell.rv6.rivet-studio .project-records-list > button strong {
+  font: 450 13px/1.6 var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .project-records-list .comment-type {
+  display: none;
+}
+.app-shell.rv6.rivet-studio .project-records-toolbar > label {
+  background: #ffffff02;
+  border-color: #ffffff12;
+  height: 36px;
+}
+.app-shell.rv6.rivet-studio .project-records-toolbar input {
+  border: 0;
+  box-shadow: none;
+  outline: 0;
+  background: transparent;
+  padding: 0;
+  font: 400 12px var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .project-records-toolbar > label:focus-within {
+  border-color: #b6a4d2;
+}
+.app-shell.rv6.rivet-studio .project-records-list > button small {
+  font-size: 11px;
+  color: #9692a3;
+}
+.app-shell.rv6.rivet-studio .project-records-detail {
+  background: #1c1d22;
+  border-color: #ffffff10;
+}
+.app-shell.rv6.rivet-studio .today-date {
+  display: none;
+}
+.app-shell.rv6.rivet-studio .today-board .today-hero {
+  margin: 7px 0 29px;
+  padding: 0;
+  align-items: center;
+}
+.app-shell.rv6.rivet-studio .today-board .today-brief {
+  font-size: 12px;
+  color: #9999a6;
+  margin-top: 8px;
+}
+.app-shell.rv6.rivet-studio .today-board .today-hero-actions {
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.app-shell.rv6.rivet-studio .today-board .today-outlook {
+  color: #94909f;
+  font-size: 10px;
+}
+.app-shell.rv6.rivet-studio .today-board .today-toolbar {
+  gap: 3px;
+  border-bottom: 1px solid #ffffff10;
+  padding: 0 0 13px;
+  margin-bottom: 20px;
+}
+.app-shell.rv6.rivet-studio .today-board .today-toolbar button {
+  border: 0;
+  border-radius: 6px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 11px;
+  font-size: 12px;
+}
+.app-shell.rv6.rivet-studio .today-board .today-toolbar button.is-active {
+  background: #ffffff06;
+  color: #e0dce9;
+  box-shadow: inset 0 0 0 1px #ffffff0c;
+}
+.app-shell.rv6.rivet-studio .today-board .work-list {
+  border: 0;
+  background: none;
+  border-radius: 0;
+}
+.app-shell.rv6.rivet-studio .today-board .work-group {
+  padding: 0;
+}
+.app-shell.rv6.rivet-studio .today-board .work-group-head {
+  padding: 0 12px;
+  background: none;
+  color: #aaa4b9;
+  font-size: 11px;
+  border-bottom: 1px solid #ffffff0d;
+}
+.app-shell.rv6.rivet-studio .today-board .work-row {
+  min-height: 76px;
+  height: auto;
+  padding: 16px 12px;
+  border-top: 0;
+  border-bottom: 1px solid #ffffff0b;
+  grid-template-columns: 16px minmax(110px, 155px) minmax(0, 1fr) auto;
+}
+.app-shell.rv6.rivet-studio .today-board .work-row-title {
+  font: 450 13px var(--rv-sans);
+  line-height: 1.5;
+}
+.app-shell.rv6.rivet-studio .today-board .work-row-id {
+  font: 400 10px var(--rv-sans);
+  color: #93909e;
+}
+.app-shell.rv6.rivet-studio .today-board .work-row-action > button {
+  background: #ffffff04;
+  border-color: #ffffff10;
+  color: #c9c1d8;
+  border-radius: 6px;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-page-header {
+  margin: 7px 0 27px;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-page-header p {
+  color: #9995a4;
+  font-size: 12px;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-mailbox-bar {
+  border: 0;
+  background: none;
+  padding: 0 0 18px;
+  font-size: 11px;
+  color: #9692a1;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-hub-controls {
+  margin: 0 0 20px;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-search {
+  min-height: 36px;
+  padding: 0 11px;
+  background: #ffffff02;
+  border-color: #ffffff12;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-search input {
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  outline: 0;
+  background: transparent;
+  font: 400 12px var(--rv-sans);
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-search:focus-within {
+  border-color: #b6a4d2;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-hub-row-name small {
+  font: 400 11px/1.7 var(--rv-sans);
+  letter-spacing: 0;
+  color: #92909c;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-hub-table {
+  border: 0;
+  background: none;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-hub-row {
+  border-color: #ffffff0e;
+  background: transparent;
+  min-height: 88px;
+  padding: 18px 10px;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-folder {
+  border: 0;
+  color: #a69ab9;
+  background: #c1b6d908;
+  width: 34px;
+  height: 36px;
+  border-radius: 8px;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-hub-row-name strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.app-shell.rv6.rivet-studio .projects-hub .project-flow-status {
+  color: #b8afc8;
+  font-size: 11px;
+}
+.app-shell.rv6.rivet-studio :is(button, a, summary):focus-visible {
+  outline: 2px solid #b6a4d2;
+  outline-offset: 3px;
+}
+/* Portalled evidence keeps the same reading scale as its parent workspace. */
+body:has(.rivet-studio) .work-drawer {
+  background: #17181c;
+  font-family: "Onest", "Helvetica Neue", sans-serif;
+}
+body:has(.rivet-studio) .work-drawer .record-inline-evidence-head {
+  padding: 0 0 14px;
+}
+body:has(.rivet-studio) .work-drawer .record-inline-evidence-head > button {
+  display: none;
+}
+body:has(.rivet-studio) .work-drawer .record-inline-evidence-head h2 {
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 1.65;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+  color: #c6c3ce;
+}
+body:has(.rivet-studio) .work-drawer .record-inline-evidence-head > div > span {
+  font-size: 10px;
+  color: #8c8997;
+}
+body:has(.rivet-studio) .work-drawer .ow-command-note {
+  background: transparent;
+  border-color: #ffffff10;
+  color: #a6a0b2;
+  font-size: 12px;
+}
+@keyframes rivet-detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rivet-studio *,
+  .rivet-studio *::before,
+  .rivet-studio *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (max-width: 1000px) {
+  .app-shell.rv6.rivet-studio .sidebar {
+    width: 200px;
+  }
+  .app-shell.rv6.rivet-studio .app-main {
+    margin-left: 200px;
+    width: calc(100% - 212px);
+  }
+  .app-shell.rv6.rivet-studio
+    :is(.order-story-page, .today-board, .projects-hub) {
+    padding-inline: 25px;
+  }
+  .app-shell.rv6.rivet-studio .today-board .today-hero {
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .app-shell.rv6.rivet-studio .today-board .today-hero-actions {
+    max-width: 260px;
+  }
+}
+@media (max-width: 760px) {
+  .app-shell.rv6.rivet-studio .app-main {
+    margin: 0;
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    min-height: 100dvh;
+  }
+  .app-shell.rv6.rivet-studio .sidebar {
+    width: 248px;
+    background: #111216;
+  }
+  .app-shell.rv6.rivet-studio .topbar {
+    border-radius: 0;
+    padding-inline: 16px;
+  }
+  .app-shell.rv6.rivet-studio .topbar .connection {
+    display: none;
+  }
+  .app-shell.rv6.rivet-studio
+    :is(.order-story-page, .today-board, .projects-hub, .project-records) {
+    padding: 25px 18px 50px;
+  }
+  .app-shell.rv6.rivet-studio .order-review-tabs {
+    gap: 22px;
+  }
+  .app-shell.rv6.rivet-studio .order-story-heading {
+    position: relative;
+    padding-right: 0;
+  }
+  .app-shell.rv6.rivet-studio .story-header-actions {
+    position: absolute;
+    top: -8px;
+    right: 0;
+    margin: 0;
+  }
+  .app-shell.rv6.rivet-studio .story-overline {
+    padding-right: 40px;
+  }
+  .app-shell.rv6.rivet-studio .order-review-tabs button > span {
+    font-size: 12px;
+  }
+  .app-shell.rv6.rivet-studio .order-review-status {
+    align-items: flex-start;
+  }
+  .rivet-studio .order-status-copy {
+    font-size: 11px;
+  }
+  .app-shell.rv6.rivet-studio .drr-request-columns {
+    display: none;
+  }
+  .app-shell.rv6.rivet-studio .drr-request-row > summary {
+    grid-template-columns: 23px minmax(0, 1fr) 12px;
+    gap: 9px;
+    padding: 12px 4px;
+  }
+  .rivet-studio .drr-request-state {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .rivet-studio .drr-request-chevron {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .rivet-studio .drr-request-detail {
+    padding: 2px 12px 20px 36px;
+  }
+  .app-shell.rv6.rivet-studio .drr-register-toolbar {
+    gap: 3px;
+  }
+  .app-shell.rv6.rivet-studio .drr-register-toolbar button {
+    padding-inline: 8px;
+    font-size: 10px;
+  }
+  .app-shell.rv6.rivet-studio .drr-exports {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .app-shell.rv6.rivet-studio .today-board .today-hero {
+    flex-direction: column;
+  }
+  .app-shell.rv6.rivet-studio .today-board .today-hero-actions {
+    max-width: none;
+    justify-content: flex-start;
+  }
+  .app-shell.rv6.rivet-studio .today-board .work-row {
+    grid-template-columns: 16px minmax(0, 1fr);
+    gap: 8px 12px;
+  }
+  .app-shell.rv6.rivet-studio .today-board .work-row-title,
+  .app-shell.rv6.rivet-studio .today-board .work-row-action {
+    grid-column: 2;
+  }
+}

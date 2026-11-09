@@ -293,7 +293,10 @@ export function OrderEvidence({
       {document.coverage.filter((part) =>
         ["failed", "scanned", "unsupported"].includes(part.state || ""),
       ).length > 0 && (
-        <details className="ow-command-note" open={!workbench || undefined}>
+        <details
+          className="ow-command-note"
+          open={(!workbench && !inline) || undefined}
+        >
           <summary>Some source areas need manual review</summary>
           {document.coverage
             .filter((part) =>

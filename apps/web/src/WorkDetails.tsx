@@ -220,10 +220,12 @@ export function DecisionDetails({
 export function SourceDetails({
   orderId,
   sourceId,
+  page,
   close,
 }: {
   orderId: string;
   sourceId: string;
+  page?: number | null;
   close: () => void;
 }) {
   const q = useQuery({
@@ -242,11 +244,14 @@ export function SourceDetails({
     );
   return (
     <OrderEvidence
-      key={sourceId}
+      key={`${sourceId}:${page || "source"}`}
       inline
       document={doc}
       sources={q.data.sources.filter((s) => s.document_id === doc.id)}
       selectedId={source?.id}
+      initialPosition={
+        page ? { page, zoom: 100, scrollTop: 0, scrollLeft: 0 } : undefined
+      }
       close={close}
     />
   );

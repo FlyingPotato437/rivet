@@ -78,8 +78,13 @@ export function ProjectNavigation({
           className={p.id === activeId ? "active" : ""}
           onClick={() => navigate(`order/${p.id}`)}
         >
-          <StatusIcon kind={statusKind(p.status)} title={p.status_label} />
-          <span className="recent-number">{p.number}</span>
+          <span className="recent-order-mark" aria-hidden="true">
+            <FolderSimple size={16} weight="duotone" />
+          </span>
+          <span className="recent-order-copy">
+            <span className="recent-name">{p.name}</span>
+            <span className="recent-number">{p.number}</span>
+          </span>
         </button>
       ))}
     </div>
@@ -140,7 +145,6 @@ export function ProjectsDashboard({
     >
       <header className="project-page-header">
         <div>
-          <span className="project-eyebrow">Workspace</span>
           <h1>{view === "today" ? "Today" : "Orders"}</h1>
         </div>
         <button className="secondary" onClick={onNew}>
@@ -332,7 +336,7 @@ export function ProjectsDashboard({
       )}
       <footer className="project-list-footer">
         <span>
-          {projects.length} orders
+          {projects.length} {projects.length === 1 ? "order" : "orders"}
           {q.data?.partial ? " · Recent 200 shown" : ""}
         </span>
         <div className="project-footer-actions">

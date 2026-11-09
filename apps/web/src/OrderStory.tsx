@@ -70,7 +70,7 @@ import {
 
 type Drawer =
   | { kind: "event"; event: StoryEvent }
-  | { kind: "source"; id: string }
+  | { kind: "source"; id: string; page?: number | null }
   | { kind: "decision"; item: DecisionItem }
   | { kind: "options" }
   | { kind: "equipment" }
@@ -426,28 +426,25 @@ export function OrderStory({
       />
       <section className="order-review-workbench" aria-label="Order review">
         <div className="order-review-status">
-          <span
-            className={`work-state is-${drawingNotice ? (drawingNotice.includes("being prepared") ? "working" : "attention") : outcome.tone}`}
-          >
-            <span />
-            {drawingNotice
-              ? drawingNotice.includes("being prepared")
-                ? "In progress"
-                : "Needs review"
-              : outcome.label}
+          <span className="order-status-copy" role="status">
+            <span
+              className={`order-status-dot ${drawingNotice ? "needs-input" : `is-${outcome.tone}`}`}
+            />
+            {drawingNotice &&
+            drawingReview.data?.latest?.current &&
+            drawingReview.data.latest.totals.needs_information
+              ? `${drawingReview.data.latest.totals.needs_information} requests need engineering input`
+              : drawingNotice || outcome.label}
           </span>
-          <p>{drawingNotice || pmSentence(p.explanation, outcome.detail)}</p>
+          {drawingNotice && reviewView !== "changes" && (
+            <button
+              className="order-status-action"
+              onClick={() => selectReview("changes")}
+            >
+              View checks <ArrowUpRight size={14} />
+            </button>
+          )}
         </div>
-        {drawingNotice && (
-          <button
-            className="order-drawing-notice"
-            type="button"
-            role="status"
-            onClick={() => selectReview("changes")}
-          >
-            {drawingNotice} · Open changes <ArrowUpRight size={14} />
-          </button>
-        )}
         <nav className="order-review-tabs" aria-label="Order workbench">
           {(["requests", "changes", "reply"] as const).map((view) => (
             <button
@@ -458,22 +455,18 @@ export function OrderStory({
               onClick={() => selectReview(view)}
             >
               <span>{orderReviewLabel(view)}</span>
-              {view === "reply" && <small>{replyStatus}</small>}
+              {view === "reply" && (
+                <span
+                  className={`reply-tab-dot${p.outlook.native ? " is-ready" : ""}`}
+                  aria-label={replyStatus}
+                  title={replyStatus}
+                />
+              )}
             </button>
           ))}
         </nav>
         {reviewView === "requests" && (
           <div className="order-review-panel">
-            <div className="order-review-panel-heading">
-              <div>
-                <span className="section-eyebrow">CUSTOMER MARKUP</span>
-                <h2>Review the customer’s requests</h2>
-                <p>
-                  Open the original source or inspect how each marked request
-                  was handled.
-                </p>
-              </div>
-            </div>
             {!!recentDocuments.length && (
               <div
                 className="order-review-sources"
@@ -482,10 +475,21 @@ export function OrderStory({
                 {recentDocuments.map((doc) => (
                   <button
                     key={doc.id}
+                    title={doc.email?.subject || doc.name}
+                    aria-label={`Open ${doc.email?.subject || doc.name}`}
                     onClick={() => setDrawer({ kind: "source", id: doc.id })}
                   >
                     <FileText size={16} />
-                    <span>{doc.email?.subject || doc.name}</span>
+                    <span>
+                      {doc.email?.subject ||
+                        (doc.name.length > 54
+                          ? /spec/i.test(doc.name)
+                            ? "Specification"
+                            : /\.pdf$/i.test(doc.name)
+                              ? "Returned drawings"
+                              : "Source file"
+                          : doc.name)}
+                    </span>
                     <ArrowUpRight size={14} />
                   </button>
                 ))}
@@ -572,6 +576,9 @@ export function OrderStory({
               id={id}
               initialOpen
               screen="requests"
+              onOpenSource={(documentId, page) =>
+                setDrawer({ kind: "source", id: documentId, page })
+              }
               onViewChanges={(changeId) =>
                 navigate(
                   `${orderReviewRoute(id, "changes")}&change=${encodeURIComponent(changeId)}`,
@@ -590,16 +597,14 @@ export function OrderStory({
         )}
         {reviewView === "changes" && (
           <div className="order-review-panel">
-            <div className="order-review-panel-heading">
-              <div>
-                <span className="section-eyebrow">SAVED OUTPUT</span>
-                <h2>Corrected files and checks</h2>
-                <p>
-                  Compare the saved drawing changes and inspect the verification
-                  recorded for each file.
-                </p>
+            {!drawingReview.data?.latest && (
+              <div className="order-review-panel-heading">
+                <div>
+                  <h2>Files & changes</h2>
+                  <p>Compare revisions. Download checked files.</p>
+                </div>
               </div>
-            </div>
+            )}
             <CorrectedFiles order={p} />
             <RevisionCheck
               order={p}
@@ -607,7 +612,8 @@ export function OrderStory({
             />
             {(!p.equipment_correction ||
               p.equipment_correction.current === false) &&
-              !equipment.data?.comparison?.checks.length && (
+              !equipment.data?.comparison?.checks.length &&
+              !drawingReview.data?.latest && (
                 <EquipmentEntry
                   id={id}
                   open={() => setDrawer({ kind: "equipment" })}
@@ -638,11 +644,6 @@ export function OrderStory({
                 <span />
                 {outcome.label}
               </span>
-              {p.outlook.native || p.outlook.url ? (
-                <span className="rivet-chip">Connected to Outlook</span>
-              ) : (
-                <span className="rivet-chip">No Outlook draft saved</span>
-              )}
               <h2>{outcome.title}</h2>
               <p>{pmSentence(p.explanation, outcome.detail)}</p>
               {preview && <blockquote>{preview}</blockquote>}
@@ -1012,6 +1013,7 @@ export function OrderStory({
             <SourceDetails
               orderId={id}
               sourceId={drawer.id}
+              page={drawer.page}
               close={() => setDrawer(null)}
             />
           ) : drawer.kind === "event" &&
