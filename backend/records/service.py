@@ -9,6 +9,7 @@ from sqlalchemy import select
 from backend.domain.service import fail, get, scoped
 from backend.identity import auth_mode, current_actor
 from backend.ingestion.markup_classification import annotation_actionability
+from backend.ingestion.markup_grounding import annotation_coverage
 from backend.orders.extraction import COMMENT_RE, extract_order_document
 from backend.storage.models import (
     Document,
@@ -435,8 +436,8 @@ def source_data(s, order):
             + ". This file type needs separate review."
             for name in d.meta.get("unparsed_attachments", [])
         ]
-        coverage = list(d.coverage)
         docspans = by_document.get(d.id, [])
+        coverage = annotation_coverage(d.coverage, docspans, document_id=d.id)
         if (
             d.name.lower().endswith(".pdf")
             and d.meta.get("order_role", d.kind) in {"markup", "markups"}

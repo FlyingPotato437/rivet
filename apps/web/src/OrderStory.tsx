@@ -24,6 +24,7 @@ import type {
 import type { LifecycleView } from "./lifecycle-work";
 import type { ActionExecutionView } from "./action-execution";
 import { WorkDrawer } from "./WorkDrawer";
+import { OutlookDraftButton } from "./OutlookDraftButton";
 import {
   DecisionDetails,
   SourceDetails,
@@ -34,7 +35,10 @@ import { ReviewOutputs } from "./RevisionReview";
 import { EquipmentEntry, EquipmentReview } from "./EquipmentReview";
 import { EquipmentCorrections } from "./EquipmentCorrections";
 import { DrawingRedesignReview } from "./DrawingRedesignReview";
-import type { DrawingRedesignView } from "./drawing-redesign-types";
+import type {
+  DrawingRedesignView,
+  DrawingRedesignComment,
+} from "./drawing-redesign-types";
 import {
   decisionItems,
   liveWork,
@@ -70,7 +74,12 @@ import {
 
 type Drawer =
   | { kind: "event"; event: StoryEvent }
-  | { kind: "source"; id: string; page?: number | null }
+  | {
+      kind: "source";
+      id: string;
+      page?: number | null;
+      location?: DrawingRedesignComment["source_location"];
+    }
   | { kind: "decision"; item: DecisionItem }
   | { kind: "options" }
   | { kind: "equipment" }
@@ -277,6 +286,7 @@ export function OrderStory({
   const replyStatus = outlookReplyStatus({
     lastDirection: p.last_communication?.direction,
     nativeDraft: p.outlook.native,
+    preservedDraft: !!p.outlook.saved_draft_id && !p.outlook.native,
     threadUrl: p.outlook.url,
     waitingForCustomer: p.status === "waiting_customer",
     lastSentAt: p.last_sent_at,
@@ -417,13 +427,15 @@ export function OrderStory({
           </div>
         </section>
       )}
-      <NeedsYouPanel
-        order={p}
-        decisions={decisions}
-        seeWhy={(item) => setDrawer({ kind: "decision", item })}
-        openReview={() => setDrawer({ kind: "equipment" })}
-        openComments={() => navigate(`order/${id}?tab=comments`)}
-      />
+      {!drawingReview.data?.latest && (
+        <NeedsYouPanel
+          order={p}
+          decisions={decisions}
+          seeWhy={(item) => setDrawer({ kind: "decision", item })}
+          openReview={() => setDrawer({ kind: "equipment" })}
+          openComments={() => navigate(`order/${id}?tab=comments`)}
+        />
+      )}
       <section className="order-review-workbench" aria-label="Order review">
         <div className="order-review-status">
           <span className="order-status-copy" role="status">
@@ -436,34 +448,36 @@ export function OrderStory({
               ? `${drawingReview.data.latest.totals.needs_information} requests need engineering input`
               : drawingNotice || outcome.label}
           </span>
-          {drawingNotice && reviewView !== "changes" && (
+          {drawingNotice && reviewView !== "engineer" && (
             <button
               className="order-status-action"
-              onClick={() => selectReview("changes")}
+              onClick={() => selectReview("engineer")}
             >
-              View checks <ArrowUpRight size={14} />
+              Review open requests <ArrowUpRight size={14} />
             </button>
           )}
         </div>
         <nav className="order-review-tabs" aria-label="Order workbench">
-          {(["requests", "changes", "reply"] as const).map((view) => (
-            <button
-              type="button"
-              key={view}
-              className={reviewView === view ? "is-active" : ""}
-              aria-current={reviewView === view ? "page" : undefined}
-              onClick={() => selectReview(view)}
-            >
-              <span>{orderReviewLabel(view)}</span>
-              {view === "reply" && (
-                <span
-                  className={`reply-tab-dot${p.outlook.native ? " is-ready" : ""}`}
-                  aria-label={replyStatus}
-                  title={replyStatus}
-                />
-              )}
-            </button>
-          ))}
+          {(["requests", "changes", "engineer", "reply"] as const).map(
+            (view) => (
+              <button
+                type="button"
+                key={view}
+                className={reviewView === view ? "is-active" : ""}
+                aria-current={reviewView === view ? "page" : undefined}
+                onClick={() => selectReview(view)}
+              >
+                <span>{orderReviewLabel(view)}</span>
+                {view === "reply" && (
+                  <span
+                    className={`reply-tab-dot${p.outlook.native ? " is-ready" : ""}`}
+                    aria-label={replyStatus}
+                    title={replyStatus}
+                  />
+                )}
+              </button>
+            ),
+          )}
         </nav>
         {reviewView === "requests" && (
           <div className="order-review-panel">
@@ -501,83 +515,89 @@ export function OrderStory({
                 </button>
               </div>
             )}
-            {!drawingReview.data?.latest?.comments.length && (
-              <section
-                className="order-markup-register"
-                aria-label="Extracted customer requests"
-              >
-                <div className="order-markup-heading">
-                  <strong>Customer markup</strong>
-                  <span>
-                    {extractedComments.length} requests in the order record
-                  </span>
-                </div>
-                {extractedComments.length ? (
-                  <ol>
-                    {extractedComments.slice(0, 6).map((comment) =>
-                      (() => {
-                        const logEntry =
-                          record.data?.response_log?.comments[comment.id];
-                        const response = comment.response || logEntry?.response;
-                        return (
-                          <li key={comment.id}>
-                            <div className="order-request-copy">
-                              <p>{comment.text || comment.original_text}</p>
-                              <span>
-                                {logEntry?.label ||
-                                  comment.workflow_status?.replaceAll(
-                                    "_",
-                                    " ",
-                                  ) ||
-                                  comment.status}
-                              </span>
-                              {response && (
-                                <details className="order-request-response">
-                                  <summary>Response and findings</summary>
-                                  <blockquote>{response}</blockquote>
-                                </details>
-                              )}
-                            </div>
-                            <button
-                              onClick={() =>
-                                setDrawer({
-                                  kind: "source",
-                                  id:
-                                    comment.source_ids[0] ||
-                                    comment.document_id,
-                                })
-                              }
-                            >
-                              Open source <ArrowUpRight size={13} />
-                            </button>
-                          </li>
-                        );
-                      })(),
-                    )}
-                  </ol>
-                ) : (
-                  <p className="order-markup-empty">
-                    No extracted requests are recorded yet. Open the markup log
-                    to review the source files and add or inspect comments.
-                  </p>
-                )}
-                <button
-                  className="order-markup-log"
-                  onClick={() => navigate(`order/${id}?tab=comments`)}
-                >
-                  {extractedComments.length > 6
-                    ? `View all ${extractedComments.length} requests`
-                    : "Open full markup log"}
-                  <ArrowUpRight size={14} />
-                </button>
-              </section>
+            {drawingReview.isPending && (
+              <Busy text="Opening customer requests…" />
             )}
+            {!drawingReview.isPending &&
+              !drawingReview.data?.latest?.comments.length && (
+                <section
+                  className="order-markup-register"
+                  aria-label="Extracted customer requests"
+                >
+                  <div className="order-markup-heading">
+                    <strong>Customer markup</strong>
+                    <span>
+                      {extractedComments.length} requests in the order record
+                    </span>
+                  </div>
+                  {extractedComments.length ? (
+                    <ol>
+                      {extractedComments.slice(0, 6).map((comment) =>
+                        (() => {
+                          const logEntry =
+                            record.data?.response_log?.comments[comment.id];
+                          const response =
+                            comment.response || logEntry?.response;
+                          return (
+                            <li key={comment.id}>
+                              <div className="order-request-copy">
+                                <p>{comment.text || comment.original_text}</p>
+                                <span>
+                                  {logEntry?.label ||
+                                    comment.workflow_status?.replaceAll(
+                                      "_",
+                                      " ",
+                                    ) ||
+                                    comment.status}
+                                </span>
+                                {response && (
+                                  <details className="order-request-response">
+                                    <summary>Response and findings</summary>
+                                    <blockquote>{response}</blockquote>
+                                  </details>
+                                )}
+                              </div>
+                              <button
+                                onClick={() =>
+                                  setDrawer({
+                                    kind: "source",
+                                    id:
+                                      comment.source_ids[0] ||
+                                      comment.document_id,
+                                  })
+                                }
+                              >
+                                Open source <ArrowUpRight size={13} />
+                              </button>
+                            </li>
+                          );
+                        })(),
+                      )}
+                    </ol>
+                  ) : (
+                    <p className="order-markup-empty">
+                      No extracted requests are recorded yet. Open the markup
+                      log to review the source files and add or inspect
+                      comments.
+                    </p>
+                  )}
+                  <button
+                    className="order-markup-log"
+                    onClick={() => navigate(`order/${id}?tab=comments`)}
+                  >
+                    {extractedComments.length > 6
+                      ? `View all ${extractedComments.length} requests`
+                      : "Open full markup log"}
+                    <ArrowUpRight size={14} />
+                  </button>
+                </section>
+              )}
             <DrawingRedesignReview
               id={id}
               initialOpen
               screen="requests"
-              onOpenSource={(documentId, page) =>
-                setDrawer({ kind: "source", id: documentId, page })
+              onOpenSource={(sourceId, page, location) =>
+                setDrawer({ kind: "source", id: sourceId, page, location })
               }
               onViewChanges={(changeId) =>
                 navigate(
@@ -619,7 +639,45 @@ export function OrderStory({
                   open={() => setDrawer({ kind: "equipment" })}
                 />
               )}
-            <DrawingRedesignReview id={id} initialOpen screen="changes" />
+            <DrawingRedesignReview
+              id={id}
+              initialOpen
+              screen="changes"
+              onOpenSource={(sourceId, page, location) =>
+                setDrawer({ kind: "source", id: sourceId, page, location })
+              }
+            />
+          </div>
+        )}
+        {reviewView === "engineer" && (
+          <div className="order-review-panel">
+            <DrawingRedesignReview
+              id={id}
+              initialOpen
+              screen="engineer"
+              onOpenSource={(sourceId, page, location) =>
+                setDrawer({ kind: "source", id: sourceId, page, location })
+              }
+              onViewChanges={(changeId) =>
+                navigate(
+                  `${orderReviewRoute(id, "changes")}&change=${encodeURIComponent(changeId)}`,
+                )
+              }
+            />
+            {!drawingReview.data?.latest && <EquipmentReview id={id} />}
+            {drawingReview.data?.latest &&
+              (decisions.length > 0 || p.status === "needs_you") && (
+                <details className="order-review-context">
+                  <summary>Reply and package constraints</summary>
+                  <NeedsYouPanel
+                    order={p}
+                    decisions={decisions}
+                    seeWhy={(item) => setDrawer({ kind: "decision", item })}
+                    openReview={() => setDrawer({ kind: "equipment" })}
+                    openComments={() => navigate(`order/${id}?tab=comments`)}
+                  />
+                </details>
+              )}
           </div>
         )}
         {reviewView === "reply" && (
@@ -659,7 +717,18 @@ export function OrderStory({
               )}
             </div>
             <div className="order-outcome-actions">
-              {["ready", "prepared"].includes(outcome.tone) ? (
+              {p.outlook.saved_draft_id ? (
+                <OutlookDraftButton
+                  native
+                  orderId={id}
+                  draftId={p.outlook.saved_draft_id}
+                  label={
+                    p.outlook.native
+                      ? "Open reply in Outlook"
+                      : "Open preserved draft"
+                  }
+                />
+              ) : ["ready", "prepared"].includes(outcome.tone) ? (
                 <ReplyAction
                   order={p}
                   label={
@@ -670,6 +739,7 @@ export function OrderStory({
                 />
               ) : null}
               {p.outlook.url &&
+                !p.outlook.saved_draft_id &&
                 !["ready", "prepared"].includes(outcome.tone) && (
                   <a
                     className="text-button"
@@ -1014,6 +1084,7 @@ export function OrderStory({
               orderId={id}
               sourceId={drawer.id}
               page={drawer.page}
+              sourceLocation={drawer.location}
               close={() => setDrawer(null)}
             />
           ) : drawer.kind === "event" &&

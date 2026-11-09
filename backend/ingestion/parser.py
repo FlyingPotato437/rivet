@@ -336,7 +336,7 @@ def parse(s, d):
         from backend.orders.extraction import parse_pdf_annotations
 
         for annotation in parse_pdf_annotations(path):
-            span(
+            annotation_span = span(
                 annotation["text"],
                 {
                     "page": annotation["page"],
@@ -345,6 +345,8 @@ def parse(s, d):
                     "annotation_type": annotation["kind"],
                     "author": annotation.get("author", ""),
                     "authored_at": annotation.get("authored_at", ""),
+                    "extraction_method": "native_pdf_annotation",
+                    "transcription_confidence": "high" if annotation["text"] else "low",
                     "approximate": bool(annotation.get("geometry_warning")),
                     "coordinate_system": "visible-page-v1",
                 },
@@ -353,8 +355,11 @@ def parse(s, d):
                 coverage.append(
                     {
                         "label": f"Page {annotation['page']} annotation",
+                        "page": annotation["page"],
+                        "source_id": annotation_span.id,
                         "annotation_id": annotation["id"],
                         "state": "unsupported",
+                        "kind": "unread_graphical_annotation",
                         "detail": "A graphical annotation has no extractable text. Manual interpretation is required.",
                     }
                 )

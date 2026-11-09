@@ -16,6 +16,19 @@ export type DrawingRedesignComment = {
   source_document_id: string;
   source_name?: string;
   page: number | null;
+  source_id?: string;
+  source_location?: {
+    page: number;
+    bbox: number[];
+    text_bbox?: number[];
+    annotation_id: string;
+    coordinate_system: "visible-page-v1";
+    extraction_method: "native_pdf_annotation" | "vision";
+    transcription_confidence: "high" | "medium" | "low";
+    approximate: boolean;
+    original_sha256: string;
+  };
+  grounding_status?: "exact" | "approximate" | "unavailable";
   status: RedesignCommentStatus;
   explanation: string;
   change_ids: string[];
@@ -31,6 +44,12 @@ export type DrawingRedesignChange = {
   verified: boolean;
   source_locator: string;
   comparison: { before_url: string; after_url: string };
+  review?: {
+    decision: "accepted" | "needs_changes";
+    note: string;
+    actor: string;
+    at: string;
+  };
 };
 
 export type DrawingRedesignArtifact = {
@@ -59,6 +78,20 @@ export type DrawingRedesignRun = {
   approval_eligible: boolean;
   remaining_issues: string[];
   error?: string;
+  native_source_id?: string;
+  revised_from_run_id?: string;
+  review_eligible?: boolean;
+  implementation_current?: boolean;
+  can_reprepare?: boolean;
+  visual_findings?: DrawingRedesignComment[];
+  revision_checks?: Array<{
+    change_id: string;
+    comment_id: string;
+    label: string;
+    expected: string;
+    status: "verified" | "needs_review";
+    evidence: unknown[];
+  }>;
 };
 
 export type DrawingRedesignView = {

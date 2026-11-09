@@ -327,6 +327,7 @@ def test_preserved_draft_is_not_hidden_by_a_superseded_replacement():
                 o,
                 r,
                 status="created",
+                graph_draft_id="preserved-native-draft",
                 error="Evidence changed; draft preserved.",
                 created_at=now() - timedelta(minutes=1),
             )
@@ -345,6 +346,8 @@ def test_preserved_draft_is_not_hidden_by_a_superseded_replacement():
         assert p["status"] == "needs_you"
         assert p["threads"][0]["status"] == "needs_you"
         assert not p["outlook"]["native"]
+        assert p["outlook"]["saved_draft_id"]
+        assert get(s, OutlookDraft, p["outlook"]["saved_draft_id"]).graph_draft_id == "preserved-native-draft"
 
 
 def test_project_api_names_and_history_are_tenant_scoped():

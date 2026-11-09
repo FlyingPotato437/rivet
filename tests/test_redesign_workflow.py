@@ -12,7 +12,7 @@ from backend.engineering.comment_redesign import file_hash
 from backend.identity import Identity, identity_scope
 from backend.storage import db
 from backend.storage.db import Session
-from backend.storage.models import Document, Order
+from backend.storage.models import Document, Order, Span
 from backend.worker import claim, process
 
 
@@ -226,15 +226,208 @@ def test_source_or_output_drift_blocks_final_signoff(client, tmp_path):
     assert rejected.status_code == 409
 
 
+def test_verified_change_review_does_not_approve_unresolved_package(client, tmp_path):
+    order, _, _ = package(
+        client,
+        tmp_path,
+        'Add symbols for both tap changers. Mark tap changers as "DETC"',
+    )
+    root = f"/api/orders/{order['id']}/engineering/redesign"
+    before = client.get(root).json()
+    post(client, root + "/prepare", {"expected_version": before["order_version"]})
+    process(claim(kinds=("engineering_redesign",)))
+    result = client.get(root).json()
+    run = result["latest"]
+    assert run["review_eligible"] and not run["approval_eligible"]
+    change = run["changes"][0]
+    data = {
+        "expected_version": result["order_version"],
+        "change_id": change["id"],
+        "decision": "accepted",
+        "note": "The label change is correct.",
+    }
+    url = root + f"/{run['id']}/review"
+    headers = {"Idempotency-Key": str(uuid4())}
+    accepted = client.post(url, json=data, headers=headers)
+    assert accepted.status_code == 200, accepted.text
+    current = accepted.json()
+    assert client.post(url, json=data, headers=headers).json() == current
+    assert post(client, url, data).status_code == 409
+    assert current["latest"]["changes"][0]["review"]["decision"] == "accepted"
+    assert not current["latest"]["engineering_approved"]
+    rejected = post(
+        client,
+        root + f"/{run['id']}/decision",
+        {"expected_version": current["order_version"], "decision": "approve"},
+    )
+    assert rejected.status_code == 409
+
+
+def test_legacy_review_requires_intact_saved_manifest_sources_and_comparison(
+    client, tmp_path
+):
+    order, drawing, _ = package(client, tmp_path)
+    root = f"/api/orders/{order['id']}/engineering/redesign"
+    before = client.get(root).json()
+    post(client, root + "/prepare", {"expected_version": before["order_version"]})
+    process(claim(kinds=("engineering_redesign",)))
+    with Session.begin() as s:
+        record = get(s, Order, order["id"])
+        legacy = dict(record.state["engineering_redesign"]["runs"][-1])
+        legacy["source_fingerprint"] = "historical-engine"
+        del legacy["source_manifest"], legacy["native_source_id"]
+        record.state = {
+            **record.state,
+            "engineering_redesign": {"runs": [legacy]},
+        }
+    current = client.get(root).json()
+    run = current["latest"]
+    assert run["current"] and run["review_eligible"] and not run["approval_eligible"]
+    change = legacy["changes"][0]
+    data = {
+        "expected_version": current["order_version"],
+        "change_id": change["id"],
+        "decision": "accepted",
+    }
+    url = root + f"/{run['id']}/review"
+    from backend.engineering.redesign_service import artifact
+
+    with Session() as s:
+        record = get(s, Order, order["id"])
+        report = artifact(s, record, run["id"], "verification.json")
+        preview = artifact(s, record, run["id"], change["comparison"]["after_name"])
+    original = report.read_bytes()
+    report.write_bytes(original + b" ")
+    assert not client.get(root).json()["latest"]["current"]
+    assert post(client, url, data).status_code == 409
+    report.write_bytes(original)
+
+    original = preview.read_bytes()
+    preview.write_bytes(original + b" ")
+    assert post(client, url, data).status_code == 409
+    preview.write_bytes(original)
+    accepted = post(client, url, data)
+    assert accepted.status_code == 200, accepted.text
+
+    drawing.write_bytes(drawing.read_bytes() + b" ")
+    with Session.begin() as s:
+        source = s.query(Document).filter(Document.blob == drawing.name).one()
+        source.sha256 = file_hash(drawing)
+    assert not client.get(root).json()["latest"]["current"]
+    data["expected_version"] = accepted.json()["order_version"]
+    assert post(client, url, data).status_code == 409
+
+
+def test_new_visual_finding_prevents_whole_drawing_approval(client, tmp_path):
+    order, _, markup = package(client, tmp_path)
+    root = f"/api/orders/{order['id']}/engineering/redesign"
+    before = client.get(root).json()
+    post(client, root + "/prepare", {"expected_version": before["order_version"]})
+    process(claim(kinds=("engineering_redesign",)))
+    assert client.get(root).json()["latest"]["approval_eligible"]
+    with Session.begin() as s:
+        source = s.query(Document).filter(Document.blob == markup.name).one()
+        s.add(
+            Span(
+                document_id=source.id,
+                text="Possible handwritten layout request.",
+                location={
+                    "page": 1,
+                    "annotation_id": "vision:1:0",
+                    "annotation_type": "ambiguous_mark",
+                    "bbox": [0.6, 0.6, 0.8, 0.8],
+                    "coordinate_system": "visible-page-v1",
+                    "extraction_method": "vision",
+                    "original_sha256": source.sha256,
+                    "transcription_confidence": "low",
+                },
+            )
+        )
+    result = client.get(root).json()
+    run = result["latest"]
+    assert run["current"] and run["review_eligible"]
+    assert run["visual_findings"][0]["grounding_status"] == "approximate"
+    assert not run["approval_eligible"]
+    approval = post(
+        client,
+        root + f"/{run['id']}/decision",
+        {"expected_version": result["order_version"], "decision": "approve"},
+    )
+    assert approval.status_code == 409
+    assert "visual findings" in approval.json()["detail"]
+
+
+def test_uploaded_drawing_is_rechecked_before_separate_signoff(client, tmp_path):
+    order, drawing, _ = package(client, tmp_path)
+    root = f"/api/orders/{order['id']}/engineering/redesign"
+    before = client.get(root).json()
+    post(client, root + "/prepare", {"expected_version": before["order_version"]})
+    process(claim(kinds=("engineering_redesign",)))
+    result = client.get(root).json()
+    run = result["latest"]
+    revised = next(
+        client.get(artifact["url"]).content
+        for artifact in run["artifacts"]
+        if artifact["name"] == "Proposed-drawing.dxf"
+    )
+    url = root + f"/{run['id']}/recheck/upload"
+    headers = {"Idempotency-Key": str(uuid4())}
+    data = {"revision": "B", "expected_version": str(result["order_version"])}
+    invalid = client.post(
+        url, files={"file": ("revised.dxf", b"not a DXF")}, data=data, headers=headers
+    )
+    assert invalid.status_code == 422
+    unchanged = client.post(
+        url,
+        files={"file": ("revised.dxf", drawing.read_bytes())},
+        data=data,
+        headers=headers,
+    )
+    assert unchanged.status_code == 409
+    files = {"file": ("revised.dxf", revised)}
+    uploaded = client.post(url, files=files, data=data, headers=headers)
+    assert uploaded.status_code == 200, uploaded.text
+    queued = uploaded.json()
+    assert client.post(url, files=files, data=data, headers=headers).json() == queued
+    assert queued["latest"]["revised_from_run_id"] == run["id"]
+    assert queued["latest"]["status"] == "queued"
+    assert not queued["latest"]["engineering_approved"]
+    assert not queued["latest"]["approval_eligible"]
+    assert (
+        post(
+            client,
+            root + f"/{run['id']}/decision",
+            {"expected_version": queued["order_version"], "decision": "approve"},
+        ).status_code
+        == 409
+    )
+
+    process(claim(kinds=("engineering_redesign",)))
+    current = client.get(root).json()
+    rechecked = current["latest"]
+    assert rechecked["status"] == "ready_for_review", rechecked
+    assert rechecked["approval_eligible"] and not rechecked["engineering_approved"]
+    assert rechecked["revision_checks"][0]["status"] == "verified"
+    assert rechecked["totals"]["already_present"] == 1
+    assert not any(item["name"].endswith(".dxf") for item in rechecked["artifacts"])
+    document = client.get(f"/api/documents/{rechecked['native_source_id']}/content")
+    assert document.content == revised
+    approved = post(
+        client,
+        root + f"/{rechecked['id']}/decision",
+        {"expected_version": current["order_version"], "decision": "approve"},
+    )
+    assert approved.status_code == 200, approved.text
+    assert approved.json()["latest"]["engineering_approved"]
+
+
 def test_unsupported_layout_withholds_completion_and_stays_out_of_review_pdf(
     client, tmp_path
 ):
     order, drawing, _ = package(client, tmp_path)
     doc = ezdxf.readfile(drawing)
     sheet = doc.layouts.new("Customer Sheet")
-    sheet.add_text(
-        "PRIVATE SHEET DETAIL", dxfattribs={"insert": (10, 10), "height": 2}
-    )
+    sheet.add_text("PRIVATE SHEET DETAIL", dxfattribs={"insert": (10, 10), "height": 2})
     sheet.add_spline([(0, 0), (10, 12), (20, 0)])
     doc.saveas(drawing)
     with Session.begin() as s:
@@ -259,7 +452,9 @@ def test_unsupported_layout_withholds_completion_and_stays_out_of_review_pdf(
         for issue in run["remaining_issues"]
     )
 
-    review = next(a for a in run["artifacts"] if a["name"] == "Drawing-change-review.pdf")
+    review = next(
+        a for a in run["artifacts"] if a["name"] == "Drawing-change-review.pdf"
+    )
     pdf_bytes = client.get(review["url"]).content
     with pymupdf.open(stream=pdf_bytes, filetype="pdf") as pdf:
         report_text = "\n".join(page.get_text() for page in pdf)

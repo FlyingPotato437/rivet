@@ -1,6 +1,11 @@
-export type OrderReviewView = "requests" | "changes" | "reply";
+export type OrderReviewView = "requests" | "changes" | "engineer" | "reply";
 
-const reviewViews: OrderReviewView[] = ["requests", "changes", "reply"];
+const reviewViews: OrderReviewView[] = [
+  "requests",
+  "changes",
+  "engineer",
+  "reply",
+];
 
 /** Read the selected workbench view from Rivet's hash route. */
 export function orderReviewFromRoute(route: string): OrderReviewView {
@@ -18,7 +23,8 @@ export function orderReviewRoute(id: string, view: OrderReviewView): string {
 export function orderReviewLabel(view: OrderReviewView): string {
   return {
     requests: "Customer requests",
-    changes: "Corrected files",
+    changes: "Rivet’s changes",
+    engineer: "Engineer review",
     reply: "Outlook reply",
   }[view];
 }
@@ -26,6 +32,7 @@ export function orderReviewLabel(view: OrderReviewView): string {
 export function outlookReplyStatus(input: {
   lastDirection?: "received" | "sent" | null;
   nativeDraft: boolean;
+  preservedDraft?: boolean;
   threadUrl?: string;
   waitingForCustomer?: boolean;
   lastSentAt?: string | null;
@@ -33,6 +40,7 @@ export function outlookReplyStatus(input: {
   if (input.waitingForCustomer && input.lastSentAt) return "Reply sent";
   if (input.lastDirection === "sent") return "Reply sent";
   if (input.nativeDraft) return "Draft in Outlook";
+  if (input.preservedDraft) return "Draft needs update";
   if (input.threadUrl) return "Open email thread";
   return "Draft not saved in Outlook";
 }

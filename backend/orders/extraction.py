@@ -342,6 +342,7 @@ def extract_order_document(document, spans) -> dict:
             "location": _get(span, "location", {}) or {},
         }
         for span in spans
+        if (_get(span, "location", {}) or {}).get("actionable") is not False
         for line in str(_get(span, "text", "")).splitlines()
         if line.strip()
     ]

@@ -12,6 +12,7 @@ test("order workbench route selects each customer workflow view and defaults saf
   assert.equal(orderReviewFromRoute("order/ord-1"), "requests");
   assert.equal(orderReviewFromRoute("order/ord-1?review=changes"), "changes");
   assert.equal(orderReviewFromRoute("order/ord-1?review=reply"), "reply");
+  assert.equal(orderReviewFromRoute("order/ord-1?review=engineer"), "engineer");
   assert.equal(orderReviewFromRoute("order/ord-1?review=unknown"), "requests");
   assert.equal(orderReviewFromRoute("order/ord-1?tab=comments"), "requests");
 });
@@ -22,12 +23,17 @@ test("workbench tabs produce stable order routes and clear labels", () => {
     "order/ord%2Fone?review=changes",
   );
   assert.equal(orderReviewLabel("requests"), "Customer requests");
-  assert.equal(orderReviewLabel("changes"), "Corrected files");
+  assert.equal(orderReviewLabel("changes"), "Rivet’s changes");
   assert.equal(orderReviewLabel("reply"), "Outlook reply");
+  assert.equal(orderReviewLabel("engineer"), "Engineer review");
 });
 
 test("reply status distinguishes a saved Outlook draft, an email thread, and no saved draft", () => {
   assert.equal(outlookReplyStatus({ nativeDraft: true }), "Draft in Outlook");
+  assert.equal(
+    outlookReplyStatus({ nativeDraft: false, preservedDraft: true }),
+    "Draft needs update",
+  );
   assert.equal(
     outlookReplyStatus({
       nativeDraft: false,
@@ -43,7 +49,15 @@ test("reply status distinguishes a saved Outlook draft, an email thread, and no 
     outlookReplyStatus({ nativeDraft: false, lastDirection: "sent" }),
     "Reply sent",
   );
-  assert.equal(outlookReplyStatus({nativeDraft: false, lastDirection: "received", waitingForCustomer: true, lastSentAt: "2026-11-08T00:00:00Z"}), "Reply sent");
+  assert.equal(
+    outlookReplyStatus({
+      nativeDraft: false,
+      lastDirection: "received",
+      waitingForCustomer: true,
+      lastSentAt: "2026-11-08T00:00:00Z",
+    }),
+    "Reply sent",
+  );
 });
 
 test("partial, stale, and failed drawing runs remain visible beside a ready order reply", () => {

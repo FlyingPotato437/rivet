@@ -870,13 +870,26 @@ def content(id: str):
 
 @app.get("/api/sources/{id}")
 def source(id: str):
+    from backend.ingestion.markup_grounding import annotation_coverage
+
     with Session() as s:
         sp = get(s, Span, id)
+        d = get(s, Document, sp.document_id)
+        document = document_dict(d)
+        if any(c.get("annotation_id") for c in d.coverage):
+            spans = s.scalars(
+                scoped(Span).where(
+                    Span.document_id == d.id, Span.location.has_key("annotation_id")
+                )
+            )
+            document["coverage"] = annotation_coverage(
+                d.coverage, spans, document_id=d.id
+            )
         return {
             "id": sp.id,
             "text": sp.text,
             "location": sp.location,
-            "document": document_dict(get(s, Document, sp.document_id)),
+            "document": document,
         }
 
 

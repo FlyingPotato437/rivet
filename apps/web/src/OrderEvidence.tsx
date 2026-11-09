@@ -77,7 +77,9 @@ export function OrderEvidence({
   initialPosition?: EvidencePosition;
   onPositionChange?: (position: EvidencePosition) => void;
 }) {
-  const selected = sources.find((s) => s.id === selectedId);
+  const [markId, setMarkId] = useState<string | null>(null);
+  useEffect(() => setMarkId(null), [selectedId]);
+  const selected = sources.find((s) => s.id === (markId || selectedId));
   const [page, setPage] = useState(
     Number(selected?.location.page ?? initialPosition?.page ?? 1),
   );
@@ -93,6 +95,9 @@ export function OrderEvidence({
   const [loading, setLoading] = useState(false);
   const [openingOriginal, setOpeningOriginal] = useState(false);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const region = useRef<HTMLDivElement>(null);
+  const focusedRegion = useRef("");
+  const [focusRequest, setFocusRequest] = useState(0);
   const pdf = document.name.toLowerCase().endsWith(".pdf");
   async function openOriginal() {
     const textSource = /\.(txt|csv|json|md)$/i.test(document.name);
@@ -230,7 +235,46 @@ export function OrderEvidence({
       scrollLeft: scrollArea.current?.scrollLeft ?? 0,
     });
   }, [page, zoom]);
-  const bbox = selected?.location.bbox;
+  const bbox =
+    (selected?.location.text_bbox as number[] | undefined) ||
+    selected?.location.bbox;
+  useEffect(() => {
+    if (
+      !inline ||
+      loading ||
+      !pdfDocument ||
+      !bbox ||
+      selected?.location.page !== page
+    )
+      return;
+    const key = `${selected.id}:${focusRequest}`;
+    if (focusedRegion.current === key) return;
+    focusedRegion.current = key;
+    setZoom(
+      Math.min(
+        300,
+        Math.max(125, Math.round(65 / Math.max(bbox[2] - bbox[0], 0.1))),
+      ),
+    );
+    const timer = window.setTimeout(() => {
+      if (!region.current || !scrollArea.current) return;
+      const target = region.current.getBoundingClientRect();
+      const viewport = scrollArea.current.getBoundingClientRect();
+      scrollArea.current.scrollTo({
+        left:
+          scrollArea.current.scrollLeft +
+          target.left -
+          viewport.left -
+          (viewport.width - target.width) / 2,
+        top:
+          scrollArea.current.scrollTop +
+          target.top -
+          viewport.top -
+          (viewport.height - target.height) / 2,
+      });
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [selected?.id, page, loading, pdfDocument, inline, focusRequest]);
   const content = (
     <>
       <div
@@ -297,15 +341,46 @@ export function OrderEvidence({
           className="ow-command-note"
           open={(!workbench && !inline) || undefined}
         >
-          <summary>Some source areas need manual review</summary>
+          <summary>Source coverage and graphical marks</summary>
           {document.coverage
             .filter((part) =>
               ["failed", "scanned", "unsupported"].includes(part.state || ""),
             )
             .map((part, index) => (
-              <p key={index}>
-                {part.label}: {part.detail || "Manual review required."}
-              </p>
+              <div key={index} className="source-coverage-item">
+                <p>
+                  {part.label}: {part.detail || "Manual review required."}
+                </p>
+                {!!part.marks?.length && (
+                  <div className="source-mark-links">
+                    {part.marks.map((mark, markIndex) => (
+                      <button
+                        key={mark.source_id || markIndex}
+                        type="button"
+                        disabled={!mark.source_id}
+                        onClick={() => {
+                          setMarkId(mark.source_id!);
+                          setFocusRequest((v) => v + 1);
+                        }}
+                      >
+                        {mark.annotation_type || "Mark"} {markIndex + 1}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {part.source_id && (
+                  <button
+                    className="text-button"
+                    type="button"
+                    onClick={() => {
+                      setMarkId(part.source_id!);
+                      setFocusRequest((v) => v + 1);
+                    }}
+                  >
+                    Locate mark
+                  </button>
+                )}
+              </div>
             ))}
         </details>
       )}
@@ -324,24 +399,51 @@ export function OrderEvidence({
         </blockquote>
       )}
       {selected && inline && pdf && (
-        <details className="record-inline-excerpt">
-          <summary>
-            Selected excerpt ·{" "}
-            {selected.location.page
-              ? `page ${selected.location.page}`
-              : selected.location.cells ||
-                `line ${selected.location.line || "—"}`}
-          </summary>
+        <blockquote className="record-grounded-excerpt">
+          <div>
+            <span>
+              Selected comment ·{" "}
+              {selected.location.page
+                ? `page ${selected.location.page}`
+                : selected.location.cells ||
+                  `line ${selected.location.line || "—"}`}
+            </span>
+            <span>
+              {selected.location.extraction_method === "vision"
+                ? `Vision · ${selected.location.transcription_confidence || "unrated"} confidence`
+                : selected.location.annotation_id
+                  ? "Exact PDF annotation"
+                  : "Source excerpt"}
+            </span>
+          </div>
           <p>
             {selected.text ||
-              "No readable text in this area. Review the original below."}
+              "Graphical mark with no written text. Inspect its context below."}
           </p>
-        </details>
+          {selected.location.approximate === true && (
+            <small>
+              Location estimated by vision. Verify against the original.
+            </small>
+          )}
+        </blockquote>
       )}
       {error && <ErrorNote message={error} />}{" "}
       {pdf ? (
         <>
           <div className="ow-page-controls">
+            {inline && bbox && (
+              <button
+                type="button"
+                className="text-button"
+                onClick={() => {
+                  if (selected?.location.page)
+                    setPage(Number(selected.location.page));
+                  setFocusRequest((v) => v + 1);
+                }}
+              >
+                Focus comment
+              </button>
+            )}
             {workbench && (
               <button
                 className="workbench-original-link"
@@ -425,17 +527,21 @@ export function OrderEvidence({
                 ref={canvas}
                 aria-label={`${document.name}, page ${page}`}
               />
-              {bbox && bbox.length === 4 && selected.location.page === page && (
-                <div
-                  className="ow-region"
-                  style={{
-                    left: `${bbox[0] * 100}%`,
-                    top: `${bbox[1] * 100}%`,
-                    width: `${(bbox[2] - bbox[0]) * 100}%`,
-                    height: `${(bbox[3] - bbox[1]) * 100}%`,
-                  }}
-                />
-              )}
+              {bbox &&
+                bbox.length === 4 &&
+                selected?.location.page === page && (
+                  <div
+                    className="ow-region"
+                    ref={region}
+                    aria-label="Selected comment location"
+                    style={{
+                      left: `${bbox[0] * 100}%`,
+                      top: `${bbox[1] * 100}%`,
+                      width: `${(bbox[2] - bbox[0]) * 100}%`,
+                      height: `${(bbox[3] - bbox[1]) * 100}%`,
+                    }}
+                  />
+                )}
             </div>
           </div>
         </>

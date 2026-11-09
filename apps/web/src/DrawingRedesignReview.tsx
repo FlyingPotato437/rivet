@@ -15,6 +15,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { api, apiFetch } from "./api";
+import { useAccount } from "./Auth";
 import { ErrorNote } from "./ui";
 import {
   redesignApiPath,
@@ -24,6 +25,7 @@ import {
   type DrawingRedesignChange,
   type DrawingRedesignRun,
   type DrawingRedesignView,
+  type DrawingRedesignComment,
 } from "./drawing-redesign-types";
 import "./drawing-redesign-review.css";
 
@@ -213,15 +215,27 @@ export function DrawingRedesignReview({
 }: {
   id: string;
   initialOpen?: boolean;
-  screen?: "all" | "requests" | "changes";
+  screen?: "all" | "requests" | "changes" | "engineer";
   onViewChanges?: (changeId: string) => void;
-  onOpenSource?: (documentId: string, page?: number | null) => void;
+  onOpenSource?: (
+    sourceId: string,
+    page?: number | null,
+    location?: DrawingRedesignComment["source_location"],
+  ) => void;
 }) {
+  const account = useAccount();
+  const canWrite = ["org:admin", "org:member"].includes(account.role);
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(initialOpen);
-  const [busy, setBusy] = useState<"prepare" | "approve" | "request" | "">("");
+  const [busy, setBusy] = useState<
+    "prepare" | "approve" | "request" | "review" | "upload" | ""
+  >("");
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
+  const [reviewNote, setReviewNote] = useState("");
+  const [revisionFile, setRevisionFile] = useState<File | null>(null);
+  const [revisionName, setRevisionName] = useState("");
+  const [notice, setNotice] = useState("");
   const [downloadError, setDownloadError] = useState("");
   const [changeIndex, setChangeIndex] = useState(0);
   const [requestFilter, setRequestFilter] = useState<"all" | "open" | "edits">(
@@ -245,6 +259,7 @@ export function DrawingRedesignReview({
   const requestedChange = new URLSearchParams(
     location.hash.split("?")[1] || "",
   ).get("change");
+  useEffect(() => setReviewNote(""), [changeIndex, run?.id]);
   useEffect(() => {
     setChangeIndex(
       Math.max(
@@ -263,6 +278,86 @@ export function DrawingRedesignReview({
     }
     return map;
   }, [run?.changes]);
+
+  async function reviewChange(
+    change: DrawingRedesignChange,
+    decision: "accepted" | "needs_changes",
+  ) {
+    if (!view || !run || busy || !canWrite) return;
+    setBusy("review");
+    setError("");
+    setNotice("");
+    try {
+      await api(`/orders/${id}/engineering/redesign/${run.id}/review`, {
+        expected_version: view.order_version,
+        change_id: change.id,
+        decision,
+        note: reviewNote.trim(),
+      });
+      setReviewNote("");
+      await queryClient.invalidateQueries({
+        queryKey: ["drawing-redesign", id],
+      });
+      setNotice(
+        decision === "accepted"
+          ? "Change accepted for this saved file. Full revision approval remains separate."
+          : "Change returned for correction.",
+      );
+    } catch (cause) {
+      setError((cause as Error).message);
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function uploadRevision(event: React.FormEvent) {
+    event.preventDefault();
+    if (
+      !view ||
+      !run ||
+      !revisionFile ||
+      !revisionName.trim() ||
+      busy ||
+      !canWrite
+    )
+      return;
+    if (
+      !revisionFile.name.toLowerCase().endsWith(".dxf") ||
+      revisionFile.size > 200 * 1024 * 1024
+    ) {
+      setError(
+        "Choose a DXF drawing up to 200 MiB. Export DWG to DXF in your CAD app first.",
+      );
+      return;
+    }
+    setBusy("upload");
+    setError("");
+    setNotice("");
+    try {
+      const data = new FormData();
+      data.append("file", revisionFile);
+      data.append("revision", revisionName.trim());
+      data.append("expected_version", String(view.order_version));
+      await api(
+        `/orders/${id}/engineering/redesign/${run.id}/recheck/upload`,
+        data,
+      );
+      setRevisionFile(null);
+      setRevisionName("");
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["drawing-redesign", id] }),
+        queryClient.invalidateQueries({ queryKey: ["record", id] }),
+        queryClient.invalidateQueries({ queryKey: ["project-work", id] }),
+      ]);
+      setNotice(
+        "Revision uploaded. Rivet is checking it against the original requests. Nothing is approved or sent.",
+      );
+    } catch (cause) {
+      setError((cause as Error).message);
+    } finally {
+      setBusy("");
+    }
+  }
 
   async function prepare() {
     if (!view || busy) return;
@@ -313,7 +408,7 @@ export function DrawingRedesignReview({
     );
   if (!view || (!view.source_ready && !run)) return null;
   const active = !!run && redesignIsActive(run.status);
-  const canApprove = !!run && redesignCanApprove(run);
+  const canApprove = canWrite && !!run && redesignCanApprove(run);
   const dxf = run?.artifacts.find(
     (a) => /dxf/i.test(a.media_type) || /\.dxf$/i.test(a.name),
   );
@@ -327,10 +422,12 @@ export function DrawingRedesignReview({
     (c) => c.id === selectedChange?.comment_id,
   );
   const canPrepare =
+    canWrite &&
     view.source_ready &&
     !active &&
     (!run ||
       !run.current ||
+      run.can_reprepare ||
       run.status === "failed" ||
       run.status === "changes_requested");
 
@@ -392,6 +489,11 @@ export function DrawingRedesignReview({
             </header>
           )}
           {error && <ErrorNote message={error} />}
+          {notice && (
+            <p className="drr-feedback" role="status">
+              {notice}
+            </p>
+          )}
           {run?.error && (
             <div className="drr-run-error">
               <WarningCircle size={17} />
@@ -507,7 +609,7 @@ export function DrawingRedesignReview({
                   )}
                 </div>
               )}
-              {screen !== "requests" && selectedChange && (
+              {(screen === "all" || screen === "changes") && selectedChange && (
                 <section
                   className="drr-viewer"
                   aria-label="Saved drawing changes"
@@ -543,6 +645,22 @@ export function DrawingRedesignReview({
                   {selectedComment && (
                     <blockquote className="drr-viewer-request">
                       {selectedComment.text}
+                      {onOpenSource && (
+                        <button
+                          className="text-button"
+                          type="button"
+                          onClick={() =>
+                            onOpenSource(
+                              selectedComment.source_id ||
+                                selectedComment.source_document_id,
+                              selectedComment.page,
+                              selectedComment.source_location,
+                            )
+                          }
+                        >
+                          Locate original comment <ArrowSquareOut size={13} />
+                        </button>
+                      )}
                     </blockquote>
                   )}
                   <Comparison change={selectedChange} />
@@ -554,6 +672,166 @@ export function DrawingRedesignReview({
                     Open the DXF in your CAD app to inspect the complete
                     drawing.
                   </p>
+                  <div
+                    className="drr-change-review"
+                    aria-label="Engineer decision for this change"
+                  >
+                    <div>
+                      <strong>
+                        {selectedChange.review?.decision === "accepted"
+                          ? "Accepted by engineer"
+                          : selectedChange.review?.decision === "needs_changes"
+                            ? "Correction requested"
+                            : "Review this change"}
+                      </strong>
+                      <p>
+                        {selectedChange.review?.note ||
+                          "Inspect the saved drawing before accepting this edit."}
+                      </p>
+                    </div>
+                    {canWrite && (
+                      <>
+                        <input
+                          aria-label="Note for this change"
+                          placeholder="Review note (optional)"
+                          value={reviewNote}
+                          maxLength={2000}
+                          onChange={(event) =>
+                            setReviewNote(event.target.value)
+                          }
+                        />
+                        <div className="drr-change-review-actions">
+                          <button
+                            type="button"
+                            disabled={
+                              !!busy ||
+                              active ||
+                              !run.current ||
+                              !run.review_eligible ||
+                              !selectedChange.verified
+                            }
+                            onClick={() =>
+                              void reviewChange(selectedChange, "needs_changes")
+                            }
+                          >
+                            Needs changes
+                          </button>
+                          <button
+                            type="button"
+                            disabled={
+                              !!busy ||
+                              active ||
+                              !run.current ||
+                              !run.review_eligible ||
+                              !selectedChange.verified
+                            }
+                            onClick={() =>
+                              void reviewChange(selectedChange, "accepted")
+                            }
+                          >
+                            <Check size={15} />{" "}
+                            {busy === "review" ? "Saving…" : "Accept change"}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {!run.current && (
+                      <p>
+                        Source files changed. Prepare a current review before
+                        recording a decision.
+                      </p>
+                    )}
+                  </div>
+                </section>
+              )}
+              {screen === "engineer" && (
+                <section
+                  className="drr-engineer-handoff"
+                  aria-label="Engineer revision handoff"
+                >
+                  <div>
+                    <h2>
+                      {run.totals.needs_information
+                        ? `${run.totals.needs_information} requests need engineering input`
+                        : "Review the completed revision"}
+                    </h2>
+                    <p>
+                      Resolve the requests below in your CAD app. Upload the
+                      revised DXF to recheck against the original comments.
+                    </p>
+                  </div>
+                  {canWrite && (
+                    <form
+                      className="drr-revision-upload"
+                      onSubmit={(event) => void uploadRevision(event)}
+                    >
+                      <label>
+                        Revised drawing
+                        <input
+                          type="file"
+                          accept=".dxf"
+                          required
+                          disabled={!!busy || active}
+                          onChange={(event) =>
+                            setRevisionFile(event.target.files?.[0] || null)
+                          }
+                        />
+                      </label>
+                      <label>
+                        Revision
+                        <input
+                          placeholder="e.g. Rev B"
+                          maxLength={40}
+                          value={revisionName}
+                          onChange={(event) =>
+                            setRevisionName(event.target.value)
+                          }
+                          required
+                          disabled={!!busy || active}
+                        />
+                      </label>
+                      <button
+                        type="submit"
+                        disabled={
+                          !revisionFile ||
+                          !revisionName.trim() ||
+                          !!busy ||
+                          active
+                        }
+                      >
+                        {busy === "upload" ? "Uploading…" : "Upload & recheck"}
+                      </button>
+                      <small>
+                        DXF · up to 200 MiB. Originals retained. Uploading does
+                        not approve the drawing.
+                      </small>
+                    </form>
+                  )}
+                </section>
+              )}
+              {screen === "engineer" && !!run.revision_checks?.length && (
+                <section
+                  className="drr-rechecked-changes"
+                  aria-label="Uploaded revision checks"
+                >
+                  <h3>Checks on your uploaded revision</h3>
+                  <ul>
+                    {run.revision_checks.map((check) => (
+                      <li key={check.change_id}>
+                        <span>{check.label}</span>
+                        <span>{check.expected}</span>
+                        <strong>
+                          {check.status === "verified"
+                            ? "Verified in saved DXF"
+                            : "Needs review"}
+                        </strong>
+                      </li>
+                    ))}
+                  </ul>
+                  <p>
+                    These checks cover supported saved edits. Other engineering
+                    requests remain below.
+                  </p>
                 </section>
               )}
               {screen !== "changes" && run.comments.length > 0 && (
@@ -561,40 +839,43 @@ export function DrawingRedesignReview({
                   className="drr-request-list"
                   aria-label="Customer request register"
                 >
-                  <div
-                    className="drr-register-toolbar"
-                    role="group"
-                    aria-label="Filter customer requests"
-                  >
-                    {(
-                      [
-                        ["all", "All requests", run.comments.length],
+                  {screen !== "engineer" && (
+                    <div
+                      className="drr-register-toolbar"
+                      role="group"
+                      aria-label="Filter customer requests"
+                    >
+                      {(
                         [
-                          "open",
-                          "Needs input",
-                          run.comments.filter(
-                            (c) => c.status === "needs_information",
-                          ).length,
-                        ],
-                        [
-                          "edits",
-                          "With edits",
-                          run.comments.filter((c) => changesByComment.has(c.id))
-                            .length,
-                        ],
-                      ] as const
-                    ).map(([key, label, count]) => (
-                      <button
-                        key={key}
-                        type="button"
-                        aria-pressed={requestFilter === key}
-                        onClick={() => setRequestFilter(key)}
-                      >
-                        {label}
-                        <span>{count}</span>
-                      </button>
-                    ))}
-                  </div>
+                          ["all", "All requests", run.comments.length],
+                          [
+                            "open",
+                            "Needs input",
+                            run.comments.filter(
+                              (c) => c.status === "needs_information",
+                            ).length,
+                          ],
+                          [
+                            "edits",
+                            "With edits",
+                            run.comments.filter((c) =>
+                              changesByComment.has(c.id),
+                            ).length,
+                          ],
+                        ] as const
+                      ).map(([key, label, count]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          aria-pressed={requestFilter === key}
+                          onClick={() => setRequestFilter(key)}
+                        >
+                          {label}
+                          <span>{count}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <div className="drr-request-columns" aria-hidden="true">
                     <span>Ref.</span>
                     <span>Customer request</span>
@@ -604,11 +885,21 @@ export function DrawingRedesignReview({
                     {run.comments.map((comment, index) => {
                       const changes = changesByComment.get(comment.id) || [];
                       if (
+                        screen === "engineer" &&
+                        comment.status !== "needs_information"
+                      )
+                        return null;
+                      if (
+                        screen !== "engineer" &&
                         requestFilter === "open" &&
                         comment.status !== "needs_information"
                       )
                         return null;
-                      if (requestFilter === "edits" && !changes.length)
+                      if (
+                        screen !== "engineer" &&
+                        requestFilter === "edits" &&
+                        !changes.length
+                      )
                         return null;
                       const state =
                         changes.length && comment.status === "needs_information"
@@ -648,8 +939,10 @@ export function DrawingRedesignReview({
                                   type="button"
                                   onClick={() =>
                                     onOpenSource(
-                                      comment.source_document_id,
+                                      comment.source_id ||
+                                        comment.source_document_id,
                                       comment.page,
+                                      comment.source_location,
                                     )
                                   }
                                   title={comment.source_name}
@@ -673,7 +966,8 @@ export function DrawingRedesignReview({
                                   type="button"
                                   onClick={() => {
                                     if (
-                                      screen === "requests" &&
+                                      (screen === "requests" ||
+                                        screen === "engineer") &&
                                       onViewChanges
                                     ) {
                                       onViewChanges(changes[0].id);
@@ -698,6 +992,13 @@ export function DrawingRedesignReview({
                                 </button>
                               )}
                             </div>
+                            <small className="drr-grounding-label">
+                              {comment.grounding_status === "exact"
+                                ? "Exact location · original PDF annotation"
+                                : comment.grounding_status === "approximate"
+                                  ? `Vision location · ${comment.source_location?.transcription_confidence || "unrated"} confidence · verify original`
+                                  : "Exact location unavailable · source page only"}
+                            </small>
                           </div>
                         </details>
                       );
@@ -711,68 +1012,110 @@ export function DrawingRedesignReview({
                   )}
                 </section>
               )}
-              {screen !== "requests" && run.remaining_issues.length > 0 && (
-                <details className="drr-issues">
-                  <summary>
-                    Engineering limitations{" "}
-                    <span>{run.remaining_issues.length} notes</span>
-                    <CaretDown size={14} />
-                  </summary>
-                  <ul>
-                    {run.remaining_issues.map((issue, index) => (
-                      <li key={`${index}-${issue}`}>{issue}</li>
-                    ))}
-                  </ul>
-                </details>
+              {screen !== "changes" && !!run.visual_findings?.length && (
+                <section
+                  className="drr-visual-findings"
+                  aria-label="Additional visual findings"
+                >
+                  <h3>Additional marks found by vision</h3>
+                  <p>
+                    Check these locations before treating them as engineering
+                    instructions.
+                  </p>
+                  {run.visual_findings.map((finding) => (
+                    <article key={finding.id}>
+                      <p>
+                        {finding.text || "Unclear mark on the original drawing"}
+                      </p>
+                      <span>
+                        {finding.source_location?.transcription_confidence ||
+                          "Unrated"}{" "}
+                        confidence · estimated location
+                      </span>
+                      {onOpenSource && (
+                        <button
+                          type="button"
+                          className="text-button"
+                          onClick={() =>
+                            onOpenSource(
+                              finding.source_id || finding.source_document_id,
+                              finding.page,
+                              finding.source_location,
+                            )
+                          }
+                        >
+                          Locate mark <ArrowSquareOut size={13} />
+                        </button>
+                      )}
+                    </article>
+                  ))}
+                </section>
               )}
-              {screen !== "requests" && run.status === "ready_for_review" && (
-                <div className="drr-decision">
-                  <label htmlFor={`drr-note-${id}`}>
-                    Engineer note{" "}
-                    <span>
-                      Optional for approval; recommended when requesting
-                      changes.
-                    </span>
-                  </label>
-                  <textarea
-                    id={`drr-note-${id}`}
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    maxLength={2000}
-                    placeholder="Record review findings or the changes needed…"
-                  />
-                  <div className="drr-decision-actions">
-                    <button
-                      type="button"
-                      className="drr-request"
-                      disabled={!!busy || !run.current}
-                      onClick={() => void decide("request_changes")}
-                    >
-                      {busy === "request" ? "Submitting…" : "Request changes"}
-                    </button>
-                    <button
-                      type="button"
-                      className="drr-approve"
-                      disabled={!!busy || !canApprove}
-                      title={
-                        !canApprove
-                          ? "The run must be current, verified, and clear of remaining issues."
-                          : undefined
-                      }
-                      onClick={() => void decide("approve")}
-                    >
-                      {busy === "approve" ? "Approving…" : "Approve revision"}
-                    </button>
+              {(screen === "all" || screen === "engineer") &&
+                run.remaining_issues.length > 0 && (
+                  <details className="drr-issues">
+                    <summary>
+                      Engineering limitations{" "}
+                      <span>{run.remaining_issues.length} notes</span>
+                      <CaretDown size={14} />
+                    </summary>
+                    <ul>
+                      {run.remaining_issues.map((issue, index) => (
+                        <li key={`${index}-${issue}`}>{issue}</li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+              {(screen === "all" || screen === "engineer") &&
+                canWrite &&
+                run.status === "ready_for_review" && (
+                  <div className="drr-decision">
+                    <label htmlFor={`drr-note-${id}`}>
+                      Engineer note{" "}
+                      <span>
+                        Optional for approval; recommended when requesting
+                        changes.
+                      </span>
+                    </label>
+                    <textarea
+                      id={`drr-note-${id}`}
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      maxLength={2000}
+                      placeholder="Record review findings or the changes needed…"
+                    />
+                    <div className="drr-decision-actions">
+                      <button
+                        type="button"
+                        className="drr-request"
+                        disabled={!!busy || !run.current}
+                        onClick={() => void decide("request_changes")}
+                      >
+                        {busy === "request" ? "Submitting…" : "Request changes"}
+                      </button>
+                      <button
+                        type="button"
+                        className="drr-approve"
+                        disabled={!!busy || !canApprove}
+                        title={
+                          !canApprove
+                            ? "The run must be current, verified, and clear of remaining issues."
+                            : undefined
+                        }
+                        onClick={() => void decide("approve")}
+                      >
+                        {busy === "approve" ? "Approving…" : "Approve revision"}
+                      </button>
+                    </div>
+                    {!canApprove && (
+                      <p className="drr-approval-note">
+                        Approval is available when this current revision is
+                        eligible and has no remaining issues.
+                      </p>
+                    )}
                   </div>
-                  {!canApprove && (
-                    <p className="drr-approval-note">
-                      Approval is available when this current revision is
-                      eligible and has no remaining issues.
-                    </p>
-                  )}
-                </div>
-              )}
-              {screen !== "requests" &&
+                )}
+              {(screen === "all" || screen === "engineer") &&
                 (run.status === "needs_information" ||
                   run.totals.needs_information > 0) && (
                   <p className="drr-honest-note">

@@ -19,7 +19,7 @@ from pathlib import Path
 import pymupdf
 from ezdxf.tools.text import plain_mtext
 
-from .cad_evidence import equipment_evidence, verify_saved_drawing
+from .cad_evidence import anchor, equipment_evidence, verify_saved_drawing
 from .cad_geometry import render_region
 from .cad_snapshot import snapshot_dxf
 from .drawing_calculations import propose_current_corrections, verify_saved_calculations
@@ -352,6 +352,21 @@ def _report_pdf(path, report):
             for blocked in audit.get("blocked_columns", []):
                 story.append(Paragraph(escape(blocked["detail"]), styles["BodyText"]))
         story.append(Spacer(1, 10))
+    if report.get("revision_checks"):
+        story.append(Paragraph("Uploaded drawing recheck", styles["Heading2"]))
+        for check in report["revision_checks"]:
+            result = (
+                "verified at prior placement"
+                if check["status"] == "verified"
+                else "needs engineer review"
+            )
+            story.append(
+                Paragraph(
+                    escape(f"{check['label']} · {check['expected']} · {result}"),
+                    styles["BodyText"],
+                )
+            )
+        story.append(Spacer(1, 10))
     for issue in report["remaining_issues"]:
         story.extend([Paragraph(escape(issue), styles["BodyText"]), Spacer(1, 5)])
     story += [Spacer(1, 12), Paragraph("Every supplied comment", styles["Heading2"])]
@@ -403,7 +418,107 @@ def _report_pdf(path, report):
     ).build(story, onFirstPage=footer, onLaterPages=footer)
 
 
-def build_package(sources, cad_source, output, *, snapshot=None):
+def _recheck_prior_changes(plan, snapshot, prior, previous_snapshot):
+    checks = []
+    placed = {}
+    for item in snapshot["placed_text"]:
+        placed.setdefault(item["locator"], []).append(item)
+    previous_placements = {}
+    prior_hash = (prior.get("verification") or {}).get("output_sha256")
+    if previous_snapshot and previous_snapshot["source_sha256"] != prior_hash:
+        previous_snapshot = None
+    if previous_snapshot:
+        for item in previous_snapshot["placed_text"]:
+            previous_placements.setdefault(item["handle"], []).append(item)
+    previous = prior.get("saved_drawing_check", {})
+    for change in prior.get("changes", []):
+        expected = change["after"]
+        baseline = [
+            p["saved"]
+            for p in previous.get("placements", [])
+            if p["edit_id"] == change["id"] and p["verified"]
+        ]
+        if not baseline and previous_snapshot:
+            source_handle = change["source_locator"].split("/")[-1]
+            candidates = previous_placements.get(source_handle, [])
+            if any(
+                p["locator"] == change["source_locator"] for p in candidates
+            ) and all(plain(p["text"]) == expected for p in candidates):
+                baseline = [
+                    anchor(p, previous_snapshot["source_sha256"]) for p in candidates
+                ]
+        locators = [p["locator"] for p in baseline] or [change["source_locator"]]
+        found = [p for locator in locators for p in placed.get(locator, [])]
+        evidence = [anchor(p, snapshot["source_sha256"]) for p in found]
+        anchored = (
+            bool(baseline)
+            and len(found) == len(baseline)
+            and all(
+                {k: v for k, v in a.items() if k != "source_sha256"}
+                == {k: v for k, v in b.items() if k != "source_sha256"}
+                for a, b in zip(baseline, evidence)
+            )
+        )
+        if anchored:
+            handle = baseline[0]["handle"]
+            anchored = {
+                p["locator"] for p in snapshot["placed_text"] if p["handle"] == handle
+            } == set(locators)
+        verified = (
+            change.get("verified")
+            and anchored
+            and all(plain(p["text"]) == expected for p in found)
+            and change.get("review", {}).get("decision") != "needs_changes"
+        )
+        checks.append(
+            {
+                "change_id": change["id"],
+                "comment_id": change["comment_id"],
+                "label": change["label"],
+                "expected": expected,
+                "status": "verified" if verified else "needs_review",
+                "evidence": evidence,
+            }
+        )
+    for comment in plan["comments"]:
+        if comment["change_ids"]:
+            comment.update(
+                status="needs_information",
+                explanation="The revised drawing still has a detected difference. This check recorded the difference and retained the engineer's DXF as uploaded.",
+                change_ids=[],
+            )
+            continue
+        relevant = [check for check in checks if check["comment_id"] == comment["id"]]
+        if (
+            relevant
+            and all(check["status"] == "verified" for check in relevant)
+            and re.fullmatch(
+                r'mark\s+tap\s+changers?\s+as\s+["“\']DETC["”\'][.!]?',
+                comment["text"].strip(),
+                re.IGNORECASE,
+            )
+        ):
+            comment.update(
+                status="already_present",
+                explanation="The requested text was read at each verified native placement in the engineer's revised DXF.",
+                evidence_handles=list(
+                    dict.fromkeys(
+                        e["handle"] for check in relevant for e in check["evidence"]
+                    )
+                ),
+            )
+    return checks
+
+
+def build_package(
+    sources,
+    cad_source,
+    output,
+    *,
+    snapshot=None,
+    revised_from=None,
+    previous_snapshot=None,
+):
     root = Path(output)
     root.mkdir(parents=True, exist_ok=False, mode=0o700)
     if file_hash(cad_source["path"]) != cad_source["sha256"]:
@@ -418,7 +533,12 @@ def build_package(sources, cad_source, output, *, snapshot=None):
             "No native PDF reviewer comments were found; retain the marked originals for visual reading"
         )
     plan = propose(comments, snapshot)
-    edits = plan["edits"]
+    revision_checks = (
+        _recheck_prior_changes(plan, snapshot, revised_from, previous_snapshot)
+        if revised_from is not None
+        else None
+    )
+    edits = plan["edits"] if revised_from is None else []
     # Snapshot text is normalized Unicode; the patch precondition is the EXACT
     # raw native text, including legacy Unicode escapes and format controls.
     raw = (
@@ -462,7 +582,7 @@ def build_package(sources, cad_source, output, *, snapshot=None):
     saved = snapshot_dxf(root / "Proposed-drawing.dxf") if edits else snapshot
     recheck = verify_saved_drawing(snapshot, saved, edits)
     calculation_check = verify_saved_calculations(saved, plan["calculations"])
-    if not calculation_check["passed"]:
+    if not calculation_check["passed"] and revised_from is None:
         (root / "failed-arithmetic-check.json").write_text(
             json.dumps(calculation_check, indent=2)
         )
@@ -570,6 +690,12 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         )
     counts = Counter(c["status"] for c in plan["comments"])
     issues = []
+    if revision_checks is not None and any(
+        check["status"] != "verified" for check in revision_checks
+    ):
+        issues.append(
+            "Some previously proposed values could not be verified at their saved native locations in the uploaded revision."
+        )
     if not snapshot.get("layout_coverage_complete", True):
         issues.append(
             "One or more layouts contain unsupported or unlocated CAD entities. The saved DXF preserves the original bytes outside approved edits, but the review excerpts do not represent a complete multi-layout drawing."
@@ -581,6 +707,10 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         for audit in plan["calculations"]:
             for blocked in audit.get("blocked_columns", []):
                 issues.append(blocked["detail"])
+        if revised_from is not None and not calculation_check["passed"]:
+            issues.append(
+                "Some current cells in the uploaded revision differ from the independently recomputed values."
+            )
     if graphics:
         issues.append(
             f"{len(graphics)} graphical annotations without text are retained for visual review; they are not counted as answered comments."
@@ -631,6 +761,11 @@ def build_package(sources, cad_source, output, *, snapshot=None):
         "engineering_approved": False,
         "production_released": False,
     }
+    if revision_checks is not None:
+        report["revision_checks"] = revision_checks
+        report["summary"] = (
+            f"Rechecked the engineer's uploaded drawing. {counts['already_present']} requests are documented in the DXF and {counts['needs_information']} remain open."
+        )
     # Recheck all originals at the end, including PDFs, before publishing a
     # review package that claims to be bound to their hashes.
     if any(file_hash(s["path"]) != s["sha256"] for s in [*sources, cad_source]):

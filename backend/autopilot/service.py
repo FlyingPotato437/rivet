@@ -144,6 +144,22 @@ def open_draft(internet_message_id, *, client_factory=None):
     """Resolve a user's explicit Open action; polling never makes Graph calls."""
     with Session() as s:
         saved = draft_for_message(s, internet_message_id)
+    return _open_saved_draft(saved, client_factory=client_factory)
+
+
+def open_order_draft(order_id, draft_id, *, client_factory=None):
+    """Open a preserved draft without regenerating it or changing its contents."""
+    with Session() as s:
+        get(s, Order, order_id)
+        row = get(s, OutlookDraft, draft_id)
+        if row.order_id != order_id:
+            fail("This draft does not belong to this order.", 404)
+        saved = view(row)
+    return _open_saved_draft(saved, client_factory=client_factory)
+
+
+def _open_saved_draft(saved, *, client_factory=None):
+    with Session() as s:
         if not saved or saved["status"] not in {"created", "existing_draft"}:
             fail(
                 "There is no active Rivet draft to open. Check Outlook Drafts for the latest reply.",

@@ -5,11 +5,15 @@ import { editableNativeDraftUrl, safeOutlookUrl } from "./outlook-workflow";
 
 export function OutlookDraftButton({
   messageId,
+  orderId,
+  draftId,
   url,
   native = false,
   label = "Open reply in Outlook",
 }: {
   messageId?: string;
+  orderId?: string;
+  draftId?: string;
   url?: string | null;
   native?: boolean;
   label?: string;
@@ -19,7 +23,7 @@ export function OutlookDraftButton({
   const fallback = native
     ? editableNativeDraftUrl(url || "")
     : safeOutlookUrl(url || "");
-  if (!native || !messageId)
+  if (!native || (!messageId && !(orderId && draftId)))
     return fallback ? (
       <a
         className="work-outlook-button"
@@ -39,7 +43,9 @@ export function OutlookDraftButton({
       const result = await api<{
         draft: { outlook_url: string; rest_item_id?: string };
       }>(
-        `/autopilot/outlook-draft/open?internet_message_id=${encodeURIComponent(messageId!)}`,
+        orderId && draftId
+          ? `/project-work/${encodeURIComponent(orderId)}/outlook-drafts/${encodeURIComponent(draftId)}/open`
+          : `/autopilot/outlook-draft/open?internet_message_id=${encodeURIComponent(messageId!)}`,
       );
       const target = editableNativeDraftUrl(
         result.draft.outlook_url,

@@ -24,6 +24,7 @@ def actionability(finding):
             "underlying",
             "check mark",
             "review mark",
+            "supporting markup",
         )
     ):
         return False

@@ -49,7 +49,12 @@ export type ProjectFlow = {
   updated_at: string;
   progress: { label: string; state: string }[];
   open_points: string[];
-  outlook: { internet_message_id: string; url: string; native: boolean };
+  outlook: {
+    internet_message_id: string;
+    url: string;
+    native: boolean;
+    saved_draft_id?: string | null;
+  };
   communication_sync: string;
   history_partial?: boolean;
   communications?: ProjectCommunication[];

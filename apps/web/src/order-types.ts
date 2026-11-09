@@ -21,7 +21,14 @@ export type OrderDocument = {
   state: string;
   role: string;
   revision_label: string | null;
-  coverage: Array<{ label?: string; state?: string; detail?: string }>;
+  coverage: Array<{
+    label?: string;
+    state?: string;
+    detail?: string;
+    source_id?: string;
+    kind?: string;
+    marks?: Array<{ source_id?: string; annotation_type?: string }>;
+  }>;
   warnings: string[];
 };
 export type OrderSummary = {

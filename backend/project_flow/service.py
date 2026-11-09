@@ -851,6 +851,11 @@ def project_view(s, order, *, detail=False):
             if active_receipt
             else "",
             "native": status == "ready",
+            "saved_draft_id": relevant_native.id
+            if relevant_native
+            and relevant_native.graph_draft_id
+            and relevant_native.status in {"created", "existing_draft"}
+            else None,
         },
         "communication_sync": "delayed"
         if any(t.status == "unavailable" for t in threads)

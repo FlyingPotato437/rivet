@@ -8,11 +8,13 @@ import json
 import re
 from datetime import timedelta, timezone
 from types import SimpleNamespace
+from uuid import uuid4
 
 import httpx
 import pytest
+from fastapi import HTTPException
 from sqlalchemy import select
-from test_company_context import identity
+from test_company_context import ORG_B, identity
 from test_reply_automatic import mail, run  # noqa: F401 - fixture reused
 
 from backend.autopilot import outlook, service
@@ -742,6 +744,37 @@ def test_open_soft_deleted_draft_is_rejected(ready):
     with identity(), pytest.raises(Exception) as exc:
         service.open_draft("<fixture@example.com>", client_factory=graph)
     assert exc.value.status_code == 409
+
+
+def test_open_preserved_file_draft_is_read_only_and_scoped(ready):
+    graph = FakeMailbox()
+    service.deliver(client_factory=graph)
+    with identity(), Session.begin() as s:
+        row = s.scalar(select(OutlookDraft))
+        row.receipt_id = None
+        row.error = "Evidence changed; preserve the PM's edits."
+        oid, did = row.order_id, row.id
+    graph.calls.clear()
+    before = graph.draft()["body"].copy()
+    with identity():
+        result = service.open_order_draft(oid, did, client_factory=graph)["draft"]
+        assert result["error"] == "Evidence changed; preserve the PM's edits."
+        assert result["rest_item_id"] == "rest-" + graph.draft()["id"]
+        with pytest.raises(HTTPException) as exc:
+            service.open_order_draft(str(uuid4()), did, client_factory=graph)
+        assert exc.value.status_code == 404
+    with identity(ORG_B), pytest.raises(HTTPException) as exc:
+        service.open_order_draft(oid, did, client_factory=graph)
+    assert exc.value.status_code == 404
+    assert graph.draft()["body"] == before
+    assert all(method == "GET" for method, _ in graph.calls)
+    with identity(), Session.begin() as s:
+        get(s, OutlookDraft, did).status = "discarded"
+    graph.calls.clear()
+    with identity(), pytest.raises(HTTPException) as exc:
+        service.open_order_draft(oid, did, client_factory=graph)
+    assert exc.value.status_code == 409
+    assert not graph.calls
 
 
 def test_open_draft_never_returns_untrusted_link(ready):

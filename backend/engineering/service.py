@@ -403,6 +403,8 @@ def _source_drawing_observations(order, data):
 def view(s, order):
     from typing import get_args
 
+    from backend.ingestion.markup_grounding import annotation_coverage
+
     from .text_reader import Key
 
     data = state(order)
@@ -419,6 +421,22 @@ def view(s, order):
         data.get("requirements")
         and data.get("source_signature") != source_signature(s, order, data)
     )
+    documents = _documents(s, order)
+    annotated_documents = [
+        doc.id for doc in documents if any(c.get("annotation_id") for c in doc.coverage)
+    ]
+    annotation_spans = (
+        list(
+            s.scalars(
+                scoped(Span).where(
+                    Span.document_id.in_(annotated_documents),
+                    Span.location.has_key("annotation_id"),
+                )
+            )
+        )
+        if annotated_documents
+        else []
+    )
     data["documents"] = [
         {
             "id": d.id,
@@ -426,11 +444,17 @@ def view(s, order):
             "sha256": d.sha256,
             "state": d.state,
             "role": data["source_roles"].get(d.id, "unclassified"),
-            "coverage": d.coverage,
+            "coverage": annotation_coverage(
+                d.coverage, annotation_spans, document_id=d.id
+            ),
             "url": f"/documents/{d.id}/content",
         }
-        for d in _documents(s, order)
+        for d in documents
     ]
+    if requirements := data.get("requirements"):
+        requirements["unreadable_pages"] = annotation_coverage(
+            requirements.get("unreadable_pages", []), annotation_spans
+        )
     from backend.equipment.outlook import metadata as outlook_metadata
     from backend.lifecycle.service import _comment_map
 

@@ -43,6 +43,12 @@ def test_equipment_rating_is_not_stripped_as_a_comment_number():
     assert native_duplicate(finding("30 HP motor"), [note("HP motor")], 1) is None
 
 
+def test_same_instruction_far_from_the_native_note_stays_reviewable():
+    native = note(kind="FreeText")
+    repeated_elsewhere = finding(native.text, bbox=[0.7, 0.7, 0.9, 0.9])
+    assert native_duplicate(repeated_elsewhere, [native], 1) is None
+
+
 def test_unique_sticky_note_icon_uses_its_existing_readable_instruction():
     native = note()
     assert (

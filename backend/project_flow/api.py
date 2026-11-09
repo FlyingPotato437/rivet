@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from pydantic import Field
 
+from backend.autopilot.service import open_order_draft
 from backend.domain.service import get
 from backend.orders.schemas import StrictModel
 from backend.storage.db import Session
@@ -32,3 +33,8 @@ def project(id: str):
 def rename(id: str, body: ProjectName):
     with Session.begin() as s:
         return service.rename(s, id, body.name, body.expected_version)
+
+
+@router.get("/{id}/outlook-drafts/{draft_id}/open")
+def open_preserved_draft(id: str, draft_id: str):
+    return open_order_draft(id, draft_id)

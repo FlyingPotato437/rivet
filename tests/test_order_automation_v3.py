@@ -176,6 +176,8 @@ def test_vision_keeps_uncertain_handwriting_and_citable_bboxes(client, monkeypat
         assert all(sp.location["bbox"] for sp in parsed)
         d = s.get(Document, payload["document_id"])
         assert d.meta["vision"]["pages"]["1"]["status"] == "needs_review"
+        assert d.meta["vision"]["pages"]["1"]["model_assessed"] is True
+        assert "model" not in d.meta["vision"]["pages"]["1"]
 
 
 def test_bad_vision_location_never_becomes_an_invented_source():
