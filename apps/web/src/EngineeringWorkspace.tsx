@@ -613,6 +613,12 @@ export function EngineeringWorkspace({
   );
   return (
     <section className="engineering-order">
+      <div className="order-tools-return">
+        <button className="text-button" onClick={() => navigate(`order/${id}`)}>
+          Back to order review
+        </button>
+        <span>Engineering tools</span>
+      </div>
       <nav className="engineering-stages" aria-label="Order stages">
         {stages.map((s, i) => (
           <button

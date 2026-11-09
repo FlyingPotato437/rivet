@@ -6,6 +6,7 @@ import {
   correctionIssue,
   correctedBundleReady,
   correctedDraftReady,
+  correctionDelivery,
   correctedFiles,
   companyRulesAllowAttachment,
   newestCorrectedBundle,
@@ -55,6 +56,63 @@ const bundle = {
     },
   },
 };
+test("sent, removed and human-preserved Outlook replies cannot be recreated", () => {
+  for (const status of [
+    "sent",
+    "sent_for_review",
+    "discarded",
+    "superseded",
+    "existing_draft",
+    "manual_attention",
+    "creating",
+    "created",
+  ]) {
+    const result = correctionDelivery({
+      ...bundle,
+      outlook: { draft: { status } },
+    });
+    assert.equal(result.canSave, false, status);
+  }
+  const sent = correctionDelivery({
+    ...bundle,
+    outlook: { draft: { status: "sent_for_review" } },
+  });
+  assert.equal(sent.label, "Reply sent");
+  assert.equal(sent.openLabel, "Open sent reply");
+  assert.equal(
+    correctionDelivery({
+      ...bundle,
+      outlook: { draft: { status: "discarded" } },
+    }).openLabel,
+    "",
+  );
+  assert.equal(
+    correctionDelivery({
+      ...bundle,
+      outlook: { draft: { status: "unknown", id: "uncertain-provider-item" } },
+    }).canSave,
+    false,
+  );
+  assert.equal(correctionDelivery(bundle).canSave, true);
+  for (const status of ["failed", "permission_required"])
+    assert.equal(
+      correctionDelivery({
+        ...bundle,
+        outlook: {
+          draft: {
+            status,
+            id: "local-reservation",
+            error: "Safe provider rejection",
+          },
+        },
+      }).canSave,
+      true,
+    );
+  assert.equal(
+    correctionDelivery({ ...bundle, current: false }).canSave,
+    false,
+  );
+});
 test("company constraints can block a ready file package without turning inapplicable checks into approvals", () => {
   const rules = {
     active: true,

@@ -482,7 +482,9 @@ export function OrderEvidence({
             </button>
             <div>
               <span>
-                {document.role?.replaceAll("_", " ") || "Source evidence"}
+                {document.role && document.role !== "auto"
+                  ? document.role.replaceAll("_", " ")
+                  : "Source evidence"}
               </span>
               <h2>{document.name}</h2>
             </div>
@@ -495,7 +497,11 @@ export function OrderEvidence({
   return (
     <Modal
       title={document.name}
-      eyebrow={document.role?.replaceAll("_", " ") || "Source evidence"}
+      eyebrow={
+        document.role && document.role !== "auto"
+          ? document.role.replaceAll("_", " ")
+          : "Source evidence"
+      }
       onClose={close}
       wide
     >

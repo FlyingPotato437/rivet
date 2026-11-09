@@ -323,7 +323,13 @@ export function YourWork({ navigate }: { navigate: (to: string) => void }) {
   );
 }
 /** Wakes mailbox reconciliation now instead of waiting for the 2-minute cycle. */
-export function CheckInboxNow({ mailboxes }: { mailboxes: WorkMailbox[] }) {
+export function CheckInboxNow({
+  mailboxes,
+  showLastCheck = true,
+}: {
+  mailboxes: WorkMailbox[];
+  showLastCheck?: boolean;
+}) {
   const qc = useQueryClient();
   const admin = useAccount().role === "org:admin";
   const [state, setState] = useState<
@@ -415,9 +421,11 @@ export function CheckInboxNow({ mailboxes }: { mailboxes: WorkMailbox[] }) {
               : "Waiting for the first inbox check";
   return (
     <div className="work-inbox-check">
-      <span className={`work-check-status ${state}`} role="status">
-        {status}
-      </span>
+      {(showLastCheck || state !== "idle") && (
+        <span className={`work-check-status ${state}`} role="status">
+          {status}
+        </span>
+      )}
       {admin && (
         <button
           className="work-check-button"

@@ -161,6 +161,67 @@ export function correctedDraftReady(bundle: CorrectedBundle) {
     )
   );
 }
+export function correctionDelivery(bundle: CorrectedBundle) {
+  const draft = bundle.outlook?.draft;
+  const status = draft?.status || bundle.outlook?.status || "";
+  if (["sent", "sent_for_review"].includes(status))
+    return {
+      state: "sent",
+      label: "Reply sent",
+      note: "Sent from Outlook · engineering release remains separate",
+      canSave: false,
+      openLabel: "Open sent reply",
+    };
+  if (["discarded", "superseded"].includes(status))
+    return {
+      state: "closed",
+      label:
+        status === "discarded"
+          ? "Draft removed in Outlook"
+          : "Reply superseded",
+      note: "Saved files remain available. Rivet will not recreate this reply.",
+      canSave: false,
+      openLabel: "",
+    };
+  if (correctedDraftReady(bundle))
+    return {
+      state: "draft",
+      label: "Unsent Outlook draft",
+      note: "Review and send from Outlook",
+      canSave: false,
+      openLabel: "Open corrected draft",
+    };
+  if (["creating", "pending"].includes(status))
+    return {
+      state: "working",
+      label: "Checking Outlook draft",
+      note: "Rivet is reconciling the saved reply before any retry.",
+      canSave: false,
+      openLabel: "",
+    };
+  // Backend uses failed/permission_required only for known-safe rejections.
+  // The public id is a local reservation, not proof that Graph saved a draft.
+  if (status && !["failed", "permission_required"].includes(status))
+    return {
+      state: "review",
+      label: "Outlook reply needs checking",
+      note:
+        draft?.error ||
+        "An existing reply is preserved. Check its contents and attachments in Outlook.",
+      canSave: false,
+      openLabel: "Open Outlook reply",
+    };
+  return {
+    state: "files",
+    label: correctedBundleReady(bundle)
+      ? "Re-checked from the corrected files"
+      : "Not ready to attach",
+    note:
+      draft?.error || "Draft files only · engineering release remains separate",
+    canSave: correctedBundleReady(bundle),
+    openLabel: "",
+  };
+}
 export function correctedFiles(bundle: CorrectedBundle) {
   return bundle.artifacts.filter(
     (file) =>

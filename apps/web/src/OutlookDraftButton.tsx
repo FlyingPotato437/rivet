@@ -16,7 +16,9 @@ export function OutlookDraftButton({
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const fallback = safeOutlookUrl(url || "");
+  const fallback = native
+    ? editableNativeDraftUrl(url || "")
+    : safeOutlookUrl(url || "");
   if (!native || !messageId)
     return fallback ? (
       <a
@@ -25,7 +27,7 @@ export function OutlookDraftButton({
         target="_blank"
         rel="noreferrer"
       >
-        {native ? label : "Open in Outlook"} <ArrowUpRight size={15} />
+        {native ? label : "Open email thread"} <ArrowUpRight size={15} />
       </a>
     ) : null;
   async function open() {

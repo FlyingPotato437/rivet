@@ -449,7 +449,9 @@ def view(s, order, baseline_revision=None, target_revision=None):
     }
 
 
-def save_check(s, order, baseline_revision, target_revision):
+def save_check(
+    s, order, baseline_revision, target_revision, *, schedule_corrections=True
+):
     result = view(s, order, baseline_revision, target_revision)
     report = result["comparison"]
     if not report:
@@ -523,9 +525,10 @@ def save_check(s, order, baseline_revision, target_revision):
     )
     result["version"] = order.version
     report["saved_check_current"] = True
-    from .workflow import schedule
+    if schedule_corrections:
+        from .workflow import schedule
 
-    schedule(s, order)
+        schedule(s, order)
     return result
 
 
@@ -548,7 +551,26 @@ def synchronize(s, order):
         {"drawing", "bom"} <= by_revision.get(r, set()) for r in (baseline, target)
     ):
         return
-    save_check(s, order, baseline, target)
+    # Mail-owned native changes are scheduled by the receipt reconciler so the
+    # durable correction job stays bound to the email that supplied the edits.
+    # Do keep the deterministic comparison current, but do not create an
+    # unbound Outlook handoff from a parser refresh.
+    schedule_corrections = True
+    from backend.equipment.ownership import for_receipt
+    from backend.reply_assistant.automatic import receipts_for_order
+
+    for receipt in s.scalars(receipts_for_order(s, order).limit(100)):
+        state = for_receipt(s, order, receipt)
+        if state and state.get("reason") == "native_equipment":
+            schedule_corrections = False
+            break
+    save_check(
+        s,
+        order,
+        baseline,
+        target,
+        schedule_corrections=schedule_corrections,
+    )
 
 
 def release_blockers(s, order):

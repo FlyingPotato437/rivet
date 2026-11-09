@@ -1,0 +1,196 @@
+/* A compact order queue for the home view; the detailed story stays in each order. */
+.app-shell .today-board {
+  max-width: 1180px;
+  padding-top: 34px;
+  padding-bottom: 56px;
+}
+.app-shell.rv6 .today-board .today-hero {
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+.today-board .today-date {
+  display: block;
+  color: #969ba2;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.app-shell.rv6 .today-board .today-hero h1 {
+  margin: 0;
+  font-size: clamp(25px, 2.7vw, 34px);
+  line-height: 1.15;
+}
+.today-board .today-brief {
+  margin: 7px 0 0;
+  color: #969ba2;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.app-shell.rv6 .today-board .today-hero-actions {
+  gap: 12px;
+}
+.app-shell.rv6 .today-board .today-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 1px solid #ffffff12;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+.app-shell.rv6 .today-board .today-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  color: #9ba1a9;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.app-shell.rv6 .today-board .today-toolbar button.is-active {
+  color: #e8e4ee;
+  border-bottom-color: #c3b6df;
+}
+.today-board .today-toolbar button > span {
+  color: #78818b;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.app-shell.rv6 .today-board .today-layout {
+  display: block;
+}
+.app-shell.rv6 .today-board .work-list {
+  width: 100%;
+  border: 1px solid #ffffff10;
+  border-radius: 9px;
+  background: #171a1d;
+  overflow: hidden;
+}
+.app-shell.rv6 .today-board .work-group {
+  padding: 4px 18px 8px;
+}
+.app-shell.rv6 .today-board .work-group + .work-group {
+  border-top: 1px solid #ffffff10;
+}
+.app-shell.rv6 .today-board .work-group-head {
+  min-height: 42px;
+  margin: 0;
+  color: #c4c8ce;
+  font-size: 12px;
+}
+.app-shell.rv6 .today-board .work-group-count {
+  color: #848c96;
+}
+.app-shell.rv6 .today-board .work-row {
+  grid-template-columns: 17px minmax(150px, 200px) minmax(0, 1fr) auto;
+  gap: 12px;
+  min-height: 56px;
+  padding: 9px 0;
+  border-top: 1px solid #ffffff09;
+}
+.app-shell.rv6 .today-board .work-row > .blueprint-thumb,
+.app-shell.rv6 .today-board .work-row-customer,
+.app-shell.rv6 .today-board .work-row-when {
+  display: none;
+}
+.app-shell.rv6 .today-board .work-row-title {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.app-shell.rv6 .today-board .work-row-action {
+  min-width: 0;
+}
+.app-shell.rv6 .today-board .work-row-action > button,
+.app-shell.rv6 .today-board .work-row-action .work-outlook-button {
+  min-height: 32px;
+  padding: 7px 10px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.app-shell.rv6 .today-board .today-caught-up {
+  padding: 28px 20px;
+}
+.app-shell.rv6 .today-board .today-caught-up h3 {
+  margin-bottom: 4px;
+}
+.app-shell.rv6 .today-board .today-approved {
+  margin: 0 0 12px;
+}
+.app-shell.rv6 .today-board .work-list-empty {
+  padding: 20px;
+  margin: 0;
+}
+@media (max-width: 650px) {
+  .app-shell .today-board {
+    padding: 24px 16px 40px;
+  }
+  .app-shell.rv6 .today-board .today-hero {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .app-shell.rv6 .today-board .today-hero-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .app-shell.rv6 .today-board .work-group {
+    padding: 4px 12px 8px;
+  }
+  .app-shell.rv6 .today-board .work-row {
+    grid-template-columns: 16px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .app-shell.rv6 .today-board .work-row-action {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 3px;
+  }
+  .app-shell.rv6 .today-board .today-toolbar button {
+    padding: 0 9px;
+    font-size: 11px;
+  }
+  .app-shell.rv6 .today-board .work-row-title {
+    grid-column: 2;
+  }
+}
+
+.app-shell .projects-hub {
+  max-width: 1280px;
+  padding-top: 34px;
+}
+.app-shell .projects-hub .project-page-header {
+  margin-bottom: 16px;
+}
+.app-shell .projects-hub .project-page-header h1 {
+  font-size: clamp(25px, 2.7vw, 34px);
+}
+.app-shell .projects-hub .project-mailbox-bar {
+  min-height: 46px;
+  font-size: 11px;
+}
+.app-shell .projects-hub .project-hub-controls {
+  margin: 18px 0 10px;
+}
+.app-shell .projects-hub .project-hub-row {
+  min-height: 82px;
+  padding: 15px 14px;
+}
+.app-shell .projects-hub .project-folder {
+  width: 32px;
+  height: 34px;
+}
+.app-shell .projects-hub .project-hub-row-name strong {
+  font-size: 14px;
+}
+.app-shell .projects-hub .project-hub-row-progress small {
+  display: none;
+}
+.app-shell .projects-hub .project-questions {
+  margin-top: 18px;
+}
+.app-shell .today-decision-group > .today-decision + .today-decision {
+  margin-top: 12px;
+}

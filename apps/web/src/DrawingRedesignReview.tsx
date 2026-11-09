@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDown,
@@ -137,33 +138,36 @@ function Comparison({ change }: { change: DrawingRedesignChange }) {
         ))}
       </div>
       {images.error && <p className="drr-inline-error">{images.error}</p>}
-      {expanded && images[expanded] && (
-        <div
-          className="drr-lightbox"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${expanded} drawing: ${change.label}`}
-          onClick={() => setExpanded(null)}
-        >
-          <button
-            type="button"
-            className="drr-lightbox-close"
-            ref={closeRef}
-            aria-label="Close enlarged drawing"
+      {expanded &&
+        images[expanded] &&
+        createPortal(
+          <div
+            className="drr-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${expanded} drawing: ${change.label}`}
             onClick={() => setExpanded(null)}
           >
-            <X size={20} />
-          </button>
-          <img
-            src={images[expanded]}
-            alt={`${expanded} drawing: ${change.label}`}
-            onClick={(event) => event.stopPropagation()}
-          />
-          <span>
-            {expanded === "before" ? "Before" : "After"} · {change.label}
-          </span>
-        </div>
-      )}
+            <button
+              type="button"
+              className="drr-lightbox-close"
+              ref={closeRef}
+              aria-label="Close enlarged drawing"
+              onClick={() => setExpanded(null)}
+            >
+              <X size={20} />
+            </button>
+            <img
+              src={images[expanded]}
+              alt={`${expanded} drawing: ${change.label}`}
+              onClick={(event) => event.stopPropagation()}
+            />
+            <span>
+              {expanded === "before" ? "Before" : "After"} · {change.label}
+            </span>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
@@ -195,9 +199,19 @@ async function download(path: string, filename: string) {
   window.setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
 }
 
-export function DrawingRedesignReview({ id }: { id: string }) {
+export function DrawingRedesignReview({
+  id,
+  initialOpen = false,
+  screen = "all",
+  onViewChanges,
+}: {
+  id: string;
+  initialOpen?: boolean;
+  screen?: "all" | "requests" | "changes";
+  onViewChanges?: (changeId: string) => void;
+}) {
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initialOpen);
   const [busy, setBusy] = useState<"prepare" | "approve" | "request" | "">("");
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
@@ -218,7 +232,17 @@ export function DrawingRedesignReview({ id }: { id: string }) {
   });
   const view = query.data;
   const run = view?.latest;
-  useEffect(() => setChangeIndex(0), [id, run?.id]);
+  const requestedChange = new URLSearchParams(
+    location.hash.split("?")[1] || "",
+  ).get("change");
+  useEffect(() => {
+    setChangeIndex(
+      Math.max(
+        0,
+        run?.changes.findIndex((change) => change.id === requestedChange) ?? 0,
+      ),
+    );
+  }, [id, run?.id, requestedChange]);
   const changesByComment = useMemo(() => {
     const map = new Map<string, DrawingRedesignChange[]>();
     for (const change of run?.changes || []) {
@@ -302,57 +326,61 @@ export function DrawingRedesignReview({ id }: { id: string }) {
 
   return (
     <section className="drr-entry" aria-label="Drawing redesign review">
-      <div className="drr-entry-row">
-        <div className="drr-entry-copy">
-          <span className="drr-entry-mark" aria-hidden="true">
-            R
-          </span>
-          <div>
-            <strong>Drawing redesign</strong>
-            <p>
-              {run
-                ? `${run.changes.length} native edits · ${run.totals.already_present} requests already present · ${run.totals.needs_information} open requests`
-                : "Review the supplied drawing comments and prepare a revision."}
-            </p>
+      {screen === "all" && (
+        <div className="drr-entry-row">
+          <div className="drr-entry-copy">
+            <span className="drr-entry-mark" aria-hidden="true">
+              R
+            </span>
+            <div>
+              <strong>Drawing redesign</strong>
+              <p>
+                {run
+                  ? `${run.changes.length} native edits · ${run.totals.already_present} requests already present · ${run.totals.needs_information} open requests`
+                  : "Review the supplied drawing comments and prepare a revision."}
+              </p>
+            </div>
           </div>
+          <button
+            type="button"
+            className="drr-toggle"
+            aria-expanded={open}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? "Close review" : run ? "Open review" : "Review comments"}
+            <ArrowSquareOut size={15} />
+          </button>
         </div>
-        <button
-          type="button"
-          className="drr-toggle"
-          aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? "Close review" : run ? "Open review" : "Review comments"}
-          <ArrowSquareOut size={15} />
-        </button>
-      </div>
+      )}
       {query.isError && (
         <ErrorNote message="Drawing redesign status could not load." />
       )}
       {open && (
         <div className="drr-panel">
-          <header className="drr-panel-head">
-            <div>
-              <span className="drr-eyebrow">ENGINEERING REVIEW</span>
-              <h2>Drawing redesign</h2>
-              <p>
-                Compare the saved changes, download the drawing, and review the
-                customer requests.
-              </p>
-            </div>
-            {run && (
-              <div className="drr-status-group">
-                {!run.current && (
-                  <span className="drr-status is-stale">
-                    Prior revision · stale
-                  </span>
-                )}
-                <span className={`drr-status is-${run.status}`}>
-                  {redesignStatusLabel(run.status)}
-                </span>
+          {screen === "all" && (
+            <header className="drr-panel-head">
+              <div>
+                <span className="drr-eyebrow">ENGINEERING REVIEW</span>
+                <h2>Drawing redesign</h2>
+                <p>
+                  Compare the saved changes, download the drawing, and review
+                  the customer requests.
+                </p>
               </div>
-            )}
-          </header>
+              {run && (
+                <div className="drr-status-group">
+                  {!run.current && (
+                    <span className="drr-status is-stale">
+                      Prior revision · stale
+                    </span>
+                  )}
+                  <span className={`drr-status is-${run.status}`}>
+                    {redesignStatusLabel(run.status)}
+                  </span>
+                </div>
+              )}
+            </header>
+          )}
           {error && <ErrorNote message={error} />}
           {run?.error && (
             <div className="drr-run-error">
@@ -369,24 +397,26 @@ export function DrawingRedesignReview({ id }: { id: string }) {
           )}
           {run && (
             <>
-              <div className="drr-summary">
-                <p>{run.summary}</p>
-                <div className="drr-totals" aria-label="Comment totals">
-                  <span>
-                    <b>{run.totals.comments}</b> comments
-                  </span>
-                  <span>
-                    <b>{run.changes.length}</b> native edits
-                  </span>
-                  <span>
-                    <b>{run.totals.already_present}</b> already present
-                  </span>
-                  <span>
-                    <b>{run.totals.needs_information}</b> need information
-                  </span>
+              {screen !== "requests" && (
+                <div className="drr-summary">
+                  <p>{run.summary}</p>
+                  <div className="drr-totals" aria-label="Comment totals">
+                    <span>
+                      <b>{run.totals.comments}</b> comments
+                    </span>
+                    <span>
+                      <b>{run.changes.length}</b> native edits
+                    </span>
+                    <span>
+                      <b>{run.totals.already_present}</b> already present
+                    </span>
+                    <span>
+                      <b>{run.totals.needs_information}</b> need information
+                    </span>
+                  </div>
                 </div>
-              </div>
-              {!!run.artifacts.length && (
+              )}
+              {screen !== "requests" && !!run.artifacts.length && (
                 <div className="drr-exports">
                   <div>
                     <strong>Revision files</strong>
@@ -456,7 +486,7 @@ export function DrawingRedesignReview({ id }: { id: string }) {
                   )}
                 </div>
               )}
-              {selectedChange && (
+              {screen !== "requests" && selectedChange && (
                 <section
                   className="drr-viewer"
                   aria-label="Saved drawing changes"
@@ -515,8 +545,8 @@ export function DrawingRedesignReview({ id }: { id: string }) {
                   </p>
                 </section>
               )}
-              {run.comments.length > 0 && (
-                <details className="drr-comment-register">
+              {screen !== "changes" && run.comments.length > 0 && (
+                <details className="drr-comment-register" open={initialOpen}>
                   <summary>
                     Customer request register{" "}
                     <span>
@@ -555,6 +585,10 @@ export function DrawingRedesignReview({ id }: { id: string }) {
                               className="drr-jump"
                               type="button"
                               onClick={() => {
+                                if (screen === "requests" && onViewChanges) {
+                                  onViewChanges(changes[0].id);
+                                  return;
+                                }
                                 setChangeIndex(
                                   run.changes.findIndex(
                                     (c) => c.id === changes[0].id,
@@ -578,7 +612,7 @@ export function DrawingRedesignReview({ id }: { id: string }) {
                   </div>
                 </details>
               )}
-              {run.remaining_issues.length > 0 && (
+              {screen !== "requests" && run.remaining_issues.length > 0 && (
                 <div className="drr-issues">
                   <strong>Items needing attention</strong>
                   <ul>
@@ -588,7 +622,7 @@ export function DrawingRedesignReview({ id }: { id: string }) {
                   </ul>
                 </div>
               )}
-              {run.status === "ready_for_review" && (
+              {screen !== "requests" && run.status === "ready_for_review" && (
                 <div className="drr-decision">
                   <label htmlFor={`drr-note-${id}`}>
                     Engineer note{" "}
@@ -635,16 +669,17 @@ export function DrawingRedesignReview({ id }: { id: string }) {
                   )}
                 </div>
               )}
-              {(run.status === "needs_information" ||
-                run.totals.needs_information > 0) && (
-                <p className="drr-honest-note">
-                  This package is partial. Resolve the listed information
-                  requests before engineering approval.
-                </p>
-              )}
+              {screen !== "requests" &&
+                (run.status === "needs_information" ||
+                  run.totals.needs_information > 0) && (
+                  <p className="drr-honest-note">
+                    This package is partial. Resolve the listed information
+                    requests before engineering approval.
+                  </p>
+                )}
             </>
           )}
-          {!run && view.source_ready && (
+          {!run && view.source_ready && screen !== "requests" && (
             <div className="drr-empty">
               <p>
                 Use the actual drawing comments attached to this order to
@@ -665,7 +700,7 @@ export function DrawingRedesignReview({ id }: { id: string }) {
               </button>
             </div>
           )}
-          {canPrepare && run && (
+          {canPrepare && run && screen !== "requests" && (
             <div className="drr-reprepare">
               <button
                 type="button"

@@ -284,6 +284,28 @@ def test_genuine_thread_reply_attaches_each_file_once_without_send(packet):
     assert len(graph.messages["native-correction"]["attachments"]) == 3
 
 
+def test_newer_message_in_owned_thread_blocks_native_handoff(packet):
+    add_thread(packet)
+    graph = DraftMailbox()
+    graph.extra_inbound = [
+        {
+            "id": "newer-customer-message",
+            "isDraft": False,
+            "conversationId": "order-thread",
+            "receivedDateTime": "2026-10-18T12:05:00Z",
+            "parentFolderId": "inbox",
+        }
+    ]
+    with identity(), pytest.raises(HTTPException, match="newer customer email"):
+        save(packet, graph)
+    assert not [
+        request
+        for request in graph.calls
+        if request.method == "POST" and request.url.path.endswith("createReply")
+    ]
+    assert "native-correction" not in graph.messages
+
+
 def test_existing_human_reply_is_preserved_and_not_claimed_as_handoff(packet):
     add_thread(packet)
     graph = DraftMailbox(existing=True)

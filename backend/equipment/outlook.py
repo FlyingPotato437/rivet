@@ -175,18 +175,24 @@ def _files(bundle, order_id, bundle_id):
     return files
 
 
-def _receipt(s, order, connection_id):
-    return s.scalar(
+def _receipt(s, order, connection_id=None, receipt_id=None):
+    query = (
         scoped(MailboxReceipt)
         .join(RecordIntake, RecordIntake.id == MailboxReceipt.intake_id)
         .where(
             RecordIntake.organization_id == order.organization_id,
             RecordIntake.order_id == order.id,
-            MailboxReceipt.connection_id == connection_id,
             MailboxReceipt.status == "imported",
         )
-        .order_by(MailboxReceipt.last_seen_at.desc(), MailboxReceipt.id.desc())
-        .limit(1)
+    )
+    if connection_id:
+        query = query.where(MailboxReceipt.connection_id == connection_id)
+    if receipt_id:
+        query = query.where(MailboxReceipt.id == receipt_id)
+    return s.scalar(
+        query.order_by(
+            MailboxReceipt.last_seen_at.desc(), MailboxReceipt.id.desc()
+        ).limit(1)
     )
 
 
@@ -362,7 +368,7 @@ def _fresh(
         order = get(s, Order, order_id)
         bundle = provider(s, order, bundle_id)
         files = _files(bundle, order.id, bundle_id)
-        latest = _receipt(s, order, connection_id)
+        latest = _receipt(s, order, connection_id, receipt_id)
         if (
             bundle.get("fingerprint") != fingerprint
             or (latest.id if latest else None) != receipt_id
@@ -449,6 +455,7 @@ def save(
     *,
     client_factory=None,
     bundle_provider=None,
+    receipt_id=None,
 ):
     """Save real corrected files as an unsent reply or unaddressed native draft.
 
@@ -490,16 +497,28 @@ def save(
             _put(order, bundle_id, row)
             interrupted = True
         if not interrupted:
+            source_receipt = (
+                _receipt(s, order, receipt_id=receipt_id) if receipt_id else None
+            )
+            if receipt_id and not source_receipt:
+                fail(
+                    "The email that owns this correction is no longer available in this order.",
+                    409,
+                )
             enabled = list(
                 s.scalars(
                     scoped(MailboxConnection).where(MailboxConnection.enabled.is_(True))
                 )
             )
             chosen = (
-                row.get("connection_id")
+                source_receipt.connection_id
+                if source_receipt
+                else row.get("connection_id")
                 or connection_id
                 or (enabled[0].id if len(enabled) == 1 else None)
             )
+            if source_receipt and connection_id and connection_id != chosen:
+                fail("The selected mailbox does not own this customer email.", 409)
             connection = next((c for c in enabled if c.id == chosen), None)
             if not connection:
                 fail(
@@ -508,7 +527,12 @@ def save(
                     else "Connect Outlook before saving this draft.",
                     409,
                 )
-            receipt = _receipt(s, order, connection.id)
+            receipt = _receipt(s, order, connection.id, receipt_id)
+            if receipt_id and not receipt:
+                fail(
+                    "The email that owns this correction is no longer available in this mailbox.",
+                    409,
+                )
             # A file-only draft has no conversation to deduplicate through Graph.
             # Preserve any earlier correction draft for the order as well.
             other = next(

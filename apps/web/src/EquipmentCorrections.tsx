@@ -20,6 +20,7 @@ import {
   correctionIssue,
   correctedBundleReady,
   correctedDraftReady,
+  correctionDelivery,
   correctedFiles,
   correctedChecks,
   literalCorrectionEdits,
@@ -65,7 +66,7 @@ export function EquipmentCorrections({
       !view ||
       busy ||
       automaticWorking ||
-      (action === "outlook" && (!bundle || !correctedBundleReady(bundle)))
+      (action === "outlook" && (!bundle || !correctionDelivery(bundle).canSave))
     )
       return;
     setBusy(action);
@@ -114,6 +115,7 @@ export function EquipmentCorrections({
     inOutlook = !!bundle && correctedDraftReady(bundle),
     outlook = bundle?.outlook?.draft;
   const link = safeOutlookUrl(outlook?.web_link || outlook?.outlook_url);
+  const delivery = bundle ? correctionDelivery(bundle) : null;
   const blocked = view.plan.status === "blocked";
   if (
     compact &&
@@ -138,21 +140,25 @@ export function EquipmentCorrections({
               ? "Preparing and re-checking the files"
               : busy === "outlook"
                 ? "Saving the corrected reply in Outlook"
-                : automaticWorking && !inOutlook
-                  ? ready
-                    ? "Rivet is completing the Outlook draft"
-                    : "Rivet is preparing and re-checking the files"
-                  : inOutlook
-                    ? "Corrected draft ready in Outlook"
-                    : ready
-                      ? "Corrected files, checked against the requirement"
-                      : bundle
-                        ? "Draft files prepared. Checks still need attention."
-                        : blocked
-                          ? "A drafting decision is needed first"
-                          : view.plan.status === "ready"
-                            ? "Rivet can prepare the corrected files"
-                            : "No supported file changes to prepare"}
+                : delivery?.state === "sent"
+                  ? "Corrected reply sent from Outlook"
+                  : delivery?.state === "closed" || delivery?.state === "review"
+                    ? delivery.label
+                    : automaticWorking && !inOutlook
+                      ? ready
+                        ? "Rivet is completing the Outlook draft"
+                        : "Rivet is preparing and re-checking the files"
+                      : inOutlook
+                        ? "Corrected draft ready in Outlook"
+                        : ready
+                          ? "Corrected files, checked against the requirement"
+                          : bundle
+                            ? "Draft files prepared. Checks still need attention."
+                            : blocked
+                              ? "A drafting decision is needed first"
+                              : view.plan.status === "ready"
+                                ? "Rivet can prepare the corrected files"
+                                : "No supported file changes to prepare"}
           </h3>
         </div>
         {(busy ||
@@ -234,11 +240,7 @@ export function EquipmentCorrections({
           <div className="correction-result-line">
             <span className={`work-state${inOutlook ? " is-ready" : ""}`}>
               <span />
-              {inOutlook
-                ? "Unsent Outlook draft"
-                : ready
-                  ? "Re-checked from the corrected files"
-                  : "Not ready to attach"}
+              {delivery?.label}
             </span>
             <span>
               {bundle.target_revision
@@ -248,16 +250,16 @@ export function EquipmentCorrections({
             </span>
           </div>
           <div className="correction-actions">
-            {inOutlook && link ? (
+            {delivery?.openLabel && link ? (
               <a
                 className="primary"
                 href={link}
                 target="_blank"
                 rel="noreferrer"
               >
-                Open corrected draft <ArrowUpRight size={14} />
+                {delivery.openLabel} <ArrowUpRight size={14} />
               </a>
-            ) : ready && !inOutlook ? (
+            ) : delivery?.canSave ? (
               <button
                 className="primary"
                 disabled={!!busy || automaticWorking}
@@ -269,11 +271,7 @@ export function EquipmentCorrections({
                 <ArrowUpRight size={14} />
               </button>
             ) : null}
-            <span>
-              {inOutlook
-                ? "Review and send from Outlook"
-                : "No production release or email sent"}
-            </span>
+            <span>{delivery?.note}</span>
           </div>
           {!compact && (
             <>

@@ -3,6 +3,7 @@ import { ProjectWorkspace } from "./ProjectHub";
 import { ProjectRecords } from "./ProjectRecords";
 import { ApprovalReview } from "./ApprovalReview";
 import { EngineeringWorkspace } from "./EngineeringWorkspace";
+import { usesEngineeringWorkspace } from "./order-route";
 import { useAccount } from "./Auth";
 import { OrderInboxPanel, SendNoticeButton } from "./Integrations";
 import { NoticeRecipients } from "./NoticeRecipients";
@@ -99,6 +100,8 @@ export function RecordWorkspace(props: {
     return (
       <ApprovalReview id={params.get("approval")!} navigate={props.navigate} />
     );
+  if (!usesEngineeringWorkspace(params))
+    return <LegacyRecordWorkspace {...props} />;
   return (
     <EngineeringWorkspace
       {...props}
@@ -1203,7 +1206,8 @@ export function RecordUpload({
         }}
       >
         <p className="modal-intro">
-          {introduction || "Add the submittal, marked-up files, or saved emails. Comments retain their original source."}
+          {introduction ||
+            "Add the submittal, marked-up files, or saved emails. Comments retain their original source."}
         </p>
         <label className="record-file-picker">
           <span>

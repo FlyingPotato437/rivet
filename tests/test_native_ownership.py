@@ -1,5 +1,6 @@
 """Native-file work wins over a concurrent generic Outlook text reply."""
 
+from datetime import timedelta
 from email.message import EmailMessage
 from hashlib import sha256
 from uuid import uuid4
@@ -24,7 +25,15 @@ from backend.reply_assistant import automatic, order_packet
 from backend.reply_assistant.models import ReplyDraft
 from backend.storage import db
 from backend.storage.db import Session
-from backend.storage.models import Document, Order, Project, Quote, RecordIntake
+from backend.storage.models import (
+    Document,
+    Job,
+    Order,
+    Project,
+    Quote,
+    RecordIntake,
+    now,
+)
 from backend.worker import claim, process
 
 mail = automatic_tests.mail
@@ -144,6 +153,152 @@ def test_existing_ready_generic_reply_defers_to_pending_and_checked_native_work(
         result = autopilot.deliver_one(ready[0], client_factory=graph)
     assert result["status"] == "awaiting_preparation"
     assert graph.calls == [] and graph.messages == {}
+
+
+def test_mail_reconciliation_enqueues_ready_native_correction_once(ready, corpus):
+    """A native email owner starts the existing durable correction worker."""
+    oid, receipt_id = _native_arrival(ready, corpus)
+    with identity(), Session.begin() as session:
+        state = automatic.reconcile_receipt(
+            session, get(session, MailboxReceipt, receipt_id)
+        )
+        assert state["reason"] == "native_equipment"
+        assert state["status"] == "queued"
+        project_id = get(session, Order, oid).project_id
+        assert (
+            session.query(Job)
+            .filter_by(project_id=project_id, kind="equipment_corrections")
+            .count()
+            == 0
+        )
+
+    _parse_returns()
+    with identity(), Session.begin() as session:
+        receipt = get(session, MailboxReceipt, receipt_id)
+        order = get(session, Order, oid)
+        read_only = ownership.for_receipt(session, order, receipt)
+        assert read_only and read_only["status"] == "queued"
+        assert (
+            session.query(Job)
+            .filter_by(project_id=order.project_id, kind="equipment_corrections")
+            .count()
+            == 0
+        )
+        prior_unbound = native_workflow.workflow.schedule(session, order)
+        assert prior_unbound and "receipt_id" not in prior_unbound.payload
+        legacy_payload = dict(prior_unbound.payload)
+        legacy_key = prior_unbound.key
+        state = automatic.reconcile_receipt(session, receipt)
+        assert state["reason"] == "native_equipment"
+        assert state["status"] == "queued"
+        jobs = (
+            session.query(Job)
+            .filter_by(project_id=order.project_id, kind="equipment_corrections")
+            .all()
+        )
+        assert len(jobs) == 1
+        bound_job = jobs[0]
+        assert bound_job.id == prior_unbound.id
+        assert bound_job.payload["receipt_id"] == receipt_id
+        assert set(bound_job.payload) == {
+            "order_id",
+            "source_fingerprint",
+            "plan_id",
+            "receipt_id",
+        }
+        # Simulate an older duplicate arriving during a rolling upgrade. An
+        # occupied bound key must win without renaming this legacy queued row.
+        session.add(
+            Job(
+                project_id=order.project_id,
+                kind="equipment_corrections",
+                key=legacy_key,
+                payload=legacy_payload,
+            )
+        )
+        session.flush()
+        assert (
+            native_workflow.workflow.schedule(
+                session, order, receipt_id=receipt_id
+            ).id
+            == bound_job.id
+        )
+
+    # The recurring receipt reconciliation is idempotent and does not enqueue
+    # another correction while the first worker job is pending.
+    with identity(), Session.begin() as session:
+        automatic.reconcile_receipt(session, get(session, MailboxReceipt, receipt_id))
+        assert (
+            session.query(Job)
+            .filter_by(
+                project_id=get(session, Order, oid).project_id,
+                kind="equipment_corrections",
+            )
+            .count()
+            == 2
+        )
+
+    # A later unrelated customer message on the same order must not become the
+    # target thread for this attachment package. The originating receipt stays
+    # bound to its durable job and the resulting reply remains unsent.
+    with identity(), Session.begin() as session:
+        order = get(session, Order, oid)
+        original = get(session, MailboxReceipt, receipt_id)
+        email = EmailMessage()
+        email["Subject"] = "Please confirm next week's review meeting"
+        email["Message-ID"] = f"<{uuid4()}@example.com>"
+        email["From"] = "customer@example.com"
+        email["To"] = "pm@example.com"
+        email.set_content("Please confirm next week's review meeting.")
+        imported = import_email(
+            session, order, "later-unrelated.eml", email.as_bytes(), "D", forwarded=True
+        )
+        later_doc = get(session, Document, imported["document_id"])
+        later_intake = RecordIntake(
+            order_id=oid,
+            name=later_doc.name,
+            blob=later_doc.blob,
+            sha256=later_doc.sha256,
+            status="imported",
+            data={"document_id": later_doc.id},
+        )
+        session.add(later_intake)
+        session.flush()
+        session.add(
+            MailboxReceipt(
+                connection_id=original.connection_id,
+                intake_id=later_intake.id,
+                provider_message_id="newer-unrelated-email",
+                internet_message_id=str(email["Message-ID"]),
+                status="imported",
+                data={"received_at": (now() + timedelta(seconds=1)).isoformat()},
+            )
+        )
+        payload = next(
+            job.payload for job in jobs if job.payload.get("receipt_id") == receipt_id
+        )
+
+    legacy_graph = native_workflow.DraftMailbox()
+    legacy_graph.original_id = ready[1]
+    with identity():
+        legacy_result = native_workflow.workflow.process(
+            legacy_payload, client_factory=legacy_graph
+        )
+    assert legacy_result["reason"] == "receipt_binding_required"
+    assert legacy_graph.calls == []
+
+    graph = native_workflow.DraftMailbox()
+    graph.original_id = ready[1]
+    with identity():
+        result = native_workflow.workflow.process(payload, client_factory=graph)
+    assert result["draft"]["status"] == "created"
+    assert graph.messages["native-correction"]["isDraft"]
+    assert any(
+        request.method == "POST"
+        and request.url.path.endswith(f"/{ready[1]}/createReply")
+        for request in graph.calls
+    )
+    assert not any("/send" in str(request.url) for request in graph.calls)
 
 
 def test_native_work_appearing_during_graph_setup_stops_generic_provider_writes(

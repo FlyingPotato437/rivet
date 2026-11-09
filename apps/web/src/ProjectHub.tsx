@@ -18,7 +18,7 @@ import { api, when } from "./api";
 import { useRecordOrders } from "./RecordFeed";
 import { RecordIntake, IntakeConfirmation, type Intake } from "./RecordIntake";
 import { CheckInboxNow } from "./YourWork";
-import type { WorkMailbox } from "./mailbox-check";
+import { lastMailboxCheck, type WorkMailbox } from "./mailbox-check";
 import { ErrorNote } from "./ui";
 import {
   projectFilters,
@@ -26,6 +26,7 @@ import {
   type ProjectFlow,
 } from "./project-flow";
 import "./project-hub.css";
+import "./today-home.css";
 import { StatusIcon, statusKind } from "./StatusIcon";
 
 export function useProjectWork() {
@@ -112,6 +113,16 @@ export function ProjectsDashboard({
     [filter, setFilter] = useState("all"),
     [upload, setUpload] = useState(false);
   const connected = mailbox.data?.items.some((m) => m.enabled);
+  const checkedAt = lastMailboxCheck(mailbox.data?.items || []);
+  const pollInterval = Math.max(
+    3600,
+    ...(mailbox.data?.items || [])
+      .filter((m) => m.enabled)
+      .map((m) => (m.poll_interval_seconds || 1800) * 2),
+  );
+  const checkOverdue =
+    !!connected &&
+    (!checkedAt || Date.now() - Date.parse(checkedAt) > pollInterval * 1000);
   const projects = q.data?.projects || [],
     visible = projects.filter(
       (p) =>
@@ -119,26 +130,18 @@ export function ProjectsDashboard({
         (view === "orders" ||
           ["ready", "prepared", "needs_you", "handling"].includes(p.status)),
     );
-  const ready = projects.filter((p) =>
-      ["ready", "prepared"].includes(p.status),
-    ).length,
-    working = projects.filter((p) => p.status === "handling").length,
-    waiting = projects.filter((p) => p.status === "waiting_customer").length;
   const confirm = (item: Intake) => {
     void qc.invalidateQueries({ queryKey: ["record-intake"] });
     void qc.invalidateQueries({ queryKey: ["project-work"] });
   };
   return (
-    <main className="page projects-hub">
+    <main
+      className={`page projects-hub${view === "today" ? " projects-today" : ""}`}
+    >
       <header className="project-page-header">
         <div>
           <span className="project-eyebrow">Workspace</span>
           <h1>{view === "today" ? "Today" : "Orders"}</h1>
-          <p>
-            {view === "today"
-              ? "Prepared replies and the few decisions that need you."
-              : "Every customer conversation, file and outcome, together in its order."}
-          </p>
         </div>
         <button className="secondary" onClick={onNew}>
           <Plus size={17} />
@@ -149,26 +152,29 @@ export function ProjectsDashboard({
         <span className={`project-live-dot${connected ? " connected" : ""}`} />
         <span>
           {connected
-            ? "Outlook connected · Rivet works in the background"
-            : "Connect Outlook to capture order mail automatically"}
+            ? checkOverdue
+              ? checkedAt
+                ? `Inbox check overdue · last checked ${when(checkedAt)}`
+                : "Inbox check needed"
+              : `Inbox checked ${when(checkedAt!)}`
+            : "Outlook is not connected"}
         </span>
         <div>
-          {connected && <CheckInboxNow mailboxes={mailbox.data?.items || []} />}
+          {connected && (
+            <CheckInboxNow
+              mailboxes={mailbox.data?.items || []}
+              showLastCheck={false}
+            />
+          )}
           <button className="text-button" onClick={() => navigate("settings")}>
             {connected ? "Connection settings" : "Connect Outlook"}
           </button>
         </div>
       </div>
-      {!!projects.length && (
-        <p className="project-pulse">
-          <strong>{ready}</strong> ready <span /> <strong>{working}</strong> in
-          progress <span /> <strong>{waiting}</strong> waiting for customer
-        </p>
-      )}
       {!!pending.data?.items.length && (
         <section className="project-questions">
-          <h2>One quick question</h2>
-          {pending.data.items.slice(0, 3).map((item) => (
+          <h2>Needs your input</h2>
+          {pending.data.items.map((item) => (
             <IntakeConfirmation
               key={item.intake_id}
               item={item}
@@ -235,11 +241,6 @@ export function ProjectsDashboard({
                     {p.customer || "Customer not linked"} <span>·</span>{" "}
                     {p.number}
                   </small>
-                  <span className="project-hub-row-counts">
-                    {p.email_count} {p.email_count === 1 ? "email" : "emails"} ·{" "}
-                    {p.document_count}{" "}
-                    {p.document_count === 1 ? "file" : "files"}
-                  </span>
                 </span>
               </button>
               <div className="project-hub-row-progress">
@@ -257,19 +258,7 @@ export function ProjectsDashboard({
                       />
                     ))}
                   </div>
-                ) : (
-                  <small>
-                    {p.status === "waiting_customer"
-                      ? "Rivet will pick up their reply"
-                      : p.status === "needs_you"
-                        ? "Open the order for the question"
-                        : p.status === "ready"
-                          ? "Draft and evidence prepared"
-                          : p.status === "prepared"
-                            ? "Source-linked response available"
-                            : "Monitoring order updates"}
-                  </small>
-                )}
+                ) : null}
               </div>
               <div className="project-hub-row-communication">
                 {p.last_communication ? (

@@ -149,7 +149,7 @@ def _claim(s, order, documents, focused):
     )
 
 
-def for_receipt(s, order, receipt):
+def for_receipt(s, order, receipt, *, enqueue_corrections=False):
     """Return a deferral state only when this captured arrival owns file work."""
     if receipt is None or not receipt.intake_id:
         return None
@@ -166,7 +166,21 @@ def for_receipt(s, order, receipt):
         return None
     original = get(s, Document, root_id)
     focused = set(email_document_ids(s, order, original))
-    return _claim(s, order, documents, focused)
+    state = _claim(s, order, documents, focused)
+    if (
+        enqueue_corrections
+        and state
+        and state["status"] == "queued"
+        and state.get("source_ids")
+    ):
+        # Only the actual background receipt reconciler may start this job.
+        # Other owners/preflight checks use this gate read-only.
+        from .workflow import plan, schedule
+
+        report, _, _, _, _ = plan(s, order)
+        if report.get("status") == "ready":
+            schedule(s, order, receipt_id=receipt.id)
+    return state
 
 
 def for_order(s, order):

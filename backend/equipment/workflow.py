@@ -587,7 +587,7 @@ def outlook_bundle(s, order, bundle_id):
     }
 
 
-def schedule(s, order):
+def schedule(s, order, *, receipt_id=None):
     """Opted-in revision ingestion schedules bounded file work, never a send."""
     try:
         report, _, _, _, fingerprint = plan(s, order)
@@ -601,8 +601,42 @@ def schedule(s, order):
         for b in _state(order).get("bundles", [])
     ):
         return None
-    key = "equipment-corrections:" + digest([order.id, fingerprint, report["plan_id"]])
-    existing = s.scalar(scoped(Job).where(Job.key == key))
+    base_key_parts = [order.id, fingerprint, report["plan_id"]]
+    base_key = "equipment-corrections:" + digest(base_key_parts)
+    key_parts = list(base_key_parts)
+    if receipt_id:
+        key_parts.append(receipt_id)
+    key = "equipment-corrections:" + digest(key_parts)
+    # Prefer the exact receipt-bound job before attempting to upgrade an older
+    # unbound row. Both keys can coexist during a rolling upgrade, and renaming
+    # the legacy row onto an occupied key would violate the unique job-key index.
+    existing = (
+        s.scalar(scoped(Job).where(Job.key == key).with_for_update())
+        if receipt_id
+        else None
+    )
+    if existing:
+        return existing
+    if receipt_id:
+        prior_unbound = s.scalar(
+            scoped(Job).where(Job.key == base_key).with_for_update()
+        )
+        if (
+            prior_unbound
+            and prior_unbound.status == "queued"
+            and not prior_unbound.payload.get("receipt_id")
+        ):
+            # Upgrade a not-yet-claimed job from the earlier unbound contract
+            # in place. The existing worker heartbeat/lease controls still
+            # prevent a second claim while this row is locked.
+            prior_unbound.key = key
+            prior_unbound.payload = {
+                **prior_unbound.payload,
+                "receipt_id": receipt_id,
+            }
+            existing = prior_unbound
+    if not existing:
+        existing = s.scalar(scoped(Job).where(Job.key == key))
     if existing:
         return existing
     job = Job(
@@ -613,6 +647,7 @@ def schedule(s, order):
             "order_id": order.id,
             "source_fingerprint": fingerprint,
             "plan_id": report["plan_id"],
+            **({"receipt_id": receipt_id} if receipt_id else {}),
         },
     )
     s.add(job)
@@ -635,6 +670,22 @@ def process(payload, leased=lambda: True, *, client_factory=None):
         return {"status": "cancelled"}
     with Session.begin() as s:
         order = orders.lock_order(s, payload["order_id"])
+        if not payload.get("receipt_id"):
+            # Jobs created before receipt ownership was added can still be in
+            # the durable queue. If a captured customer return now owns native
+            # work, let its bound job take over instead of addressing whichever
+            # email happens to be latest when this old job reaches Outlook.
+            from backend.reply_assistant.automatic import receipts_for_order
+
+            from . import ownership
+
+            for receipt in s.scalars(receipts_for_order(s, order).limit(100)):
+                state = ownership.for_receipt(s, order, receipt)
+                if state and state.get("reason") == "native_equipment":
+                    return {
+                        "status": "superseded",
+                        "reason": "receipt_binding_required",
+                    }
         current_plan, _, _, _, current = plan(s, order)
         if (
             current != payload["source_fingerprint"]
@@ -658,7 +709,12 @@ def process(payload, leased=lambda: True, *, client_factory=None):
         return {"status": "checked", "bundle_id": bundle_id}
     from .outlook import save
 
-    return save(payload["order_id"], bundle_id, client_factory=client_factory)
+    return save(
+        payload["order_id"],
+        bundle_id,
+        client_factory=client_factory,
+        receipt_id=payload.get("receipt_id"),
+    )
 
 
 def sync_outcomes(limit=20):

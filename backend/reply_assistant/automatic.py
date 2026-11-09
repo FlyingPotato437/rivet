@@ -333,7 +333,7 @@ def reconcile_receipt(s, receipt):
         )
     from backend.equipment.ownership import for_receipt as native_work
 
-    if native := native_work(s, order, receipt):
+    if native := native_work(s, order, receipt, enqueue_corrections=True):
         return _save(receipt, native)
     if existing := existing_lifecycle_draft(s, order, receipt):
         return _save(receipt, existing)

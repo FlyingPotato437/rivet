@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import ts from "typescript";
+import * as orderFlow from "../apps/web/src/order-flow.ts";
+import { visibleProjectComments } from "../apps/web/src/project-records.ts";
 
 // Render the actual OrderStory component as a JSX tree with deterministic query
 // and hook adapters, so reopening history can be tested without model calls.
@@ -41,6 +43,8 @@ const React = {
 let state, queries, calls, invalidations, data, cursor;
 const mocks = Object.fromEntries(names.map((name) => [name, name]));
 Object.assign(mocks, {
+  ...orderFlow,
+  visibleProjectComments,
   useState(initial) {
     const index = cursor++;
     if (!(index in state)) state[index] = initial;
@@ -72,15 +76,17 @@ Object.assign(mocks, {
   orderStory: () => [],
   decisionItems: () => [],
   liveWork: () => null,
-  orderOutcome: () => ({
-    tone: "waiting",
-    label: "Watching",
-    title: "Watching for mail",
-  }),
+  orderOutcome: () =>
+    data?.outcome || {
+      tone: "waiting",
+      label: "Watching",
+      title: "Watching for mail",
+    },
   replyPreview: () => "",
   pmSentence: (value, fallback) => value || fallback,
   when: (value) => value,
 });
+
 globalThis.__orderStoryTestMocks = mocks;
 globalThis.location = { hash: "#order/order-1" };
 const output = ts.transpileModule(
@@ -109,6 +115,7 @@ const result = {
   version: 1,
 };
 function reset(conversation = { order_id: "order-1", messages: [] }) {
+  globalThis.location.hash = "#order/order-1";
   state = [];
   queries = [];
   calls = [];
@@ -122,9 +129,10 @@ function reset(conversation = { order_id: "order-1", messages: [] }) {
       progress: [],
       document_count: 1,
       thread_count: 0,
+      outlook: { native: false, url: "" },
     },
     "record-conversation": conversation,
-    record: { documents: [], sources: [] },
+    record: { documents: [], sources: [], comments: [] },
     answer: result,
   };
 }
@@ -212,4 +220,116 @@ test("a newly asked question refreshes only the current order's saved conversati
     { queryKey: ["record-conversation", "order-1"] },
   ]);
   assert.equal(state[5], "");
+});
+
+test("PDF-only orders show extracted requests and their prepared findings without native CAD", () => {
+  reset();
+  data.record.comments = [
+    {
+      id: "c1",
+      text: "Change the nameplate",
+      source_ids: ["source-1"],
+      document_id: "drawing-1",
+    },
+    {
+      id: "mail",
+      text: "Please see attached",
+      source_ids: ["mail-source"],
+      document_id: "email-1",
+    },
+  ];
+  data.record.response_log = {
+    comments: {
+      c1: {
+        status: "prepared",
+        label: "Response prepared",
+        response: "Use the customer-specified nameplate.",
+      },
+      mail: {
+        status: "correspondence",
+        label: "Correspondence",
+        response: "Email retained.",
+      },
+    },
+  };
+  const tree = nodes(render());
+  assert.ok(
+    tree.some(
+      (node) =>
+        node.type === "p" &&
+        node.props.children.includes("Change the nameplate"),
+    ),
+  );
+  assert.ok(
+    tree.some(
+      (node) =>
+        node.type === "blockquote" &&
+        node.props.children.includes("Use the customer-specified nameplate."),
+    ),
+  );
+  assert.ok(
+    !tree.some(
+      (node) =>
+        node.type === "p" &&
+        node.props.children.includes("Please see attached"),
+    ),
+  );
+  assert.deepEqual(calls, []);
+});
+
+test("corrected-files view retains equipment checks and never starts preparation on navigation", () => {
+  reset();
+  globalThis.location.hash = "#order/order-1?review=changes";
+  const tree = nodes(render());
+  assert.ok(tree.some((node) => node.type === "CorrectedFiles"));
+  assert.ok(tree.some((node) => node.type === "RevisionCheck"));
+  assert.ok(
+    tree.some(
+      (node) =>
+        node.type === "DrawingRedesignReview" &&
+        node.props.screen === "changes",
+    ),
+  );
+  assert.deepEqual(calls, []);
+});
+
+test("a prepared file-only reply retains the Outlook draft action without claiming the mailbox is disconnected", () => {
+  reset();
+  location.hash = "#order/order-1?review=reply";
+  data.outcome = {
+    tone: "prepared",
+    label: "Response prepared",
+    title: "Response prepared",
+  };
+  data["project-work"].status = "prepared";
+  data["project-work"].reply_preparation = {
+    prepared_reply: { id: "reply-1" },
+  };
+  const tree = nodes(render());
+  const panel = tree.find(
+    (node) => node.props?.["aria-label"] === "Outlook reply status",
+  );
+  assert.ok(nodes(panel).some((node) => node.type === "ReplyAction"));
+  assert.ok(
+    !nodes(panel).some((node) =>
+      node.props.children.includes("Outlook not connected"),
+    ),
+  );
+  assert.deepEqual(calls, []);
+});
+
+test("activity links open the timeline even though specialist tools start collapsed", () => {
+  reset();
+  location.hash = "#order/order-1?event=saved-change";
+  assert.equal(
+    nodes(render()).find((node) => node.props?.className === "order-more-tools")
+      .props.open,
+    true,
+  );
+  location.hash = "#order/order-1";
+  assert.equal(
+    nodes(render()).find((node) => node.props?.className === "order-more-tools")
+      .props.open,
+    false,
+  );
 });

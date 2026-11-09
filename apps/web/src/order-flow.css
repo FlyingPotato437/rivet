@@ -1,0 +1,308 @@
+.order-review-workbench {
+  margin: 6px 0 20px;
+  overflow: hidden;
+  border: 1px solid #343239;
+  border-radius: 8px;
+  background: #18171a;
+}
+.order-review-status {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 10px 17px;
+  border-bottom: 1px solid #343239;
+}
+.order-review-status > p {
+  overflow: hidden;
+  margin: 0;
+  color: #b4b0b8;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.order-review-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid #343239;
+}
+.order-review-tabs button {
+  display: grid;
+  gap: 3px;
+  min-height: 55px;
+  padding: 10px 16px;
+  border: 0;
+  border-right: 1px solid #343239;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #bcb8c1;
+  text-align: left;
+  cursor: pointer;
+}
+.order-review-tabs button:last-child {
+  border-right: 0;
+}
+.order-review-tabs button:hover {
+  background: #ffffff06;
+  color: #f1edf4;
+}
+.order-review-tabs button.is-active {
+  border-bottom-color: #b7a5df;
+  background: #b7a5df0c;
+  color: #f1edf4;
+}
+.order-review-tabs button > span {
+  font-size: 12px;
+  font-weight: 560;
+}
+.order-review-tabs button > small {
+  color: #aaa5ae;
+  font-size: 12px;
+}
+.order-review-panel {
+  padding: 19px;
+}
+.order-review-panel-heading {
+  margin: 0 0 15px;
+}
+.order-review-panel-heading h2 {
+  margin: 5px 0;
+  color: #f0edf2;
+  font-size: 17px;
+  font-weight: 550;
+  letter-spacing: -0.2px;
+}
+.order-review-panel-heading p {
+  margin: 0;
+  color: #a7a3aa;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.order-review-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.order-review-sources button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: min(100%, 360px);
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid #45424b;
+  border-radius: 5px;
+  background: #211f24;
+  color: #dad6df;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.order-review-sources button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.order-review-sources button.order-view-all-files {
+  color: #d2c8e6;
+}
+.order-review-sources button:focus-visible,
+.order-review-tabs button:focus-visible,
+.order-more-tools > summary:focus-visible,
+.order-more-tool-links button:focus-visible,
+.order-markup-register button:focus-visible,
+.order-drawing-notice:focus-visible {
+  outline: 2px solid #b9a9de;
+  outline-offset: 2px;
+}
+.order-drawing-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 16px 0;
+  border: 0;
+  background: transparent;
+  color: #e0c899;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.order-markup-register {
+  margin: 0 0 16px;
+  border: 1px solid #343239;
+  border-radius: 6px;
+  background: #1d1b20;
+}
+.order-markup-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #343239;
+}
+.order-markup-heading strong {
+  color: #eeeaf1;
+  font-size: 14px;
+  font-weight: 560;
+}
+.order-markup-heading span,
+.order-request-copy > span {
+  color: #a7a3aa;
+  font-size: 12px;
+}
+.order-markup-register ol {
+  margin: 0;
+  padding: 0 14px;
+  list-style: none;
+}
+.order-markup-register li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid #343239;
+}
+.order-markup-register li:last-child {
+  border-bottom: 0;
+}
+.order-markup-register li p {
+  margin: 0;
+  color: #e0dce4;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.order-request-copy > span {
+  display: block;
+  margin-top: 7px;
+}
+.order-request-response {
+  margin-top: 9px;
+}
+.order-request-response summary {
+  cursor: pointer;
+  color: #c5b9dc;
+  font-size: 12px;
+}
+.order-request-response blockquote {
+  margin: 10px 0 0;
+  padding: 9px 12px;
+  border-left: 2px solid #5c536b;
+  color: #c5c0ca;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.order-review-workbench .drr-panel {
+  border-top: 0;
+  padding-top: 0;
+}
+.order-markup-register li button,
+.order-markup-log,
+.order-more-tool-links button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid #45424b;
+  border-radius: 4px;
+  background: #252329;
+  color: #d5cbea;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.order-markup-empty {
+  margin: 0;
+  padding: 13px 14px;
+  color: #bab5c0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.order-markup-log {
+  margin: 0 14px 13px;
+}
+.order-more-tool-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.order-more-tools {
+  margin: 14px 0 20px;
+  border: 1px solid #343239;
+  border-radius: 7px;
+  background: #171619;
+}
+.order-more-tools > summary {
+  padding: 13px 16px;
+  color: #c6c1cb;
+  font-size: 13px;
+  cursor: pointer;
+}
+.order-more-tools[open] > summary {
+  border-bottom: 1px solid #343239;
+}
+.order-more-tools-content {
+  padding: 16px;
+}
+.order-more-tools-content > .order-workspace-grid {
+  margin-top: 8px;
+}
+.order-review-workbench .order-outcome {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.order-review-workbench .order-outcome-copy > .rivet-chip {
+  margin: 9px 0 0;
+}
+.order-review-workbench .order-outcome-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.order-review-workbench .drr-entry {
+  margin: 0;
+}
+.order-review-workbench .corrected-files {
+  margin: 0 0 15px;
+}
+@media (max-width: 700px) {
+  .order-review-status {
+    grid-template-columns: 1fr auto;
+    gap: 7px 10px;
+  }
+  .order-review-status > p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    white-space: normal;
+  }
+  .order-review-tabs button {
+    padding: 9px 10px;
+  }
+  .order-review-tabs button > span {
+    font-size: 12px;
+  }
+  .order-markup-register li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .order-markup-register li p {
+    grid-column: 1 / -1;
+  }
+  .order-markup-register li > span {
+    grid-column: 1;
+  }
+  .order-markup-register li button {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .order-review-panel {
+    padding: 13px;
+  }
+}
