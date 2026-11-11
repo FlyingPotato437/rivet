@@ -468,7 +468,7 @@ function renderAssembly(
     c.stroke();
   }
 }
-export function RivetAssembly() {
+export function RivetAssembly({ compact = false }: { compact?: boolean }) {
   const section = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   useLayoutEffect(() => {
@@ -583,9 +583,9 @@ export function RivetAssembly() {
           onUpdate: queueDraw,
           scrollTrigger: {
             trigger: stage,
-            start: "top 75%",
-            end: "bottom 40%",
-            scrub: 0.85,
+            start: "top 85%",
+            end: "bottom 45%",
+            scrub: 1.1,
             invalidateOnRefresh: true,
           },
         });
@@ -606,29 +606,33 @@ export function RivetAssembly() {
       stage.removeEventListener("pointerleave", leave);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [compact]);
   return (
     <section
-      id="connected-record"
-      className="rivet-assembly public-wrap"
+      id={compact ? undefined : "connected-record"}
+      className={`rivet-assembly ${compact ? "rivet-assembly-compact" : "public-wrap"}`}
       ref={section}
-      aria-labelledby="rivet-assembly-heading"
+      aria-label={compact ? "Rivet mechanical assembly animation" : undefined}
+      aria-labelledby={compact ? undefined : "rivet-assembly-heading"}
     >
-      <div className="rivet-assembly-heading">
-        <p className="public-eyebrow">The connected order record</p>
-        <h2 id="rivet-assembly-heading">
-          One order.
-          <br />
-          <span>Every revision connected.</span>
-        </h2>
-        <p>
-          A comment stays connected to its drawing, response, and approval. When
-          the next revision arrives, your team can see the history behind it.
-        </p>
-        <a className="public-text-link" href="#workflow">
-          Explore the workflow <ArrowUpRight size={17} />
-        </a>
-      </div>
+      {!compact && (
+        <div className="rivet-assembly-heading">
+          <p className="public-eyebrow">The connected order record</p>
+          <h2 id="rivet-assembly-heading">
+            One order.
+            <br />
+            <span>Every revision connected.</span>
+          </h2>
+          <p>
+            A comment stays connected to its drawing, response, and approval.
+            When the next revision arrives, your team can see the history behind
+            it.
+          </p>
+          <a className="public-text-link" href="#workflow">
+            Explore the workflow <ArrowUpRight size={17} />
+          </a>
+        </div>
+      )}
       <figure className="rivet-assembly-visual">
         <div className="rivet-assembly-stage">
           <canvas
@@ -637,13 +641,15 @@ export function RivetAssembly() {
             aria-hidden="true"
           />
         </div>
-        <figcaption className="rivet-assembly-caption">
-          <span>Source documents</span>
-          <i aria-hidden="true" />
-          <span>Comments & responses</span>
-          <i aria-hidden="true" />
-          <span>Approval history</span>
-        </figcaption>
+        {!compact && (
+          <figcaption className="rivet-assembly-caption">
+            <span>Source documents</span>
+            <i aria-hidden="true" />
+            <span>Comments & responses</span>
+            <i aria-hidden="true" />
+            <span>Approval history</span>
+          </figcaption>
+        )}
       </figure>
     </section>
   );

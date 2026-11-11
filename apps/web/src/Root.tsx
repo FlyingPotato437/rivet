@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Landing, PublicHeader, PublicFooter } from "./Landing";
+import { LandingV2 } from "./LandingV2";
 import { ArrowUpRight } from "@phosphor-icons/react";
 import "./public-site.css";
 import "./public-material.css";
@@ -51,7 +52,7 @@ export default function Root() {
       ? "Request a pilot · Rivet"
       : privateRoute && PrivateRoot
         ? "Rivet | Workspace"
-        : "Rivet | Returned drawings. Ready-to-review work.";
+        : "Rivet | Customer markups in. Revised drawings out.";
   }, [url, pilot, privateRoute]);
   if (privateRoute && PrivateRoot)
     return (
@@ -102,5 +103,7 @@ export default function Root() {
         <PublicFooter />
       </div>
     );
-  return <Landing />;
+  // The previous landing page stays reachable at /?classic for comparison.
+  if (new URLSearchParams(location.search).has("classic")) return <Landing />;
+  return <LandingV2 />;
 }
